@@ -87,79 +87,23 @@
 
 <footer>© SanZa Games · One SanZa. One Family.</footer>
 
-<script>                                                      
-  // Paste your Google Cloud API key between the quotes below.
-  const 
 
+<script>
   const form = document.getElementById('searchForm');
   const input = document.getElementById('searchInput');
   const results = document.getElementById('results');
   const message = document.getElementById('message');
   const playerArea = document.getElementById('playerArea');
 
-  function searchVideos(query) {
-  results.replaceChildren();
-  message.textContent =
-    'Live search is being upgraded. Paste a video link below to watch it here on SanZaGames.';
-  }
-
-    message.textContent = 'Searching YouTube...';
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
     results.replaceChildren();
 
-    try {
-      const url = new URL('https://www.googleapis.com/youtube/v3/search');
-      url.search = new URLSearchParams({
-        part: 'snippet',
-        type: 'video',
-        maxResults: '8',
-        safeSearch: 'moderate',
-        q: query,
-        key: API_KEY
-      });
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || 'YouTube search failed.');
-      }
-
-      if (!data.items || data.items.length === 0) {
-        message.textContent = 'No videos found. Try another search.';
-        return;
-      }
-
-      message.textContent = 'Choose a video to watch below.';
-
-      data.items.forEach(item => {
-        const id = item.id?.videoId;
-        if (!id) return;
-
-        const card = document.createElement('article');
-        card.className = 'video-card';
-
-        const image = document.createElement('img');
-        image.src = item.snippet.thumbnails.medium?.url ||
-                    item.snippet.thumbnails.default?.url || '';
-        image.alt = 'Video thumbnail';
-        image.loading = 'lazy';
-
-        const title = document.createElement('h3');
-        title.textContent = item.snippet.title;
-
-        const button = document.createElement('button');
-        button.textContent = '▶ WATCH THIS VIDEO';
-        button.addEventListener('click', () => playVideo(id));
-
-        card.append(image, title, button);
-        results.appendChild(card);
-      });
-    } catch (error) {
-      message.textContent =
-        'Search error: ' + error.message +
-        ' Check your API key, restrictions and Google Cloud quota.';
-    }
-  }
+    const query = input.value.trim();
+    message.textContent = query
+      ? 'Live search needs a secure search service. We are working on it!'
+      : 'Please enter a search term.';
+  });
 
   function playVideo(id) {
     playerArea.replaceChildren();
@@ -167,13 +111,11 @@
     const frame = document.createElement('iframe');
     frame.src = 'https://www.youtube-nocookie.com/embed/' +
       encodeURIComponent(id);
-    frame.title = 'YouTube video player';
+    frame.title = 'SanZa Videos player';
     frame.allow =
-      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      'accelerometer; autoplay; encrypted-media; picture-in-picture';
     frame.allowFullscreen = true;
-    frame.loading = 'lazy';
     playerArea.appendChild(frame);
-    playerArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function getVideoId(raw) {
@@ -183,12 +125,10 @@
 
       if (url.hostname === 'youtu.be') {
         id = url.pathname.split('/').filter(Boolean)[0] || '';
-      } else if (
-        url.hostname === 'youtube.com' ||
-        url.hostname.endsWith('.youtube.com')
-      ) {
-        if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
-        else if (/^\/(embed|shorts)\/[^/]+/.test(url.pathname)) {
+      } else if (url.hostname.endsWith('youtube.com')) {
+        if (url.pathname === '/watch') {
+          id = url.searchParams.get('v') || '';
+        } else if (/^\/(embed|shorts)\/[^/]+/.test(url.pathname)) {
           id = url.pathname.split('/')[2] || '';
         }
       }
@@ -199,22 +139,20 @@
     }
   }
 
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const query = input.value.trim();
-    if (query) searchVideos(query);
-  });
+  document.getElementById('playLink').addEventListener('click', function() {
+    const raw = document.getElementById('videoUrl').value.trim();
+    const id = getVideoId(raw);
 
-  document.getElementById('playLink').addEventListener('click', () => {
-    const id = getVideoId(document.getElementById('videoUrl').value.trim());
     if (!id) {
       message.textContent = 'Please paste a valid YouTube video link.';
       return;
     }
+
     message.textContent = '';
     playVideo(id);
   });
 </script>
+                                                
 </body>
 </html>
 
