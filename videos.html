@@ -2,157 +2,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Search and watch YouTube videos on SanZa Games.">
-  <title>SanZa Videos | SanZa Games</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; background: #080808; color: #fff;
-      font-family: Arial, sans-serif; text-align: center;
-    }
-    header {
-      padding: 26px 16px; background: #111;
-      border-bottom: 2px solid #d4af37;
-    }
-    h1, h2 { color: #d4af37; }
-    main { max-width: 1000px; margin: auto; padding: 20px 14px; }
-    .panel {
-      margin: 20px 0; padding: 18px; background: #141414;
-      border: 1px solid #333; border-radius: 12px;
-    }
-    input {
-      width: 100%; padding: 14px; margin: 8px 0;
-      background: #202020; color: white;
-      border: 1px solid #d4af37; border-radius: 8px;
-      font-size: 16px;
-    }
-    button, .button {
-      display: inline-block; padding: 12px 18px; margin: 6px;
-      border: 0; border-radius: 8px; background: #d4af37;
-      color: #080808; font-size: 15px; font-weight: bold;
-      cursor: pointer; text-decoration: none;
-    }
-    #results {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px; margin-top: 20px; text-align: left;
-    }
-    .video-card {
-      background: #181818; border: 1px solid #333;
-      border-radius: 10px; overflow: hidden;
-    }
-    .video-card img { width: 100%; display: block; }
-    .video-card h3 { font-size: 15px; padding: 0 12px; line-height: 1.4; }
-    .video-card button { margin: 0 12px 14px; }
-    iframe {
-      width: 100%; aspect-ratio: 16 / 9;
-      border: 0; border-radius: 10px;
-    }
-    #playerArea { margin-top: 18px; }
-    #message { color: #f0d979; overflow-wrap: anywhere; }
-    footer { padding: 22px; color: #aaa; border-top: 1px solid #333; }
-    a { color: #d4af37; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>SanZa Videos | SanZa Games</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #080808;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+header {
+  padding: 28px 16px;
+  background: #111;
+  border-bottom: 3px solid #d4af37;
+}
+
+h1, h2 { color: #d4af37; }
+
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 18px;
+}
+
+.panel {
+  margin: 20px 0;
+  padding: 20px;
+  background: #151515;
+  border: 1px solid #383838;
+  border-radius: 14px;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin: 16px 0;
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+}
+
+button, .back {
+  display: inline-block;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: 0;
+  border-radius: 8px;
+  background: #d4af37;
+  color: #080808;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:active { transform: scale(.98); }
+
+#status {
+  min-height: 24px;
+  color: #f0d979;
+  overflow-wrap: anywhere;
+}
+
+#player {
+  width: 100%;
+  margin-top: 18px;
+}
+
+#player iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 10px;
+  background: #000;
+}
+
+footer {
+  padding: 24px;
+  color: #aaa;
+  border-top: 1px solid #333;
+}
+</style>
 </head>
+
 <body>
 <header>
   <h1>🎬 SanZa Videos</h1>
-  <p>Search it. Find it. Watch it. The SanZa way!</p>
+  <p>One SanZa. One Family.</p>
+  <p>Find your video and watch it right here!</p>
 </header>
 
 <main>
   <section class="panel">
-    <h2>🔎 Search YouTube</h2>
-    <p>Find videos and choose one to watch right here.</p>
-    <form id="searchForm">
-      <input id="searchInput" type="search"
-        placeholder="Search games, funny clips, music..." required>
-      <button type="submit">SEARCH VIDEOS 🔎</button>
+    <h2>▶ Watch Your Video</h2>
+    <p>Paste a YouTube video link below. Your video will play on this page.</p>
+
+    <form id="videoForm">
+      <input
+        id="videoLink"
+        type="url"
+        placeholder="Paste your YouTube video link here"
+        aria-label="YouTube video link"
+        autocomplete="url"
+        required
+      >
+      <button type="submit">WATCH VIDEO ▶</button>
     </form>
-    <p id="message" aria-live="polite"></p>
-    <div id="results"></div>
+
+    <p id="status" role="status" aria-live="polite">
+      Ready when you are, Sanzation!
+    </p>
+
+    <div id="player"></div>
   </section>
 
-  <section class="panel">
-    <h2>▶ Watch a YouTube Video</h2>
-    <input id="videoUrl" type="url"
-      placeholder="Or paste a YouTube video link here">
-    <button type="button" id="playLink">WATCH VIDEO ▶</button>
-    <div id="playerArea"></div>
-  </section>
-
-  <a class="button" href="index.html">← BACK TO SANZA GAMES</a>
+  <a class="back" href="index.html">← BACK TO SANZA GAMES</a>
 </main>
 
-<footer>© SanZa Games · One SanZa. One Family.</footer>
-
+<footer>
+  © SanZa Games · One SanZa. One Family.
+</footer>
 
 <script>
-  const form = document.getElementById('searchForm');
-  const input = document.getElementById('searchInput');
-  const results = document.getElementById('results');
-  const message = document.getElementById('message');
-  const playerArea = document.getElementById('playerArea');
+(function () {
+  var form = document.getElementById('videoForm');
+  var input = document.getElementById('videoLink');
+  var status = document.getElementById('status');
+  var player = document.getElementById('player');
 
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
-    results.replaceChildren();
-
-    const query = input.value.trim();
-    message.textContent = query
-      ? 'Live search needs a secure search service. We are working on it!'
-      : 'Please enter a search term.';
-  });
-
-  function playVideo(id) {
-    playerArea.replaceChildren();
-
-    const frame = document.createElement('iframe');
-    frame.src = 'https://www.youtube-nocookie.com/embed/' +
-      encodeURIComponent(id);
-    frame.title = 'SanZa Videos player';
-    frame.allow =
-      'accelerometer; autoplay; encrypted-media; picture-in-picture';
-    frame.allowFullscreen = true;
-    playerArea.appendChild(frame);
-  }
-
-  function getVideoId(raw) {
+  function extractVideoId(value) {
     try {
-      const url = new URL(raw);
-      let id = '';
+      var url = new URL(value.trim());
+      var host = url.hostname.toLowerCase();
+      var id = '';
 
-      if (url.hostname === 'youtu.be') {
+      if (host === 'youtu.be' ||
+          host === 'www.youtu.be') {
         id = url.pathname.split('/').filter(Boolean)[0] || '';
-      } else if (url.hostname.endsWith('youtube.com')) {
+      } else if (
+        host === 'youtube.com' ||
+        host.endsWith('.youtube.com')
+      ) {
         if (url.pathname === '/watch') {
           id = url.searchParams.get('v') || '';
-        } else if (/^\/(embed|shorts)\/[^/]+/.test(url.pathname)) {
-          id = url.pathname.split('/')[2] || '';
+        } else {
+          var match = url.pathname.match(
+            /^\/(?:embed|shorts|live)\/([A-Za-z0-9_-]{11})/
+          );
+          if (match) id = match[1];
         }
       }
 
       return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : '';
-    } catch {
+    } catch (error) {
       return '';
     }
   }
 
-  document.getElementById('playLink').addEventListener('click', function() {
-    const raw = document.getElementById('videoUrl').value.trim();
-    const id = getVideoId(raw);
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    var id = extractVideoId(input.value);
 
     if (!id) {
-      message.textContent = 'Please paste a valid YouTube video link.';
+      player.replaceChildren();
+      status.textContent =
+        'Please paste a valid YouTube video link and try again.';
       return;
     }
 
-    message.textContent = '';
-    playVideo(id);
+    status.textContent = 'Loading your video...';
+    player.replaceChildren();
+
+    var frame = document.createElement('iframe');
+    frame.title = 'SanZa Videos player';
+    frame.setAttribute(
+      'allow',
+      'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share'
+    );
+    frame.setAttribute('allowfullscreen', '');
+    frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    frame.src =
+      'https://www.youtube-nocookie.com/embed/' +
+      encodeURIComponent(id);
+
+    frame.addEventListener('load', function () {
+      status.textContent =
+        'Player loaded. If playback is unavailable, try another video.';
+    });
+
+    player.appendChild(frame);
   });
+})();
 </script>
-                                                
 </body>
 </html>
-
