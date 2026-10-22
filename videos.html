@@ -4,207 +4,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080808">
-<title>SanZa Videos | SanZa Games</title>
-
+<title>SanZa Videos | SanZaGames</title>
+<meta name="description" content="Watch SanZa featured videos and explore the SanZa Food Hub YouTube channel.">
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background: #080808;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
-
-header {
-  padding: 28px 16px;
-  background: #111;
-  border-bottom: 3px solid #d4af37;
-}
-
-h1, h2 { color: #d4af37; }
-
-main {
-  max-width: 850px;
-  margin: auto;
-  padding: 18px;
-}
-
-.panel {
-  margin: 20px 0;
-  padding: 20px;
-  background: #151515;
-  border: 1px solid #383838;
-  border-radius: 14px;
-}
-
-input {
-  display: block;
-  width: 100%;
-  padding: 15px;
-  margin: 16px 0;
-  border: 1px solid #d4af37;
-  border-radius: 8px;
-  background: #222;
-  color: white;
-  font-size: 16px;
-}
-
-button, .back {
-  display: inline-block;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: 0;
-  border-radius: 8px;
-  background: #d4af37;
-  color: #080808;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-button:active { transform: scale(.98); }
-
-#status {
-  min-height: 24px;
-  color: #f0d979;
-  overflow-wrap: anywhere;
-}
-
-#player {
-  width: 100%;
-  margin-top: 18px;
-}
-
-#player iframe {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border: 0;
-  border-radius: 10px;
-  background: #000;
-}
-
-footer {
-  padding: 24px;
-  color: #aaa;
-  border-top: 1px solid #333;
-}
+:root{color-scheme:dark;--gold:#f5c542;--bg:#090909;--panel:#171717;--muted:#bdbdbd}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+header{text-align:center;padding:25px 16px;background:#111;border-bottom:2px solid var(--gold)}
+h1{color:var(--gold);margin:0 0 8px}
+header p{margin:0;color:#ddd}
+main{max-width:1000px;margin:auto;padding:20px 14px}
+section{margin-bottom:26px}
+h2{color:var(--gold);font-size:22px}
+.panel{background:var(--panel);border:1px solid #393939;border-radius:14px;padding:17px}
+a{color:var(--gold)}
+button,.button{display:inline-block;background:var(--gold);color:#111;border:0;border-radius:9px;padding:12px 16px;font-weight:bold;text-decoration:none;cursor:pointer;font-size:15px}
+input{width:100%;padding:14px;border-radius:9px;border:1px solid #555;background:#222;color:#fff;font-size:16px;margin:5px 0 12px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.channel{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.channel img{width:95px;height:95px;object-fit:cover;border-radius:50%;background:#222;border:2px solid var(--gold)}
+.channel-info{flex:1;min-width:180px}
+.channel-info h3{margin:0 0 7px}
+.channel-info p{color:var(--muted);line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.video-card{background:#171717;border:1px solid #383838;border-radius:12px;overflow:hidden}
+.video-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#222}
+.video-card .details{padding:12px}
+.video-card h3{font-size:16px;margin:0 0 12px}
+.video-card button{width:100%}
+#playerWrap{display:none}
+#player{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;background:#000}
+.note{color:var(--muted);font-size:14px;line-height:1.5}
+footer{text-align:center;padding:24px;color:#aaa;border-top:1px solid #333}
+footer a{margin:0 8px}
 </style>
 </head>
-
 <body>
 <header>
-  <h1>🎬 SanZa Videos</h1>
-  <p>One SanZa. One Family.</p>
-  <p>Find your video and watch it right here!</p>
+<h1>SanZa Videos</h1>
+<p>Watch, discover and enjoy — One SanZa. One Family.</p>
 </header>
 
 <main>
-  <section class="panel">
-    <h2>▶ Watch Your Video</h2>
-    <p>Paste a YouTube video link below. Your video will play on this page.</p>
+<section class="panel">
+<div class="channel">
+<img src="https://sanzagames.ie/logo.png" alt="SanZa Food Hub logo" onerror="this.style.display='none'">
+<div class="channel-info">
+<h3>SanZa Food Hub — Official YouTube Channel</h3>
+<p>Follow our channel for SanZa videos, food updates and more!</p>
+<a class="button" href="https://youtube.com/@sanzafoodhub-w7m" target="_blank" rel="noopener">VISIT OUR CHANNEL</a>
+</div>
+</div>
+</section>
 
-    <form id="videoForm">
-      <input
-        id="videoLink"
-        type="url"
-        placeholder="Paste your YouTube video link here"
-        aria-label="YouTube video link"
-        autocomplete="url"
-        required
-      >
-      <button type="submit">WATCH VIDEO ▶</button>
-    </form>
+<section class="panel">
+<h2>Search SanZa Videos</h2>
+<p class="note">Search our featured video library by title or video ID.</p>
+<input id="localSearch" type="search" placeholder="Search featured videos..." aria-label="Search SanZa videos">
+<div class="actions">
+<button type="button" onclick="searchYouTube()">SEARCH YOUTUBE</button>
+<a class="button" href="https://youtube.com/@sanzafoodhub-w7m" target="_blank" rel="noopener">SANZA CHANNEL</a>
+</div>
+<p class="note">YouTube search opens YouTube. Featured videos can play right here on SanZaGames.</p>
+</section>
 
-    <p id="status" role="status" aria-live="polite">
-      Ready when you are, Sanzation!
-    </p>
+<section id="playerWrap" class="panel">
+<h2 id="playerTitle">Now Playing</h2>
+<iframe id="player" title="SanZa video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<div class="actions">
+<button type="button" onclick="closePlayer()">CLOSE VIDEO</button>
+</div>
+<p class="note">Some videos may restrict embedded playback. If that happens, use the video on YouTube.</p>
+</section>
 
-    <div id="player"></div>
-  </section>
+<section>
+<h2>Featured Videos</h2>
+<div id="videoGrid" class="grid"></div>
+<p id="noResults" class="note" style="display:none">No featured videos match that search. Try another word or use Search YouTube.</p>
+</section>
 
-  <a class="back" href="index.html">← BACK TO SANZA GAMES</a>
+<section class="panel">
+<h2>Play a YouTube Link</h2>
+<p class="note">Paste a YouTube video, Shorts or youtu.be link to try playing it here.</p>
+<input id="videoUrl" type="url" placeholder="Paste a YouTube link here">
+<button type="button" onclick="playPastedVideo()">PLAY VIDEO</button>
+<p id="urlError" class="note" role="status"></p>
+</section>
+
+<div class="actions">
+<a class="button" href="index.html">BACK TO SANZAGAMES</a>
+</div>
 </main>
 
 <footer>
-  © SanZa Games · One SanZa. One Family.
+<p>SanZaGames · One SanZa. One Family.</p>
+<a href="index.html">Home</a>
+<a href="privacy.html">Privacy Policy</a>
+<a href="https://youtube.com/@sanzafoodhub-w7m" target="_blank" rel="noopener">YouTube Channel</a>
 </footer>
 
 <script>
-(function () {
-  var form = document.getElementById('videoForm');
-  var input = document.getElementById('videoLink');
-  var status = document.getElementById('status');
-  var player = document.getElementById('player');
+const videos = [
+{id:"x9WO2ieJMYk",title:"Featured Video 1"},
+{id:"G_miGclPFGs",title:"Featured Video 2"},
+{id:"wZv62ShoStY",title:"Featured Video 3"},
+{id:"mIeIQ2JWwog",title:"Featured Video 4"}
+];
 
-  function extractVideoId(value) {
-    try {
-      var url = new URL(value.trim());
-      var host = url.hostname.toLowerCase();
-      var id = '';
+const grid = document.getElementById("videoGrid");
+const searchInput = document.getElementById("localSearch");
 
-      if (host === 'youtu.be' ||
-          host === 'www.youtu.be') {
-        id = url.pathname.split('/').filter(Boolean)[0] || '';
-      } else if (
-        host === 'youtube.com' ||
-        host.endsWith('.youtube.com')
-      ) {
-        if (url.pathname === '/watch') {
-          id = url.searchParams.get('v') || '';
-        } else {
-          var match = url.pathname.match(
-            /^\/(?:embed|shorts|live)\/([A-Za-z0-9_-]{11})/
-          );
-          if (match) id = match[1];
-        }
-      }
+function renderVideos(){
+  const query = searchInput.value.trim().toLowerCase();
+  const filtered = videos.filter(v =>
+    (v.title + " " + v.id).toLowerCase().includes(query)
+  );
+  grid.innerHTML = "";
+  document.getElementById("noResults").style.display =
+    filtered.length ? "none" : "block";
 
-      return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : '';
-    } catch (error) {
-      return '';
-    }
-  }
+  filtered.forEach(v => {
+    const card = document.createElement("article");
+    card.className = "video-card";
 
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
+    const thumb = document.createElement("img");
+    thumb.src = "https://i.ytimg.com/vi/" + v.id + "/hqdefault.jpg";
+    thumb.alt = v.title + " thumbnail";
+    thumb.loading = "lazy";
 
-    var id = extractVideoId(input.value);
+    const details = document.createElement("div");
+    details.className = "details";
 
-    if (!id) {
-      player.replaceChildren();
-      status.textContent =
-        'Please paste a valid YouTube video link and try again.';
-      return;
-    }
+    const title = document.createElement("h3");
+    title.textContent = v.title;
 
-    status.textContent = 'Loading your video...';
-    player.replaceChildren();
+    const play = document.createElement("button");
+    play.type = "button";
+    play.textContent = "PLAY VIDEO";
+    play.addEventListener("click", () => playVideo(v.id, v.title));
 
-    var frame = document.createElement('iframe');
-    frame.title = 'SanZa Videos player';
-    frame.setAttribute(
-      'allow',
-      'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share'
-    );
-    frame.setAttribute('allowfullscreen', '');
-    frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    frame.src =
-      'https://www.youtube-nocookie.com/embed/' +
-      encodeURIComponent(id);
-
-    frame.addEventListener('load', function () {
-      status.textContent =
-        'Player loaded. If playback is unavailable, try another video.';
-    });
-
-    player.appendChild(frame);
+    details.append(title, play);
+    card.append(thumb, details);
+    grid.appendChild(card);
   });
-})();
+}
+
+function playVideo(id, title){
+  const frame = document.getElementById("player");
+  frame.src = "https://www.youtube-nocookie.com/embed/" +
+    encodeURIComponent(id) + "?autoplay=1";
+  document.getElementById("playerTitle").textContent = title;
+  document.getElementById("playerWrap").style.display = "block";
+  document.getElementById("playerWrap").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function closePlayer(){
+  document.getElementById("player").src = "";
+  document.getElementById("playerWrap").style.display = "none";
+}
+
+function searchYouTube(){
+  const query = searchInput.value.trim();
+  const url = "https://www.youtube.com/results?search_query=" +
+    encodeURIComponent(query || "SanZa Food Hub");
+  window.open(url, "_blank", "noopener");
+}
+
+function extractVideoId(value){
+  try{
+    const url = new URL(value);
+    const host = url.hostname.replace(/^www\./,"").toLowerCase();
+
+    if(host === "youtu.be"){
+      return url.pathname.split("/").filter(Boolean)[0] || "";
+    }
+
+    if(host === "youtube.com" || host === "m.youtube.com" || host === "youtube-nocookie.com"){
+      if(url.pathname === "/watch") return url.searchParams.get("v") || "";
+      const parts = url.pathname.split("/").filter(Boolean);
+      if(["shorts","embed","live"].includes(parts[0])) return parts[1] || "";
+    }
+  }catch(e){}
+  return "";
+}
+
+function playPastedVideo(){
+  const value = document.getElementById("videoUrl").value.trim();
+  const error = document.getElementById("urlError");
+  const id = extractVideoId(value);
+  if(!id || !/^[a-zA-Z0-9_-]{11}$/.test(id)){
+    error.textContent = "Please paste a valid YouTube video or Shorts link.";
+    return;
+  }
+  error.textContent = "";
+  playVideo(id, "Your Selected Video");
+}
+
+searchInput.addEventListener("input", renderVideos);
+renderVideos();
 </script>
 </body>
 </html>
