@@ -4,110 +4,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Discover and watch videos with SanZa Videos. Search YouTube and watch videos on SanZaGames.">
+  <meta name="description" content="Search and watch YouTube videos on SanZa Games.">
   <title>SanZa Videos | SanZa Games</title>
   <style>
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      background: #080808;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      text-align: center;
+      margin: 0; background: #080808; color: #fff;
+      font-family: Arial, sans-serif; text-align: center;
     }
-    header { padding: 28px 16px; background: #111; border-bottom: 2px solid #d4af37; }
-    h1 { color: #d4af37; margin: 0 0 10px; }
-    p { line-height: 1.6; }
-    main { max-width: 760px; margin: auto; padding: 24px 16px; }
-    .gold { color: #d4af37; }
-    input {
-      width: 100%; padding: 14px; border-radius: 8px;
-      border: 1px solid #d4af37; background: #181818; color: white;
-      font-size: 16px; margin: 8px 0;
+    header {
+      padding: 26px 16px; background: #111;
+      border-bottom: 2px solid #d4af37;
     }
-    button, .button {
-      display: inline-block; padding: 13px 18px; margin: 8px 4px;
-      border: 0; border-radius: 8px; background: #d4af37;
-      color: #080808; font-weight: bold; font-size: 16px;
-      text-decoration: none; cursor: pointer;
-    }
+    h1, h2 { color: #d4af37; }
+    main { max-width: 1000px; margin: auto; padding: 20px 14px; }
     .panel {
-      margin: 22px 0; padding: 18px; background: #141414;
+      margin: 20px 0; padding: 18px; background: #141414;
       border: 1px solid #333; border-radius: 12px;
     }
-    iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 10px; }
+    input {
+      width: 100%; padding: 14px; margin: 8px 0;
+      background: #202020; color: white;
+      border: 1px solid #d4af37; border-radius: 8px;
+      font-size: 16px;
+    }
+    button, .button {
+      display: inline-block; padding: 12px 18px; margin: 6px;
+      border: 0; border-radius: 8px; background: #d4af37;
+      color: #080808; font-size: 15px; font-weight: bold;
+      cursor: pointer; text-decoration: none;
+    }
+    #results {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin-top: 20px; text-align: left;
+    }
+    .video-card {
+      background: #181818; border: 1px solid #333;
+      border-radius: 10px; overflow: hidden;
+    }
+    .video-card img { width: 100%; display: block; }
+    .video-card h3 { font-size: 15px; padding: 0 12px; line-height: 1.4; }
+    .video-card button { margin: 0 12px 14px; }
+    iframe {
+      width: 100%; aspect-ratio: 16 / 9;
+      border: 0; border-radius: 10px;
+    }
+    #playerArea { margin-top: 18px; }
+    #message { color: #f0d979; overflow-wrap: anywhere; }
     footer { padding: 22px; color: #aaa; border-top: 1px solid #333; }
     a { color: #d4af37; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🎬 SanZa Videos</h1>
-    <p>Discover videos. Find your favourites. Enjoy the SanZa vibe!</p>
-  </header>
+<header>
+  <h1>🎬 SanZa Videos</h1>
+  <p>Search it. Find it. Watch it. The SanZa way!</p>
+</header>
 
-  <main>
-    <p>Welcome to <strong class="gold">SanZa Videos</strong> — search YouTube for games, funny clips, music and more.</p>
+<main>
+  <section class="panel">
+    <h2>🔎 Search YouTube</h2>
+    <p>Find videos and choose one to watch right here.</p>
+    <form id="searchForm">
+      <input id="searchInput" type="search"
+        placeholder="Search games, funny clips, music..." required>
+      <button type="submit">SEARCH VIDEOS 🔎</button>
+    </form>
+    <p id="message" aria-live="polite"></p>
+    <div id="results"></div>
+  </section>
 
-    <section class="panel">
-      <h2 class="gold">Search YouTube</h2>
-      <form id="searchForm">
-        <input id="searchInput" type="search" placeholder="What videos are you looking for?" required>
-        <button type="submit">🔎 Search Videos</button>
-      </form>
-      <p>Search results open on YouTube. Choose a video there, then paste its link below to watch it here when embedding is available.</p>
-    </section>
+  <section class="panel">
+    <h2>▶ Watch a YouTube Video</h2>
+    <input id="videoUrl" type="url"
+      placeholder="Or paste a YouTube video link here">
+    <button type="button" id="playLink">WATCH VIDEO ▶</button>
+    <div id="playerArea"></div>
+  </section>
 
-    <section class="panel">
-      <h2 class="gold">Watch a YouTube Video</h2>
-      <input id="videoUrl" type="url" placeholder="Paste a YouTube video link here">
-      <button type="button" onclick="playVideo()">▶ Watch Video</button>
-      <div id="playerArea"></div>
-      <p id="message" aria-live="polite"></p>
-    </section>
+  <a class="button" href="index.html">← BACK TO SANZA GAMES</a>
+</main>
 
-    <a class="button" href="index.html">← Back to SanZa Games</a>
-  </main>
+<footer>© SanZa Games · One SanZa. One Family.</footer>
 
-  <footer>© SanZa Games · One SanZa. One Family.</footer>
+<script>                                                      
+  // Paste your Google Cloud API key between the quotes below.
+  const API_KEY = 'AIzaSyDw3jEXR3dzC3je6PD3jn4UKUjOSp6AQa4';
 
-  <script>
-    document.getElementById('searchForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const query = document.getElementById('searchInput').value.trim();
-      if (query) {
-        window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(query), '_blank', 'noopener');
+  const form = document.getElementById('searchForm');
+  const input = document.getElementById('searchInput');
+  const results = document.getElementById('results');
+  const message = document.getElementById('message');
+  const playerArea = document.getElementById('playerArea');
+
+  async function searchVideos(query) {
+    if (!API_KEY || API_KEY === 'PASTE_YOUR_API_KEY_HERE') {
+      message.textContent = 'Setup needed: add your YouTube API key to videos.html.';
+      return;
+    }
+
+    message.textContent = 'Searching YouTube...';
+    results.replaceChildren();
+
+    try {
+      const url = new URL('https://www.googleapis.com/youtube/v3/search');
+      url.search = new URLSearchParams({
+        part: 'snippet',
+        type: 'video',
+        maxResults: '8',
+        safeSearch: 'moderate',
+        q: query,
+        key: API_KEY
+      });
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'YouTube search failed.');
       }
-    });
 
-    function playVideo() {
-      const raw = document.getElementById('videoUrl').value.trim();
-      const message = document.getElementById('message');
-      const area = document.getElementById('playerArea');
-      let id = '';
-
-      try {
-        const url = new URL(raw);
-        if (url.hostname === 'youtu.be' || url.hostname.endsWith('.youtu.be')) {
-          id = url.pathname.split('/').filter(Boolean)[0] || '';
-        } else if (url.hostname.includes('youtube.com')) {
-          if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
-          else if (url.pathname.startsWith('/embed/')) id = url.pathname.split('/')[2] || '';
-          else if (url.pathname.startsWith('/shorts/')) id = url.pathname.split('/')[2] || '';
-        }
-      } catch (e) {}
-
-      if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
-        area.innerHTML = '';
-        message.textContent = 'Please paste a valid YouTube video link.';
+      if (!data.items || data.items.length === 0) {
+        message.textContent = 'No videos found. Try another search.';
         return;
       }
 
-      area.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' +
-        encodeURIComponent(id) +
-        '" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>';
-      message.textContent = 'If the video cannot be played here, the creator may have disabled embedding.';
+      message.textContent = 'Choose a video to watch below.';
+
+      data.items.forEach(item => {
+        const id = item.id?.videoId;
+        if (!id) return;
+
+        const card = document.createElement('article');
+        card.className = 'video-card';
+
+        const image = document.createElement('img');
+        image.src = item.snippet.thumbnails.medium?.url ||
+                    item.snippet.thumbnails.default?.url || '';
+        image.alt = 'Video thumbnail';
+        image.loading = 'lazy';
+
+        const title = document.createElement('h3');
+        title.textContent = item.snippet.title;
+
+        const button = document.createElement('button');
+        button.textContent = '▶ WATCH THIS VIDEO';
+        button.addEventListener('click', () => playVideo(id));
+
+        card.append(image, title, button);
+        results.appendChild(card);
+      });
+    } catch (error) {
+      message.textContent =
+        'Search error: ' + error.message +
+        ' Check your API key, restrictions and Google Cloud quota.';
     }
-  </script>
+  }
+
+  function playVideo(id) {
+    playerArea.replaceChildren();
+
+    const frame = document.createElement('iframe');
+    frame.src = 'https://www.youtube-nocookie.com/embed/' +
+      encodeURIComponent(id);
+    frame.title = 'YouTube video player';
+    frame.allow =
+      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    frame.allowFullscreen = true;
+    frame.loading = 'lazy';
+    playerArea.appendChild(frame);
+    playerArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function getVideoId(raw) {
+    try {
+      const url = new URL(raw);
+      let id = '';
+
+      if (url.hostname === 'youtu.be') {
+        id = url.pathname.split('/').filter(Boolean)[0] || '';
+      } else if (
+        url.hostname === 'youtube.com' ||
+        url.hostname.endsWith('.youtube.com')
+      ) {
+        if (url.pathname === '/watch') id = url.searchParams.get('v') || '';
+        else if (/^\/(embed|shorts)\/[^/]+/.test(url.pathname)) {
+          id = url.pathname.split('/')[2] || '';
+        }
+      }
+
+      return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : '';
+    } catch {
+      return '';
+    }
+  }
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const query = input.value.trim();
+    if (query) searchVideos(query);
+  });
+
+  document.getElementById('playLink').addEventListener('click', () => {
+    const id = getVideoId(document.getElementById('videoUrl').value.trim());
+    if (!id) {
+      message.textContent = 'Please paste a valid YouTube video link.';
+      return;
+    }
+    message.textContent = '';
+    playVideo(id);
+  });
+</script>
 </body>
 </html>
+
