@@ -1,0 +1,20 @@
+
+{
+  "id": "/",
+  "name": "SanZa Games",
+  "short_name": "SanZa",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "description": "Games, family fun and the SanZa world.",
+  "icons": [
+    {
+      "src": "/sanza-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
