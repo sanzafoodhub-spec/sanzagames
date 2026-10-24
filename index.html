@@ -1,289 +1,160 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="Discover SanZa Games, SanZa Food Hub and halal food in Dublin, girls' birthday-party booking and SanZa Grinds learning-support information. Serving the SanZa community around Finglas and nearby Dublin areas.">
-<title>SanZa Games, Halal Food & Girls' Parties | Dublin</title>
+<meta name="description" content="Discover SanZa Games, original family-friendly browser games, SanZa Food Hub and SanZa Grinds in Dublin. Run, ride, smash and play with the SanZa crew.">
+<title>SanZa Games | One Family. One SanZa.</title>
+<link rel="icon" href="sanza-logo.png">
+<link rel="manifest" href="manifest.webmanifest">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6388038197791086" crossorigin="anonymous"></script>
 <style>
-:root{--gold:#ffd34d;--bg:#080808;--panel:#151515;--muted:#c0c0c0}
+:root{color-scheme:dark;--bg:#08090d;--panel:#11131b;--panel2:#171a24;--gold:#ffd34d;--cyan:#57e9ff;--pink:#ff68c7;--purple:#a995ff;--green:#a5ff80;--muted:#b8bdcb;--line:#2a2e3c}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:radial-gradient(ellipse at 50% 0%,#382908 0%,#080808 55%);color:#fff;font-family:Arial,Helvetica,sans-serif}
+html{scroll-behavior:smooth;scroll-padding-top:85px}
+body{margin:0;background:radial-gradient(ellipse at 10% 0%,#30230a 0,transparent 30%),radial-gradient(ellipse at 90% 10%,#16143a 0,transparent 32%),var(--bg);color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#fff 0.6px,transparent .6px);background-size:24px 24px;z-index:-1}
 a{color:inherit}
-.wrap{width:min(1050px,92%);margin:auto}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid #333}
-.brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:900;letter-spacing:1.5px}
-.logo{width:43px;height:43px;object-fit:contain}
+.wrap{width:min(1120px,92%);margin:auto}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:#090a0de8;border-bottom:1px solid #292b36}
+.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:1000;letter-spacing:1.2px;font-size:17px}
+.logo{width:43px;height:43px;object-fit:contain;filter:drop-shadow(0 0 12px #ffd34d44)}
 .gold{color:var(--gold)}
-.tag{font-size:10px;color:var(--gold);border:1px solid #65501c;border-radius:30px;padding:9px;white-space:nowrap}
-.hero{text-align:center;padding:65px 0 45px}
-.eyebrow{color:var(--gold);font-size:12px;font-weight:bold;letter-spacing:4px}
-h1{font-size:clamp(43px,10vw,84px);line-height:.98;letter-spacing:-3px;margin:22px 0}
-.intro{max-width:620px;margin:0 auto;color:#d0d0d0;font-size:17px;line-height:1.7}
-.pills{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:24px 0}
-.pill{background:#171717;border:1px solid #39332a;padding:10px 13px;border-radius:30px;font-size:12px}
-.btn{display:inline-block;background:var(--gold);color:#111;text-decoration:none;font-weight:900;font-size:13px;padding:15px 18px;border-radius:11px;text-align:center}
-.btn:hover{filter:brightness(1.1)}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0}
-.section-head h2{font-size:29px;margin:0}
-.section-head p{color:var(--muted);font-size:13px}
-.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
-.game{background:linear-gradient(145deg,#201b10,#121212 70%);border:1px solid #514321;border-radius:22px;padding:25px;display:flex;flex-direction:column;align-items:flex-start;min-height:310px}
-.game-icon{display:grid;place-items:center;width:65px;height:65px;border-radius:18px;background:#30260d;border:1px solid #645020;font-size:36px}
-.game h3{font-size:27px;margin:20px 0 8px}
-.game p{color:var(--muted);font-size:14px;line-height:1.7;margin:0 0 23px}
-.game .btn{margin-top:auto;width:100%}
-.label{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:2px}
-.coming{margin-top:17px;border:1px dashed #514321;border-radius:18px;padding:20px;background:#101010}
-.coming h3{margin:8px 0;font-size:21px}
-.coming p{color:var(--muted);line-height:1.6;font-size:14px;margin:0}
-.food{text-align:center;margin:40px 0;padding:30px 18px;background:linear-gradient(110deg,#241b08,#141414);border:1px solid #514321;border-radius:22px}
-.food h2{font-size:clamp(25px,5vw,35px);margin:10px 0}
-.food p{color:#d0d0d0;line-height:1.7}
-.social{text-align:center;padding:18px 0 35px}
-.social h2{font-size:25px}
-.social-links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0}
-.social-links a{border:1px solid #4a4026;background:#151515;padding:12px 15px;border-radius:10px;text-decoration:none;font-size:13px}
-.social-links a:hover{border-color:var(--gold)}
-footer{text-align:center;border-top:1px solid #333;padding:24px 0 30px;color:#aaa;font-size:12px;line-height:2.2}
+.navlinks{display:flex;align-items:center;gap:8px}
+.navlinks a{font-size:12px;font-weight:800;color:#d9dce7;text-decoration:none;padding:10px 12px;border-radius:10px}
+.navlinks a:hover{background:#202330;color:var(--gold)}
+.nav-cta{background:var(--gold)!important;color:#111!important}
+.hero{position:relative;text-align:center;padding:70px 0 48px;isolation:isolate}
+.hero:before{content:"";position:absolute;z-index:-1;width:280px;height:280px;left:calc(50% - 140px);top:38px;background:#ffca3822;filter:blur(65px);border-radius:50%}
+.kicker{display:inline-flex;align-items:center;gap:8px;border:1px solid #4a4025;background:#15130e;border-radius:999px;padding:9px 14px;color:var(--gold);font-size:11px;font-weight:900;letter-spacing:2px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+h1{font-size:clamp(48px,10vw,100px);letter-spacing:-.075em;line-height:.9;margin:27px 0 20px;font-weight:1000}
+.hero-title{display:block;background:linear-gradient(100deg,var(--gold),#fff1a6 35%,var(--pink) 68%,var(--cyan));background-clip:text;-webkit-background-clip:text;color:transparent}
+.intro{max-width:660px;margin:0 auto;color:#c9ccda;font-size:clamp(15px,2.5vw,18px);line-height:1.75}
+.hero-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:27px 0 20px}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:47px;padding:13px 18px;border-radius:13px;text-decoration:none;font-size:12px;font-weight:1000;letter-spacing:.35px;background:var(--gold);color:#101014;border:1px solid transparent;box-shadow:0 7px 25px #ffd34d19;transition:transform .2s,box-shadow .2s,border-color .2s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px #ffd34d28}
+.btn-ghost{background:#151722;color:#fff;border-color:#373b4b;box-shadow:none}
+.btn-ghost:hover{border-color:var(--cyan)}
+.hero-tags{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:24px}
+.pill{font-size:11px;color:#d9dce7;background:#11131b;border:1px solid #292d3b;border-radius:999px;padding:9px 12px}
+.pill:nth-child(2){border-color:#5b3c69}.pill:nth-child(3){border-color:#315966}
+.section{padding:25px 0 35px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:0 0 20px}
+.section-head h2{font-size:clamp(27px,5vw,38px);line-height:1.1;letter-spacing:-1.4px;margin:7px 0}
+.section-head p{max-width:550px;color:var(--muted);font-size:13px;line-height:1.7;margin:0}
+.eyebrow{font-size:10px;letter-spacing:2.5px;color:var(--gold);font-weight:1000}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.game{position:relative;isolation:isolate;overflow:hidden;min-height:300px;padding:24px;border-radius:23px;background:linear-gradient(145deg,#191b27,#101118 72%);border:1px solid var(--line);display:flex;flex-direction:column;align-items:flex-start;transition:transform .22s,border-color .22s,box-shadow .22s}
+.game:before{content:"";position:absolute;z-index:-1;width:170px;height:170px;right:-48px;top:-55px;border-radius:50%;background:var(--accent,var(--gold));opacity:.12;filter:blur(2px);transition:transform .3s,opacity .3s}
+.game:hover{transform:translateY(-5px);border-color:var(--accent,var(--gold));box-shadow:0 15px 40px #0005}
+.game:hover:before{transform:scale(1.3);opacity:.2}
+.game:nth-child(4n+1){--accent:var(--gold)}.game:nth-child(4n+2){--accent:var(--cyan)}.game:nth-child(4n+3){--accent:var(--pink)}.game:nth-child(4n){--accent:var(--purple)}
+.game-top{display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px}
+.game-icon{display:grid;place-items:center;width:66px;height:66px;border-radius:20px;background:#ffffff08;border:1px solid color-mix(in srgb,var(--accent) 50%,#333);font-size:36px;box-shadow:inset 0 0 20px color-mix(in srgb,var(--accent) 10%,transparent)}
+.game-number{font-size:10px;color:#858b9e;font-weight:900;letter-spacing:2px}
+.label{margin-top:18px;color:var(--accent);font-size:10px;font-weight:1000;letter-spacing:1.7px}
+.game h3{font-size:clamp(23px,4vw,30px);letter-spacing:-.8px;margin:9px 0}
+.game p{color:var(--muted);font-size:13px;line-height:1.75;margin:0 0 22px;max-width:440px}
+.game .btn{margin-top:auto;width:100%;background:var(--accent);box-shadow:none}
+.coming{margin-top:16px;border:1px dashed #3b3e4d;border-radius:18px;padding:20px;background:#101118;display:flex;align-items:center;gap:15px}
+.coming-icon{font-size:30px}.coming h3{margin:0 0 5px}.coming p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.hub-card{border-radius:20px;padding:23px;background:linear-gradient(145deg,#191b26,#111219);border:1px solid var(--line)}
+.hub-card .emoji{font-size:31px}.hub-card h3{margin:13px 0 8px;font-size:20px}.hub-card p{font-size:13px;color:var(--muted);line-height:1.75;margin:0 0 18px}.hub-card .btn{width:100%;font-size:11px;padding:12px}
+.hub-card.food-card{border-color:#655126}.hub-card.food-card .btn{background:var(--gold)}
+.hub-card.learn-card{border-color:#284c58}.hub-card.learn-card .btn{background:var(--cyan)}
+.hub-card.party-card{border-color:#5b3c69}.hub-card.party-card .btn{background:var(--pink)}
+.info-panel{margin-top:18px;padding:28px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(120deg,#151721,#101117)}
+.info-panel h2{margin:8px 0 12px;font-size:clamp(23px,4vw,32px);letter-spacing:-1px}
+.info-panel p{color:var(--muted);font-size:13px;line-height:1.8;max-width:900px}
+.guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:18px}
+.guide{padding:17px;border-radius:15px;background:#0c0e14;border:1px solid #252938}
+.guide h3{font-size:15px;margin:0 0 8px}.guide p{margin:0;font-size:12px}
+.video-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:25px;border:1px solid #4b334c;border-radius:21px;background:linear-gradient(110deg,#211321,#13141e);margin-top:18px}
+.video-banner h2{margin:7px 0;font-size:25px}.video-banner p{color:var(--muted);font-size:13px;line-height:1.6;margin:0}
+.social{text-align:center;padding:40px 0 35px}
+.social h2{font-size:clamp(24px,5vw,33px);margin:0 0 8px}.social p{color:var(--muted);line-height:1.7;font-size:13px}
+.social-links{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:20px 0}
+.social-links a{border:1px solid #333747;background:#141620;padding:12px 15px;border-radius:11px;text-decoration:none;font-size:12px;font-weight:800;transition:border-color .2s,transform .2s}
+.social-links a:hover{border-color:var(--gold);transform:translateY(-2px)}
+footer{text-align:center;border-top:1px solid #292c38;padding:25px 0 30px;color:#9da3b4;font-size:12px;line-height:2.1}
 footer a{color:var(--gold)}
-@media(max-width:620px){.hero{padding:48px 0 30px}header{align-items:center}.brand{font-size:15px;gap:6px}.logo{width:35px;height:35px}.tag{font-size:9px;padding:8px 6px}h1{letter-spacing:-2px}.intro{font-size:15px}.games{grid-template-columns:1fr}.game{min-height:275px;padding:22px}.section-head{display:block}.section-head p{margin-top:8px}.food{padding:25px 15px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.reveal{animation:rise .65s both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
 <header>
-  <div class="brand">
-    <img class="logo" src="sanza-logo.png" alt="SanZa logo">
-    <span>SANZA <span class="gold">GAMES</span></span>
+  <div class="wrap nav">
+    <a class="brand" href="#" aria-label="SanZa Games home"><img class="logo" src="sanza-logo.png" alt="SanZa logo"><span>SANZA <span class="gold">GAMES</span></span></a>
+    <nav class="navlinks" aria-label="Main navigation">
+      <a href="#games">Games</a><a href="#sanza-hub">The SanZa Hub</a><a href="videos.html">Videos</a><a class="nav-cta" href="#games">LET'S PLAY ↗</a>
+    </nav>
   </div>
-  <span class="tag">● PLAY ZONE OPEN</span>
 </header>
-
+<div class="wrap">
 <main>
-<section class="hero">
-  <div class="eyebrow">WELCOME TO THE SANZA ARCADE</div>
-  <h1>READY.<br><span class="gold">SET. SANZA!</span></h1>
-  <p class="intro">Finglas to Ballymun. Brownie missions. Scooter madness. Jump into the action and bring the energy, Sanzations!</p>
-  <div class="pills">
-    <span class="pill">🍫 BROWNIE MISSIONS</span>
-    <span class="pill">🏙️ DUBLIN STREETS</span>
-    <span class="pill">🎮 PLAY ONLINE</span>
-  </div>
-  <a class="btn" href="#games">🔥 CHOOSE YOUR GAME ↓</a>
+<section class="hero reveal">
+  <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA ARCADE</div>
+  <h1>GOOD TIMES.<br><span class="hero-title">SANZA STYLE.</span></h1>
+  <p class="intro">From Finglas to Ballymun, the SanZa universe is packed with brownie missions, scooter madness, smash battles and silly sounds. Pick your game, bring your crew and let the fun begin, Sanzations!</p>
+  <div class="hero-actions"><a class="btn" href="#games">🎮 PICK YOUR GAME ↓</a><a class="btn btn-ghost" href="#sanza-hub">✨ EXPLORE THE HUB</a></div>
+  <div class="hero-tags"><span class="pill">🍫 BROWNIE MISSIONS</span><span class="pill">🏙️ DUBLIN-INSPIRED FUN</span><span class="pill">📱 PLAY ON YOUR PHONE</span></div>
 </section>
-
-<section id="games">
-  <div class="section-head">
-    <h2>Choose your game</h2>
-    <p>Explore our growing collection of original SanZa games, from fast-paced running and scooter challenges to smash adventures and funny sounds. Each game brings its own characters, challenges and SanZa-style fun.</p>
-  </div>
+<section class="section" id="games">
+  <div class="section-head"><div><div class="eyebrow">THE ARCADE</div><h2>Choose your next adventure</h2></div><p>Original SanZa characters, quick challenges and plenty of chaos. Tap a game to start; some adventures open on their own game website.</p></div>
   <div class="games">
-    <article class="game">
-      <div class="game-icon">🏃</div>
-      <span class="label">RUN • DODGE • COLLECT</span>
-      <h3>SANZA RUN</h3>
-      <p>Dash through the streets, dodge obstacles, collect drops and chase that winning run!</p>
-      <a class="btn" href="https://sanza-drop-challenge.floot.app/" target="_blank" rel="noopener noreferrer">▶ PLAY SANZA RUN ↗</a>
-    </article>
-    <article class="game">
-      <div class="game-icon">🛴</div>
-      <span class="label">RIDE • DELIVER • COLLECT</span>
-      <h3>YUPBRO SCOOTY</h3>
-      <p>Jump on the scooter, cruise through Dublin streets, avoid obstacles and collect those brownies!</p>
-      <a class="btn" href="https://yupbro-scooty.floot.app/" target="_blank" rel="noopener noreferrer">▶ PLAY YUPBRO SCOOTY ↗</a>
-    </article>
-
-    <article class="game">
-      <div class="game-icon">💥</div>
-      <span class="label">COLLECT 59 COINS • SMASH THE CRUMBS</span>
-      <h3>SANZA SMASH</h3>
-      <p>Join Yupbro, smash cookie chaos and take on Cookie Doughnald Crumb. Collect 59 SanZa coins and unlock the boss battle!</p>
-      <a class="btn" href="https://sanzasmash.floot.app/" target="_blank" rel="noopener noreferrer">💥 PLAY SANZA SMASH ↗</a>
-    </article>
-
-    
-
-<article class="game">
-  <div class="game-icon">🐱</div>
-  <span class="label">DODGE • ATTACK • SURVIVE</span>
-  <h3>CAT IN THE HAT</h3>
-  <p>Jump into the SanZa showdown! Dodge flying cans, launch brownies and face the troublemaker. Now playable in full screen!</p>
-  <a class="btn" href="https://catinhat.floot.app/" target="_blank" rel="noopener noreferrer">🐾 PLAY CAT IN THE HAT ↗</a>
-</article>
-
-
-    
-    <article class="game">
-  <div class="game-icon">🎹</div>
-  <span class="label">TAP • LAUGH • REPEAT</span>
-  <h3>SANZA FUNNY KEYS</h3>
-  <p>Tap the keys, unleash ridiculous sounds and let the SanZa madness begin!</p>
-  <a class="btn" href="funny-keys.html">😂 PLAY FUNNY KEYS</a>
-    </article>
-
-    <article class="game">
-  <div class="game-icon">📚</div>
-  <span class="label">LEARN • PRACTISE • GROW</span>
-  <h3>SANZA GRINDS</h3>
-  <p>Need extra practice with Maths, Physics, English or Biology? Sanzations, we're here to help you explore learning-support options!</p>
-  <a class="btn" href="sanza-grinds.html">📚 EXPLORE SANZA GRINDS</a>
-    </article>
-
-    
-    
-
-
-<section class="food">
-  <div class="eyebrow">ONE FAMILY. ONE SANZA.</div>
-  <h2>Hungry after gaming? 🍔</h2>
-<p>Looking for halal food in Dublin? Discover SanZa Food Hub for delicious halal food and easy online ordering.</p>
-  <a class="btn" href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer">🛍️ ORDER NOW ↗</a>
-  <h2>🎀 GIRLS' BIRTHDAY PARTIES IN DUBLIN</h2>
-<p>Make her special day one to remember! Explore our girls' birthday-party booking option.</p>
-  <a class="btn" href="https://mypamperme.com/" target="_blank" rel="noopener noreferrer">🎂 BOOK A PARTY ↗</a>
+    <article class="game"><div class="game-top"><div class="game-icon">🏃</div><span class="game-number">GAME 01</span></div><span class="label">RUN · DODGE · COLLECT</span><h3>SANZA RUN</h3><p>Dash through the streets, dodge obstacles and collect drops and brownies. Keep moving and chase your best run!</p><a class="btn" href="https://sanza-drop-challenge.floot.app/" target="_blank" rel="noopener noreferrer">▶ PLAY SANZA RUN ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">🛴</div><span class="game-number">GAME 02</span></div><span class="label">RIDE · DELIVER · COLLECT</span><h3>YUPBRO SCOOTY</h3><p>Jump on the scooter and cruise through a Dublin-inspired adventure. Avoid obstacles, grab brownies and keep Yupbro rolling!</p><a class="btn" href="https://yupbro-scooty.floot.app/" target="_blank" rel="noopener noreferrer">🛴 PLAY YUPBRO SCOOTY ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">💥</div><span class="game-number">GAME 03</span></div><span class="label">SMASH · COLLECT · BATTLE</span><h3>SANZA SMASH</h3><p>Join the SanZa crew, smash cookie chaos and face Cookie Doughnald Crumb. Watch the challenge counter and see how far you can get!</p><a class="btn" href="https://sanzasmash.floot.app/" target="_blank" rel="noopener noreferrer">💥 PLAY SANZA SMASH ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">🐱</div><span class="game-number">GAME 04</span></div><span class="label">DODGE · ATTACK · SURVIVE</span><h3>CAT IN THE HAT</h3><p>Dodge flying cans, launch brownies and face the troublemaker in this playful SanZa showdown. Follow the on-screen controls to play.</p><a class="btn" href="https://catinhat.floot.app/" target="_blank" rel="noopener noreferrer">🐾 PLAY CAT IN THE HAT ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">🎹</div><span class="game-number">GAME 05</span></div><span class="label">TAP · LAUGH · REPEAT</span><h3>SANZA FUNNY KEYS</h3><p>Tap the keys, unleash ridiculous sounds and make your own silly sound combinations. A quick laugh is only a tap away.</p><a class="btn" href="funny-keys.html">😂 PLAY FUNNY KEYS</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">📚</div><span class="game-number">THE LEARNING CORNER</span></div><span class="label">LEARN · PRACTISE · GROW</span><h3>SANZA GRINDS</h3><p>Looking for extra practice in Maths, Physics, English or Biology? Explore SanZa Grinds and learning-support information.</p><a class="btn" href="sanza-grinds.html">📚 EXPLORE SANZA GRINDS</a></article>
+  </div>
+  <div class="coming"><div class="coming-icon">🚀</div><div><h3>More SanZa madness is on the way</h3><p>New characters, new challenges and more fun for the family. Keep an eye on the arcade for what's next.</p></div></div>
 </section>
-
-    <section class="food" id="about-sanza-games">
-  <div class="eyebrow">THE SANZA GAMES GUIDE</div>
-  <h2>More than just a game 🎮</h2>
-
-  <p>
-    SanZa Games is an entertainment project inspired by the
-    SanZa community in Dublin. Explore our collection of
-    browser-based games, meet memorable characters and discover
-    different challenges across the SanZa universe.
-  </p>
-
-  <h2>Choose your adventure</h2>
-
-  <p>
-    <strong>SanZa Run:</strong> Take on a running adventure,
-    avoid obstacles and collect items along the way.
-  </p>
-
-  <p>
-    <strong>Yupbro Scooty:</strong> Ride through a playful
-    Dublin-inspired adventure, dodge obstacles and collect
-    brownies.
-  </p>
-
-  <p>
-    <strong>SanZa Smash:</strong> Enter a cartoon-style
-    smashing adventure featuring SanZa characters and
-    cookie-themed chaos.
-  </p>
-
-  <p>
-    <strong>SanZa Funny Keys:</strong> Visit the sound-play
-    page and experiment with its funny sounds.
-  </p>
-
-  <h2>How to get started</h2>
-
-  <p>
-    Choose a game from the collection and follow the
-    instructions displayed inside that game. Controls and
-    objectives may differ between games. Some experiences
-    open on a separate website.
-  </p>
-
-  <p>
-    We want SanZa Games to be a fun place for visitors to
-    discover original characters, try new challenges and
-    return to see what is coming next.
-  </p>
-    </section>
-    
-<section class="food" id="how-to-play">
-  <div class="eyebrow">YOUR GUIDE TO THE ARCADE</div>
-  <h2>How to Play SanZa Games 🎮</h2>
-
-  <p>
-    New to SanZa Games? Start by choosing a game from the
-    collection above. Each adventure has its own objectives,
-    characters and challenges. Follow the instructions shown
-    when the game loads, as controls can vary between games.
-  </p>
-
-  <h3>🏃 Master SanZa Run</h3>
-  <p>
-    Stay alert, watch for obstacles and plan your next move
-    early. Collect items when it is safe to do so, and use
-    each attempt to learn the route and improve your timing.
-  </p>
-
-  <h3>🛴 Take on Yupbro Scooty</h3>
-  <p>
-    Navigate the scooter adventure carefully. Keep an eye
-    on the path ahead, avoid obstacles and collect brownies
-    without losing control. Learn from each run and aim to
-    improve your performance.
-  </p>
-
-  <h3>💥 Try SanZa Smash</h3>
-  <p>
-    Read the on-screen instructions and pay attention to
-    targets, timing and the challenge counter. Focus on
-    accurate moves instead of rushing, and watch for changes
-    as you progress through the game.
-  </p>
-
-  <h3>🎹 Explore SanZa Funny Keys</h3>
-  <p>
-    Visit Funny Keys to explore its sound-based fun.
-    Try the available keys, discover the different sounds
-    and create your own silly sound combinations.
-  </p>
-
-  <h3>📱 Tips for playing on a phone</h3>
-  <p>
-    Keep your screen clear, use a stable internet connection
-    and follow the game's own control prompts. If a game
-    does not respond properly, allow it to finish loading
-    and check your connection before trying again.
-  </p>
-
-  <p>
-    Ready for your next challenge?
-    <a href="game-guide.html">Read the full SanZa Games guide</a>
-    for more information and beginner tips.
-  </p>
+<section class="section" id="sanza-hub">
+  <div class="section-head"><div><div class="eyebrow">ONE FAMILY · ONE SANZA</div><h2>There's more to the hub</h2></div><p>Gaming is just one part of the SanZa universe. Explore food, learning support and celebrations through the links below.</p></div>
+  <div class="hub-grid">
+    <article class="hub-card food-card"><div class="emoji">🍔</div><h3>Hungry after gaming?</h3><p>Discover SanZa Food Hub for halal food and easy online ordering. Check the menu and order directly through the website.</p><a class="btn" href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer">🛍️ VISIT FOOD HUB ↗</a></article>
+    <article class="hub-card learn-card"><div class="emoji">📚</div><h3>Ready to learn?</h3><p>Explore learning-support information and subjects including Maths, Physics, English and Biology with SanZa Grinds.</p><a class="btn" href="sanza-grinds.html">EXPLORE GRINDS →</a></article>
+    <article class="hub-card party-card"><div class="emoji">🎀</div><h3>Celebrate in style</h3><p>Planning a girls' birthday party in Dublin? Explore the birthday-party booking option and make her day special.</p><a class="btn" href="https://mypamperme.com/" target="_blank" rel="noopener noreferrer">🎂 PARTY DETAILS ↗</a></article>
+  </div>
 </section>
-
-
+<section class="info-panel" id="about-sanza-games">
+  <div class="eyebrow">MEET THE SANZA UNIVERSE</div><h2>More than just a game 🎮</h2>
+  <p>SanZa Games is a family entertainment project inspired by the SanZa community in Dublin. Explore browser-based games, meet memorable characters and discover different challenges across the SanZa universe. SanZa Run is about timing and collecting; Yupbro Scooty brings a scooter adventure; SanZa Smash adds cartoon-style smashing and cookie-themed chaos; Cat in the Hat brings a dodge-and-attack challenge; and Funny Keys is all about playful sounds.</p>
+  <p>To get started, choose a game above and follow the instructions shown inside it. Controls and objectives differ between games, and some games open on a separate website. On a phone, keep your screen clear, use a stable internet connection and allow the game to finish loading before playing.</p>
+  <div class="guide-grid">
+    <article class="guide"><h3>🏃 SanZa Run tips</h3><p>Watch the path ahead, plan your moves early and collect items when it is safe. Use each attempt to improve your timing.</p></article>
+    <article class="guide"><h3>🛴 Yupbro Scooty tips</h3><p>Stay alert, avoid obstacles and look for brownies. Learn the route and focus on keeping your run going.</p></article>
+    <article class="guide"><h3>💥 SanZa Smash tips</h3><p>Read the on-screen instructions, pay attention to targets and counters, and focus on accurate moves rather than rushing.</p></article>
+    <article class="guide"><h3>🎹 Funny Keys tips</h3><p>Try the available keys, discover different sounds and experiment with your own silly combinations.</p></article>
+  </div>
+  <p>Want more beginner information? <a href="game-guide.html" style="color:var(--gold);font-weight:800">Read the full SanZa Games guide →</a></p>
+</section>
+<section class="video-banner"><div><div class="eyebrow">WATCH · DISCOVER · LAUGH</div><h2>🎬 SanZa Videos</h2><p>Find funny clips and explore videos from the SanZa universe.</p></div><a class="btn" href="videos.html">WATCH VIDEOS ▶</a></section>
 <section class="social">
-  <h2>Stay connected, <span class="gold">Sanzations!</span></h2>
-  <p style="color:#bbb;line-height:1.7">Follow SanZa for games, food, fun and new offers.</p>
+  <h2>Stay connected, <span class="gold">Sanzations!</span></h2><p>Follow SanZa for games, food, fun and new offers.</p>
   <div class="social-links">
     <a href="https://www.tiktok.com/@sanza.food.hub" target="_blank" rel="noopener noreferrer">🎵 TikTok</a>
     <a href="https://www.instagram.com/sanza_foodhub/" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
     <a href="https://www.youtube.com/@sanzafoodhub-w7m" target="_blank" rel="noopener noreferrer">▶ YouTube</a>
     <a href="https://wa.me/353899718413" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
   </div>
-  <p style="color:#aaa;font-size:13px">Contact: <a href="mailto:sanzafoodhub@gmail.com" style="color:#ffd34d">sanzafoodhub@gmail.com</a></p>
+  <p>Contact: <a href="mailto:sanzafoodhub@gmail.com" style="color:var(--gold)">sanzafoodhub@gmail.com</a></p>
 </section>
 </main>
-
-<footer>
-  <strong>© 2026 SANZA GAMES</strong><br>
-  Built with ❤️ in Finglas, Dublin<br>
-  <span>One family. One SanZa.</span><br>
-  <a href="/privacy.html">Privacy Policy</a> ·
-  <a href="https://www.sanzafood.ie/">SanZa Food Hub</a>
-</footer>
+<footer><strong>© 2026 SANZA GAMES</strong><br>Built with ❤️ in Finglas, Dublin<br><span>One family. One SanZa.</span><br><a href="privacy.html">Privacy Policy</a> · <a href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer">SanZa Food Hub</a> · <a href="game-guide.html">Game Guide</a></footer>
 </div>
-  
-<section style="background:#111;color:#fff;padding:28px 16px;text-align:center;border:2px solid #d4af37;border-radius:14px;margin:24px auto;max-width:900px;">
-  <h2 style="color:#d4af37;">🎬 SanZa Videos</h2>
-  <p>Discover videos, find funny clips and explore YouTube!</p>
-  <a href="videos.html" style="display:inline-block;background:#d4af37;color:#000;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold;">WATCH VIDEOS ▶</a>
-</section>
-
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener('click',function(){var target=document.querySelector(link.getAttribute('href'));if(target){target.setAttribute('tabindex','-1');}})});
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});}
+</script>
 </body>
 </html>
