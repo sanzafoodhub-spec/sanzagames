@@ -128,6 +128,23 @@ footer a{color:var(--gold)}
 @media(max-width:720px){.game{min-height:315px;padding:20px}.game-top{min-height:105px}.game-icon{width:91px;height:91px;flex-basis:91px;font-size:47px;border-radius:25px}.game-icon:before{width:58px;height:58px}.game-icon:after{right:9px;top:8px;font-size:13px}}
 @media(prefers-reduced-motion:reduce){.game-icon:after{animation:none!important}}
 
+
+/* SanZa Crew spotlight: CSS-only character presentation, no generated image assets */
+.game{position:relative;isolation:isolate;overflow:hidden;border-color:#35394b;transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease}
+.game:before{content:"";position:absolute;inset:auto -35px -70px auto;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent,#ffd34d) 18%,transparent),transparent 70%);z-index:-1;pointer-events:none}
+.game:after{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--accent,#ffd34d),transparent);opacity:.7}
+.game:hover{transform:translateY(-7px);border-color:color-mix(in srgb,var(--accent,#ffd34d) 70%,#fff);box-shadow:0 18px 44px #0008,0 0 28px color-mix(in srgb,var(--accent,#ffd34d) 12%,transparent)}
+.game-top{align-items:center;gap:15px;margin-bottom:15px}
+.game-icon{font-size:61px;text-shadow:0 7px 0 #0006,0 0 22px color-mix(in srgb,var(--accent,#ffd34d) 35%,transparent);filter:drop-shadow(0 8px 8px #0007);transition:filter .25s ease,transform .25s ease}
+.game:hover .game-icon{filter:drop-shadow(0 10px 12px color-mix(in srgb,var(--accent,#ffd34d) 30%,transparent));transform:translateY(-3px) rotate(-4deg) scale(1.06)}
+.game:nth-child(1){--accent:#ffd34d}.game:nth-child(2){--accent:#57e9ff}.game:nth-child(3){--accent:#ff68c7}.game:nth-child(4){--accent:#a995ff}.game:nth-child(5){--accent:#a5ff80}
+.game .label{color:var(--accent,#ffd34d);letter-spacing:.14em;font-weight:800}
+.game h3{letter-spacing:.025em;text-shadow:0 2px 18px color-mix(in srgb,var(--accent,#ffd34d) 13%,transparent)}
+.game .btn{box-shadow:0 7px 22px color-mix(in srgb,var(--accent,#ffd34d) 13%,transparent)}
+.hero-tags .pill{border-color:#3a3d4b;background:linear-gradient(135deg,#171923dd,#101117dd);box-shadow:inset 0 1px #ffffff0b,0 5px 18px #0003}
+@media(max-width:720px){.game-top{gap:12px}.game-icon{font-size:50px}.game:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.game,.game-icon{transition:none!important}.game:hover .game-icon{transform:none}}
+
 </style>
 </head>
 <body>
