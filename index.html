@@ -60,6 +60,10 @@ h1{font-size:clamp(48px,10vw,100px);letter-spacing:-.075em;line-height:.9;margin
 .game .btn{margin-top:auto;width:100%;background:var(--accent);box-shadow:none}
 .coming{margin-top:16px;border:1px dashed #3b3e4d;border-radius:18px;padding:20px;background:#101118;display:flex;align-items:center;gap:15px}
 .coming-icon{font-size:30px}.coming h3{margin:0 0 5px}.coming p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.education-shell{display:grid;grid-template-columns:1.1fr .9fr;gap:25px;align-items:center;padding:clamp(23px,5vw,46px);border:1px solid #3b365b;border-radius:26px;background:radial-gradient(ellipse at 100% 0%,#25205a88,transparent 45%),linear-gradient(135deg,#171521,#10131b 70%);overflow:hidden;position:relative}
+.education-copy{position:relative;z-index:1}.education-icon{font-size:37px;margin-top:22px;filter:drop-shadow(0 0 18px #57e9ff55)}.education-label{font-size:10px;letter-spacing:2.5px;color:var(--cyan);font-weight:1000;margin:7px 0}
+.education-copy h2{font-size:clamp(30px,5vw,48px);letter-spacing:-1.8px;line-height:1.06;margin:12px 0}.education-copy h2 span{color:var(--cyan)}.education-intro{max-width:510px;color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 22px}.education-btn{background:var(--cyan);color:#081116}
+.education-subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.subject-card{min-height:135px;padding:19px;border:1px solid #34374b;border-radius:18px;background:#0d1019dd;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;transition:transform .2s,border-color .2s}.subject-card:hover{transform:translateY(-4px);border-color:var(--cyan)}.subject-card span{font-size:27px}.subject-card strong{font-size:16px}.subject-card small{font-size:11px;color:var(--muted)}
 .hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .hub-card{border-radius:20px;padding:23px;background:linear-gradient(145deg,#191b26,#111219);border:1px solid var(--line)}
 .hub-card .emoji{font-size:31px}.hub-card h3{margin:13px 0 8px;font-size:20px}.hub-card p{font-size:13px;color:var(--muted);line-height:1.75;margin:0 0 18px}.hub-card .btn{width:100%;font-size:11px;padding:12px}
@@ -83,7 +87,7 @@ footer{text-align:center;border-top:1px solid #292c38;padding:25px 0 30px;color:
 footer a{color:var(--gold)}
 .reveal{animation:rise .65s both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:720px){.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
+@media(max-width:720px){.education-shell{grid-template-columns:1fr;gap:24px}.subject-card{min-height:115px;padding:15px}.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -113,9 +117,26 @@ footer a{color:var(--gold)}
     <article class="game"><div class="game-top"><div class="game-icon">💥</div><span class="game-number">GAME 03</span></div><span class="label">SMASH · COLLECT · BATTLE</span><h3>SANZA SMASH</h3><p>Join the SanZa crew, smash cookie chaos and face Cookie Doughnald Crumb. Watch the challenge counter and see how far you can get!</p><a class="btn" href="https://sanzasmash.floot.app/" target="_blank" rel="noopener noreferrer">💥 PLAY SANZA SMASH ↗</a></article>
     <article class="game"><div class="game-top"><div class="game-icon">🐱</div><span class="game-number">GAME 04</span></div><span class="label">DODGE · ATTACK · SURVIVE</span><h3>CAT IN THE HAT</h3><p>Dodge flying cans, launch brownies and face the troublemaker in this playful SanZa showdown. Follow the on-screen controls to play.</p><a class="btn" href="https://catinhat.floot.app/" target="_blank" rel="noopener noreferrer">🐾 PLAY CAT IN THE HAT ↗</a></article>
     <article class="game"><div class="game-top"><div class="game-icon">🎹</div><span class="game-number">GAME 05</span></div><span class="label">TAP · LAUGH · REPEAT</span><h3>SANZA FUNNY KEYS</h3><p>Tap the keys, unleash ridiculous sounds and make your own silly sound combinations. A quick laugh is only a tap away.</p><a class="btn" href="funny-keys.html">😂 PLAY FUNNY KEYS</a></article>
-    <article class="game"><div class="game-top"><div class="game-icon">📚</div><span class="game-number">THE LEARNING CORNER</span></div><span class="label">LEARN · PRACTISE · GROW</span><h3>SANZA GRINDS</h3><p>Looking for extra practice in Maths, Physics, English or Biology? Explore SanZa Grinds and learning-support information.</p><a class="btn" href="sanza-grinds.html">📚 EXPLORE SANZA GRINDS</a></article>
   </div>
   <div class="coming"><div class="coming-icon">🚀</div><div><h3>More SanZa madness is on the way</h3><p>New characters, new challenges and more fun for the family. Keep an eye on the arcade for what's next.</p></div></div>
+</section>
+<section class="section education-section" id="education">
+  <div class="education-shell">
+    <div class="education-copy">
+      <div class="eyebrow">A DIFFERENT SIDE OF SANZA</div>
+      <div class="education-icon" aria-hidden="true">📚</div>
+      <p class="education-label">SANZA EDUCATION</p>
+      <h2>Big goals start with the <span>right support.</span></h2>
+      <p class="education-intro">Step out of the arcade and into the classroom. SanZa Grinds has its own dedicated space for students and parents to explore learning support and subjects.</p>
+      <a class="btn education-btn" href="sanza-grinds.html">EXPLORE SANZA GRINDS ↗</a>
+    </div>
+    <div class="education-subjects">
+      <div class="subject-card"><span>➗</span><strong>Maths</strong><small>Build confidence</small></div>
+      <div class="subject-card"><span>⚛️</span><strong>Physics</strong><small>Understand the why</small></div>
+      <div class="subject-card"><span>✍️</span><strong>English</strong><small>Grow your skills</small></div>
+      <div class="subject-card"><span>🧬</span><strong>Biology</strong><small>Explore life</small></div>
+    </div>
+  </div>
 </section>
 <section class="section" id="sanza-hub">
   <div class="section-head"><div><div class="eyebrow">ONE FAMILY · ONE SANZA</div><h2>There's more to the hub</h2></div><p>Gaming is just one part of the SanZa universe. Explore food, learning support and celebrations through the links below.</p></div>
