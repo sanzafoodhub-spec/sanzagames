@@ -91,6 +91,24 @@ footer a{color:var(--gold)}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:720px){.topbar{padding:8px 4%;gap:8px}.weather-main{gap:5px}.weather-temp{font-size:14px}.weather-condition{display:none}.weather-status{font-size:9px}.scores-link{font-size:9px;padding:9px 8px}.navlinks a:not(.nav-cta){display:none}.education-shell{grid-template-columns:1fr;gap:24px}.subject-card{min-height:115px;padding:15px}.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Arcade polish pass: scroll reveals, responsive touch feedback and character-card motion */
+.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner{will-change:transform,opacity}
+.game-icon{animation:iconBob 3.8s ease-in-out infinite}
+.game:nth-child(2) .game-icon{animation-delay:.35s}
+.game:nth-child(3) .game-icon{animation-delay:.7s}
+.game:nth-child(4) .game-icon{animation-delay:1.05s}
+.game:nth-child(5) .game-icon{animation-delay:1.4s}
+.game.is-visible,.hub-card.is-visible,.subject-card.is-visible,.coming.is-visible,.info-panel.is-visible,.video-banner.is-visible{animation:arcadeEnter .55s cubic-bezier(.2,.75,.25,1) both}
+.game:nth-child(2).is-visible,.hub-card:nth-child(2).is-visible,.subject-card:nth-child(2).is-visible{animation-delay:.08s}
+.game:nth-child(3).is-visible,.hub-card:nth-child(3).is-visible,.subject-card:nth-child(3).is-visible{animation-delay:.16s}
+.game:nth-child(4).is-visible,.subject-card:nth-child(4).is-visible{animation-delay:.24s}
+.game:active,.hub-card:active,.subject-card:active{transform:scale(.985)}
+.game .btn:focus-visible,.btn:focus-visible,.navlinks a:focus-visible,.scores-link:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+@keyframes iconBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-3deg)}}
+@keyframes arcadeEnter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(hover:none){.game:hover,.hub-card:hover,.subject-card:hover{transform:none;box-shadow:none}}
+
 </style>
 </head>
 <body>
@@ -186,6 +204,17 @@ footer a{color:var(--gold)}
 </div>
 <script>
 document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener('click',function(){var target=document.querySelector(link.getAttribute('href'));if(target){target.setAttribute('tabindex','-1');}})});
+
+
+// Reveal cards as they enter the screen; gracefully falls back on older browsers.
+(function(){
+  var items=document.querySelectorAll('.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner');
+  if(!('IntersectionObserver' in window)){items.forEach(function(item){item.classList.add('is-visible')});return;}
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}});
+  },{threshold:0.12,rootMargin:'0px 0px -24px 0px'});
+  items.forEach(function(item){observer.observe(item);});
+})();
 
 // Lightweight live weather for Lucan, using Open-Meteo (no API key required).
 (function(){
