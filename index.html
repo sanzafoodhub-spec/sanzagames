@@ -16,6 +16,8 @@ body{margin:0;background:radial-gradient(ellipse at 10% 0%,#30230a 0,transparent
 body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#fff 0.6px,transparent .6px);background-size:24px 24px;z-index:-1}
 a{color:inherit}
 .wrap{width:min(1120px,92%);margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px max(4%,calc((100% - 1120px)/2));background:#0d1018;border-bottom:1px solid #272b39;font-size:12px}
+.weather-widget{display:flex;align-items:center;gap:9px;min-width:0;color:#e8eaf2}.weather-symbol{font-size:22px;line-height:1}.weather-main{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}.weather-temp{font-size:16px;font-weight:1000;color:var(--cyan)}.weather-location{font-weight:900}.weather-condition{color:var(--muted)}.weather-status{font-size:10px;color:#8991a5}.scores-link{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;border:1px solid #554526;background:#1b180f;color:var(--gold);text-decoration:none;padding:9px 12px;border-radius:10px;font-weight:1000;font-size:11px;transition:background .2s,border-color .2s}.scores-link:hover{background:#292111;border-color:var(--gold)}
 header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:#090a0de8;border-bottom:1px solid #292b36}
 .nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:1000;letter-spacing:1.2px;font-size:17px}
@@ -87,16 +89,26 @@ footer{text-align:center;border-top:1px solid #292c38;padding:25px 0 30px;color:
 footer a{color:var(--gold)}
 .reveal{animation:rise .65s both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:720px){.education-shell{grid-template-columns:1fr;gap:24px}.subject-card{min-height:115px;padding:15px}.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
+@media(max-width:720px){.topbar{padding:8px 4%;gap:8px}.weather-main{gap:5px}.weather-temp{font-size:14px}.weather-condition{display:none}.weather-status{font-size:9px}.scores-link{font-size:9px;padding:9px 8px}.navlinks a:not(.nav-cta){display:none}.education-shell{grid-template-columns:1fr;gap:24px}.subject-card{min-height:115px;padding:15px}.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<div class="topbar" aria-label="Local weather and football scores">
+  <div class="weather-widget" id="weather-widget" aria-live="polite">
+    <span class="weather-symbol" id="weather-symbol" aria-hidden="true">🌦️</span>
+    <div>
+      <div class="weather-main"><span class="weather-location">Lucan, Dublin</span><span class="weather-temp" id="weather-temp">--°C</span><span class="weather-condition" id="weather-condition">Checking weather…</span></div>
+      <div class="weather-status" id="weather-status">Live local weather</div>
+    </div>
+  </div>
+  <a class="scores-link" href="https://www.premierleague.com/en/matches" target="_blank" rel="noopener noreferrer">⚽ PREMIER LEAGUE SCORES ↗</a>
+</div>
 <header>
   <div class="wrap nav">
     <a class="brand" href="#" aria-label="SanZa Games home"><img class="logo" src="sanza-logo.png" alt="SanZa logo"><span>SANZA <span class="gold">GAMES</span></span></a>
     <nav class="navlinks" aria-label="Main navigation">
-      <a href="#games">Games</a><a href="#sanza-hub">The SanZa Hub</a><a href="videos.html">Videos</a><a class="nav-cta" href="#games">LET'S PLAY ↗</a>
+      <a href="#games">Games</a><a href="#sanza-hub">The SanZa Hub</a><a href="videos.html">Videos</a><a href="https://www.premierleague.com/en/matches" target="_blank" rel="noopener noreferrer">⚽ Scores</a><a class="nav-cta" href="#games">LET'S PLAY ↗</a>
     </nav>
   </div>
 </header>
@@ -174,6 +186,38 @@ footer a{color:var(--gold)}
 </div>
 <script>
 document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener('click',function(){var target=document.querySelector(link.getAttribute('href'));if(target){target.setAttribute('tabindex','-1');}})});
+
+// Lightweight live weather for Lucan, using Open-Meteo (no API key required).
+(function(){
+  var url='https://api.open-meteo.com/v1/forecast?latitude=53.357&longitude=-6.448&current=temperature_2m,weather_code,is_day&timezone=Europe%2FDublin';
+  var temp=document.getElementById('weather-temp'),condition=document.getElementById('weather-condition'),symbol=document.getElementById('weather-symbol'),status=document.getElementById('weather-status');
+  function describe(code,day){
+    if(code===0)return [day?'☀️':'🌙','Clear'];
+    if(code===1)return [day?'🌤️':'🌙','Mostly clear'];
+    if(code===2)return ['⛅','Partly cloudy'];
+    if(code===3)return ['☁️','Cloudy'];
+    if(code===45||code===48)return ['🌫️','Fog'];
+    if(code===51||code===53||code===55)return ['🌦️','Drizzle'];
+    if(code===56||code===57)return ['🌧️','Freezing drizzle'];
+    if(code===61||code===63||code===65)return ['🌧️','Rain'];
+    if(code===66||code===67)return ['🌧️','Freezing rain'];
+    if(code===71||code===73||code===75||code===77)return ['🌨️','Snow'];
+    if(code===80||code===81||code===82)return ['🌧️','Rain showers'];
+    if(code===85||code===86)return ['🌨️','Snow showers'];
+    if(code===95||code===96||code===99)return ['⛈️','Thunderstorm'];
+    return ['🌦️','Local weather'];
+  }
+  function load(){
+    fetch(url,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('Weather unavailable');return r.json()}).then(function(data){
+      var current=data.current;if(!current)throw new Error('No current weather');
+      var d=describe(current.weather_code,current.is_day===1);
+      temp.textContent=Math.round(current.temperature_2m)+'°C';condition.textContent=d[1];symbol.textContent=d[0];
+      status.textContent='Lucan local weather · Updated '+new Date().toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Dublin'});
+    }).catch(function(){condition.textContent='Weather unavailable';status.textContent='Tap to try again';});
+  }
+  load();window.setInterval(load,15*60*1000);
+  document.getElementById('weather-widget').addEventListener('click',load);
+})();
 </script>
 </body>
 </html>
