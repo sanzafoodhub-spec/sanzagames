@@ -27,7 +27,12 @@ header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:#0
 .navlinks a{font-size:12px;font-weight:800;color:#d9dce7;text-decoration:none;padding:10px 12px;border-radius:10px}
 .navlinks a:hover{background:#202330;color:var(--gold)}
 .nav-cta{background:var(--gold)!important;color:#111!important}
-.hero{position:relative;text-align:center;padding:70px 0 48px;isolation:isolate}
+.hero{position:relative;text-align:center;padding:52px 0 34px;isolation:isolate}
+.hero:before{width:220px;height:220px;top:28px}
+.hero h1{font-size:clamp(38px,8vw,76px);letter-spacing:-.065em;line-height:.98;margin:22px 0 16px}
+.hero .intro{max-width:720px;line-height:1.7}
+.hero .hero-actions{margin:22px 0 8px}
+.hero-tags{display:none}
 .hero:before{content:"";position:absolute;z-index:-1;width:280px;height:280px;left:calc(50% - 140px);top:38px;background:#ffca3822;filter:blur(65px);border-radius:50%}
 .kicker{display:inline-flex;align-items:center;gap:8px;border:1px solid #4a4025;background:#15130e;border-radius:999px;padding:9px 14px;color:var(--gold);font-size:11px;font-weight:900;letter-spacing:2px}
 .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
@@ -208,11 +213,10 @@ footer a{color:var(--gold)}
 <div class="wrap">
 <main>
 <section class="hero reveal">
-  <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA ARCADE</div>
-  <h1>GOOD TIMES.<br><span class="hero-title">SANZA STYLE.</span></h1>
-  <p class="intro">From Finglas to Ballymun, the SanZa universe is packed with brownie missions, scooter madness, smash battles and silly sounds. Pick your game, bring your crew and let the fun begin, Sanzations!</p>
-  <div class="hero-actions"><a class="btn" href="#games">🎮 PICK YOUR GAME ↓</a><a class="btn btn-ghost" href="#sanza-hub">✨ EXPLORE THE HUB</a></div>
-  <div class="hero-tags"><span class="pill">🍫 BROWNIE MISSIONS</span><span class="pill">🏙️ DUBLIN-INSPIRED FUN</span><span class="pill">📱 PLAY ON YOUR PHONE</span></div>
+  <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA FAMILY</div>
+  <h1>HOWAYA, YA<br><span class="hero-title">ABSOLUTE LEGEND?! 😂</span></h1>
+  <p class="intro">One SanZa. One Family. Endless craic! 🎮 Play our games, 😂 meet Yup Bro, 🍔 discover SanZa Grinds, 📺 watch our videos and 💌 sign up for the newsletter to hear about new games, family fun, updates and offers. Whether you're here to play, watch, eat or have a laugh — you're one of us now!</p>
+  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">🍔 EXPLORE SANZA</a></div>
 </section>
 
 <section class="mascot-stage" id="3d-mascot" aria-label="Animated 3D Yupbro Scooty character">
