@@ -418,6 +418,18 @@ document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventLi
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 (function(){
+ // Put the existing canvas in the welcome slot before WebGL is created.
+ // Moving it after renderer creation can leave mobile browsers with a blank canvas.
+ const welcomeSlot=document.getElementById('welcome-character-slot');
+ const originalStage=document.getElementById('3d-mascot');
+ const liveWrap=originalStage&&originalStage.querySelector('.mascot-canvas-wrap');
+ if(welcomeSlot&&liveWrap&&!welcomeSlot.contains(liveWrap)){
+   welcomeSlot.appendChild(liveWrap);
+   liveWrap.style.width='100%';
+   liveWrap.style.height='clamp(285px,48vh,410px)';
+   liveWrap.style.minHeight='285px';
+   liveWrap.style.display='block';
+ }
  const canvas=document.getElementById('yupbro-3d-canvas');
  if(!canvas)return;
  const wrap=canvas.parentElement;
@@ -547,28 +559,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 <script>
 (function(){
   var gate=document.getElementById('welcome-gate');
-  var slot=document.getElementById('welcome-character-slot');
   var enter=document.getElementById('welcome-enter');
   var stage=document.getElementById('3d-mascot');
-  var character=stage&&stage.querySelector('.mascot-canvas-wrap');
-  if(slot&&character){
-    // Keep the live WebGL canvas mounted in its original section until Three.js starts.
-    window.addEventListener('load',function(){
-      window.setTimeout(function(){
-        if(!slot.contains(character)){
-          slot.appendChild(character);
-          character.style.display='block';
-          character.style.width='100%';
-          character.style.height='clamp(285px,48vh,410px)';
-          character.style.minHeight='285px';
-          character.style.visibility='visible';
-          var canvas=character.querySelector('#yupbro-3d-canvas');
-          if(canvas){canvas.style.display='block';canvas.style.width='100%';canvas.style.height='100%';}
-          window.dispatchEvent(new Event('resize'));
-        }
-      },350);
-    },{once:true});
-  }
   function openSanZa(){
     if(!gate)return;
     gate.hidden=true;
