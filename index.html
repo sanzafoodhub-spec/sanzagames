@@ -549,12 +549,31 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   var gate=document.getElementById('welcome-gate');
   var slot=document.getElementById('welcome-character-slot');
   var enter=document.getElementById('welcome-enter');
-  var character=document.querySelector('#3d-mascot .mascot-canvas-wrap');
-  if(slot&&character){slot.appendChild(character);character.style.width='100%';character.style.height='clamp(285px,48vh,410px)';character.style.minHeight='285px';requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
+  var stage=document.getElementById('3d-mascot');
+  var character=stage&&stage.querySelector('.mascot-canvas-wrap');
+  if(slot&&character){
+    // Keep the live WebGL canvas mounted in its original section until Three.js starts.
+    window.addEventListener('load',function(){
+      window.setTimeout(function(){
+        if(!slot.contains(character)){
+          slot.appendChild(character);
+          character.style.display='block';
+          character.style.width='100%';
+          character.style.height='clamp(285px,48vh,410px)';
+          character.style.minHeight='285px';
+          character.style.visibility='visible';
+          var canvas=character.querySelector('#yupbro-3d-canvas');
+          if(canvas){canvas.style.display='block';canvas.style.width='100%';canvas.style.height='100%';}
+          window.dispatchEvent(new Event('resize'));
+        }
+      },350);
+    },{once:true});
+  }
   function openSanZa(){
     if(!gate)return;
     gate.hidden=true;
     document.body.classList.remove('welcome-active');
+    if(stage)stage.scrollIntoView({block:'start',behavior:'smooth'});
     window.scrollTo({top:0,behavior:'smooth'});
   }
   if(enter)enter.addEventListener('click',openSanZa);
