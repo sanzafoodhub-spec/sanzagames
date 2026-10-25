@@ -95,6 +95,33 @@ footer a{color:var(--gold)}
 .reveal{animation:rise .65s both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:720px){.topbar{padding:8px 4%;gap:8px}.weather-main{gap:5px}.weather-temp{font-size:14px}.weather-condition{display:none}.weather-status{font-size:9px}.scores-link{font-size:9px;padding:9px 8px}.navlinks a:not(.nav-cta){display:none}.education-shell{grid-template-columns:1fr;gap:24px}.subject-card{min-height:115px;padding:15px}.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
+/* Clean homepage pass: clearer hierarchy, calmer spacing, games first */
+.hero{padding:38px 0 24px}
+.hero:before{width:180px;height:180px;top:22px;filter:blur(55px)}
+.hero .kicker{letter-spacing:1.3px}
+.hero h1{font-size:clamp(34px,7vw,66px);line-height:1.02;letter-spacing:-.055em;margin:18px 0 14px}
+.hero .intro{max-width:610px;font-size:clamp(14px,2vw,16px);line-height:1.65}
+.hero .hero-actions{margin:18px 0 0}
+.hero-tags{display:none}
+#games{padding-top:18px}
+#games .section-head{display:block;margin-bottom:15px}
+#games .section-head p{display:none}
+#games .section-head h2{font-size:clamp(25px,4vw,32px);margin-top:5px}
+#games .games{gap:12px}
+#games .game{min-height:290px;padding:19px;border-radius:18px}
+.mascot-stage{margin-top:8px;margin-bottom:26px}
+#sanza-hub .section-head p{display:none}
+#sanza-hub .hub-grid{gap:12px}
+.newsletter{margin-top:24px}
+@media(max-width:720px){
+ .hero{padding:30px 0 18px}
+ .hero h1{font-size:clamp(33px,9vw,48px);line-height:1.04;margin:17px 0 12px}
+ .hero .intro{font-size:14px;line-height:1.6}
+ #games{padding-top:12px}
+ #games .section-head h2{font-size:27px}
+ #games .game{min-height:245px;padding:18px}
+ .mascot-stage{margin-top:4px}
+}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 /* Arcade polish pass: scroll reveals, responsive touch feedback and character-card motion */
@@ -215,19 +242,8 @@ footer a{color:var(--gold)}
 <section class="hero reveal">
   <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA FAMILY</div>
   <h1>HOWAYA, YA<br><span class="hero-title">ABSOLUTE LEGEND?! 😂</span></h1>
-  <p class="intro">One SanZa. One Family. Endless craic! 🎮 Play our games, 😂 meet Yup Bro, 🍔 discover SanZa Grinds, 📺 watch our videos and 💌 sign up for the newsletter to hear about new games, family fun, updates and offers. Whether you're here to play, watch, eat or have a laugh — you're one of us now!</p>
-  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">🍔 EXPLORE SANZA</a></div>
-</section>
-
-<section class="mascot-stage" id="3d-mascot" aria-label="Animated 3D Yupbro Scooty character">
-  <div class="mascot-copy">
-    <div class="mascot-kicker">SANZA LABS · LIVE 3D</div>
-    <h2>MEET YUPBRO.<br>IN THREE DIMENSIONS.</h2>
-    <p>This little rider is built from real 3D shapes and lit in a live WebGL scene — with spinning scooter wheels, a bobbing rider and a gently moving camera.</p>
-    <div class="mascot-badges"><span>🛴 3D SCOOTER</span><span>✨ LIVE ANIMATION</span><span>📱 PHONE FRIENDLY</span></div>
-    <a class="btn" href="#games">PLAY THE SANZA GAMES ↓</a>
-  </div>
-  <div class="mascot-canvas-wrap"><canvas id="yupbro-3d-canvas" aria-label="Animated 3D cartoon scooter rider"></canvas><div class="yupbro-speech" id="yupbro-speech" aria-live="polite">Tap Yupbro for a laugh!</div><div class="yupbro-status"><span id="yupbro-mood" data-mood="chill">CHILL MODE 😌</span><span id="yupbro-taps">YUPBRO TAPS: 0</span></div><button class="yupbro-tap" id="yupbro-tap" type="button">👋 TAP YUPBRO</button><span class="mascot-hint">LIVE 3D · TAP TO INTERACT</span></div>
+  <p class="intro">One SanZa. One Family. Endless craic! 😂 Play our games, meet Yup Bro, discover SanZa Grinds, watch our videos and join the newsletter for family fun, updates and offers. Come for a game, stay for the laughs!</p>
+  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">EXPLORE THE HUB</a></div>
 </section>
 
 <section class="section" id="games">
@@ -242,6 +258,17 @@ footer a{color:var(--gold)}
   </div>
   <div class="coming"><div class="coming-icon">🚀</div><div><h3>More SanZa madness is on the way</h3><p>New characters, new challenges and more fun for the family. Keep an eye on the arcade for what's next.</p></div></div>
 </section>
+<section class="mascot-stage" id="3d-mascot" aria-label="Animated 3D Yupbro Scooty character">
+  <div class="mascot-copy">
+    <div class="mascot-kicker">SANZA LABS · LIVE 3D</div>
+    <h2>MEET YUPBRO.<br>IN THREE DIMENSIONS.</h2>
+    <p>This little rider is built from real 3D shapes and lit in a live WebGL scene — with spinning scooter wheels, a bobbing rider and a gently moving camera.</p>
+    <div class="mascot-badges"><span>🛴 3D SCOOTER</span><span>✨ LIVE ANIMATION</span><span>📱 PHONE FRIENDLY</span></div>
+    <a class="btn" href="#games">PLAY THE SANZA GAMES ↓</a>
+  </div>
+  <div class="mascot-canvas-wrap"><canvas id="yupbro-3d-canvas" aria-label="Animated 3D cartoon scooter rider"></canvas><div class="yupbro-speech" id="yupbro-speech" aria-live="polite">Tap Yupbro for a laugh!</div><div class="yupbro-status"><span id="yupbro-mood" data-mood="chill">CHILL MODE 😌</span><span id="yupbro-taps">YUPBRO TAPS: 0</span></div><button class="yupbro-tap" id="yupbro-tap" type="button">👋 TAP YUPBRO</button><span class="mascot-hint">LIVE 3D · TAP TO INTERACT</span></div>
+</section>
+
 <section class="section education-section" id="education">
   <div class="education-shell">
     <div class="education-copy">
