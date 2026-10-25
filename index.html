@@ -387,7 +387,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   for(let i=0;i<24;i++){const p=sphere(particles,i%3===0?cyan:gold,[(Math.random()-.5)*4,Math.random()*3.1-.2,(Math.random()-.5)*1.2],[.018,.018,.018]);p.userData.phase=Math.random()*6.28;p.userData.baseY=p.position.y}
   let start=performance.now(),last=0,boostUntil=0,trickUntil=0,tapCount=0;
   const speech=document.getElementById('yupbro-speech'),tapButton=document.getElementById('yupbro-tap');
-  const lines=['OH MY GARLIC NAAN! 😂','How are you, my Sanzation!','Easy there, I am on a scooty!','Brownies? Now you are talking!','YUPBRO IN THE HOUSE!','Mind the hair, bro!'];
+  const lines=['OH MY GARLIC NAAN! 😂','How are you, my Sanzation!','Easy there, I am on a scooty!','Brownies? Now you are talking!','YUPBRO IN T. H. E. HOUSE!','Mind the hair, bro!'];
   function talk(line){
    if(speech){speech.textContent=line;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),850)}
    if('speechSynthesis' in window){
