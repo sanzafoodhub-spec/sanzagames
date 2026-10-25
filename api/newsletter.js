@@ -16,7 +16,9 @@ module.exports = async function handler(req, res) {
     try { host = new URL(origin).hostname.toLowerCase(); } catch (_) {}
     const allowed = host === "sanzagames-preview.vercel.app" ||
       host === "sanzagames-preview-sanza3.vercel.app" ||
-      (host.startsWith("sanzagames-preview-") && host.endsWith(".vercel.app"));
+      (host.startsWith("sanzagames-preview-") && host.endsWith(".vercel.app")) ||
+      host === "sanzagames-clean-preview-8t8brkh0c-sanza3.vercel.app" ||
+      (host.startsWith("sanzagames-clean-preview-") && host.endsWith(".vercel.app"));
     if (!allowed) return res.status(403).json({ error: "Request origin not allowed." });
   }
 
