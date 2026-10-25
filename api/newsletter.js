@@ -21,10 +21,8 @@ module.exports = async function handler(req, res) {
   }
 
   const apiKey = process.env.BREVO_API_KEY;
-  const listId = Number(process.env.BREVO_LIST_ID);
   const templateId = Number(process.env.BREVO_DOI_TEMPLATE_ID);
-  if (!apiKey || !Number.isInteger(listId) || listId < 1 ||
-      !Number.isInteger(templateId) || templateId < 1) {
+  if (!apiKey || !Number.isInteger(templateId) || templateId < 1) {
     return res.status(503).json({
       error: "Newsletter signup is not configured yet. Please try again later."
     });
@@ -50,6 +48,27 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    // Resolve the exact list by name server-side so no list ID has to be exposed in the page.
+    let listId = null;
+    for (let offset = 0; offset < 500 && listId === null; offset += 50) {
+      const listResponse = await fetch("https://api.brevo.com/v3/contacts/lists?limit=50&offset=" + offset, {
+        headers: { "accept": "application/json", "api-key": apiKey }
+      });
+      if (!listResponse.ok) {
+        console.error("Brevo list lookup failed:", listResponse.status);
+        return res.status(502).json({ error: "Newsletter signup is temporarily unavailable. Please try again later." });
+      }
+      const listData = await listResponse.json();
+      const lists = Array.isArray(listData.lists) ? listData.lists : [];
+      const found = lists.find(function(item) { return item && item.name === "SanZa Games Newsletter"; });
+      if (found) listId = Number(found.id);
+      if (lists.length < 50) break;
+    }
+    if (!Number.isInteger(listId) || listId < 1) {
+      console.error("Brevo list not found: SanZa Games Newsletter");
+      return res.status(502).json({ error: "Newsletter signup is temporarily unavailable. Please try again later." });
+    }
+
     const response = await fetch("https://api.brevo.com/v3/contacts/doubleOptinConfirmation", {
       method: "POST",
       headers: {
@@ -73,8 +92,7 @@ module.exports = async function handler(req, res) {
     }
 
     // Do not expose Brevo's raw response or credentials to the browser.
-    const details = await response.text().catch(() => "");
-    console.error("Brevo double opt-in request failed:", response.status, details.slice(0, 500));
+    console.error("Brevo double opt-in request failed:", response.status);
     if (response.status === 400 || response.status === 401 || response.status === 403 || response.status === 404) {
       return res.status(502).json({
         error: "We couldn't start confirmation just now. Please try again later."
