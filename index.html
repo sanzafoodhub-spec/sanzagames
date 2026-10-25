@@ -216,9 +216,44 @@ footer a{color:var(--gold)}
 .newsletter small{display:block;color:#9298a8;line-height:1.5;margin:12px auto 0;max-width:540px}
 @media(max-width:560px){.newsletter-embed{height:540px;margin-top:16px}}
 
+
+/* Welcome gate: friendly SanZa landing screen with the existing interactive 3D Yupbro */
+.welcome-gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:auto;padding:20px;background:radial-gradient(ellipse at 50% 15%,#3a2a0a 0,transparent 38%),radial-gradient(ellipse at 85% 75%,#102f3a 0,transparent 40%),#08090d}
+.welcome-gate[hidden]{display:none}
+.welcome-inner{width:min(900px,100%);margin:auto;text-align:center;padding:clamp(18px,4vw,34px);border:1px solid #ffd34d55;border-radius:30px;background:linear-gradient(145deg,#151720ed,#090b11f2);box-shadow:0 25px 90px #0009;position:relative;overflow:hidden}
+.welcome-inner:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 20%,#ffffff05 50%,transparent 75%)}
+.welcome-kicker{display:inline-flex;align-items:center;gap:8px;color:var(--gold);border:1px solid #ffd34d55;background:#ffd34d0e;border-radius:999px;padding:8px 13px;font-size:10px;font-weight:1000;letter-spacing:2px}
+.welcome-title{font-size:clamp(37px,7vw,70px);line-height:.98;letter-spacing:-.06em;margin:18px 0 10px;font-weight:1000}
+.welcome-title span{background:linear-gradient(100deg,#ffd34d,#fff1a6 38%,#57e9ff 78%);background-clip:text;-webkit-background-clip:text;color:transparent}
+.welcome-subtitle{max-width:590px;margin:0 auto;color:#d3d6e1;font-size:clamp(14px,2.5vw,17px);line-height:1.7}
+.welcome-character-slot{width:min(460px,100%);margin:4px auto 0;position:relative}
+.welcome-character-slot .mascot-canvas-wrap{height:clamp(245px,42vh,360px);border-radius:22px}
+.welcome-character-slot .yupbro-speech{top:10px;left:10px}
+.welcome-character-slot .yupbro-status{bottom:8px}
+.welcome-character-slot .yupbro-tap{bottom:43px}
+.welcome-enter{margin:15px auto 0;min-width:min(290px,100%);min-height:56px;border:0;border-radius:16px;background:linear-gradient(100deg,#ffd34d,#ffe99b);color:#111;font-size:14px;font-weight:1000;letter-spacing:.07em;box-shadow:0 10px 32px #ffd34d28;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.welcome-enter:hover{transform:translateY(-3px);box-shadow:0 14px 38px #ffd34d42}
+.welcome-enter:focus-visible{outline:3px solid #57e9ff;outline-offset:4px}
+.welcome-foot{font-size:11px;color:#9da3b4;margin:15px 0 0}
+body.welcome-active{overflow:hidden}
+@media(max-width:560px){.welcome-gate{padding:12px}.welcome-inner{padding:19px 14px;border-radius:23px}.welcome-title{margin:15px 0 9px}.welcome-character-slot .mascot-canvas-wrap{height:260px}.welcome-subtitle{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.welcome-enter{transition:none}}
+
 </style>
 </head>
-<body>
+<body class="welcome-active">
+
+<div class="welcome-gate" id="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+  <div class="welcome-inner">
+    <div class="welcome-kicker">✨ ONE SANZA · ONE FAMILY ✨</div>
+    <h1 class="welcome-title" id="welcome-title">HOWAYA, YA<br><span>ABSOLUTE LEGEND?! 😂</span></h1>
+    <p class="welcome-subtitle">Yup Bro’s here! 😎 Welcome to the home of mad games, big laughs and family craic. Tap your man for a bit of cheek… then come explore SanZa!</p>
+    <div class="welcome-character-slot" id="welcome-character-slot" aria-label="Interactive 3D Yup Bro character"></div>
+    <button class="welcome-enter" id="welcome-enter" type="button">🚀 EXPLORE SANZA</button>
+    <p class="welcome-foot">Games · Videos · SanZa Grinds · Food · Family fun ❤️</p>
+  </div>
+</div>
+
 <div class="topbar" aria-label="Local weather and football scores">
   <div class="weather-widget" id="weather-widget" aria-live="polite">
     <span class="weather-symbol" id="weather-symbol" aria-hidden="true">🌦️</span>
@@ -503,6 +538,25 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   if(!observer)raf=requestAnimationFrame(animate);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0}else if(visible&&!raf)raf=requestAnimationFrame(animate)});
  }catch(err){console.error('SanZa 3D mascot could not start',err);wrap.innerHTML='<div style="height:100%;display:grid;place-items:center;text-align:center;padding:24px;color:#b8bdcb">This 3D preview needs WebGL and an internet connection. Try opening it in Chrome on your phone.</div>'}
+})();
+</script>
+
+
+<script>
+(function(){
+  var gate=document.getElementById('welcome-gate');
+  var slot=document.getElementById('welcome-character-slot');
+  var enter=document.getElementById('welcome-enter');
+  var character=document.querySelector('#3d-mascot .mascot-canvas-wrap');
+  if(slot&&character){slot.appendChild(character);}
+  function openSanZa(){
+    if(!gate)return;
+    gate.hidden=true;
+    document.body.classList.remove('welcome-active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  if(enter)enter.addEventListener('click',openSanZa);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&gate&&!gate.hidden)openSanZa();});
 })();
 </script>
 
