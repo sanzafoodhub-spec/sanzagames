@@ -315,13 +315,43 @@ footer a{color:var(--gold)}
 </div>
 <script>
 
-// Newsletter preview guard: never collect or transmit email addresses until a mailing provider is configured.
+// SanZa Games newsletter: server-side Brevo double opt-in; API credentials never reach the browser.
 (function(){
   var form=document.getElementById('newsletter-preview-form');
   var status=document.getElementById('newsletter-status');
-  if(form&&status)form.addEventListener('submit',function(event){
+  var email=document.getElementById('newsletter-email');
+  var consent=document.getElementById('newsletter-consent');
+  var button=form&&form.querySelector('button[type="submit"]');
+  if(!form||!status||!email||!consent)return;
+  // Honeypot: invisible to people, useful for basic bot filtering.
+  var trap=document.createElement('input');
+  trap.type='text';trap.name='website';trap.autocomplete='off';trap.tabIndex=-1;
+  trap.setAttribute('aria-hidden','true');
+  trap.style.cssText='position:absolute;left:-10000px;width:1px;height:1px;opacity:0';
+  form.appendChild(trap);
+  form.addEventListener('submit',async function(event){
     event.preventDefault();
-    status.textContent='Looking good! Signup is not live yet, so nothing has been sent or saved. We’ll connect the secure mailing list before launch.';
+    if(!consent.checked){status.textContent='Please tick the consent box to join the SanZa family.';return;}
+    if(button){button.disabled=true;button.setAttribute('aria-busy','true');}
+    status.textContent='Sending your confirmation request…';
+    try{
+      var response=await fetch('/api/newsletter',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email:email.value,consent:consent.checked,website:trap.value})
+      });
+      var result=await response.json().catch(function(){return {};});
+      if(response.ok){
+        status.textContent=result.message||'Check your inbox for a confirmation email. You are not subscribed until you confirm.';
+        form.reset();
+      }else{
+        status.textContent=result.error||'Signup is not ready yet. Please try again later.';
+      }
+    }catch(error){
+      status.textContent='We could not reach the signup service. Please try again later.';
+    }finally{
+      if(button){button.disabled=false;button.removeAttribute('aria-busy');}
+    }
   });
 })();
 
