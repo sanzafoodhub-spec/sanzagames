@@ -391,7 +391,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   function talk(line){
    if(speech){speech.textContent=line;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),850)}
    if('speechSynthesis' in window){
-    try{window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(line);utterance.lang='en-IE';utterance.rate=1.04;utterance.pitch=1.12;utterance.volume=.9;window.speechSynthesis.speak(utterance)}catch(e){console.info('Voice not available',e)}
+    try{window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(line);utterance.lang='en-IN';utterance.rate=1.02;utterance.pitch=1.12;utterance.volume=.9;const voices=window.speechSynthesis.getVoices();const indianVoice=voices.find(v=>/^en-IN$/i.test(v.lang))||voices.find(v=>/^en-IN/i.test(v.lang))||voices.find(v=>/india|indian/i.test(v.name+' '+v.lang));if(indianVoice)utterance.voice=indianVoice;window.speechSynthesis.speak(utterance)}catch(e){console.info('Voice not available',e)}
    }
   }
   function tapYupbro(){
