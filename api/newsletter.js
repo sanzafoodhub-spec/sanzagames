@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
         email,
         includeListIds: [listId],
         templateId,
-        redirectionUrl: "https://sanzagames-preview-git-website-upgrade-sanza3.vercel.app/",
+        redirectionUrl: "https://sanzagames-preview-git-website-upgrade-preview-sanza3.vercel.app/",
         updateEnabled: false
       })
     });
