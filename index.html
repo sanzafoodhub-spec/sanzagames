@@ -26,6 +26,8 @@ header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:#0
 .navlinks{display:flex;align-items:center;gap:8px}
 .navlinks a{font-size:12px;font-weight:800;color:#d9dce7;text-decoration:none;padding:10px 12px;border-radius:10px}
 .navlinks a:hover{background:#202330;color:var(--gold)}
+.navlinks .home-return{display:inline-flex;align-items:center;background:#1b180f;border:1px solid #554526;color:var(--gold);border-radius:10px;font-weight:1000}
+@media(max-width:720px){.navlinks .home-return{display:inline-flex!important}.navlinks .nav-cta{display:inline-flex!important}}
 .nav-cta{background:var(--gold)!important;color:#111!important}
 .hero{position:relative;text-align:center;padding:52px 0 34px;isolation:isolate}
 .hero:before{width:220px;height:220px;top:28px}
@@ -283,7 +285,7 @@ body.welcome-active{overflow:hidden}
   <div class="wrap nav">
     <a class="brand" href="#" aria-label="SanZa Games home"><img class="logo" src="sanza-logo.png" alt="SanZa logo"><span>SANZA <span class="gold">GAMES</span></span></a>
     <nav class="navlinks" aria-label="Main navigation">
-      <a href="#games">Games</a><a href="#sanza-hub">The SanZa Hub</a><a href="videos.html">Videos</a><a href="https://www.premierleague.com/en/matches" target="_blank" rel="noopener noreferrer">⚽ Scores</a><a class="nav-cta" href="#games">LET'S PLAY ↗</a>
+      <a class="home-return" href="#welcome-gate">🏠 HOME</a><a href="#games">Games</a><a href="#sanza-hub">The SanZa Hub</a><a href="videos.html">Videos</a><a href="https://www.premierleague.com/en/matches" target="_blank" rel="noopener noreferrer">⚽ Scores</a><a class="nav-cta" href="#games">LET'S PLAY ↗</a>
     </nav>
   </div>
 </header>
@@ -572,6 +574,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 (function(){
   var gate=document.getElementById('welcome-gate');
   var enter=document.getElementById('welcome-enter');
+  var home=document.querySelector('.navlinks .home-return');
   var stage=document.getElementById('3d-mascot');
   function openSanZa(){
     if(!gate)return;
@@ -580,7 +583,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     if(stage)stage.scrollIntoView({block:'start',behavior:'smooth'});
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  function returnToWelcome(e){if(e)e.preventDefault();if(!gate)return;gate.hidden=false;document.body.classList.add('welcome-active');window.scrollTo({top:0,behavior:'smooth'});}
   if(enter)enter.addEventListener('click',openSanZa);
+  if(home)home.addEventListener('click',returnToWelcome);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&gate&&!gate.hidden)openSanZa();});
 })();
 </script>
