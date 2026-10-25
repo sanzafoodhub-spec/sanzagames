@@ -173,6 +173,22 @@ footer a{color:var(--gold)}
 @media(max-width:720px){.mascot-stage{grid-template-columns:1fr;gap:4px;padding:17px;margin-bottom:26px}.mascot-copy{padding:5px 3px 0}.mascot-copy h2{font-size:31px}.mascot-copy p{font-size:14px}.mascot-canvas-wrap{height:280px;grid-row:1}.mascot-hint{bottom:8px;right:8px}}
 @media(prefers-reduced-motion:reduce){.mascot-stage *{scroll-behavior:auto!important}}
 
+
+/* Everything SanZa newsletter — preview-first, no email data is sent or stored. */
+.newsletter{position:relative;overflow:hidden;margin:30px auto 34px;padding:clamp(22px,5vw,42px);border:1px solid #ffd34d55;border-radius:26px;background:radial-gradient(ellipse at 0% 0%,#ffd34d1a,transparent 48%),radial-gradient(ellipse at 100% 100%,#a995ff18,transparent 48%),linear-gradient(145deg,#15151c,#0b0c12);box-shadow:0 18px 50px #0005}
+.newsletter:after{content:"✦";position:absolute;right:22px;top:8px;color:#ffd34d44;font-size:76px;pointer-events:none}
+.newsletter .eyebrow{color:var(--gold);font-weight:900;font-size:11px;letter-spacing:.16em}
+.newsletter h2{font-size:clamp(27px,5vw,42px);line-height:1.08;margin:10px 0 12px;max-width:680px}
+.newsletter p{color:var(--muted);line-height:1.65;max-width:650px}
+.newsletter-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;max-width:700px;margin-top:20px}
+.newsletter-form input[type=email]{width:100%;min-width:0;padding:14px 15px;border:1px solid #45404a;border-radius:12px;background:#08090d;color:#fff;font:inherit}
+.newsletter-form button{padding:13px 18px;border:0;border-radius:12px;background:var(--gold);color:#17120a;font-weight:950;cursor:pointer}
+.newsletter-consent{display:flex;align-items:flex-start;gap:10px;max-width:700px;margin-top:14px;color:#d2d4dc;font-size:13px;line-height:1.55}
+.newsletter-consent input{margin-top:4px;accent-color:var(--gold);flex:0 0 auto}
+.newsletter small{display:block;color:#9298a8;line-height:1.5;margin-top:12px;max-width:700px}
+.newsletter-status{font-weight:800;color:var(--gold);min-height:1.5em}
+@media(max-width:560px){.newsletter-form{grid-template-columns:1fr}.newsletter-form button{width:100%}}
+
 </style>
 </head>
 <body>
@@ -266,6 +282,24 @@ footer a{color:var(--gold)}
   <p>Want more beginner information? <a href="game-guide.html" style="color:var(--gold);font-weight:800">Read the full SanZa Games guide →</a></p>
 </section>
 <section class="video-banner"><div><div class="eyebrow">WATCH · DISCOVER · LAUGH</div><h2>🎬 SanZa Videos</h2><p>Find funny clips and explore videos from the SanZa universe.</p></div><a class="btn" href="videos.html">WATCH VIDEOS ▶</a></section>
+
+<section class="newsletter" id="everything-sanza" aria-labelledby="newsletter-title">
+  <div class="eyebrow">THE SANZA GOOD-STUFF CLUB ✨</div>
+  <h2 id="newsletter-title">Everything SanZa. <span class="gold">Straight to your inbox.</span></h2>
+  <p>New games, food news, SanZa Grinds and exclusive offers — one email when there’s something worth shouting about. No spam, bro.</p>
+  <form class="newsletter-form" id="newsletter-preview-form">
+    <label for="newsletter-email" style="position:absolute;left:-9999px">Email address</label>
+    <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Your email address" required>
+    <button type="submit">COUNT ME IN ✨</button>
+  </form>
+  <label class="newsletter-consent" for="newsletter-consent">
+    <input id="newsletter-consent" name="marketing-consent" type="checkbox" required>
+    <span>Yes, I want to receive SanZa marketing emails about games, food, news and offers. I can unsubscribe at any time. See the <a href="privacy.html" style="color:var(--gold);text-decoration:underline">Privacy Policy</a>.</span>
+  </label>
+  <small>You're in control: the box starts unticked, and signing up is optional. This is a preview only — your details are not sent or saved, and the mailing list is not live yet.</small>
+  <p class="newsletter-status" id="newsletter-status" role="status" aria-live="polite"></p>
+</section>
+
 <section class="social">
   <h2>Stay connected, <span class="gold">Sanzations!</span></h2><p>Follow SanZa for games, food, fun and new offers.</p>
   <div class="social-links">
@@ -280,6 +314,17 @@ footer a{color:var(--gold)}
 <footer><strong>© 2026 SANZA GAMES</strong><br>Built with ❤️ in Finglas, Dublin<br><span>One family. One SanZa.</span><br><a href="privacy.html">Privacy Policy</a> · <a href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer">SanZa Food Hub</a> · <a href="game-guide.html">Game Guide</a></footer>
 </div>
 <script>
+
+// Newsletter preview guard: never collect or transmit email addresses until a mailing provider is configured.
+(function(){
+  var form=document.getElementById('newsletter-preview-form');
+  var status=document.getElementById('newsletter-status');
+  if(form&&status)form.addEventListener('submit',function(event){
+    event.preventDefault();
+    status.textContent='Looking good! Signup is not live yet, so nothing has been sent or saved. We’ll connect the secure mailing list before launch.';
+  });
+})();
+
 document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener('click',function(){var target=document.querySelector(link.getAttribute('href'));if(target){target.setAttribute('tabindex','-1');}})});
 
 
