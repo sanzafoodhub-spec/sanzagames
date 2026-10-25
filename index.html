@@ -511,8 +511,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   if(tapButton)tapButton.addEventListener('click',tapYupbro);
   canvas.addEventListener('click',tapYupbro);
 
-  function resize(){if(!renderer)return;const w=Math.max(1,wrap.clientWidth),h=Math.max(1,wrap.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+  function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
+  if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
+  requestAnimationFrame(resize);window.addEventListener('load',resize,{once:true});
   let visible=true;
   if('IntersectionObserver'in window){observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(animate);},{threshold:.05});observer.observe(wrap)}
   function animate(now){raf=0;if(!visible)return;raf=requestAnimationFrame(animate);const t=(now-start)/1000;if(now-last<28)return;last=now;
@@ -548,7 +550,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   var slot=document.getElementById('welcome-character-slot');
   var enter=document.getElementById('welcome-enter');
   var character=document.querySelector('#3d-mascot .mascot-canvas-wrap');
-  if(slot&&character){slot.appendChild(character);}
+  if(slot&&character){slot.appendChild(character);character.style.width='100%';character.style.height='clamp(285px,48vh,410px)';character.style.minHeight='285px';requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'));});}
   function openSanZa(){
     if(!gate)return;
     gate.hidden=true;
