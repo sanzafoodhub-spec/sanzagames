@@ -434,8 +434,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
  // Put the existing canvas in the welcome slot before WebGL is created.
  // Moving it after renderer creation can leave mobile browsers with a blank canvas.
  const welcomeSlot=document.getElementById('welcome-character-slot');
- const originalStage=document.getElementById('3d-mascot');
- const liveWrap=originalStage&&originalStage.querySelector('.mascot-canvas-wrap');
+ const liveWrap=document.querySelector('.mascot-canvas-wrap');
  if(welcomeSlot&&liveWrap&&!welcomeSlot.contains(liveWrap)){
    welcomeSlot.appendChild(liveWrap);
    liveWrap.style.width='100%';
