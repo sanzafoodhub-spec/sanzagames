@@ -160,6 +160,12 @@ footer a{color:var(--gold)}
 .mascot-canvas-wrap:after{content:"";position:absolute;left:12%;right:12%;bottom:13%;height:14px;border-radius:50%;background:#57e9ff26;filter:blur(18px);pointer-events:none}
 .mascot-hint{position:absolute;bottom:12px;right:14px;font-size:10px;color:#c4d7e0;background:#07121acc;border:1px solid #57e9ff44;border-radius:99px;padding:6px 9px;pointer-events:none}
 .mascot-stage .btn{box-shadow:0 8px 28px #57e9ff20}
+.yupbro-speech{position:absolute;z-index:3;top:13px;left:13px;max-width:78%;padding:10px 13px;border:1px solid #57e9ff66;border-radius:14px 14px 14px 4px;background:#08121eef;color:#fff;font-size:12px;font-weight:900;box-shadow:0 8px 25px #0005;pointer-events:none;transition:transform .2s,border-color .2s}
+.yupbro-speech.is-talking{transform:translateY(-3px) scale(1.03);border-color:var(--gold)}
+.yupbro-tap{position:absolute;z-index:4;left:50%;bottom:35px;transform:translateX(-50%);border:1px solid #57e9ff88;border-radius:999px;background:#09141df2;color:#fff;padding:10px 15px;font:900 11px system-ui,sans-serif;letter-spacing:.08em;box-shadow:0 6px 20px #0005;cursor:pointer;white-space:nowrap}
+.yupbro-tap:active{transform:translateX(-50%) scale(.96)}
+.yupbro-tap:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+@media(max-width:720px){.yupbro-speech{top:9px;left:9px;font-size:11px}.yupbro-tap{bottom:32px;padding:9px 12px}}
 @media(max-width:720px){.mascot-stage{grid-template-columns:1fr;gap:4px;padding:17px;margin-bottom:26px}.mascot-copy{padding:5px 3px 0}.mascot-copy h2{font-size:31px}.mascot-copy p{font-size:14px}.mascot-canvas-wrap{height:280px;grid-row:1}.mascot-hint{bottom:8px;right:8px}}
 @media(prefers-reduced-motion:reduce){.mascot-stage *{scroll-behavior:auto!important}}
 
@@ -202,7 +208,7 @@ footer a{color:var(--gold)}
     <div class="mascot-badges"><span>🛴 3D SCOOTER</span><span>✨ LIVE ANIMATION</span><span>📱 PHONE FRIENDLY</span></div>
     <a class="btn" href="#games">PLAY THE SANZA GAMES ↓</a>
   </div>
-  <div class="mascot-canvas-wrap"><canvas id="yupbro-3d-canvas" aria-label="Animated 3D cartoon scooter rider"></canvas><span class="mascot-hint">LIVE 3D · LOOK AROUND</span></div>
+  <div class="mascot-canvas-wrap"><canvas id="yupbro-3d-canvas" aria-label="Animated 3D cartoon scooter rider"></canvas><div class="yupbro-speech" id="yupbro-speech" aria-live="polite">Tap Yupbro for a laugh!</div><button class="yupbro-tap" id="yupbro-tap" type="button">👋 TAP YUPBRO</button><span class="mascot-hint">LIVE 3D · TAP TO INTERACT</span></div>
 </section>
 
 <section class="section" id="games">
@@ -379,13 +385,23 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
   for(let i=0;i<24;i++){const p=sphere(particles,i%3===0?cyan:gold,[(Math.random()-.5)*4,Math.random()*3.1-.2,(Math.random()-.5)*1.2],[.018,.018,.018]);p.userData.phase=Math.random()*6.28;p.userData.baseY=p.position.y}
-  let start=performance.now(),last=0;
+  let start=performance.now(),last=0,boostUntil=0,tapCount=0;
+  const speech=document.getElementById('yupbro-speech'),tapButton=document.getElementById('yupbro-tap');
+  const lines=['OH MY GARLIC NAAN! 😂','How are you, my Sanzation!','Easy there, I am on a scooty! 🛴','Brownies? Now you are talking! 🍫','YUPBRO IN THE HOUSE!','Mind the hair, bro! 🔥'];
+  function tapYupbro(){
+   tapCount++;boostUntil=performance.now()+1600;
+   if(speech){speech.textContent=lines[(tapCount-1)%lines.length];speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),700)}
+   head.rotation.z+=.12;mascot.rotation.y+=.22;
+  }
+  if(tapButton)tapButton.addEventListener('click',tapYupbro);
+  canvas.addEventListener('click',tapYupbro);
+
   function resize(){if(!renderer)return;const w=Math.max(1,wrap.clientWidth),h=Math.max(1,wrap.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
   window.addEventListener('resize',resize,{passive:true});
   let visible=true;
   if('IntersectionObserver'in window){observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(animate);},{threshold:.05});observer.observe(wrap)}
   function animate(now){raf=0;if(!visible)return;raf=requestAnimationFrame(animate);const t=(now-start)/1000;if(now-last<28)return;last=now;
-   wheelA.rotation.z=-t*2.7;wheelB.rotation.z=-t*2.7;
+   const rev=now<boostUntil?2.4:0;wheelA.rotation.z=-t*(2.7+rev);wheelB.rotation.z=-t*(2.7+rev);
    body.position.y=.62+Math.sin(t*4)*.035;
    head.rotation.y=Math.sin(t*.8)*.12;head.rotation.z=Math.sin(t*1.7)*.035;
    arms[0].rotation.z=Math.sin(t*3)*.035;arms[1].rotation.z=-Math.sin(t*3)*.035;
