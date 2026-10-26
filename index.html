@@ -604,7 +604,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Real SanZa voice clips replace browser-generated Yup Bro speech.
   // Add the supplied recordings at these paths in the preview branch:
   // audio/Sanzalicious.m4a and audio/Banging.m4a
-  const yupbroVoiceClips=['audio/Sanzalicious.m4a','audio/Banging.m4a'].map(src=>{const audio=new Audio(src);audio.preload='auto';return audio});
+  const yupbroVoiceFiles=['7yup.m4a','Banging.m4a','Bestie.m4a','Charlie.m4a','Chicken curry.m4a','Colacoco.m4a','Fanta.m4a','Music.m4a','Sanzalicious.m4a','Sanzations.m4a','Voice 261026_134443.m4a','What do u want.m4a','What isvwrong.m4a','Yup bro.m4a'];
+  const yupbroVoiceClips=yupbroVoiceFiles.map(src=>{const audio=new Audio(encodeURI(src));audio.preload='auto';return audio});
   let nextVoiceClip=0;
   function speakFallback(line,pitch,rate){if(!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(line.toLowerCase().replace(/\\byupbro\\b/g,'Yupbro'));u.lang='en-IN';u.pitch=pitch;u.rate=rate;u.volume=.9;u.onstart=()=>setMouthTalking(true);u.onend=()=>setMouthTalking(false);u.onerror=()=>setMouthTalking(false);window.speechSynthesis.speak(u)}catch(e){setMouthTalking(false)}}
   function talk(line,pitch=1.12,rate=1.02){
