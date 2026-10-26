@@ -189,7 +189,7 @@ footer a{color:var(--gold)}
 .mascot-copy p{max-width:430px;color:var(--muted);line-height:1.7}
 .mascot-badges{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 20px}
 .mascot-badges span{border:1px solid #ffffff20;background:#ffffff08;border-radius:99px;padding:7px 10px;font-size:11px;font-weight:800}
-.mascot-canvas-wrap{height:340px;min-width:0;position:relative;z-index:1;border-radius:22px;overflow:hidden}
+.mascot-canvas-wrap{height:430px;min-width:0;position:relative;z-index:1;border-radius:22px;overflow:hidden}
 #yupbro-3d-canvas{width:100%;height:100%;display:block;touch-action:pan-y}
 .mascot-canvas-wrap:after{content:"";position:absolute;left:12%;right:12%;bottom:13%;height:14px;border-radius:50%;background:#57e9ff26;filter:blur(18px);pointer-events:none}
 .mascot-hint{position:absolute;bottom:12px;right:14px;font-size:10px;color:#c4d7e0;background:#07121acc;border:1px solid #57e9ff44;border-radius:99px;padding:6px 9px;pointer-events:none}
@@ -204,7 +204,7 @@ footer a{color:var(--gold)}
 .yupbro-tap:active{transform:translateX(-50%) scale(.96)}
 .yupbro-tap:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 @media(max-width:720px){.yupbro-speech{top:9px;left:9px;font-size:11px}.yupbro-status{left:8px;right:8px;bottom:8px}.yupbro-status span{font-size:8px;padding:6px 7px}.yupbro-tap{bottom:43px;padding:9px 12px}}
-@media(max-width:720px){.mascot-stage{grid-template-columns:1fr;gap:4px;padding:17px;margin-bottom:26px}.mascot-copy{padding:5px 3px 0}.mascot-copy h2{font-size:31px}.mascot-copy p{font-size:14px}.mascot-canvas-wrap{height:280px;grid-row:1}.mascot-hint{bottom:8px;right:8px}}
+@media(max-width:720px){.mascot-stage{grid-template-columns:1fr;gap:4px;padding:17px;margin-bottom:26px}.mascot-copy{padding:5px 3px 0}.mascot-copy h2{font-size:31px}.mascot-copy p{font-size:14px}.mascot-canvas-wrap{height:350px;grid-row:1}.mascot-hint{bottom:8px;right:8px}}
 @media(prefers-reduced-motion:reduce){.mascot-stage *{scroll-behavior:auto!important}}
 
 
@@ -228,8 +228,8 @@ footer a{color:var(--gold)}
 .welcome-title{font-size:clamp(37px,7vw,70px);line-height:.98;letter-spacing:-.06em;margin:18px 0 10px;font-weight:1000}
 .welcome-title span{background:linear-gradient(100deg,#ffd34d,#fff1a6 38%,#57e9ff 78%);background-clip:text;-webkit-background-clip:text;color:transparent}
 .welcome-subtitle{max-width:590px;margin:0 auto;color:#d3d6e1;font-size:clamp(14px,2.5vw,17px);line-height:1.7}
-.welcome-character-slot{width:min(560px,100%);margin:4px auto 0;position:relative}
-.welcome-character-slot .mascot-canvas-wrap{height:clamp(340px,55vh,480px);border-radius:22px;min-height:340px}
+.welcome-character-slot{width:min(660px,100%);margin:4px auto 0;position:relative}
+.welcome-character-slot .mascot-canvas-wrap{height:clamp(440px,68vh,590px);border-radius:22px;min-height:440px}
 .welcome-character-slot .yupbro-speech{top:10px;left:10px}
 .welcome-character-slot .yupbro-status{bottom:8px}
 .welcome-character-slot .yupbro-tap{bottom:43px}
@@ -238,7 +238,7 @@ footer a{color:var(--gold)}
 .welcome-enter:focus-visible{outline:3px solid #57e9ff;outline-offset:4px}
 .welcome-foot{font-size:11px;color:#9da3b4;margin:15px 0 0}
 body.welcome-active{overflow:hidden}
-@media(max-width:560px){.welcome-gate{padding:12px}.welcome-inner{padding:19px 14px;border-radius:23px}.welcome-title{margin:15px 0 9px}.welcome-character-slot{width:min(100%,520px)}.welcome-character-slot .mascot-canvas-wrap{height:clamp(320px,48vh,420px);min-height:320px}.welcome-subtitle{font-size:14px}}
+@media(max-width:560px){.welcome-gate{padding:12px}.welcome-inner{padding:19px 14px;border-radius:23px}.welcome-title{margin:15px 0 9px}.welcome-character-slot{width:min(100%,620px)}.welcome-character-slot .mascot-canvas-wrap{height:clamp(390px,60vh,510px);min-height:390px}.welcome-subtitle{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.welcome-enter{transition:none}}
 
 
@@ -501,8 +501,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
  if(welcomeSlot&&liveWrap&&!welcomeSlot.contains(liveWrap)){
    welcomeSlot.appendChild(liveWrap);
    liveWrap.style.width='100%';
-   liveWrap.style.height='clamp(340px,55vh,480px)';
-   liveWrap.style.minHeight='340px';
+   liveWrap.style.height='clamp(440px,68vh,590px)';
+   liveWrap.style.minHeight='440px';
    liveWrap.style.display='block';
  }
  const canvas=document.getElementById('yupbro-3d-canvas');
@@ -518,7 +518,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   renderer.toneMappingExposure=1.2;
   scene=new THREE.Scene();
   camera=new THREE.PerspectiveCamera(34,wrap.clientWidth/wrap.clientHeight,.1,100);
-  camera.position.set(0,2.35,7.15);
+  camera.position.set(0,2.2,5.85);
   scene.add(new THREE.HemisphereLight(0xbfeeff,0x261322,2.2));
   const key=new THREE.DirectionalLight(0xffd477,3.2);key.position.set(4,7,5);scene.add(key);
   const rim=new THREE.PointLight(0x42dfff,18,12);rim.position.set(-4,3,2);scene.add(rim);
