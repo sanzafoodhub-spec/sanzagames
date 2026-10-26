@@ -555,6 +555,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const eyeGlints=[sphere(head,white,[-.13,.04,.37],[.015,.02,.01]),sphere(head,white,[.15,.04,.37],[.015,.02,.01])];
   const brows=[rod(head,hairmat,[-.25,.17,.31],[-.07,.19,.32],.025),rod(head,hairmat,[.07,.19,.32],[.25,.17,.31],.025)];
   const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),black);smile.position.set(.02,-.14,.31);smile.rotation.z=Math.PI;head.add(smile);
+  // A small mouth cavity sits behind the smile; animate it while speech is playing.
+  const talkingMouth=sphere(head,black,[.02,-.135,.326],[.105,.012,.025]);
+  const tongue=sphere(head,mat('#e96a78',.55),[.02,-.17,.347],[.045,.006,.008]);
+  talkingMouth.visible=false;tongue.visible=false;
   // Arms bent toward handlebars
   arms.push(new THREE.Group());arms.push(new THREE.Group());arms[0].position.set(-.29,.91,0);arms[1].position.set(.29,.91,0);body.add(arms[0],arms[1]);
   rod(arms[0],red,[0,0,0],[-.18,-.2,.04],.105);rod(arms[0],skin,[-.18,-.2,.04],[.42,.1,.12],.075);sphere(arms[0],skin,[.42,.1,.12],[.09,.09,.09]);
@@ -571,10 +575,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const speech=document.getElementById('yupbro-speech'),tapButton=document.getElementById('yupbro-tap');
   const moodLabel=document.getElementById('yupbro-mood'),tapScore=document.getElementById('yupbro-taps');
   const lines=['OH MY GARLIC NAAN! 😂','How are you, my Sanzation!','Easy there, I am on a scooty!','Brownies? Now you are talking!','YUPBRO IN THE HOUSE!','Mind the hair, bro!','What is wrong with you?','What do you want?','Bro, my hair has its own fan club!','Scooty first, worries later!','Who ordered extra crispy chaos?','I came. I saw. I ate the brownies!','Oi! No touching the hairstyle!','Catch me if you can, legend!','That was smoother than garlic naan!','Mum said be home before the brownies disappear!','This scooty runs on vibes and snacks!','One small spin, big SanZa energy!','You again? Sound, let’s go!','Respect the drip, bro!'];
+  let isSpeaking=false,speechPulse=0;
   function talk(line,pitch=1.12,rate=1.02){
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),1100)}
    if('speechSynthesis' in window){
-    try{window.speechSynthesis.cancel();const spokenLine=line.toLowerCase().replace(/\byupbro\b/g,'Yupbro');const utterance=new SpeechSynthesisUtterance(spokenLine);utterance.lang='en-IN';utterance.rate=rate;utterance.pitch=pitch;utterance.volume=.9;const voices=window.speechSynthesis.getVoices();const indianVoice=voices.find(v=>/^en-IN$/i.test(v.lang))||voices.find(v=>/^en-IN/i.test(v.lang))||voices.find(v=>/india|indian/i.test(v.name+' '+v.lang));if(indianVoice)utterance.voice=indianVoice;window.speechSynthesis.speak(utterance)}catch(e){console.info('Voice not available',e)}
+    try{window.speechSynthesis.cancel();isSpeaking=false;const spokenLine=line.toLowerCase().replace(/\byupbro\b/g,'Yupbro');const utterance=new SpeechSynthesisUtterance(spokenLine);utterance.lang='en-IN';utterance.rate=rate;utterance.pitch=pitch;utterance.volume=.9;utterance.onstart=()=>{isSpeaking=true;smile.visible=false;talkingMouth.visible=true;tongue.visible=true};utterance.onboundary=()=>{speechPulse=performance.now()+100};utterance.onend=()=>{isSpeaking=false;smile.visible=true;talkingMouth.visible=false;tongue.visible=false};utterance.onerror=()=>{isSpeaking=false;smile.visible=true;talkingMouth.visible=false;tongue.visible=false};const voices=window.speechSynthesis.getVoices();const indianVoice=voices.find(v=>/^en-IN$/i.test(v.lang))||voices.find(v=>/^en-IN/i.test(v.lang))||voices.find(v=>/india|indian/i.test(v.name+' '+v.lang));if(indianVoice)utterance.voice=indianVoice;window.speechSynthesis.speak(utterance)}catch(e){console.info('Voice not available',e)}
    }
   }
   function tapYupbro(){
@@ -611,6 +616,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);
    brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
    smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
+   if(isSpeaking){const syllable=Math.abs(Math.sin(now*.024))+Math.abs(Math.sin(now*.041))*.45;talkingMouth.scale.y=.012+syllable*.065+(now<speechPulse?.035:0);tongue.scale.y=.006+syllable*.018;}else{talkingMouth.scale.y=.012;tongue.scale.y=.006;}
    wheelA.rotation.z=-t*(2.7+rev);wheelB.rotation.z=-t*(2.7+rev);
    const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
    body.position.y=.62+Math.sin(t*4)*.035+(tricking?Math.max(0,trickPulse)*.22:0);
