@@ -7,6 +7,16 @@
 :root{color-scheme:dark;--bg:#08090d;--panel:#141620;--gold:#ffd34d;--muted:#b8bdcb;--line:#343746}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0%,#30230a 0,transparent 38%),radial-gradient(ellipse at 90% 10%,#25123a 0,transparent 34%),var(--bg);color:#fff;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
 .wrap{width:min(100% - 28px,850px);margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0;border-bottom:1px solid #ffffff17}.brand{color:var(--gold);font-weight:1000;text-decoration:none}.home,button{border:1px solid #665329;background:#211c0e;color:var(--gold);padding:12px 15px;border-radius:12px;text-decoration:none;font-weight:850;cursor:pointer;font:inherit}.hero{padding:30px 0 16px}.eyebrow{font-size:12px;letter-spacing:.16em;color:var(--gold);font-weight:900}.hero h1{font-size:clamp(36px,8vw,64px);line-height:1.02;margin:10px 0}.muted{color:var(--muted)}.panel{background:linear-gradient(145deg,#191b25,#101117);border:1px solid var(--line);border-radius:20px;padding:20px;margin:16px 0}.panel h2{margin:4px 0 8px;font-size:25px}.challenge{font-size:clamp(21px,5vw,32px);font-weight:900;line-height:1.25;margin:20px 0}.row{display:flex;flex-wrap:wrap;gap:10px}.primary{background:var(--gold);color:#17130a;border-color:var(--gold)}button:hover,.home:hover{filter:brightness(1.13)}.output{border:1px dashed #665329;border-radius:14px;padding:16px;margin-top:14px;font-size:20px;font-weight:850;min-height:70px}.mood-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.mood{background:#151722;border:1px solid #383b4b;color:white;width:100%;text-align:left;padding:15px;border-radius:14px}.mood span{display:block;font-size:24px;margin-bottom:4px}.note{font-size:12px;color:var(--muted)}footer{padding:22px 0 34px;color:var(--muted);font-size:12px}@media(max-width:500px){.panel{padding:16px}.mood-grid{grid-template-columns:1fr}.row button{flex:1}}
+
+
+/* SANZA DESIGN SYSTEM — lighter visual noise, clearer challenge panel */
+:root{--cyan:#e5c56a;--pink:#e5c56a;--line:#302b20;--panel:#11110f;--muted:#c1beb4}
+body{background:radial-gradient(ellipse at 50% -15%,#29200d 0,transparent 42%),#080808}
+.panel{background:linear-gradient(150deg,#191813,#10100e);border-color:#373020;box-shadow:0 12px 28px #0004}
+.hero h1{letter-spacing:-.04em;text-wrap:balance}
+button,.home{border-radius:12px}
+.output{border-color:#55451f;background:#12110d}
+
 </style></head>
 <body><header class="wrap top"><a class="brand" href="index.html">✨ SANZA GAMES</a><a class="home" href="index.html">🏠 HOME</a></header>
 <main class="wrap"><section class="hero"><div class="eyebrow">ONE SANZA · ONE FAMILY</div><h1>DAILY <span style="color:var(--gold)">CHAOS.</span> 💀</h1><p class="muted">Tiny challenges. Maximum craic. And Yup Bro has absolutely no chill.</p></section>
