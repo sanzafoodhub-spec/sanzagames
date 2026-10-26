@@ -606,7 +606,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // audio/Sanzalicious.m4a and audio/Banging.m4a
   const yupbroVoiceClips=['audio/Sanzalicious.m4a','audio/Banging.m4a'].map(src=>{const audio=new Audio(src);audio.preload='auto';return audio});
   let nextVoiceClip=0;
-  function talk(line,pitch=1.12,rate=1.02){
+  function speakFallback(line,pitch,rate){if(!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(line.toLowerCase().replace(/\\byupbro\\b/g,'Yupbro'));u.lang='en-IN';u.pitch=pitch;u.rate=rate;u.volume=.9;u.onstart=()=>setMouthTalking(true);u.onend=()=>setMouthTalking(false);u.onerror=()=>setMouthTalking(false);window.speechSynthesis.speak(u)}catch(e){setMouthTalking(false)}}\n  function talk(line,pitch=1.12,rate=1.02){
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
    try{
     if('speechSynthesis' in window)window.speechSynthesis.cancel();
@@ -616,7 +616,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     const finish=()=>setMouthTalking(false);
     clip.onended=finish;clip.onerror=finish;
     const playback=clip.play();
-    if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();});
+    if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();speakFallback(line,pitch,rate);});
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
   function tapYupbro(){
