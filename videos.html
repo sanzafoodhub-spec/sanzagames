@@ -37,6 +37,27 @@ input{width:100%;padding:14px;border-radius:9px;border:1px solid #555;background
 .note{color:var(--muted);font-size:14px;line-height:1.5}
 footer{text-align:center;padding:24px;color:#aaa;border-top:1px solid #333}
 footer a{margin:0 8px}
+
+
+/* SANZA DESIGN SYSTEM — polished content layout */
+body{background:radial-gradient(ellipse at 50% -15%,#29200d 0,transparent 42%),#080808;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+header{background:linear-gradient(145deg,#17150f,#0d0d0c);border-bottom:1px solid #4b3b1c;padding:28px 16px}
+header p{color:#c7c4bb}
+main{max-width:1080px;padding:clamp(16px,3vw,30px) 14px}
+section{margin-bottom:18px}
+.panel,.video-card{background:linear-gradient(150deg,#181711,#10100e);border:1px solid #363020;border-radius:18px;box-shadow:0 12px 28px #0004}
+.panel{padding:clamp(16px,3vw,24px)}
+h1,h2{letter-spacing:-.025em}
+h2{font-size:clamp(20px,3vw,25px)}
+a{color:#f5d77c}
+button,.button{border-radius:12px;transition:transform .18s ease,border-color .18s ease}
+button:hover,.button:hover{transform:translateY(-1px)}
+input{background:#10100e;border-color:#403b2e;border-radius:12px;min-height:48px}
+.video-card{overflow:hidden}
+.video-card img{background:#181711}
+footer{padding:26px 16px;color:#bdb9ae;border-top:1px solid #29251b}
+@media(max-width:600px){header{padding:23px 14px}.channel{align-items:flex-start}.channel img{width:72px;height:72px}.actions>*{flex:1;text-align:center}}
+
 </style>
 </head>
 <body>

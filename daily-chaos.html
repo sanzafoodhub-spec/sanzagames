@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080808">
+<meta name="description" content="Try SanZa Daily Chaos challenges and get a funny Yup Bro reaction."><title>Daily Chaos | SanZa Games</title><link rel="icon" href="sanza-logo.png">
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#141620;--gold:#ffd34d;--muted:#b8bdcb;--line:#343746}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0%,#30230a 0,transparent 38%),radial-gradient(ellipse at 90% 10%,#25123a 0,transparent 34%),var(--bg);color:#fff;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+.wrap{width:min(100% - 28px,850px);margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0;border-bottom:1px solid #ffffff17}.brand{color:var(--gold);font-weight:1000;text-decoration:none}.home,button{border:1px solid #665329;background:#211c0e;color:var(--gold);padding:12px 15px;border-radius:12px;text-decoration:none;font-weight:850;cursor:pointer;font:inherit}.hero{padding:30px 0 16px}.eyebrow{font-size:12px;letter-spacing:.16em;color:var(--gold);font-weight:900}.hero h1{font-size:clamp(36px,8vw,64px);line-height:1.02;margin:10px 0}.muted{color:var(--muted)}.panel{background:linear-gradient(145deg,#191b25,#101117);border:1px solid var(--line);border-radius:20px;padding:20px;margin:16px 0}.panel h2{margin:4px 0 8px;font-size:25px}.challenge{font-size:clamp(21px,5vw,32px);font-weight:900;line-height:1.25;margin:20px 0}.row{display:flex;flex-wrap:wrap;gap:10px}.primary{background:var(--gold);color:#17130a;border-color:var(--gold)}button:hover,.home:hover{filter:brightness(1.13)}.output{border:1px dashed #665329;border-radius:14px;padding:16px;margin-top:14px;font-size:20px;font-weight:850;min-height:70px}.mood-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.mood{background:#151722;border:1px solid #383b4b;color:white;width:100%;text-align:left;padding:15px;border-radius:14px}.mood span{display:block;font-size:24px;margin-bottom:4px}.note{font-size:12px;color:var(--muted)}footer{padding:22px 0 34px;color:var(--muted);font-size:12px}@media(max-width:500px){.panel{padding:16px}.mood-grid{grid-template-columns:1fr}.row button{flex:1}}
+
+
+/* SANZA DESIGN SYSTEM — lighter visual noise, clearer challenge panel */
+:root{--cyan:#e5c56a;--pink:#e5c56a;--line:#302b20;--panel:#11110f;--muted:#c1beb4}
+body{background:radial-gradient(ellipse at 50% -15%,#29200d 0,transparent 42%),#080808}
+.panel{background:linear-gradient(150deg,#191813,#10100e);border-color:#373020;box-shadow:0 12px 28px #0004}
+.hero h1{letter-spacing:-.04em;text-wrap:balance}
+button,.home{border-radius:12px}
+.output{border-color:#55451f;background:#12110d}
+
+</style></head>
+<body><header class="wrap top"><a class="brand" href="index.html">✨ SANZA GAMES</a><a class="home" href="index.html">🏠 HOME</a></header>
+<main class="wrap"><section class="hero"><div class="eyebrow">ONE SANZA · ONE FAMILY</div><h1>DAILY <span style="color:var(--gold)">CHAOS.</span> 💀</h1><p class="muted">Tiny challenges. Maximum craic. And Yup Bro has absolutely no chill.</p></section>
+<section class="panel" aria-labelledby="challenge-title"><div class="eyebrow">🔥 TODAY'S CHALLENGE</div><h2 id="challenge-title">Can you handle it?</h2><div class="challenge" id="challenge">Loading today's chaos…</div><div class="row"><button class="primary" id="new-challenge" type="button">🎲 Give me another</button><button id="copy-challenge" type="button">📋 Copy challenge</button></div><p class="note">Challenges rotate by date. No account needed — just play for fun.</p><div class="output" id="challenge-result" aria-live="polite">Your mission awaits, legend.</div></section>
+<section class="panel" aria-labelledby="meme-title"><div class="eyebrow">😎 YUP BRO MEME MACHINE</div><h2 id="meme-title">What's your vibe, bro?</h2><p class="muted">Pick a mood and get a fresh Yup Bro reaction. Harmless banter only — no personal attacks.</p><div class="mood-grid">
+<button class="mood" data-mood="cooked"><span>💀</span>I'm cooked</button><button class="mood" data-mood="locked"><span>🎯</span>Locked in</button><button class="mood" data-mood="delulu"><span>🫠</span>Delulu mode</button><button class="mood" data-mood="aura"><span>🕶️</span>Aura farming</button><button class="mood" data-mood="hype"><span>🔥</span>Hype me up</button><button class="mood" data-mood="random"><span>🎲</span>Surprise me</button>
+</div><div class="output" id="meme-output" aria-live="polite">Tap your mood. Yup Bro is warming up the craic…</div><div class="row" style="margin-top:12px"><button class="primary" id="another-meme" type="button">🔁 Another reaction</button><button id="copy-meme" type="button">📋 Copy reaction</button></div></section>
+<p class="note">SanZa Daily Chaos is a fun mini-feature. Scores and reactions aren't stored or posted publicly.</p></main><footer class="wrap">© SanZa Games · One Family. One SanZa. · <a href="privacy.html">Privacy</a></footer>
+<script>
+(function(){
+const challenges=[
+"Do 5 dramatic slow-motion victory poses. Extra points for sound effects.",
+"Say “I'm absolutely locked in” without laughing. Go on, bro.",
+"Find something gold near you in 10 seconds. Ready? GO!",
+"Invent a new SanZa game title in 15 seconds. It has to sound chaotic.",
+"Do your best Yup Bro catchphrase like you're in a movie trailer.",
+"Name 3 things that instantly give you main-character energy.",
+"Try not to smile for 10 seconds while imagining a cat wearing sunglasses.",
+"Make up a one-line roast for your own gaming skills. Keep it kind!",
+"Pick a random object nearby and pitch it like it's a legendary power-up.",
+"Describe your day using only three emojis. No explanations, bro."
+];
+const today=new Date();const dayKey=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
+let challengeIndex=dayKey%challenges.length;let memeMood="random";let memeIndex=0;
+const reactions={
+cooked:["BROOO 💀 Your last brain cell just clocked out.","You're not finished, bro. You're the post-credit scene.","System status: cooked. Vibes status: somehow still immaculate."],
+locked:["LOCKED IN. Notifications off. Main-character music ON.","The focus is outrageous. Someone hide the side quests.","Bro entered productivity mode. The lore is changing."],
+delulu:["Delulu? Nah bro, that's premium imagination with a gold subscription.","Manifesting so hard the universe put you on mute.","Reality called. You let it go to voicemail."],
+aura:["+1000 aura for absolutely no reason. Keep moving.","Bro's aura entered the room three seconds before he did.","Aura farming detected. The fit is loading…"],
+hype:["YOU'VE GOT THIS, LEGEND. ABSOLUTE SANZATION ENERGY! 🔥","Stand tall, chin up. Today's plot twist is your comeback.","Big energy. Brave moves. One step at a time, bro."],
+random:["Bro has side-quest energy and a main-character budget of €2.","The vibes are vibing. The plot is plotting. Proceed.","Yup Bro checked the plan. There was no plan. Perfect."]
+};
+function showChallenge(){document.getElementById("challenge").textContent=challenges[challengeIndex];document.getElementById("challenge-result").textContent="Your mission awaits, legend."}
+function pickChallenge(){let next=Math.floor(Math.random()*challenges.length);if(challenges.length>1&&next===challengeIndex)next=(next+1)%challenges.length;challengeIndex=next;showChallenge()}
+function pickMeme(mood){memeMood=mood||memeMood;const arr=reactions[memeMood]||reactions.random;let next=Math.floor(Math.random()*arr.length);if(arr.length>1&&next===memeIndex)next=(next+1)%arr.length;memeIndex=next;document.getElementById("meme-output").textContent=arr[next]}
+function copyFrom(id){const text=document.getElementById(id).textContent;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>{document.getElementById(id).textContent=text+"  ✓ Copied!"}).catch(()=>window.prompt("Copy your text:",text))}else{window.prompt("Copy your text:",text)}}
+showChallenge();document.getElementById("new-challenge").addEventListener("click",pickChallenge);
+document.getElementById("copy-challenge").addEventListener("click",()=>copyFrom("challenge"));
+document.querySelectorAll("[data-mood]").forEach(btn=>btn.addEventListener("click",()=>pickMeme(btn.getAttribute("data-mood"))));
+document.getElementById("another-meme").addEventListener("click",()=>pickMeme(memeMood));
+document.getElementById("copy-meme").addEventListener("click",()=>copyFrom("meme-output"));
+})();
+</script></body></html>

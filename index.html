@@ -1,289 +1,749 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="Discover SanZa Games, SanZa Food Hub and halal food in Dublin, girls' birthday-party booking and SanZa Grinds learning-support information. Serving the SanZa community around Finglas and nearby Dublin areas.">
-<title>SanZa Games, Halal Food & Girls' Parties | Dublin</title>
+<meta name="description" content="Discover SanZa Games, original family-friendly browser games, SanZa Food Hub and SanZa Grinds in Dublin. Run, ride, smash and play with the SanZa crew.">
+<title>SanZa Games | One Family. One SanZa.</title>
+<link rel="icon" href="sanza-logo.png">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6388038197791086" crossorigin="anonymous"></script>
 <style>
-:root{--gold:#ffd34d;--bg:#080808;--panel:#151515;--muted:#c0c0c0}
+:root{color-scheme:dark;--bg:#08090d;--panel:#11131b;--panel2:#171a24;--gold:#ffd34d;--cyan:#57e9ff;--pink:#ff68c7;--purple:#a995ff;--green:#a5ff80;--muted:#b8bdcb;--line:#2a2e3c}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:radial-gradient(ellipse at 50% 0%,#382908 0%,#080808 55%);color:#fff;font-family:Arial,Helvetica,sans-serif}
+html{scroll-behavior:smooth;scroll-padding-top:85px}
+body{margin:0;background:radial-gradient(ellipse at 10% 0%,#30230a 0,transparent 30%),radial-gradient(ellipse at 90% 10%,#16143a 0,transparent 32%),var(--bg);color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#fff 0.6px,transparent .6px);background-size:24px 24px;z-index:-1}
 a{color:inherit}
-.wrap{width:min(1050px,92%);margin:auto}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid #333}
-.brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:900;letter-spacing:1.5px}
-.logo{width:43px;height:43px;object-fit:contain}
+.wrap{width:min(1120px,92%);margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px max(4%,calc((100% - 1120px)/2));background:#0d1018;border-bottom:1px solid #272b39;font-size:12px}
+.weather-widget{display:flex;align-items:center;gap:9px;min-width:0;color:#e8eaf2}.weather-symbol{font-size:22px;line-height:1}.weather-main{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}.weather-temp{font-size:16px;font-weight:1000;color:var(--cyan)}.weather-location{font-weight:900}.weather-condition{color:var(--muted)}.weather-status{font-size:10px;color:#8991a5}.scores-link{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;border:1px solid #554526;background:#1b180f;color:var(--gold);text-decoration:none;padding:9px 12px;border-radius:10px;font-weight:1000;font-size:11px;transition:background .2s,border-color .2s}.scores-link:hover{background:#292111;border-color:var(--gold)}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:#090a0de8;border-bottom:1px solid #292b36}
+.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:1000;letter-spacing:1.2px;font-size:17px}
+.logo{width:43px;height:43px;object-fit:contain;filter:drop-shadow(0 0 12px #ffd34d44)}
 .gold{color:var(--gold)}
-.tag{font-size:10px;color:var(--gold);border:1px solid #65501c;border-radius:30px;padding:9px;white-space:nowrap}
-.hero{text-align:center;padding:65px 0 45px}
-.eyebrow{color:var(--gold);font-size:12px;font-weight:bold;letter-spacing:4px}
-h1{font-size:clamp(43px,10vw,84px);line-height:.98;letter-spacing:-3px;margin:22px 0}
-.intro{max-width:620px;margin:0 auto;color:#d0d0d0;font-size:17px;line-height:1.7}
-.pills{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:24px 0}
-.pill{background:#171717;border:1px solid #39332a;padding:10px 13px;border-radius:30px;font-size:12px}
-.btn{display:inline-block;background:var(--gold);color:#111;text-decoration:none;font-weight:900;font-size:13px;padding:15px 18px;border-radius:11px;text-align:center}
-.btn:hover{filter:brightness(1.1)}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0}
-.section-head h2{font-size:29px;margin:0}
-.section-head p{color:var(--muted);font-size:13px}
-.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
-.game{background:linear-gradient(145deg,#201b10,#121212 70%);border:1px solid #514321;border-radius:22px;padding:25px;display:flex;flex-direction:column;align-items:flex-start;min-height:310px}
-.game-icon{display:grid;place-items:center;width:65px;height:65px;border-radius:18px;background:#30260d;border:1px solid #645020;font-size:36px}
-.game h3{font-size:27px;margin:20px 0 8px}
-.game p{color:var(--muted);font-size:14px;line-height:1.7;margin:0 0 23px}
-.game .btn{margin-top:auto;width:100%}
-.label{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:2px}
-.coming{margin-top:17px;border:1px dashed #514321;border-radius:18px;padding:20px;background:#101010}
-.coming h3{margin:8px 0;font-size:21px}
-.coming p{color:var(--muted);line-height:1.6;font-size:14px;margin:0}
-.food{text-align:center;margin:40px 0;padding:30px 18px;background:linear-gradient(110deg,#241b08,#141414);border:1px solid #514321;border-radius:22px}
-.food h2{font-size:clamp(25px,5vw,35px);margin:10px 0}
-.food p{color:#d0d0d0;line-height:1.7}
-.social{text-align:center;padding:18px 0 35px}
-.social h2{font-size:25px}
-.social-links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0}
-.social-links a{border:1px solid #4a4026;background:#151515;padding:12px 15px;border-radius:10px;text-decoration:none;font-size:13px}
-.social-links a:hover{border-color:var(--gold)}
-footer{text-align:center;border-top:1px solid #333;padding:24px 0 30px;color:#aaa;font-size:12px;line-height:2.2}
+.navlinks{display:flex;align-items:center;gap:8px}
+.navlinks a{font-size:12px;font-weight:800;color:#d9dce7;text-decoration:none;padding:10px 12px;border-radius:10px}
+.navlinks a:hover{background:#202330;color:var(--gold)}
+.navlinks .home-return{display:inline-flex;align-items:center;background:#1b180f;border:1px solid #554526;color:var(--gold);border-radius:10px;font-weight:1000}
+@media(max-width:720px){.navlinks .home-return{display:inline-flex!important}.navlinks .nav-cta{display:inline-flex!important}}
+.nav-cta{background:var(--gold)!important;color:#111!important}
+.hero{position:relative;text-align:center;padding:52px 0 34px;isolation:isolate}
+.hero:before{width:220px;height:220px;top:28px}
+.hero h1{font-size:clamp(38px,8vw,76px);letter-spacing:-.065em;line-height:.98;margin:22px 0 16px}
+.hero .intro{max-width:720px;line-height:1.7}
+.hero .hero-actions{margin:22px 0 8px}
+.hero-tags{display:none}
+.hero:before{content:"";position:absolute;z-index:-1;width:280px;height:280px;left:calc(50% - 140px);top:38px;background:#ffca3822;filter:blur(65px);border-radius:50%}
+.kicker{display:inline-flex;align-items:center;gap:8px;border:1px solid #4a4025;background:#15130e;border-radius:999px;padding:9px 14px;color:var(--gold);font-size:11px;font-weight:900;letter-spacing:2px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+h1{font-size:clamp(48px,10vw,100px);letter-spacing:-.075em;line-height:.9;margin:27px 0 20px;font-weight:1000}
+.hero-title{display:block;color:#fff;background:none;-webkit-text-fill-color:#fff}
+.intro{max-width:660px;margin:0 auto;color:#c9ccda;font-size:clamp(15px,2.5vw,18px);line-height:1.75}
+.hero-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:27px 0 20px}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:47px;padding:13px 18px;border-radius:13px;text-decoration:none;font-size:12px;font-weight:1000;letter-spacing:.35px;background:var(--gold);color:#101014;border:1px solid transparent;box-shadow:0 7px 25px #ffd34d19;transition:transform .2s,box-shadow .2s,border-color .2s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px #ffd34d28}
+.btn-ghost{background:#151722;color:#fff;border-color:#373b4b;box-shadow:none}
+.btn-ghost:hover{border-color:var(--cyan)}
+.hero-tags{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:24px}
+.pill{font-size:11px;color:#d9dce7;background:#11131b;border:1px solid #292d3b;border-radius:999px;padding:9px 12px}
+.pill:nth-child(2){border-color:#5b3c69}.pill:nth-child(3){border-color:#315966}
+.section{padding:25px 0 35px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:0 0 20px}
+.section-head h2{font-size:clamp(27px,5vw,38px);line-height:1.1;letter-spacing:-1.4px;margin:7px 0}
+.section-head p{max-width:550px;color:var(--muted);font-size:13px;line-height:1.7;margin:0}
+.eyebrow{font-size:10px;letter-spacing:2.5px;color:var(--gold);font-weight:1000}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.game{position:relative;isolation:isolate;overflow:hidden;min-height:300px;padding:24px;border-radius:23px;background:linear-gradient(145deg,#191b27,#101118 72%);border:1px solid var(--line);display:flex;flex-direction:column;align-items:flex-start;transition:transform .22s,border-color .22s,box-shadow .22s}
+.game:before{content:"";position:absolute;z-index:-1;width:170px;height:170px;right:-48px;top:-55px;border-radius:50%;background:var(--accent,var(--gold));opacity:.12;filter:blur(2px);transition:transform .3s,opacity .3s}
+.game:hover{transform:translateY(-5px);border-color:var(--accent,var(--gold));box-shadow:0 15px 40px #0005}
+.game:hover:before{transform:scale(1.3);opacity:.2}
+.game:nth-child(4n+1){--accent:var(--gold)}.game:nth-child(4n+2){--accent:var(--cyan)}.game:nth-child(4n+3){--accent:var(--pink)}.game:nth-child(4n){--accent:var(--purple)}
+.game-top{display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px}
+.game-icon{display:grid;place-items:center;width:66px;height:66px;border-radius:20px;background:#ffffff08;border:1px solid color-mix(in srgb,var(--accent) 50%,#333);font-size:36px;box-shadow:inset 0 0 20px color-mix(in srgb,var(--accent) 10%,transparent)}
+.game-number{font-size:10px;color:#858b9e;font-weight:900;letter-spacing:2px}
+.label{margin-top:18px;color:var(--accent);font-size:10px;font-weight:1000;letter-spacing:1.7px}
+.game h3{font-size:clamp(23px,4vw,30px);letter-spacing:-.8px;margin:9px 0}
+.game p{color:var(--muted);font-size:13px;line-height:1.75;margin:0 0 22px;max-width:440px}
+.game .btn{margin-top:auto;width:100%;background:var(--accent);box-shadow:none}
+.coming{margin-top:16px;border:1px dashed #3b3e4d;border-radius:18px;padding:20px;background:#101118;display:flex;align-items:center;gap:15px}
+.coming-icon{font-size:30px}.coming h3{margin:0 0 5px}.coming p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.education-shell{display:grid;grid-template-columns:1.1fr .9fr;gap:25px;align-items:center;padding:clamp(23px,5vw,46px);border:1px solid #3b365b;border-radius:26px;background:radial-gradient(ellipse at 100% 0%,#25205a88,transparent 45%),linear-gradient(135deg,#171521,#10131b 70%);overflow:hidden;position:relative}
+.education-copy{position:relative;z-index:1}.education-icon{font-size:37px;margin-top:22px;filter:drop-shadow(0 0 18px #57e9ff55)}.education-label{font-size:10px;letter-spacing:2.5px;color:var(--cyan);font-weight:1000;margin:7px 0}
+.education-copy h2{font-size:clamp(30px,5vw,48px);letter-spacing:-1.8px;line-height:1.06;margin:12px 0}.education-copy h2 span{color:var(--cyan)}.education-intro{max-width:510px;color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 22px}.education-btn{background:var(--cyan);color:#081116}
+.education-subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.subject-card{min-height:135px;padding:19px;border:1px solid #34374b;border-radius:18px;background:#0d1019dd;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;transition:transform .2s,border-color .2s}.subject-card:hover{transform:translateY(-4px);border-color:var(--cyan)}.subject-card span{font-size:27px}.subject-card strong{font-size:16px}.subject-card small{font-size:11px;color:var(--muted)}
+.hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.hub-card{border-radius:20px;padding:23px;background:linear-gradient(145deg,#191b26,#111219);border:1px solid var(--line)}
+.hub-card .emoji{font-size:31px}.hub-card h3{margin:13px 0 8px;font-size:20px}.hub-card p{font-size:13px;color:var(--muted);line-height:1.75;margin:0 0 18px}.hub-card .btn{width:100%;font-size:11px;padding:12px}
+.hub-card.food-card{border-color:#655126}.hub-card.food-card .btn{background:var(--gold)}
+.hub-card.learn-card{border-color:#284c58}.hub-card.learn-card .btn{background:var(--cyan)}
+.hub-card.party-card{border-color:#5b3c69}.hub-card.party-card .btn{background:var(--pink)}
+.info-panel{margin-top:18px;padding:28px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(120deg,#151721,#101117)}
+.info-panel h2{margin:8px 0 12px;font-size:clamp(23px,4vw,32px);letter-spacing:-1px}
+.info-panel p{color:var(--muted);font-size:13px;line-height:1.8;max-width:900px}
+.guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:18px}
+.guide{padding:17px;border-radius:15px;background:#0c0e14;border:1px solid #252938}
+.guide h3{font-size:15px;margin:0 0 8px}.guide p{margin:0;font-size:12px}
+.video-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:25px;border:1px solid #4b334c;border-radius:21px;background:linear-gradient(110deg,#211321,#13141e);margin-top:18px}
+.video-banner h2{margin:7px 0;font-size:25px}.video-banner p{color:var(--muted);font-size:13px;line-height:1.6;margin:0}
+.social{text-align:center;padding:40px 0 35px}
+.social h2{font-size:clamp(24px,5vw,33px);margin:0 0 8px}.social p{color:var(--muted);line-height:1.7;font-size:13px}
+.social-links{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:20px 0}
+.social-links a{border:1px solid #333747;background:#141620;padding:12px 15px;border-radius:11px;text-decoration:none;font-size:12px;font-weight:800;transition:border-color .2s,transform .2s}
+.social-links a:hover{border-color:var(--gold);transform:translateY(-2px)}
+footer{text-align:center;border-top:1px solid #292c38;padding:25px 0 30px;color:#9da3b4;font-size:12px;line-height:2.1}
 footer a{color:var(--gold)}
-@media(max-width:620px){.hero{padding:48px 0 30px}header{align-items:center}.brand{font-size:15px;gap:6px}.logo{width:35px;height:35px}.tag{font-size:9px;padding:8px 6px}h1{letter-spacing:-2px}.intro{font-size:15px}.games{grid-template-columns:1fr}.game{min-height:275px;padding:22px}.section-head{display:block}.section-head p{margin-top:8px}.food{padding:25px 15px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.reveal{animation:rise .65s both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){.topbar{padding:8px 4%;gap:8px}.weather-main{gap:5px}.weather-temp{font-size:14px}.weather-condition{display:none}.weather-status{font-size:9px}.scores-link{font-size:9px;padding:9px 8px}.navlinks a:not(.nav-cta){display:none}.education-shell{grid-template-columns:1fr;gap:24px}.subject-card{min-height:115px;padding:15px}.nav{min-height:64px}.navlinks a:not(.nav-cta){display:none}.brand{font-size:14px}.logo{width:37px;height:37px}.hero{padding:55px 0 35px}.section-head{display:block}.section-head p{margin-top:10px}.games{grid-template-columns:1fr}.game{min-height:270px;padding:21px}.hub-grid{grid-template-columns:1fr}.hub-card{padding:21px}.guide-grid{grid-template-columns:1fr}.video-banner{padding:22px}.section{padding:20px 0 28px}}
+/* Clean homepage pass: clearer hierarchy, calmer spacing, games first */
+.hero{padding:38px 0 24px}
+.hero:before{width:180px;height:180px;top:22px;filter:blur(55px)}
+.hero .kicker{letter-spacing:1.3px}
+.hero h1{font-size:clamp(34px,7vw,66px);line-height:1.02;letter-spacing:-.055em;margin:18px 0 14px}
+.hero .intro{max-width:610px;font-size:clamp(14px,2vw,16px);line-height:1.65}
+.hero .hero-actions{margin:18px 0 0}
+.hero-tags{display:none}
+#games{padding-top:18px}
+#games .section-head{display:block;margin-bottom:15px}
+#games .section-head p{display:none}
+#games .section-head h2{font-size:clamp(25px,4vw,32px);margin-top:5px}
+#games .games{gap:12px}
+#games .game{min-height:290px;padding:19px;border-radius:18px}
+.mascot-stage{margin-top:8px;margin-bottom:26px}
+#sanza-hub .section-head p{display:none}
+#sanza-hub .hub-grid{gap:12px}
+.newsletter{margin-top:24px}
+@media(max-width:720px){
+ .hero{padding:30px 0 18px}
+ .hero h1{font-size:clamp(33px,9vw,48px);line-height:1.04;margin:17px 0 12px}
+ .hero .intro{font-size:14px;line-height:1.6}
+ #games{padding-top:12px}
+ #games .section-head h2{font-size:27px}
+ #games .game{min-height:245px;padding:18px}
+ .mascot-stage{margin-top:4px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Arcade polish pass: scroll reveals, responsive touch feedback and character-card motion */
+.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner{will-change:transform,opacity}
+.game-icon{animation:iconBob 3.8s ease-in-out infinite}
+.game:nth-child(2) .game-icon{animation-delay:.35s}
+.game:nth-child(3) .game-icon{animation-delay:.7s}
+.game:nth-child(4) .game-icon{animation-delay:1.05s}
+.game:nth-child(5) .game-icon{animation-delay:1.4s}
+.game.is-visible,.hub-card.is-visible,.subject-card.is-visible,.coming.is-visible,.info-panel.is-visible,.video-banner.is-visible{animation:arcadeEnter .55s cubic-bezier(.2,.75,.25,1) both}
+.game:nth-child(2).is-visible,.hub-card:nth-child(2).is-visible,.subject-card:nth-child(2).is-visible{animation-delay:.08s}
+.game:nth-child(3).is-visible,.hub-card:nth-child(3).is-visible,.subject-card:nth-child(3).is-visible{animation-delay:.16s}
+.game:nth-child(4).is-visible,.subject-card:nth-child(4).is-visible{animation-delay:.24s}
+.game:active,.hub-card:active,.subject-card:active{transform:scale(.985)}
+.game .btn:focus-visible,.btn:focus-visible,.navlinks a:focus-visible,.scores-link:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+@keyframes iconBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-3deg)}}
+@keyframes arcadeEnter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(hover:none){.game:hover,.hub-card:hover,.subject-card:hover{transform:none;box-shadow:none}}
+
+
+/* Character-art pass: make the SanZa crew the stars of each arcade card */
+.game{min-height:345px;padding:23px;isolation:isolate}
+.game-top{position:relative;min-height:126px;align-items:flex-start}
+.game-icon{position:relative;display:grid;place-items:center;width:112px;height:112px;flex:0 0 112px;border-radius:30px;font-size:57px;line-height:1;background:radial-gradient(circle at 35% 25%,color-mix(in srgb,var(--accent) 34%,#fff 4%),color-mix(in srgb,var(--accent) 10%,#171923) 60%,#0b0d13);border:1px solid color-mix(in srgb,var(--accent) 68%,#333);box-shadow:0 12px 32px color-mix(in srgb,var(--accent) 12%,transparent),inset 0 0 24px #ffffff0b;overflow:hidden;animation:iconBob 3.8s ease-in-out infinite}
+.game-icon:before{content:"";position:absolute;width:72px;height:72px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:50%;transform:translate(22px,25px)}
+.game-icon:after{content:"✦";position:absolute;right:12px;top:10px;font-size:16px;color:var(--accent);text-shadow:0 0 12px var(--accent);animation:twinkle 2.3s ease-in-out infinite}
+.game-number{border:1px solid #35394a;border-radius:999px;background:#0b0d13;padding:8px 10px}
+.game:nth-child(1) .game-icon{transform:rotate(-3deg)}
+.game:nth-child(2) .game-icon{border-radius:35px 25px 35px 25px}
+.game:nth-child(3) .game-icon{border-radius:26px;background:radial-gradient(circle at 35% 25%,#ff68c744,#171923 68%,#0b0d13)}
+.game:nth-child(4) .game-icon{border-radius:50% 50% 28px 28px}
+.game:nth-child(5) .game-icon{border-radius:24px 34px 24px 34px}
+.game .label{margin-top:11px}
+.game h3{margin-top:8px}
+@keyframes twinkle{0%,100%{opacity:.5;transform:scale(.85) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(25deg)}}
+@media(max-width:720px){.game{min-height:315px;padding:20px}.game-top{min-height:105px}.game-icon{width:91px;height:91px;flex-basis:91px;font-size:47px;border-radius:25px}.game-icon:before{width:58px;height:58px}.game-icon:after{right:9px;top:8px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){.game-icon:after{animation:none!important}}
+
+
+/* SanZa Crew spotlight: CSS-only character presentation, no generated image assets */
+.game{position:relative;isolation:isolate;overflow:hidden;border-color:#35394b;transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease}
+.game:before{content:"";position:absolute;inset:auto -35px -70px auto;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent,#ffd34d) 18%,transparent),transparent 70%);z-index:-1;pointer-events:none}
+.game:after{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--accent,#ffd34d),transparent);opacity:.7}
+.game:hover{transform:translateY(-7px);border-color:color-mix(in srgb,var(--accent,#ffd34d) 70%,#fff);box-shadow:0 18px 44px #0008,0 0 28px color-mix(in srgb,var(--accent,#ffd34d) 12%,transparent)}
+.game-top{align-items:center;gap:15px;margin-bottom:15px}
+.game-icon{font-size:61px;text-shadow:0 7px 0 #0006,0 0 22px color-mix(in srgb,var(--accent,#ffd34d) 35%,transparent);filter:drop-shadow(0 8px 8px #0007);transition:filter .25s ease,transform .25s ease}
+.game:hover .game-icon{filter:drop-shadow(0 10px 12px color-mix(in srgb,var(--accent,#ffd34d) 30%,transparent));transform:translateY(-3px) rotate(-4deg) scale(1.06)}
+.game:nth-child(1){--accent:#ffd34d}.game:nth-child(2){--accent:#57e9ff}.game:nth-child(3){--accent:#ff68c7}.game:nth-child(4){--accent:#a995ff}.game:nth-child(5){--accent:#a5ff80}
+.game .label{color:var(--accent,#ffd34d);letter-spacing:.14em;font-weight:800}
+.game h3{letter-spacing:.025em;text-shadow:0 2px 18px color-mix(in srgb,var(--accent,#ffd34d) 13%,transparent)}
+.game .btn{box-shadow:0 7px 22px color-mix(in srgb,var(--accent,#ffd34d) 13%,transparent)}
+.hero-tags .pill{border-color:#3a3d4b;background:linear-gradient(135deg,#171923dd,#101117dd);box-shadow:inset 0 1px #ffffff0b,0 5px 18px #0003}
+@media(max-width:720px){.game-top{gap:12px}.game-icon{font-size:50px}.game:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.game,.game-icon{transition:none!important}.game:hover .game-icon{transform:none}}
+
+
+/* Live 3D mascot showcase */
+.mascot-stage{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:24px;margin:8px auto 34px;padding:24px;border:1px solid #34384a;border-radius:28px;overflow:hidden;background:radial-gradient(ellipse at 75% 45%,#11313d 0,transparent 42%),radial-gradient(ellipse at 15% 80%,#39200e 0,transparent 42%),linear-gradient(135deg,#151722,#090a10 70%);box-shadow:0 22px 65px #0006}
+.mascot-stage:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(90deg,transparent,#000)}
+.mascot-copy{position:relative;z-index:1;padding:12px 8px 12px 12px}
+.mascot-kicker{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
+.mascot-copy h2{font-size:clamp(27px,4vw,44px);line-height:1.05;margin:12px 0;background:linear-gradient(100deg,#fff,var(--cyan),var(--gold));background-clip:text;-webkit-background-clip:text;color:transparent}
+.mascot-copy p{max-width:430px;color:var(--muted);line-height:1.7}
+.mascot-badges{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 20px}
+.mascot-badges span{border:1px solid #ffffff20;background:#ffffff08;border-radius:99px;padding:7px 10px;font-size:11px;font-weight:800}
+.mascot-canvas-wrap{height:430px;min-width:0;position:relative;z-index:1;border-radius:22px;overflow:hidden}
+#yupbro-3d-canvas{width:100%;height:100%;display:block;touch-action:pan-y}
+.mascot-canvas-wrap:after{content:"";position:absolute;left:12%;right:12%;bottom:13%;height:14px;border-radius:50%;background:#57e9ff26;filter:blur(18px);pointer-events:none}
+.mascot-hint{position:absolute;bottom:12px;right:14px;font-size:10px;color:#c4d7e0;background:#07121acc;border:1px solid #57e9ff44;border-radius:99px;padding:6px 9px;pointer-events:none}
+.mascot-stage .btn{box-shadow:0 8px 28px #57e9ff20}
+.yupbro-speech{position:absolute;z-index:3;top:13px;left:13px;max-width:78%;padding:10px 13px;border:1px solid #57e9ff66;border-radius:14px 14px 14px 4px;background:#08121eef;color:#fff;font-size:12px;font-weight:900;box-shadow:0 8px 25px #0005;pointer-events:none;transition:transform .2s,border-color .2s}
+.yupbro-speech.is-talking{transform:translateY(-3px) scale(1.03);border-color:var(--gold)}
+.yupbro-speech.is-talking{animation:yupbroBubble .42s ease-in-out 2;box-shadow:0 0 28px #57e9ff30,0 8px 25px #0005}
+.yupbro-tap.yupbro-pop{animation:yupbroButtonPop .42s cubic-bezier(.2,.8,.2,1)}
+@keyframes yupbroBubble{0%,100%{rotate:0deg}25%{rotate:-2deg}75%{rotate:2deg}}
+@keyframes yupbroButtonPop{0%{scale:1}45%{scale:1.1}100%{scale:1}}
+.yupbro-status{position:absolute;z-index:3;left:13px;right:13px;bottom:13px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.yupbro-status span{font-size:9px;font-weight:1000;letter-spacing:.08em;color:#d8f9ff;background:#07121adf;border:1px solid #57e9ff44;border-radius:999px;padding:7px 9px;box-shadow:0 5px 18px #0004}.yupbro-status #yupbro-mood[data-mood="snack"]{color:#ffd34d;border-color:#ffd34d66}.yupbro-status #yupbro-mood[data-mood="hype"]{color:#ff68c7;border-color:#ff68c766}.yupbro-tap{position:absolute;z-index:4;left:50%;bottom:48px;transform:translateX(-50%);border:1px solid #57e9ff88;border-radius:999px;background:#09141df2;color:#fff;padding:10px 15px;font:900 11px system-ui,sans-serif;letter-spacing:.08em;box-shadow:0 6px 20px #0005;cursor:pointer;white-space:nowrap}
+.yupbro-tap:active{transform:translateX(-50%) scale(.96)}
+.yupbro-tap:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+@media(max-width:720px){.yupbro-speech{top:9px;left:9px;font-size:11px}.yupbro-status{left:8px;right:8px;bottom:8px}.yupbro-status span{font-size:8px;padding:6px 7px}.yupbro-tap{bottom:43px;padding:9px 12px}}
+@media(max-width:720px){.mascot-stage{grid-template-columns:1fr;gap:4px;padding:17px;margin-bottom:26px}.mascot-copy{padding:5px 3px 0}.mascot-copy h2{font-size:31px}.mascot-copy p{font-size:14px}.mascot-canvas-wrap{height:350px;grid-row:1}.mascot-hint{bottom:8px;right:8px}}
+@media(prefers-reduced-motion:reduce){.mascot-stage *{scroll-behavior:auto!important}}
+
+
+/* Everything SanZa newsletter — Brevo hosted form embedded in the preview. */
+.newsletter{position:relative;overflow:hidden;margin:30px auto 34px;padding:clamp(22px,5vw,42px);border:1px solid #ffd34d55;border-radius:26px;background:radial-gradient(ellipse at 0% 0%,#ffd34d1a,transparent 48%),radial-gradient(ellipse at 100% 100%,#a995ff18,transparent 48%),linear-gradient(145deg,#15151c,#0b0c12);box-shadow:0 18px 50px #0005}
+.newsletter:after{content:"✦";position:absolute;right:22px;top:8px;color:#ffd34d44;font-size:76px;pointer-events:none}
+.newsletter .eyebrow{color:var(--gold);font-weight:900;font-size:11px;letter-spacing:.16em}
+.newsletter h2{font-size:clamp(27px,5vw,42px);line-height:1.08;margin:10px 0 12px;max-width:680px}
+.newsletter p{color:var(--muted);line-height:1.65;max-width:650px}
+.newsletter-embed{display:block;width:100%;max-width:540px;height:500px;border:0;border-radius:14px;background:transparent;margin:20px auto 0;position:relative;z-index:1;overflow:hidden}
+.newsletter small{display:block;color:#9298a8;line-height:1.5;margin:12px auto 0;max-width:540px}
+@media(max-width:560px){.newsletter-embed{height:540px;margin-top:16px}}
+
+
+/* Welcome gate: friendly SanZa landing screen with the existing interactive 3D Yupbro */
+.welcome-gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:auto;padding:20px;background:radial-gradient(ellipse at 50% 15%,#3a2a0a 0,transparent 38%),radial-gradient(ellipse at 85% 75%,#102f3a 0,transparent 40%),#08090d}
+.welcome-gate[hidden]{display:none}
+.welcome-inner{width:min(900px,100%);margin:auto;text-align:center;padding:clamp(18px,4vw,34px);border:1px solid #ffd34d55;border-radius:30px;background:linear-gradient(145deg,#151720ed,#090b11f2);box-shadow:0 25px 90px #0009;position:relative;overflow:hidden}
+.welcome-inner:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 20%,#ffffff05 50%,transparent 75%)}
+.welcome-kicker{display:inline-flex;align-items:center;gap:8px;color:var(--gold);border:1px solid #ffd34d55;background:#ffd34d0e;border-radius:999px;padding:8px 13px;font-size:10px;font-weight:1000;letter-spacing:2px}
+.welcome-title{font-size:clamp(37px,7vw,70px);line-height:.98;letter-spacing:-.06em;margin:18px 0 10px;font-weight:1000}
+.welcome-title span{background:none;color:#fff;-webkit-text-fill-color:#fff}
+.welcome-subtitle{max-width:590px;margin:0 auto;color:#d3d6e1;font-size:clamp(14px,2.5vw,17px);line-height:1.7}
+.welcome-character-slot{width:min(660px,100%);margin:4px auto 0;position:relative}
+.welcome-character-slot .mascot-canvas-wrap{height:clamp(440px,68vh,590px);border-radius:22px;min-height:440px}
+.welcome-character-slot .yupbro-speech{top:10px;left:10px}
+.welcome-character-slot .yupbro-status{bottom:8px}
+.welcome-character-slot .yupbro-tap{bottom:43px}
+.welcome-enter{margin:15px auto 0;min-width:min(290px,100%);min-height:56px;border:0;border-radius:16px;background:linear-gradient(100deg,#ffd34d,#ffe99b);color:#111;font-size:14px;font-weight:1000;letter-spacing:.07em;box-shadow:0 10px 32px #ffd34d28;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.welcome-enter:hover{transform:translateY(-3px);box-shadow:0 14px 38px #ffd34d42}
+.welcome-enter:focus-visible{outline:3px solid #57e9ff;outline-offset:4px}
+.welcome-foot{font-size:11px;color:#9da3b4;margin:15px 0 0}
+body.welcome-active{overflow:hidden}
+@media(max-width:560px){.welcome-gate{padding:12px}.welcome-inner{padding:19px 14px;border-radius:23px}.welcome-title{margin:15px 0 9px}.welcome-character-slot{width:min(100%,620px)}.welcome-character-slot .mascot-canvas-wrap{height:clamp(390px,60vh,510px);min-height:390px}.welcome-subtitle{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.welcome-enter{transition:none}}
+
+
+/* Homepage upgrade: clear, thumb-friendly routes into the whole SanZa universe */
+.home-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:0 auto 22px;padding-top:4px;padding-bottom:4px}
+.shortcut{min-width:0;display:flex;align-items:center;gap:11px;padding:14px 13px;border:1px solid #303443;border-radius:16px;background:linear-gradient(145deg,#191b25,#101117);text-decoration:none;transition:transform .18s,border-color .18s,background .18s}
+.shortcut>span:first-child{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:13px;background:#ffffff08;font-size:22px}
+.shortcut>span:nth-child(2){display:flex;flex-direction:column;gap:4px;min-width:0}
+.shortcut strong{font-size:12px;line-height:1.2;color:#fff}
+.shortcut small{font-size:10px;line-height:1.3;color:#aeb4c4}
+.shortcut>b{margin-left:auto;color:var(--gold);font-size:15px}
+.shortcut-tv{border-color:#655126}.shortcut-games{border-color:#665329}.shortcut-videos{border-color:#3d3151}.shortcut-music{border-color:#665329}.shortcut-grinds{border-color:#28505b}.shortcut-food{border-color:#60402b}
+.shortcut:hover{transform:translateY(-3px);border-color:var(--gold);background:#1c1d25}
+.shortcut:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+@media(max-width:720px){.home-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:16px}.shortcut{padding:12px 10px;gap:9px;border-radius:14px}.shortcut>span:first-child{flex-basis:37px;width:37px;height:37px;font-size:20px}.shortcut strong{font-size:12px}.shortcut small{font-size:10px}}
+@media(max-width:360px){.shortcut{gap:7px;padding:10px 8px}.shortcut>span:first-child{flex-basis:32px;width:32px;height:32px;font-size:18px}.shortcut>b{font-size:12px}}
+
+
+
+/* SANZA FULL-SITE POLISH v1 — calmer hierarchy, consistent gold, cleaner mobile */
+:root{--cyan:#e5c56a;--pink:#e5c56a;--purple:#e5c56a;--green:#d7c58d;--line:#302b20;--panel:#11110f;--panel2:#191813;--muted:#c1beb4}
+body{background:radial-gradient(ellipse at 50% -18%,#2b210c 0,transparent 42%),#080808}
+body:before{opacity:.045;background-size:32px 32px}
+.topbar{background:#0d0d0b;border-color:#2b261b}
+.nav{background:#0b0b0a}
+.navlinks a{border-color:#39301b}
+.hero:before{opacity:.3}
+.hero h1,.hero-title{letter-spacing:-.035em;text-wrap:balance}
+.hero .intro,.intro{max-width:660px;line-height:1.7;color:#d1cec5}
+.hero-tags .pill{background:#15140f;border-color:#39301b;color:#e9dfc4}
+.section{margin-top:clamp(28px,5vw,52px);margin-bottom:clamp(28px,5vw,52px)}
+.section-head{margin-bottom:18px}
+.section-head h2{letter-spacing:-.025em}
+.games{gap:14px}
+.game{background:linear-gradient(155deg,#1b1913,#10100e 78%);border:1px solid #3c321c;border-radius:20px;box-shadow:0 12px 28px #0005;overflow:hidden}
+.game:before,.game:after{opacity:.22}
+.game:hover{transform:translateY(-3px);box-shadow:0 18px 35px #0008;border-color:#8b6c27}
+.game:nth-child(n){--accent:#e4bd54}
+.game .label{background:#211b0d;border-color:#57451f;color:#f4d77f}
+.game h3{letter-spacing:-.02em}
+.game p{color:#c7c4bb;line-height:1.6}
+.game .btn,.btn,.nav-cta{box-shadow:none}
+.btn{border-radius:12px}
+.home-shortcuts{gap:12px}
+.shortcut{border:1px solid #373020;background:linear-gradient(145deg,#171611,#10100e);border-radius:16px;box-shadow:none}
+.shortcut:hover{transform:translateY(-2px);border-color:#8c6c2b}
+.shortcut>span:first-child{filter:saturate(.82)}
+.education-shell,.hub-card,.info-panel,.video-banner,.newsletter,.social{box-shadow:none;border-radius:20px}
+.education-shell,.info-panel,.newsletter{border-color:#3c321c}
+.hub-grid{gap:14px}
+.hub-card{background:linear-gradient(150deg,#191813,#10100e);border-color:#373020}
+.hub-card p,.guide p,.info-panel p{line-height:1.65;color:#c7c4bb}
+.guide-grid{gap:12px}
+.guide{border:1px solid #302b20;border-radius:15px;background:#12120f}
+.video-banner{background:linear-gradient(120deg,#201a0d,#11110f);border:1px solid #49391b}
+.social-links a{border-radius:12px}
+footer{border-top:1px solid #29251b;color:#a9a69c}
+.welcome-inner{background:radial-gradient(ellipse at top,#28200e,#10100e 62%);border:1px solid #57451f;box-shadow:0 24px 80px #000b}
+.welcome-inner:before{opacity:.16}
+.welcome-kicker{letter-spacing:.13em;color:#e7ca78}
+.welcome-title{letter-spacing:-.04em;line-height:1.02}
+.welcome-title span{color:#f1cf67}
+.welcome-subtitle{max-width:590px;line-height:1.65;color:#d0cdc4}
+.welcome-enter{border-radius:13px;box-shadow:none}
+@media(max-width:720px){
+ .topbar{padding:8px 4%;gap:8px}.scores-link{padding:8px 9px}
+ .hero{padding-top:26px;padding-bottom:18px}
+ .section{margin-top:30px;margin-bottom:30px}
+ .games{gap:11px}.game{border-radius:16px}
+ .game p{font-size:13px}
+ .hub-grid{gap:11px}
+ .welcome-inner{padding:22px 16px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Final refinement: sharper type, calmer glow, accessible touch targets */
+:root{--line:#303547}
+::selection{background:#ffd34d;color:#111}
+body{background-color:var(--bg);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+.wrap{width:min(1160px,92%)}
+header{background:rgba(9,10,13,.92);border-bottom-color:#343747}
+.nav{gap:18px}.brand{flex-shrink:0}
+.navlinks a,.scores-link{min-height:40px}
+.hero .kicker{box-shadow:inset 0 1px #ffffff0c,0 8px 25px #0003}
+.btn{min-height:48px;border-radius:14px}
+.btn:active,.scores-link:active,.social-links a:active{transform:scale(.98)}
+.section{scroll-margin-top:92px}.section-head{margin-bottom:22px}
+.game,.hub-card,.info-panel,.video-banner{box-shadow:0 12px 32px #0002}
+.game p,.hub-card p,.education-intro,.info-panel p{color:#c4c9d8}
+.game .btn{min-height:46px}.coming{box-shadow:inset 0 1px #ffffff08}
+footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+@media(max-width:720px){.wrap{width:min(calc(100% - 28px),560px)}.nav{gap:8px}.brand{gap:7px;letter-spacing:.6px}.navlinks{gap:6px}.navlinks a{padding:9px 10px;min-height:40px}.hero{padding-top:28px}.hero .kicker{font-size:10px;padding:8px 11px}.hero .hero-actions .btn{flex:1 1 150px}.section-head{margin-bottom:16px}.mascot-stage{padding:17px;border-radius:22px}.game{box-shadow:0 10px 26px #0003}.hub-card{border-radius:18px}.social{padding-top:32px}}
+@media(prefers-reduced-motion:reduce){.game-icon,.game-icon:after{animation:none!important}.game:hover,.btn:hover,.social-links a:hover{transform:none!important}}
 </style>
+<style>@media(max-width:720px){.navlinks a[href="tiktok-ideas.html"]{display:inline-flex!important}}</style>
 </head>
-<body>
-<div class="wrap">
+<body class="welcome-active">
+
+<div class="welcome-gate" id="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+  <div class="welcome-inner">
+    <div class="welcome-kicker">✨ ONE SANZA · ONE FAMILY ✨</div>
+    <h1 class="welcome-title" id="welcome-title">HOWAYA, YA<br><span>ABSOLUTE LEGEND?! 😂</span></h1>
+    <p class="welcome-subtitle">Yup Bro’s here, bro! 😎 SanZa is more than games — it’s our little corner of the world for family, laughter, learning and good food. Meet the characters, take on a challenge, discover SanZa Grinds and Food Hub, and join the family. Wherever you come from, there’s room for one more Sanzation. Tap Yup Bro to wake up the craic, then come explore!</p>
+    <div class="welcome-character-slot" id="welcome-character-slot" aria-label="Interactive 3D Yup Bro character"></div>
+    <button class="welcome-enter" id="welcome-enter" type="button">🚀 EXPLORE SANZA</button>
+    <p class="welcome-foot">👆 Tap the 3D Yup Bro to hear him crack a joke · Games · Videos · Grinds · Food · Family ❤️</p>
+  </div>
+</div>
+
+<div class="topbar" aria-label="Local weather and football scores">
+  <div class="weather-widget" id="weather-widget" aria-live="polite">
+    <span class="weather-symbol" id="weather-symbol" aria-hidden="true">🌦️</span>
+    <div>
+      <div class="weather-main"><span class="weather-location">Lucan, Dublin</span><span class="weather-temp" id="weather-temp">--°C</span><span class="weather-condition" id="weather-condition">Checking weather…</span></div>
+      <div class="weather-status" id="weather-status">Live local weather</div>
+    </div>
+  </div>
+  <a class="scores-link" href="https://www.premierleague.com/en/matches" target="_blank" rel="noopener noreferrer">⚽ PREMIER LEAGUE SCORES ↗</a>
+</div>
 <header>
-  <div class="brand">
-    <img class="logo" src="sanza-logo.png" alt="SanZa logo">
-    <span>SANZA <span class="gold">GAMES</span></span>
+  <div class="wrap nav">
+    <a class="brand" href="#" aria-label="SanZa Games home"><img class="logo" src="sanza-logo.png" alt="SanZa logo"><span>SANZA <span class="gold">GAMES</span></span></a>
+    <nav class="navlinks" aria-label="Main navigation">
+      <a class="home-return" href="#welcome-gate">🏠 HOME</a><a href="#games">Games</a><a href="#sanza-hub">The SanZa Hub</a><a href="tiktok-ideas.html">Idea Zone 💡</a><a href="videos.html">Videos</a><a href="https://www.premierleague.com/en/matches" target="_blank" rel="noopener noreferrer">⚽ Scores</a><a class="nav-cta" href="#games">LET'S PLAY ↗</a>
+    </nav>
   </div>
-  <span class="tag">● PLAY ZONE OPEN</span>
 </header>
-
+<div class="wrap">
 <main>
-<section class="hero">
-  <div class="eyebrow">WELCOME TO THE SANZA ARCADE</div>
-  <h1>READY.<br><span class="gold">SET. SANZA!</span></h1>
-  <p class="intro">Finglas to Ballymun. Brownie missions. Scooter madness. Jump into the action and bring the energy, Sanzations!</p>
-  <div class="pills">
-    <span class="pill">🍫 BROWNIE MISSIONS</span>
-    <span class="pill">🏙️ DUBLIN STREETS</span>
-    <span class="pill">🎮 PLAY ONLINE</span>
-  </div>
-  <a class="btn" href="#games">🔥 CHOOSE YOUR GAME ↓</a>
+<section class="hero reveal">
+  <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA FAMILY</div>
+  <h1>HOWAYA, YA<br><span class="hero-title">ABSOLUTE LEGEND?! 😂</span></h1>
+  <p class="intro">One SanZa. One Family. Endless craic! 😂 Play our games, meet Yup Bro, discover SanZa Grinds, watch our videos and join the newsletter for family fun, updates and offers. Come for a game, stay for the laughs!</p>
+  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">EXPLORE THE HUB</a></div>
 </section>
 
-<section id="games">
-  <div class="section-head">
-    <h2>Choose your game</h2>
-    <p>Explore our growing collection of original SanZa games, from fast-paced running and scooter challenges to smash adventures and funny sounds. Each game brings its own characters, challenges and SanZa-style fun.</p>
-  </div>
+<nav class="home-shortcuts wrap" aria-label="Explore SanZa">
+  <a class="shortcut shortcut-games" href="#games"><span aria-hidden="true">🎮</span><span><strong>Play games</strong><small>Jump into the arcade</small></span><b aria-hidden="true">↘</b></a>
+  <a class="shortcut shortcut-videos" href="videos.html"><span aria-hidden="true">▶️</span><span><strong>Watch videos</strong><small>Clips from SanZa</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-chaos" href="daily-chaos.html"><span aria-hidden="true">💀</span><span><strong>Daily Chaos</strong><small>Challenges & Yup Bro memes</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-music" href="music.html"><span aria-hidden="true">🎧</span><span><strong>SanZa Music</strong><small>Listen to your vibe</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-tv" href="tv.html"><span aria-hidden="true">📺</span><span><strong>SanZa TV</strong><small>Official, authorised viewing</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-grinds" href="sanza-grinds.html"><span aria-hidden="true">📚</span><span><strong>Get grinds</strong><small>Learning support</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-food" href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">🍔</span><span><strong>Food Hub</strong><small>Menu and ordering</small></span><b aria-hidden="true">↗</b></a>
+</nav>
+
+<section class="section" id="games">
+  <div class="section-head"><div><div class="eyebrow">THE ARCADE</div><h2>Choose your next adventure</h2></div><p>Original SanZa characters, quick challenges and plenty of chaos. Tap a game to start; some adventures open on their own game website.</p></div>
   <div class="games">
-    <article class="game">
-      <div class="game-icon">🏃</div>
-      <span class="label">RUN • DODGE • COLLECT</span>
-      <h3>SANZA RUN</h3>
-      <p>Dash through the streets, dodge obstacles, collect drops and chase that winning run!</p>
-      <a class="btn" href="https://sanza-drop-challenge.floot.app/" target="_blank" rel="noopener noreferrer">▶ PLAY SANZA RUN ↗</a>
-    </article>
-    <article class="game">
-      <div class="game-icon">🛴</div>
-      <span class="label">RIDE • DELIVER • COLLECT</span>
-      <h3>YUPBRO SCOOTY</h3>
-      <p>Jump on the scooter, cruise through Dublin streets, avoid obstacles and collect those brownies!</p>
-      <a class="btn" href="https://yupbro-scooty.floot.app/" target="_blank" rel="noopener noreferrer">▶ PLAY YUPBRO SCOOTY ↗</a>
-    </article>
-
-    <article class="game">
-      <div class="game-icon">💥</div>
-      <span class="label">COLLECT 59 COINS • SMASH THE CRUMBS</span>
-      <h3>SANZA SMASH</h3>
-      <p>Join Yupbro, smash cookie chaos and take on Cookie Doughnald Crumb. Collect 59 SanZa coins and unlock the boss battle!</p>
-      <a class="btn" href="https://sanzasmash.floot.app/" target="_blank" rel="noopener noreferrer">💥 PLAY SANZA SMASH ↗</a>
-    </article>
-
-    
-
-<article class="game">
-  <div class="game-icon">🐱</div>
-  <span class="label">DODGE • ATTACK • SURVIVE</span>
-  <h3>CAT IN THE HAT</h3>
-  <p>Jump into the SanZa showdown! Dodge flying cans, launch brownies and face the troublemaker. Now playable in full screen!</p>
-  <a class="btn" href="https://catinhat.floot.app/" target="_blank" rel="noopener noreferrer">🐾 PLAY CAT IN THE HAT ↗</a>
-</article>
-
-
-    
-    <article class="game">
-  <div class="game-icon">🎹</div>
-  <span class="label">TAP • LAUGH • REPEAT</span>
-  <h3>SANZA FUNNY KEYS</h3>
-  <p>Tap the keys, unleash ridiculous sounds and let the SanZa madness begin!</p>
-  <a class="btn" href="funny-keys.html">😂 PLAY FUNNY KEYS</a>
-    </article>
-
-    <article class="game">
-  <div class="game-icon">📚</div>
-  <span class="label">LEARN • PRACTISE • GROW</span>
-  <h3>SANZA GRINDS</h3>
-  <p>Need extra practice with Maths, Physics, English or Biology? Sanzations, we're here to help you explore learning-support options!</p>
-  <a class="btn" href="sanza-grinds.html">📚 EXPLORE SANZA GRINDS</a>
-    </article>
-
-    
-    
-
-
-<section class="food">
-  <div class="eyebrow">ONE FAMILY. ONE SANZA.</div>
-  <h2>Hungry after gaming? 🍔</h2>
-<p>Looking for halal food in Dublin? Discover SanZa Food Hub for delicious halal food and easy online ordering.</p>
-  <a class="btn" href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer">🛍️ ORDER NOW ↗</a>
-  <h2>🎀 GIRLS' BIRTHDAY PARTIES IN DUBLIN</h2>
-<p>Make her special day one to remember! Explore our girls' birthday-party booking option.</p>
-  <a class="btn" href="https://mypamperme.com/" target="_blank" rel="noopener noreferrer">🎂 BOOK A PARTY ↗</a>
+    <article class="game"><div class="game-top"><div class="game-icon">🏃</div><span class="game-number">GAME 01</span></div><span class="label">RUN · DODGE · COLLECT</span><h3>SANZA RUN</h3><p>Dash through the streets, dodge obstacles and collect drops and brownies. Keep moving and chase your best run!</p><a class="btn" href="https://sanza-drop-challenge.floot.app/" target="_blank" rel="noopener noreferrer">▶ PLAY SANZA RUN ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">🛴</div><span class="game-number">GAME 02</span></div><span class="label">RIDE · DELIVER · COLLECT</span><h3>YUPBRO SCOOTY</h3><p>Jump on the scooter and cruise through a Dublin-inspired adventure. Avoid obstacles, grab brownies and keep Yupbro rolling!</p><a class="btn" href="https://yupbro-scooty.floot.app/" target="_blank" rel="noopener noreferrer">🛴 PLAY YUPBRO SCOOTY ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">🍫</div><span class="game-number">GAME 06</span></div><span class="label">DODGE · JUMP · COLLECT</span><h3>YUPBRO’S BROWNIE RUN</h3><p>Ride your own mini-game from Finglas to Ballymun! Dodge road chaos, collect 50 brownies and keep your three lives safe.</p><a class="btn" href="yupbro-mini-game.html">🍫 PLAY BROWNIE RUN</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">💥</div><span class="game-number">GAME 03</span></div><span class="label">SMASH · COLLECT · BATTLE</span><h3>SANZA SMASH</h3><p>Join the SanZa crew, smash cookie chaos and face Cookie Doughnald Crumb. Watch the challenge counter and see how far you can get!</p><a class="btn" href="https://sanzasmash.floot.app/" target="_blank" rel="noopener noreferrer">💥 PLAY SANZA SMASH ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">🐱</div><span class="game-number">GAME 04</span></div><span class="label">DODGE · ATTACK · SURVIVE</span><h3>CAT IN THE HAT</h3><p>Dodge flying cans, launch brownies and face the troublemaker in this playful SanZa showdown. Follow the on-screen controls to play.</p><a class="btn" href="https://catinhat.floot.app/" target="_blank" rel="noopener noreferrer">🐾 PLAY CAT IN THE HAT ↗</a></article>
+    <article class="game"><div class="game-top"><div class="game-icon">🎹</div><span class="game-number">GAME 05</span></div><span class="label">TAP · LAUGH · REPEAT</span><h3>SANZA FUNNY KEYS</h3><p>Tap the keys, unleash ridiculous sounds and make your own silly sound combinations. A quick laugh is only a tap away.</p><a class="btn" href="funny-keys.html">😂 PLAY FUNNY KEYS</a></article>
+  </div>
+  <div class="coming"><div class="coming-icon">🚀</div><div><h3>More SanZa madness is on the way</h3><p>New characters, new challenges and more fun for the family. Keep an eye on the arcade for what's next.</p></div></div>
 </section>
+<div class="mascot-canvas-wrap"><canvas id="yupbro-3d-canvas" aria-label="Animated 3D cartoon scooter rider"></canvas><div class="yupbro-speech" id="yupbro-speech" aria-live="polite">Tap Yupbro for a laugh!</div><div class="yupbro-status"><span id="yupbro-mood" data-mood="chill">CHILL MODE 😌</span><span id="yupbro-taps">YUPBRO TAPS: 0</span></div><button class="yupbro-tap" id="yupbro-tap" type="button">👋 TAP YUPBRO</button><span class="mascot-hint">LIVE 3D · TAP TO INTERACT</span></div>
 
-    <section class="food" id="about-sanza-games">
-  <div class="eyebrow">THE SANZA GAMES GUIDE</div>
-  <h2>More than just a game 🎮</h2>
-
-  <p>
-    SanZa Games is an entertainment project inspired by the
-    SanZa community in Dublin. Explore our collection of
-    browser-based games, meet memorable characters and discover
-    different challenges across the SanZa universe.
-  </p>
-
-  <h2>Choose your adventure</h2>
-
-  <p>
-    <strong>SanZa Run:</strong> Take on a running adventure,
-    avoid obstacles and collect items along the way.
-  </p>
-
-  <p>
-    <strong>Yupbro Scooty:</strong> Ride through a playful
-    Dublin-inspired adventure, dodge obstacles and collect
-    brownies.
-  </p>
-
-  <p>
-    <strong>SanZa Smash:</strong> Enter a cartoon-style
-    smashing adventure featuring SanZa characters and
-    cookie-themed chaos.
-  </p>
-
-  <p>
-    <strong>SanZa Funny Keys:</strong> Visit the sound-play
-    page and experiment with its funny sounds.
-  </p>
-
-  <h2>How to get started</h2>
-
-  <p>
-    Choose a game from the collection and follow the
-    instructions displayed inside that game. Controls and
-    objectives may differ between games. Some experiences
-    open on a separate website.
-  </p>
-
-  <p>
-    We want SanZa Games to be a fun place for visitors to
-    discover original characters, try new challenges and
-    return to see what is coming next.
-  </p>
-    </section>
-    
-<section class="food" id="how-to-play">
-  <div class="eyebrow">YOUR GUIDE TO THE ARCADE</div>
-  <h2>How to Play SanZa Games 🎮</h2>
-
-  <p>
-    New to SanZa Games? Start by choosing a game from the
-    collection above. Each adventure has its own objectives,
-    characters and challenges. Follow the instructions shown
-    when the game loads, as controls can vary between games.
-  </p>
-
-  <h3>🏃 Master SanZa Run</h3>
-  <p>
-    Stay alert, watch for obstacles and plan your next move
-    early. Collect items when it is safe to do so, and use
-    each attempt to learn the route and improve your timing.
-  </p>
-
-  <h3>🛴 Take on Yupbro Scooty</h3>
-  <p>
-    Navigate the scooter adventure carefully. Keep an eye
-    on the path ahead, avoid obstacles and collect brownies
-    without losing control. Learn from each run and aim to
-    improve your performance.
-  </p>
-
-  <h3>💥 Try SanZa Smash</h3>
-  <p>
-    Read the on-screen instructions and pay attention to
-    targets, timing and the challenge counter. Focus on
-    accurate moves instead of rushing, and watch for changes
-    as you progress through the game.
-  </p>
-
-  <h3>🎹 Explore SanZa Funny Keys</h3>
-  <p>
-    Visit Funny Keys to explore its sound-based fun.
-    Try the available keys, discover the different sounds
-    and create your own silly sound combinations.
-  </p>
-
-  <h3>📱 Tips for playing on a phone</h3>
-  <p>
-    Keep your screen clear, use a stable internet connection
-    and follow the game's own control prompts. If a game
-    does not respond properly, allow it to finish loading
-    and check your connection before trying again.
-  </p>
-
-  <p>
-    Ready for your next challenge?
-    <a href="game-guide.html">Read the full SanZa Games guide</a>
-    for more information and beginner tips.
-  </p>
+<section class="section education-section" id="education">
+  <div class="education-shell">
+    <div class="education-copy">
+      <div class="eyebrow">A DIFFERENT SIDE OF SANZA</div>
+      <div class="education-icon" aria-hidden="true">📚</div>
+      <p class="education-label">SANZA EDUCATION</p>
+      <h2>Big goals start with the <span>right support.</span></h2>
+      <p class="education-intro">Step out of the arcade and into the classroom. SanZa Grinds has its own dedicated space for students and parents to explore learning support and subjects.</p>
+      <a class="btn education-btn" href="sanza-grinds.html">EXPLORE SANZA GRINDS ↗</a>
+    </div>
+    <div class="education-subjects">
+      <div class="subject-card"><span>➗</span><strong>Maths</strong><small>Build confidence</small></div>
+      <div class="subject-card"><span>⚛️</span><strong>Physics</strong><small>Understand the why</small></div>
+      <div class="subject-card"><span>✍️</span><strong>English</strong><small>Grow your skills</small></div>
+      <div class="subject-card"><span>🧬</span><strong>Biology</strong><small>Explore life</small></div>
+    </div>
+  </div>
 </section>
+<section class="section" id="sanza-hub">
+  <div class="section-head"><div><div class="eyebrow">ONE FAMILY · ONE SANZA</div><h2>There's more to the hub</h2></div><p>Gaming is just one part of the SanZa universe. Explore food, learning support and celebrations through the links below.</p></div>
+  <div class="hub-grid">
+    <article class="hub-card food-card"><div class="emoji">🍔</div><h3>Hungry after gaming?</h3><p>Discover SanZa Food Hub for halal food and easy online ordering. Check the menu and order directly through the website.</p><a class="btn" href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer">🛍️ VISIT FOOD HUB ↗</a></article>
+    <article class="hub-card learn-card"><div class="emoji">📚</div><h3>Ready to learn?</h3><p>Explore learning-support information and subjects including Maths, Physics, English and Biology with SanZa Grinds.</p><a class="btn" href="sanza-grinds.html">EXPLORE GRINDS →</a></article>
+    <article class="hub-card party-card"><div class="emoji">🎀</div><h3>Celebrate in style</h3><p>Planning a girls' birthday party in Dublin? Explore the birthday-party booking option and make her day special.</p><a class="btn" href="https://mypamperme.com/" target="_blank" rel="noopener noreferrer">🎂 PARTY DETAILS ↗</a></article>
+  </div>
+</section>
+<section class="info-panel" id="about-sanza-games">
+  <div class="eyebrow">MEET THE SANZA UNIVERSE</div><h2>More than just a game 🎮</h2>
+  <p>SanZa Games is a family entertainment project inspired by the SanZa community in Dublin. Explore browser-based games, meet memorable characters and discover different challenges across the SanZa universe. SanZa Run is about timing and collecting; Yupbro Scooty brings a scooter adventure; SanZa Smash adds cartoon-style smashing and cookie-themed chaos; Cat in the Hat brings a dodge-and-attack challenge; and Funny Keys is all about playful sounds.</p>
+  <p>To get started, choose a game above and follow the instructions shown inside it. Controls and objectives differ between games, and some games open on a separate website. On a phone, keep your screen clear, use a stable internet connection and allow the game to finish loading before playing.</p>
+  <div class="guide-grid">
+    <article class="guide"><h3>🏃 SanZa Run tips</h3><p>Watch the path ahead, plan your moves early and collect items when it is safe. Use each attempt to improve your timing.</p></article>
+    <article class="guide"><h3>🛴 Yupbro Scooty tips</h3><p>Stay alert, avoid obstacles and look for brownies. Learn the route and focus on keeping your run going.</p></article>
+    <article class="guide"><h3>💥 SanZa Smash tips</h3><p>Read the on-screen instructions, pay attention to targets and counters, and focus on accurate moves rather than rushing.</p></article>
+    <article class="guide"><h3>🎹 Funny Keys tips</h3><p>Try the available keys, discover different sounds and experiment with your own silly combinations.</p></article>
+  </div>
+  <p>Want more beginner information? <a href="game-guide.html" style="color:var(--gold);font-weight:800">Read the full SanZa Games guide →</a></p>
+</section>
+<section class="video-banner"><div><div class="eyebrow">WATCH · DISCOVER · LAUGH</div><h2>🎬 SanZa Videos</h2><p>Find funny clips and explore videos from the SanZa universe.</p></div><a class="btn" href="videos.html">WATCH VIDEOS ▶</a></section>
 
+<section class="newsletter" id="everything-sanza" aria-labelledby="newsletter-title">
+  <div class="eyebrow">THE SANZA GOOD-STUFF CLUB ✨</div>
+  <h2 id="newsletter-title">Everything SanZa. <span class="gold">Straight to your inbox.</span></h2>
+  <p>New games, food news, SanZa Grinds and exclusive offers — one email when there’s something worth shouting about. No spam, bro.</p>
+  <iframe class="newsletter-embed" title="SanZa Games newsletter signup" loading="lazy" src="https://30cb4207.sibforms.com/v2/serve/MUIFAI2UazanWRUO_b--wBh-71J25R3Z__qUtAl0Ajx0dTWPI1eSr6D_y_pH5S32C2vYX1VaFr2_XVQWB6k1mhrOF64iAYDGgpEphMGlydygtJZ24TyeDHuAqlWanj5cmyZHMZXjIPi16H0bEYeovXnLFTVJu16z6xAUg-BDrtGfvPnrmDwB7yXZ_tv5q864yfmtzX-PveKbn2gsYQ==" scrolling="no" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <small>Sign up for SanZa Games updates, new games, food news and offers. You can unsubscribe at any time. See our <a href="privacy.html" style="color:var(--gold);text-decoration:underline">Privacy Policy</a>.</small>
+</section>
 
 <section class="social">
-  <h2>Stay connected, <span class="gold">Sanzations!</span></h2>
-  <p style="color:#bbb;line-height:1.7">Follow SanZa for games, food, fun and new offers.</p>
+  <h2>Stay connected, <span class="gold">Sanzations!</span></h2><p>Follow SanZa for games, food, fun and new offers.</p>
   <div class="social-links">
     <a href="https://www.tiktok.com/@sanza.food.hub" target="_blank" rel="noopener noreferrer">🎵 TikTok</a>
     <a href="https://www.instagram.com/sanza_foodhub/" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
     <a href="https://www.youtube.com/@sanzafoodhub-w7m" target="_blank" rel="noopener noreferrer">▶ YouTube</a>
     <a href="https://wa.me/353899718413" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
   </div>
-  <p style="color:#aaa;font-size:13px">Contact: <a href="mailto:sanzafoodhub@gmail.com" style="color:#ffd34d">sanzafoodhub@gmail.com</a></p>
+  <p>Contact: <a href="mailto:sanzafoodhub@gmail.com" style="color:var(--gold)">sanzafoodhub@gmail.com</a></p>
 </section>
 </main>
-
-<footer>
-  <strong>© 2026 SANZA GAMES</strong><br>
-  Built with ❤️ in Finglas, Dublin<br>
-  <span>One family. One SanZa.</span><br>
-  <a href="/privacy.html">Privacy Policy</a> ·
-  <a href="https://www.sanzafood.ie/">SanZa Food Hub</a>
-</footer>
+<footer><strong>© 2026 SANZA GAMES</strong><br>Built with ❤️ in Finglas, Dublin<br><span>One family. One SanZa.</span><br><a href="privacy.html">Privacy Policy</a> · <a href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer">SanZa Food Hub</a> · <a href="game-guide.html">Game Guide</a></footer>
 </div>
-  
-<section style="background:#111;color:#fff;padding:28px 16px;text-align:center;border:2px solid #d4af37;border-radius:14px;margin:24px auto;max-width:900px;">
-  <h2 style="color:#d4af37;">🎬 SanZa Videos</h2>
-  <p>Discover videos, find funny clips and explore YouTube!</p>
-  <a href="videos.html" style="display:inline-block;background:#d4af37;color:#000;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold;">WATCH VIDEOS ▶</a>
-</section>
+<script>
+
+// Newsletter submissions are handled securely by the embedded Brevo form.
+
+document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventListener('click',function(){var target=document.querySelector(link.getAttribute('href'));if(target){target.setAttribute('tabindex','-1');}})});
+
+
+// Reveal cards as they enter the screen; gracefully falls back on older browsers.
+(function(){
+  var items=document.querySelectorAll('.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner');
+  if(!('IntersectionObserver' in window)){items.forEach(function(item){item.classList.add('is-visible')});return;}
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}});
+  },{threshold:0.12,rootMargin:'0px 0px -24px 0px'});
+  items.forEach(function(item){observer.observe(item);});
+})();
+
+// Lightweight live weather for Lucan, using Open-Meteo (no API key required).
+(function(){
+  var url='https://api.open-meteo.com/v1/forecast?latitude=53.357&longitude=-6.448&current=temperature_2m,weather_code,is_day&timezone=Europe%2FDublin';
+  var temp=document.getElementById('weather-temp'),condition=document.getElementById('weather-condition'),symbol=document.getElementById('weather-symbol'),status=document.getElementById('weather-status');
+  function describe(code,day){
+    if(code===0)return [day?'☀️':'🌙','Clear'];
+    if(code===1)return [day?'🌤️':'🌙','Mostly clear'];
+    if(code===2)return ['⛅','Partly cloudy'];
+    if(code===3)return ['☁️','Cloudy'];
+    if(code===45||code===48)return ['🌫️','Fog'];
+    if(code===51||code===53||code===55)return ['🌦️','Drizzle'];
+    if(code===56||code===57)return ['🌧️','Freezing drizzle'];
+    if(code===61||code===63||code===65)return ['🌧️','Rain'];
+    if(code===66||code===67)return ['🌧️','Freezing rain'];
+    if(code===71||code===73||code===75||code===77)return ['🌨️','Snow'];
+    if(code===80||code===81||code===82)return ['🌧️','Rain showers'];
+    if(code===85||code===86)return ['🌨️','Snow showers'];
+    if(code===95||code===96||code===99)return ['⛈️','Thunderstorm'];
+    return ['🌦️','Local weather'];
+  }
+  function load(){
+    fetch(url,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('Weather unavailable');return r.json()}).then(function(data){
+      var current=data.current;if(!current)throw new Error('No current weather');
+      var d=describe(current.weather_code,current.is_day===1);
+      temp.textContent=Math.round(current.temperature_2m)+'°C';condition.textContent=d[1];symbol.textContent=d[0];
+      status.textContent='Lucan local weather · Updated '+new Date().toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Dublin'});
+    }).catch(function(){condition.textContent='Weather unavailable';status.textContent='Tap to try again';});
+  }
+  load();window.setInterval(load,15*60*1000);
+  document.getElementById('weather-widget').addEventListener('click',load);
+})();
+</script>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+(function(){
+ // Put the existing canvas in the welcome slot before WebGL is created.
+ // Moving it after renderer creation can leave mobile browsers with a blank canvas.
+ const welcomeSlot=document.getElementById('welcome-character-slot');
+ const liveWrap=document.querySelector('.mascot-canvas-wrap');
+ if(welcomeSlot&&liveWrap&&!welcomeSlot.contains(liveWrap)){
+   welcomeSlot.appendChild(liveWrap);
+   liveWrap.style.width='100%';
+   liveWrap.style.height='clamp(440px,68vh,590px)';
+   liveWrap.style.minHeight='440px';
+   liveWrap.style.display='block';
+ }
+ const canvas=document.getElementById('yupbro-3d-canvas');
+ if(!canvas)return;
+ const wrap=canvas.parentElement;
+ let renderer,scene,camera,mascot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
+ try{
+  renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
+  renderer.setSize(wrap.clientWidth,wrap.clientHeight,false);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.2;
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(34,wrap.clientWidth/wrap.clientHeight,.1,100);
+  camera.position.set(0,2.2,5.85);
+  scene.add(new THREE.HemisphereLight(0xbfeeff,0x261322,2.2));
+  const key=new THREE.DirectionalLight(0xffd477,3.2);key.position.set(4,7,5);scene.add(key);
+  const rim=new THREE.PointLight(0x42dfff,18,12);rim.position.set(-4,3,2);scene.add(rim);
+  const pink=new THREE.PointLight(0xff5ab8,10,10);pink.position.set(4,1,-2);scene.add(pink);
+  const mat=(color,rough=.55,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+  const gold=mat('#ffd34d',.35,.3),black=mat('#171923',.6),shirt=mat('#11131a',.65),red=mat('#c52c31',.4),hairmat=mat('#e34c29',.7),skin=mat('#bd815d',.75),white=mat('#f6f3e9',.3),rubber=mat('#17191d',.8),cyan=mat('#57e9ff',.3,.25);
+  const sphere=(parent,m,pos,scale)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),m);o.position.set(...pos);o.scale.set(...scale);parent.add(o);return o};
+  const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
+  const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,18),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
+  const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
+  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=-.9;
+  const scooter=new THREE.Group();mascot.add(scooter);
+  box(scooter,gold,[0,.42,0],[1.75,.13,.34]);
+  box(scooter,black,[-.08,.5,0],[.78,.035,.37]);
+  wheelA=new THREE.Group();wheelB=new THREE.Group();scooter.add(wheelA,wheelB);
+  [wheelA,wheelB].forEach((w,i)=>{w.position.set(i===0?-.72:.72,.31,0);const tire=new THREE.Mesh(new THREE.TorusGeometry(.24,.075,12,28),rubber);w.add(tire);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.13,20),gold);hub.rotation.x=Math.PI/2;w.add(hub);const center=sphere(w,cyan,[0,0,0],[.075,.075,.075]);for(let k=0;k<6;k++){const angle=k*Math.PI/3;rod(w,white,[Math.cos(angle)*.07,Math.sin(angle)*.07,-.035],[Math.cos(angle)*.19,Math.sin(angle)*.19,-.035],.012)}});
+  rod(scooter,black,[.56,.47,0],[.48,1.62,0],.055);rod(scooter,gold,[.25,1.62,0],[.72,1.62,0],.045);
+  sphere(scooter,cyan,[.48,1.62,.02],[.08,.08,.08]);
+  const body=new THREE.Group();body.position.set(-.05,.62,0);mascot.add(body);
+  cylinder(body,shirt,[0,.65,0],.31,.39,.78);
+  sphere(body,red,[0,.82,.02],[.35,.28,.3]);
+  // Backpack and bright straps
+  box(body,black,[-.33,.79,-.14],[.28,.48,.27]);box(body,gold,[-.33,.8,.01],[.23,.07,.025]);
+  rod(body,gold,[-.23,.95,.22],[-.12,.38,.22],.035);
+  // Neck and expressive head
+  cylinder(body,skin,[.02,1.13,0],.12,.13,.22);
+  head=new THREE.Group();head.position.set(.04,1.55,.01);body.add(head);
+  sphere(head,skin,[0,0,0],[.39,.43,.34]);
+  sphere(head,hairmat,[-.03,.28,-.01],[.4,.24,.35]);
+  for(let i=0;i<5;i++)sphere(head,hairmat,[-.27+i*.12,.38+(i%2)*.06,.05],[.14,.15,.16]);
+  sphere(head,skin,[-.37,-.04,.02],[.09,.14,.1]);sphere(head,skin,[.37,-.04,.02],[.09,.14,.1]);
+  const eyeWhites=[sphere(head,white,[-.14,.02,.302],[.105,.12,.055]),sphere(head,white,[.14,.02,.302],[.105,.12,.055])];
+  const pupils=[sphere(head,black,[-.12,.015,.35],[.045,.065,.025]),sphere(head,black,[.16,.015,.35],[.045,.065,.025])];
+  const eyeGlints=[sphere(head,white,[-.13,.04,.37],[.015,.02,.01]),sphere(head,white,[.15,.04,.37],[.015,.02,.01])];
+  const brows=[rod(head,hairmat,[-.25,.17,.31],[-.07,.19,.32],.025),rod(head,hairmat,[.07,.19,.32],[.25,.17,.31],.025)];
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),black);smile.position.set(.02,-.14,.31);smile.rotation.z=Math.PI;head.add(smile);
+  // Version 2: a clearer, layered talking mouth with visible teeth and tongue.
+  const mouthInner=sphere(head,mat('#321017',.72),[.02,-.137,.326],[.125,.012,.034]);
+  const mouthTeeth=sphere(head,white,[.02,-.112,.354],[.078,.008,.009]);
+  const tongue=sphere(head,mat('#f06b83',.5),[.02,-.174,.353],[.048,.008,.01]);
+  mouthInner.visible=false;mouthTeeth.visible=false;tongue.visible=false;
+  // Arms bent toward handlebars
+  arms.push(new THREE.Group());arms.push(new THREE.Group());arms[0].position.set(-.29,.91,0);arms[1].position.set(.29,.91,0);body.add(arms[0],arms[1]);
+  rod(arms[0],red,[0,0,0],[-.18,-.2,.04],.105);rod(arms[0],skin,[-.18,-.2,.04],[.42,.1,.12],.075);sphere(arms[0],skin,[.42,.1,.12],[.09,.09,.09]);
+  rod(arms[1],red,[0,0,0],[.17,-.2,.04],.105);rod(arms[1],skin,[.17,-.2,.04],[.13,.18,.12],.075);sphere(arms[1],skin,[.13,.18,.12],[.09,.09,.09]);
+  // Seated legs and chunky sneakers
+  const leg1=new THREE.Group(),leg2=new THREE.Group();body.add(leg1,leg2);leg1.position.set(-.2,.35,0);leg2.position.set(.2,.35,0);
+  rod(leg1,black,[0,0,0],[-.1,-.28,.08],.12);rod(leg1,black,[-.1,-.28,.08],[.12,-.43,.22],.11);sphere(leg1,white,[.19,-.43,.26],[.22,.1,.15]);box(leg1,gold,[.19,-.38,.37],[.14,.035,.025]);
+  rod(leg2,black,[0,0,0],[.12,-.27,.08],.12);rod(leg2,black,[.12,-.27,.08],[.35,-.4,.22],.11);sphere(leg2,white,[.4,-.4,.26],[.22,.1,.15]);box(leg2,gold,[.4,-.35,.37],[.14,.035,.025]);
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
+  // Floating gold particles
+  const particles=new THREE.Group();scene.add(particles);
+  for(let i=0;i<24;i++){const p=sphere(particles,i%3===0?cyan:gold,[(Math.random()-.5)*4,Math.random()*3.1-.2,(Math.random()-.5)*1.2],[.018,.018,.018]);p.userData.phase=Math.random()*6.28;p.userData.baseY=p.position.y}
+  let start=performance.now(),last=0,boostUntil=0,trickUntil=0,tapCount=0,moodUntil=0,mood='chill',blinkUntil=0,nextBlink=performance.now()+1800;
+  const speech=document.getElementById('yupbro-speech'),tapButton=document.getElementById('yupbro-tap');
+  const moodLabel=document.getElementById('yupbro-mood'),tapScore=document.getElementById('yupbro-taps');
+  const lines=['OH MY GARLIC NAAN! 😂','How are you, my Sanzation!','Easy there, I am on a scooty!','Brownies? Now you are talking!','YUPBRO IN THE HOUSE!','Mind the hair, bro!','What is wrong with you?','What do you want?','Bro, my hair has its own fan club!','Scooty first, worries later!','Who ordered extra crispy chaos?','I came. I saw. I ate the brownies!','Oi! No touching the hairstyle!','Catch me if you can, legend!','That was smoother than garlic naan!','Mum said be home before the brownies disappear!','This scooty runs on vibes and snacks!','One small spin, big SanZa energy!','You again? Sound, let’s go!','Respect the drip, bro!'];
+  let isSpeaking=false,speechPulse=0;
+  function setMouthTalking(active){
+   isSpeaking=active;smile.visible=!active;mouthInner.visible=active;mouthTeeth.visible=active;tongue.visible=active;
+   if(!active){mouthInner.scale.y=.012;mouthTeeth.scale.y=.008;tongue.scale.y=.008;}
+  }
+  // Real SanZa voice clips replace browser-generated Yup Bro speech.
+  // Add the supplied recordings at these paths in the preview branch:
+  // audio/Sanzalicious.m4a and audio/Banging.m4a
+  const yupbroVoiceFiles=['7yup.m4a','Banging.m4a','Bestie.m4a','Charlie.m4a','Chicken curry.m4a','Colacoco.m4a','Fanta.m4a','Sanzalicious.m4a','Sanzations.m4a','Voice 261026_134443.m4a','What do u want.m4a','What isvwrong.m4a','Yup bro.m4a'];
+  const yupbroVoiceClips=yupbroVoiceFiles.map(src=>{const audio=new Audio(encodeURI(src));audio.preload='auto';return audio});
+  let nextVoiceClip=0;
+  function speakFallback(line,pitch,rate){if(!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(line.toLowerCase().replace(/\\byupbro\\b/g,'Yupbro'));u.lang='en-IN';u.pitch=pitch;u.rate=rate;u.volume=.9;u.onstart=()=>setMouthTalking(true);u.onend=()=>setMouthTalking(false);u.onerror=()=>setMouthTalking(false);window.speechSynthesis.speak(u)}catch(e){setMouthTalking(false)}}
+  function talk(line,pitch=1.12,rate=1.02){
+   if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
+   try{
+    if('speechSynthesis' in window)window.speechSynthesis.cancel();
+    yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0});
+    const clip=yupbroVoiceClips[nextVoiceClip%yupbroVoiceClips.length];nextVoiceClip++;
+    setMouthTalking(true);
+    const finish=()=>setMouthTalking(false);
+    clip.onended=finish;clip.onerror=finish;
+    const playback=clip.play();
+    if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();speakFallback(line,pitch,rate);});
+   }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
+  }
+  function tapYupbro(){
+   tapCount++;const now=performance.now();boostUntil=now+2600;trickUntil=now+2800;moodUntil=now+2400;
+   const modes=[
+    {name:'COOL RIDER 😎',mood:'cool',line:'Respect the drip, bro!',pitch:0.9,rate:0.94},
+    {name:'BROWNIE RADAR 🍪',mood:'snack',line:'I smell brownies. Mission accepted!',pitch:1.22,rate:1.02},
+    {name:'FULL SANZA MODE ⚡',mood:'hype',line:'YUPBRO IN THE HOUSE! Let’s gooo!',pitch:1.28,rate:1.13},
+    {name:'CHEEKY MODE 😂',mood:'cheeky',line:'What are you looking at, legend?',pitch:1.08,rate:1.04},
+    {name:'SCOOTY SHOW-OFF 🛴',mood:'stunt',line:'Watch this tiny little spin, bro!',pitch:1.16,rate:1.08}
+   ];
+   const mode=modes[(tapCount-1)%modes.length];mood=mode.mood;
+   talk(lines[(tapCount-1)%lines.length]+' '+mode.line,mode.pitch,mode.rate);
+   head.rotation.z+=.18;head.rotation.x-=.08;mascot.rotation.y+=.32;mascot.rotation.x=-.09;
+   mascot.scale.set(1.1,1.1,1.1);
+   brows.forEach((b,i)=>{b.rotation.z+=(i===0?.25:-.25)});
+   if(moodLabel){moodLabel.textContent=mode.name;moodLabel.dataset.mood=mood;}
+   if(tapScore)tapScore.textContent='YUPBRO TAPS: '+tapCount;
+   if(tapButton){tapButton.textContent=['🛵 AGAIN, BRO!','😂 DO IT AGAIN!','🍪 BROWNIE POWER!','⚡ SANZA MODE!','😎 SHOW-OFF!'][tapCount%5];tapButton.classList.remove('yupbro-pop');void tapButton.offsetWidth;tapButton.classList.add('yupbro-pop');}
+  }
+  if(tapButton)tapButton.addEventListener('click',tapYupbro);
+  canvas.addEventListener('click',tapYupbro);
+
+  function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
+  window.addEventListener('resize',resize,{passive:true});
+  if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
+  requestAnimationFrame(resize);window.addEventListener('load',resize,{once:true});
+  let visible=true;
+  if('IntersectionObserver'in window){observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(animate);},{threshold:.05});observer.observe(wrap)}
+  function animate(now){raf=0;if(!visible)return;raf=requestAnimationFrame(animate);const t=(now-start)/1000;if(now-last<28)return;last=now;
+   const rev=now<boostUntil?4.2:0,tricking=now<trickUntil,reacting=now<moodUntil;
+   const scale=1+Math.max(0,(boostUntil-now)/2600)*.1;mascot.scale.lerp(new THREE.Vector3(scale,scale,scale),.12);
+   if(now>nextBlink){blinkUntil=now+145;nextBlink=now+2200+Math.random()*2600;}
+   const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);
+   brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
+   smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
+   if(isSpeaking){const syllable=Math.abs(Math.sin(now*.012))+Math.abs(Math.sin(now*.019))*.28;mouthInner.scale.y=.012+syllable*.034+(now<speechPulse?.012:0);mouthTeeth.scale.y=.008+syllable*.005;tongue.scale.y=.008+syllable*.012;mouthTeeth.position.y=-.112+syllable*.004;}
+   wheelA.rotation.z=-t*(2.7+rev);wheelB.rotation.z=-t*(2.7+rev);
+   const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
+   body.position.y=.62+Math.sin(t*4)*.035+(tricking?Math.max(0,trickPulse)*.22:0);
+   head.rotation.y=Math.sin(t*.8)*.12;head.rotation.z=Math.sin(t*1.7)*.035+(tricking?Math.sin(t*12)*.16:0);
+   arms[0].rotation.z=Math.sin(t*3)*.035+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=-Math.sin(t*3)*.035-(tricking?Math.sin(t*10)*.5:0);
+   mascot.rotation.y=Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
+   mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;
+   head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
+   mascot.position.y=-.9+Math.sin(t*2)*.035+(tricking?Math.max(0,trickPulse)*.16:0);
+   camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
+   particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
+   renderer.render(scene,camera);
+  }
+  if(!observer)raf=requestAnimationFrame(animate);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0}else if(visible&&!raf)raf=requestAnimationFrame(animate)});
+ }catch(err){console.error('SanZa 3D mascot could not start',err);wrap.innerHTML='<div style="height:100%;display:grid;place-items:center;text-align:center;padding:24px;color:#b8bdcb">This 3D preview needs WebGL and an internet connection. Try opening it in Chrome on your phone.</div>'}
+})();
+</script>
+
+
+<script>
+(function(){
+  var gate=document.getElementById('welcome-gate');
+  var enter=document.getElementById('welcome-enter');
+  var home=document.querySelector('.navlinks .home-return');
+  var stage=document.getElementById('3d-mascot');
+  function openSanZa(){
+    if(!gate)return;
+    gate.hidden=true;
+    document.body.classList.remove('welcome-active');
+    if(stage)stage.scrollIntoView({block:'start',behavior:'smooth'});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function returnToWelcome(e){if(e)e.preventDefault();if(!gate)return;gate.hidden=false;document.body.classList.add('welcome-active');window.scrollTo({top:0,behavior:'smooth'});}
+  if(enter)enter.addEventListener('click',openSanZa);
+  if(home)home.addEventListener('click',returnToWelcome);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&gate&&!gate.hidden)openSanZa();});
+})();
+</script>
+
+
+<!-- SANZA_HALLOWEEN_2026: decorations shown through 31 Oct 2026 in Dublin time. -->
+<style id="sanza-halloween-style">
+  .sanza-halloween-banner{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 14px;padding:10px 15px;width:fit-content;max-width:94%;border:1px solid #704321;border-radius:999px;background:linear-gradient(100deg,#20120e,#18121a 60%,#21150b);color:#ffe3a1;font-size:11px;font-weight:950;letter-spacing:.5px;box-shadow:0 0 24px #ff7a1a20}
+  .sanza-halloween-banner .spooky-spark{color:#ff9b38;text-shadow:0 0 12px #ff7a1a88}
+  .sanza-halloween-corner{position:fixed;z-index:19;bottom:12px;font-size:clamp(30px,5vw,45px);line-height:1;pointer-events:none;user-select:none;filter:drop-shadow(0 0 12px #ff7a1a66);animation:sanzaSpookyBob 3.8s ease-in-out infinite}
+  .sanza-halloween-left{left:10px}.sanza-halloween-right{right:10px;animation-delay:-1.9s}
+  .sanza-halloween-bat{position:fixed;z-index:19;top:95px;right:7%;font-size:22px;opacity:.8;pointer-events:none;user-select:none;animation:sanzaBatFloat 5.5s ease-in-out infinite}
+  .sanza-halloween-web{position:absolute;top:0;right:0;width:90px;height:90px;opacity:.5;pointer-events:none;background:repeating-conic-gradient(from 0deg at 100% 0%,transparent 0deg 14deg,#ff9b3845 14.5deg 15.5deg,transparent 16deg 45deg);mask-image:radial-gradient(circle at 100% 0%,#000 0 68%,transparent 70%)}
+  .sanza-halloween-banner .spooky-pumpkin{display:inline-block;animation:sanzaPumpkinGlow 2.8s ease-in-out infinite}
+  @keyframes sanzaSpookyBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(4deg)}}
+  @keyframes sanzaBatFloat{0%,100%{transform:translate(0,0) rotate(-5deg)}50%{transform:translate(-12px,8px) rotate(7deg)}}
+  @keyframes sanzaPumpkinGlow{0%,100%{filter:drop-shadow(0 0 2px #ff7a1a)}50%{filter:drop-shadow(0 0 9px #ff7a1a)}}
+  @media(max-width:520px){.sanza-halloween-banner{font-size:10px;gap:6px;padding:8px 11px}.sanza-halloween-left{left:5px;bottom:7px}.sanza-halloween-right{right:5px;bottom:7px}.sanza-halloween-bat{right:5%;top:82px;font-size:18px}}
+  @media(prefers-reduced-motion:reduce){.sanza-halloween-corner,.sanza-halloween-bat,.sanza-halloween-banner .spooky-pumpkin{animation:none!important}}
+</style>
+<div class="sanza-halloween-corner sanza-halloween-left" aria-hidden="true">🎃</div>
+<div class="sanza-halloween-corner sanza-halloween-right" aria-hidden="true">👻</div>
+<div class="sanza-halloween-bat" aria-hidden="true">🦇</div>
+<script>
+(function(){
+  try {
+    var p = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    var d = {};
+    p.forEach(function(x){if(x.type!=='literal')d[x.type]=x.value;});
+    var today = d.year+'-'+d.month+'-'+d.day;
+    if (today < '2026-10-26' || today >= '2026-11-01') {
+      var ids = ['sanza-halloween-style'];
+      ids.forEach(function(id){var el=document.getElementById(id);if(el)el.remove();});
+      document.querySelectorAll('.sanza-halloween-corner,.sanza-halloween-bat,.sanza-halloween-banner,.sanza-halloween-web').forEach(function(el){el.remove();});
+      return;
+    }
+    var hero = document.querySelector('.hero');
+    if (hero) {
+      var banner = document.createElement('div');
+      banner.className = 'sanza-halloween-banner';
+      banner.innerHTML = '<span class="spooky-pumpkin" aria-hidden="true">🎃</span><span>TRICK, TREAT &amp; GAME!</span><span class="spooky-spark" aria-hidden="true">✦</span><span>SanZa Halloween takeover</span><span class="spooky-pumpkin" aria-hidden="true">🕸️</span>';
+      hero.insertBefore(banner, hero.firstChild);
+      var web = document.createElement('div');
+      web.className = 'sanza-halloween-web';
+      web.setAttribute('aria-hidden','true');
+      hero.appendChild(web);
+    }
+  } catch(e) {
+    /* Keep the homepage usable if seasonal decorations cannot be initialized. */
+  }
+})();
+</script>
 
 </body>
 </html>
