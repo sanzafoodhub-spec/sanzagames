@@ -1,45 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="SanZa TV — discover live television, movies and series from official, authorised streaming services.">
-<title>SanZa TV | Live TV, Movies &amp; Series</title>
+<meta name="description" content="SanZa TV helps you discover free-to-watch and subscription TV, films and series through official streaming providers in Ireland.">
+<title>SanZa TV | Free TV & Streaming Guide</title>
 <link rel="icon" href="/sanza-logo.png" type="image/png">
 <style>
-:root{color-scheme:dark;--gold:#ffd34d;--gold2:#d7a92c;--bg:#080808;--panel:#151515;--muted:#bdbdbd;--line:#3b321e}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -12%,#46320a 0%,#151109 25%,var(--bg) 62%);color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.6}.wrap{width:min(1050px,92%);margin:auto}a{color:inherit}header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid #ffffff1a}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:950;letter-spacing:1.5px}.logo{width:42px;height:42px;object-fit:contain}.gold{color:var(--gold)}.back{display:inline-flex;padding:10px 14px;border:1px solid #65501c;border-radius:12px;text-decoration:none;font-size:12px;font-weight:800;color:var(--gold)}.hero{text-align:center;padding:66px 0 44px}.eyebrow{font-size:11px;color:var(--gold);font-weight:850;letter-spacing:3px;text-transform:uppercase}.tv-icon{font-size:58px;filter:drop-shadow(0 0 18px #ffd34d30)}h1{font-size:clamp(42px,8vw,76px);letter-spacing:-2.5px;line-height:1;margin:14px 0}.intro{max-width:680px;margin:0 auto;color:#d1d1d1;font-size:16px}.pills{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:24px 0}.pill{background:#171717;border:1px solid #39332a;border-radius:30px;padding:8px 13px;font-size:12px}.section{margin:32px 0 42px}.section-head{margin-bottom:16px}.section-head h2{margin:0;font-size:clamp(24px,4vw,32px)}.section-head p{color:var(--muted);margin:6px 0 0;font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{display:flex;flex-direction:column;min-height:190px;padding:20px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#211b0d,#121212 72%);text-decoration:none;transition:transform .2s,border-color .2s}.card:hover{transform:translateY(-3px);border-color:#b9963e}.icon{font-size:28px;margin-bottom:12px}.card h3{margin:0 0 5px;font-size:18px}.card p{color:#c4c4c4;font-size:13px;margin:0 0 14px;line-height:1.6}.arrow{color:var(--gold);font-size:12px;font-weight:850;margin-top:auto}.notice{border:1px solid #514321;border-radius:16px;background:#17130a;padding:18px;color:#ddd;font-size:13px}.notice strong{color:var(--gold)}footer{text-align:center;border-top:1px solid #ffffff20;padding:24px 0 30px;color:#aaa;font-size:12px}footer a{color:var(--gold)}@media(max-width:650px){.grid{grid-template-columns:1fr}.hero{padding:48px 0 30px}.card{min-height:150px}header .brand{font-size:14px}}
+:root{color-scheme:dark;--gold:#ffd34d;--gold2:#d7a92c;--bg:#080808;--panel:#151515;--muted:#bdbdbd;--line:#3b321e;--green:#9be7a5;--blue:#9bd8ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:20px}body{margin:0;background:radial-gradient(ellipse at 50% -12%,#46320a 0%,#151109 25%,var(--bg) 62%);color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.6}a{color:inherit}.wrap{width:min(1100px,92%);margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid #ffffff1a}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:950;letter-spacing:1.5px}.logo{width:42px;height:42px;object-fit:contain}.gold{color:var(--gold)}.back,.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid #65501c;border-radius:12px;text-decoration:none;font-size:12px;font-weight:850;color:var(--gold)}.hero{text-align:center;padding:55px 0 30px}.eyebrow{font-size:11px;color:var(--gold);font-weight:850;letter-spacing:3px;text-transform:uppercase}.tv-icon{font-size:52px}h1{font-size:clamp(40px,8vw,72px);letter-spacing:-2.5px;line-height:1.05;margin:10px 0}.intro{max-width:720px;margin:0 auto;color:#d1d1d1;font-size:15px}.pills{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:20px 0}.pill{background:#171717;border:1px solid #39332a;border-radius:30px;padding:7px 12px;font-size:12px}.searchbar{display:flex;gap:8px;max-width:620px;margin:24px auto 0}.searchbar input{width:100%;min-width:0;background:#111;border:1px solid #55451f;color:#fff;border-radius:13px;padding:14px 15px;font:inherit;outline-offset:3px}.searchbar input:focus{border-color:var(--gold)}.searchbar button{background:var(--gold);color:#111;border:0;border-radius:13px;padding:0 18px;font-weight:900;cursor:pointer}.section{margin:32px 0 42px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:15px}.section-head h2{margin:0;font-size:clamp(24px,4vw,32px);line-height:1.2}.section-head p{color:var(--muted);margin:6px 0 0;font-size:13px}.tag{font-size:10px;letter-spacing:1px;font-weight:900;text-transform:uppercase;color:var(--green)}.paid-tag{color:var(--blue)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.card{display:flex;flex-direction:column;min-height:205px;padding:19px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#211b0d,#121212 72%);text-decoration:none;transition:transform .2s,border-color .2s}.card:hover{transform:translateY(-3px);border-color:#b9963e}.icon{font-size:28px;margin-bottom:10px}.card h3{margin:0 0 5px;font-size:18px}.card p{color:#c4c4c4;font-size:13px;margin:0 0 14px;line-height:1.6}.arrow{color:var(--gold);font-size:11px;font-weight:900;margin-top:auto}.notice{border:1px solid #514321;border-radius:16px;background:#17130a;padding:18px;color:#ddd;font-size:13px}.notice strong{color:var(--gold)}.notice a{color:var(--gold)}.empty{display:none;border:1px dashed #514321;border-radius:14px;padding:18px;color:#bbb;text-align:center}.quicklinks{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.quicklinks a{border:1px solid #3b321e;border-radius:10px;padding:8px 11px;color:#eee;text-decoration:none;font-size:12px}footer{text-align:center;border-top:1px solid #ffffff20;padding:24px 0 30px;color:#aaa;font-size:12px}footer a{color:var(--gold)}@media(max-width:720px){.grid{grid-template-columns:1fr}.hero{padding:40px 0 25px}.card{min-height:155px}.section-head{display:block}.section-head .tag{display:inline-block;margin-top:8px}.searchbar{gap:6px}.searchbar button{padding:0 12px}.brand{font-size:14px}.back{font-size:10px;padding:9px}.logo{width:36px;height:36px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header>
-  <a class="brand" href="/" aria-label="SanZa Games home"><img class="logo" src="/sanza-logo.png" alt="SanZa logo"><span>SANZA <span class="gold">TV</span></span></a>
-  <a class="back" href="/">← SANZA GAMES HOME</a>
+<header class="wrap">
+<a class="brand" href="/" aria-label="SanZa Games home"><img class="logo" src="/sanza-logo.png" alt="SanZa logo"><span>SANZA <span class="gold">TV</span></span></a>
+<a class="back" href="/">← SANZA GAMES HOME</a>
 </header>
-<main>
+<main class="wrap">
 <section class="hero">
-  <div class="tv-icon" aria-hidden="true">📺</div>
-  <div class="eyebrow">One SanZa. One Family.</div>
-  <h1><span class="gold">SANZA TV</span></h1>
-  <p class="intro">Your starting point for live television, movies and series. Discover free-to-watch entertainment through official streaming providers.</p>
-  <div class="pills"><span class="pill">📡 LIVE TV</span><span class="pill">🎬 MOVIES</span><span class="pill">🍿 SERIES</span></div>
+<div class="eyebrow">ONE FAMILY · ONE SANZA</div>
+<div class="tv-icon" aria-hidden="true">📺</div>
+<h1><span class="gold">SANZA TV</span></h1>
+<p class="intro">Your watch guide, bro. Start with free viewing, discover Irish TV and films, or explore subscription services — always through official providers. Availability depends on the title and your location.</p>
+<div class="pills"><span class="pill">🆓 Free first</span><span class="pill">🇮🇪 Ireland guide</span><span class="pill">🎬 Films & series</span><span class="pill">🛡️ Official providers</span></div>
+<div class="searchbar"><input id="provider-search" type="search" aria-label="Search streaming providers" placeholder="Search providers… e.g. Irish TV, films, Netflix"><button id="clear-search" type="button">CLEAR</button></div>
 </section>
-<section class="section">
-  <div class="section-head"><h2>Explore <span class="gold">official streaming</span></h2><p>Choose a provider to open its own website and player. Availability may vary by location.</p></div>
-  <div class="grid">
-    <a class="card" href="https://www.rte.ie/player/" target="_blank" rel="noopener noreferrer"><div class="icon">🇮🇪</div><h3>RTÉ Player</h3><p>Explore Irish programmes, catch-up television and live content where available.</p><span class="arrow">OPEN OFFICIAL PLAYER ↗</span></a>
-    <a class="card" href="https://www.tg4.ie/" target="_blank" rel="noopener noreferrer"><div class="icon">📺</div><h3>TG4</h3><p>Discover Irish-language programmes, drama, documentaries and other shows.</p><span class="arrow">VISIT TG4 ↗</span></a>
-    <a class="card" href="https://watch.plex.tv/" target="_blank" rel="noopener noreferrer"><div class="icon">▶️</div><h3>Plex</h3><p>Browse free, ad-supported movies, series and live channels available in your region.</p><span class="arrow">EXPLORE PLEX ↗</span></a>
-    <a class="card" href="https://archive.org/details/movies" target="_blank" rel="noopener noreferrer"><div class="icon">🎞️</div><h3>Classic Film Library</h3><p>Explore archived films and check each title's rights before sharing or reusing it.</p><span class="arrow">BROWSE FILMS ↗</span></a>
-    <a class="card" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><div class="icon">▶</div><h3>Official YouTube Channels</h3><p>Find free films, web series and programmes published by their rights holders.</p><span class="arrow">FIND OFFICIAL VIDEOS ↗</span></a>
-    <a class="card" href="https://www.justwatch.com/ie" target="_blank" rel="noopener noreferrer"><div class="icon">🔎</div><h3>Find Where to Watch</h3><p>Check which services list a movie or series in Ireland, including free options.</p><span class="arrow">SEARCH TITLES ↗</span></a>
-  </div>
+
+<section class="section" id="free">
+<div class="section-head"><div><h2>🆓 Free to Watch</h2><p>Start here for free, ad-supported or broadcaster-funded viewing.</p></div><span class="tag">FREE OPTIONS FIRST</span></div>
+<div class="grid" id="free-grid">
+<a class="card" href="https://www.rte.ie/player/" target="_blank" rel="noopener noreferrer" data-search="rte rte player ireland irish live catch up news drama comedy sport free"><div class="icon">🇮🇪</div><h3>RTÉ Player</h3><p>Irish programmes, live channels and catch-up viewing where available. Some content may require an account or have rights limits.</p><span class="arrow">OPEN OFFICIAL PLAYER ↗</span></a>
+<a class="card" href="https://www.tg4.ie/" target="_blank" rel="noopener noreferrer" data-search="tg4 tg4 player ireland irish language live drama documentary kids sport free"><div class="icon">📺</div><h3>TG4 Player</h3><p>Irish-language entertainment, drama, documentaries, sport and family programmes.</p><span class="arrow">VISIT TG4 ↗</span></a>
+<a class="card" href="https://www.virginmediatelevision.ie/player/" target="_blank" rel="noopener noreferrer" data-search="virgin media play player ireland live catch up television free irish"><div class="icon">📡</div><h3>Virgin Media Play</h3><p>Browse broadcaster programmes and catch-up content from Virgin Media Television.</p><span class="arrow">OPEN OFFICIAL PLAYER ↗</span></a>
+<a class="card" href="https://www.justwatch.com/ie" target="_blank" rel="noopener noreferrer" data-search="justwatch tv free films movies series ads no subscription streaming guide free"><div class="icon">🍿</div><h3>JustWatch TV Free</h3><p>Discover films and series available free with ads. On JustWatch Ireland, choose the “JustWatch TV Free” provider filter.</p><span class="arrow">FIND FREE TITLES ↗</span></a>
+<a class="card" href="https://watch.plex.tv/" target="_blank" rel="noopener noreferrer" data-search="plex free movies films series live channels ads free streaming"><div class="icon">▶️</div><h3>Plex</h3><p>Explore its free, ad-supported catalogue of films, series and live channels available in your region.</p><span class="arrow">EXPLORE PLEX ↗</span></a>
+<a class="card" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" data-search="youtube official channels free films documentaries creators broadcaster"><div class="icon">▶</div><h3>Official YouTube Channels</h3><p>Find free programmes, films and documentaries published by broadcasters or the rights holders themselves.</p><span class="arrow">BROWSE YOUTUBE ↗</span></a>
+</div><p class="empty" id="free-empty">No free-viewing providers match that search. Try another word.</p>
 </section>
-<section class="section notice"><strong>SanZa TV content promise</strong><br>SanZa TV currently directs you to official providers; it does not host or rebroadcast their streams. A title being free to watch does not automatically grant permission to copy, embed or redistribute it. We’ll only add in-page playback for content whose rights and provider terms allow it.</section>
+
+<section class="section" id="paid">
+<div class="section-head"><div><h2>✨ Subscription Streaming</h2><p>Explore official services. Plans, prices and catalogues can change.</p></div><span class="tag paid-tag">PAID / PLAN-DEPENDENT</span></div>
+<div class="grid" id="paid-grid">
+<a class="card" href="https://www.netflix.com/ie/" target="_blank" rel="noopener noreferrer" data-search="netflix subscription films series originals drama comedy kids"><div class="icon">🎬</div><h3>Netflix</h3><p>Films, series, documentaries and Netflix originals. A paid plan is required.</p><span class="arrow">VIEW PLANS ↗</span></a>
+<a class="card" href="https://www.primevideo.com/" target="_blank" rel="noopener noreferrer" data-search="amazon prime video subscription movies films series rent buy"><div class="icon">📦</div><h3>Prime Video</h3><p>Movies and series; some titles may require a subscription, rental or separate purchase.</p><span class="arrow">EXPLORE PRIME VIDEO ↗</span></a>
+<a class="card" href="https://www.disneyplus.com/en-ie" target="_blank" rel="noopener noreferrer" data-search="disney plus subscription family kids pixar marvel star wars national geographic"><div class="icon">✨</div><h3>Disney+</h3><p>Disney, Pixar, Marvel, Star Wars and National Geographic, depending on the plan and catalogue.</p><span class="arrow">EXPLORE DISNEY+ ↗</span></a>
+<a class="card" href="https://tv.apple.com/ie" target="_blank" rel="noopener noreferrer" data-search="apple tv plus subscription originals films series"><div class="icon">🍎</div><h3>Apple TV</h3><p>Discover Apple Original series and films, with availability and subscription options on the official site.</p><span class="arrow">EXPLORE APPLE TV ↗</span></a>
+<a class="card" href="https://www.nowtv.com/ie" target="_blank" rel="noopener noreferrer" data-search="now tv ireland subscription entertainment movies sports plans"><div class="icon">🌟</div><h3>NOW</h3><p>Explore available entertainment, cinema and sports memberships in Ireland.</p><span class="arrow">VIEW MEMBERSHIPS ↗</span></a>
+<a class="card" href="https://www.paramountplus.com/" target="_blank" rel="noopener noreferrer" data-search="paramount plus subscription movies series paramount showtime"><div class="icon">⛰️</div><h3>Paramount+</h3><p>Check the official service for current availability, catalogue and plan options in your region.</p><span class="arrow">VISIT PARAMOUNT+ ↗</span></a>
+</div><p class="empty" id="paid-empty">No subscription services match that search. Try another word.</p>
+</section>
+
+<section class="section" id="find">
+<div class="section-head"><div><h2>🔎 Find where to watch</h2><p>Search a title and check which services list it in Ireland.</p></div></div>
+<div class="notice"><strong>Not sure which app has your film?</strong><br>Use JustWatch Ireland to compare legal streaming, free-with-ads, rental and purchase options. Availability differs by title and can change, so confirm on the provider’s own page before paying.<div class="quicklinks"><a href="https://www.justwatch.com/ie" target="_blank" rel="noopener noreferrer">Search films & series ↗</a><a href="https://www.rte.ie/player/" target="_blank" rel="noopener noreferrer">Irish TV ↗</a><a href="https://www.tg4.ie/" target="_blank" rel="noopener noreferrer">TG4 ↗</a></div></div>
+</section>
+
+<section class="section notice" aria-label="SanZa TV viewing promise"><strong>🛡️ SanZa TV viewing promise</strong><br>SanZa TV is a discovery guide, not a broadcaster or streaming host. It links to official provider websites and does not rebroadcast, download or redistribute their streams. We only add embedded playback if the rights holder and provider terms clearly permit it. A free link is not permission to copy or re-upload content. Third-party services control their own content, ads, accounts and availability.</section>
 </main>
 <footer><strong>© 2026 SANZA TV</strong><br>One family. One SanZa.<br><a href="/">Return to SanZa Games</a> · <a href="/privacy.html">Privacy Policy</a></footer>
-</div>
+<script>
+(function(){
+ const input=document.getElementById('provider-search');
+ const clear=document.getElementById('clear-search');
+ const groups=[{grid:document.getElementById('free-grid'),empty:document.getElementById('free-empty')},{grid:document.getElementById('paid-grid'),empty:document.getElementById('paid-empty')}];
+ function filter(){const q=input.value.trim().toLowerCase();groups.forEach(g=>{let visible=0;g.grid.querySelectorAll('.card').forEach(card=>{const hay=(card.innerText+' '+(card.dataset.search||'')).toLowerCase();const show=!q||hay.includes(q);card.hidden=!show;if(show)visible++;});g.empty.style.display=visible?'none':'block';});}
+ input.addEventListener('input',filter);clear.addEventListener('click',()=>{input.value='';filter();input.focus();});
+})();
+</script>
 </body>
 </html>
