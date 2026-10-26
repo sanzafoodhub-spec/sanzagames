@@ -681,5 +681,71 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 })();
 </script>
 
+
+<!-- SANZA_HALLOWEEN_2026: seasonal homepage decoration, active through 31 Oct 2026 (Dublin time). -->
+<script>
+(function(){
+  try {
+    var parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Dublin', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date());
+    var date = {};
+    parts.forEach(function(p){ if(p.type !== 'literal') date[p.type] = p.value; });
+    var today = date.year + '-' + date.month + '-' + date.day;
+    if (today < '2026-10-26' || today >= '2026-11-01') return;
+
+    var style = document.createElement('style');
+    style.id = 'sanza-halloween-style';
+    style.textContent = `
+      .sanza-spooky-banner{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 12px;padding:9px 14px;width:fit-content;max-width:92%;border:1px solid #704321;border-radius:999px;background:linear-gradient(100deg,#20120e,#18121a 60%,#21150b);color:#ffe3a1;font-size:11px;font-weight:900;letter-spacing:.45px;box-shadow:0 0 24px #ff7a1a16}
+      .sanza-spooky-banner .spooky-spark{color:#ff9b38;text-shadow:0 0 12px #ff7a1a88}
+      .sanza-spooky-corner{position:fixed;z-index:19;bottom:12px;font-size:clamp(27px,5vw,43px);line-height:1;pointer-events:none;user-select:none;filter:drop-shadow(0 0 12px #ff7a1a66);animation:sanzaSpookyBob 3.8s ease-in-out infinite}
+      .sanza-spooky-left{left:10px}.sanza-spooky-right{right:10px;animation-delay:-1.9s}
+      .sanza-spooky-bat{position:fixed;z-index:19;top:84px;right:7%;font-size:20px;opacity:.72;pointer-events:none;user-select:none;animation:sanzaBatFloat 5.5s ease-in-out infinite}
+      .sanza-spooky-web{position:absolute;top:0;right:0;width:75px;height:75px;opacity:.38;pointer-events:none;background:repeating-conic-gradient(from 0deg at 100% 0%,transparent 0deg 14deg,#ff9b3838 14.5deg 15.5deg,transparent 16deg 45deg);mask-image:radial-gradient(circle at 100% 0%,#000 0 68%,transparent 70%)}
+      .sanza-spooky-banner .spooky-pumpkin{display:inline-block;animation:sanzaPumpkinGlow 2.8s ease-in-out infinite}
+      @keyframes sanzaSpookyBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(4deg)}}
+      @keyframes sanzaBatFloat{0%,100%{transform:translate(0,0) rotate(-5deg)}50%{transform:translate(-12px,8px) rotate(7deg)}}
+      @keyframes sanzaPumpkinGlow{0%,100%{filter:drop-shadow(0 0 2px #ff7a1a)}50%{filter:drop-shadow(0 0 9px #ff7a1a)}}
+      @media(max-width:520px){.sanza-spooky-banner{font-size:10px;gap:6px;padding:8px 11px}.sanza-spooky-left{left:5px;bottom:7px}.sanza-spooky-right{right:5px;bottom:7px}.sanza-spooky-bat{right:5%;top:78px;font-size:17px}}
+      @media(prefers-reduced-motion:reduce){.sanza-spooky-corner,.sanza-spooky-bat,.sanza-spooky-banner .spooky-pumpkin{animation:none!important}}
+    `;
+    document.head.appendChild(style);
+
+    var banner = document.createElement('div');
+    banner.className = 'sanza-spooky-banner';
+    banner.setAttribute('aria-label','SanZa Halloween special');
+    banner.innerHTML = '<span class="spooky-pumpkin" aria-hidden="true">🎃</span><span>TRICK, TREAT &amp; GAME!</span><span class="spooky-spark" aria-hidden="true">✦</span><span>SanZa Halloween takeover</span><span class="spooky-pumpkin" aria-hidden="true">🕸️</span>';
+    var hero = document.querySelector('.hero');
+    if (hero) hero.insertBefore(banner, hero.firstChild);
+
+    var left = document.createElement('div');
+    left.className = 'sanza-spooky-corner sanza-spooky-left';
+    left.setAttribute('aria-hidden','true');
+    left.textContent = '🎃';
+    var right = document.createElement('div');
+    right.className = 'sanza-spooky-corner sanza-spooky-right';
+    right.setAttribute('aria-hidden','true');
+    right.textContent = '👻';
+    var bat = document.createElement('div');
+    bat.className = 'sanza-spooky-bat';
+    bat.setAttribute('aria-hidden','true');
+    bat.textContent = '🦇';
+    document.body.appendChild(left);
+    document.body.appendChild(right);
+    document.body.appendChild(bat);
+    var heroTitle = document.querySelector('.hero');
+    if (heroTitle) {
+      var web = document.createElement('div');
+      web.className = 'sanza-spooky-web';
+      web.setAttribute('aria-hidden','true');
+      heroTitle.appendChild(web);
+    }
+  } catch (e) {
+    console.info('Seasonal SanZa decorations unavailable; homepage remains usable.', e);
+  }
+})();
+</script>
+
 </body>
 </html>
