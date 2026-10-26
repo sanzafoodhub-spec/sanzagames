@@ -601,11 +601,23 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    isSpeaking=active;smile.visible=!active;mouthInner.visible=active;mouthTeeth.visible=active;tongue.visible=active;
    if(!active){mouthInner.scale.y=.012;mouthTeeth.scale.y=.008;tongue.scale.y=.008;}
   }
+  // Real SanZa voice clips replace browser-generated Yup Bro speech.
+  // Add the supplied recordings at these paths in the preview branch:
+  // audio/Sanzalicious.m4a and audio/Banging.m4a
+  const yupbroVoiceClips=['audio/Sanzalicious.m4a','audio/Banging.m4a'].map(src=>{const audio=new Audio(src);audio.preload='auto';return audio});
+  let nextVoiceClip=0;
   function talk(line,pitch=1.12,rate=1.02){
-   if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),1100)}
-   if('speechSynthesis' in window){
-    try{window.speechSynthesis.cancel();setMouthTalking(false);const spokenLine=line.toLowerCase().replace(/\byupbro\b/g,'Yupbro');const utterance=new SpeechSynthesisUtterance(spokenLine);utterance.lang='en-IN';utterance.rate=rate;utterance.pitch=pitch;utterance.volume=.9;utterance.onstart=()=>setMouthTalking(true);utterance.onboundary=()=>{speechPulse=performance.now()+95};utterance.onend=()=>setMouthTalking(false);utterance.onerror=()=>setMouthTalking(false);const voices=window.speechSynthesis.getVoices();const indianVoice=voices.find(v=>/^en-IN$/i.test(v.lang))||voices.find(v=>/^en-IN/i.test(v.lang))||voices.find(v=>/india|indian/i.test(v.name+' '+v.lang));if(indianVoice)utterance.voice=indianVoice;window.speechSynthesis.speak(utterance)}catch(e){console.info('Voice not available',e)}
-   }
+   if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
+   try{
+    if('speechSynthesis' in window)window.speechSynthesis.cancel();
+    yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0});
+    const clip=yupbroVoiceClips[nextVoiceClip%yupbroVoiceClips.length];nextVoiceClip++;
+    setMouthTalking(true);
+    const finish=()=>setMouthTalking(false);
+    clip.onended=finish;clip.onerror=finish;
+    const playback=clip.play();
+    if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();});
+   }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
   function tapYupbro(){
    tapCount++;const now=performance.now();boostUntil=now+2600;trickUntil=now+2800;moodUntil=now+2400;
