@@ -256,6 +256,64 @@ body.welcome-active{overflow:hidden}
 @media(max-width:720px){.home-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:16px}.shortcut{padding:12px 10px;gap:9px;border-radius:14px}.shortcut>span:first-child{flex-basis:37px;width:37px;height:37px;font-size:20px}.shortcut strong{font-size:12px}.shortcut small{font-size:10px}}
 @media(max-width:360px){.shortcut{gap:7px;padding:10px 8px}.shortcut>span:first-child{flex-basis:32px;width:32px;height:32px;font-size:18px}.shortcut>b{font-size:12px}}
 
+
+
+/* SANZA FULL-SITE POLISH v1 — calmer hierarchy, consistent gold, cleaner mobile */
+:root{--cyan:#e5c56a;--pink:#e5c56a;--purple:#e5c56a;--green:#d7c58d;--line:#302b20;--panel:#11110f;--panel2:#191813;--muted:#c1beb4}
+body{background:radial-gradient(ellipse at 50% -18%,#2b210c 0,transparent 42%),#080808}
+body:before{opacity:.045;background-size:32px 32px}
+.topbar{background:#0d0d0b;border-color:#2b261b}
+.nav{background:#0b0b0a}
+.navlinks a{border-color:#39301b}
+.hero:before{opacity:.3}
+.hero h1,.hero-title{letter-spacing:-.035em;text-wrap:balance}
+.hero .intro,.intro{max-width:660px;line-height:1.7;color:#d1cec5}
+.hero-tags .pill{background:#15140f;border-color:#39301b;color:#e9dfc4}
+.section{margin-top:clamp(28px,5vw,52px);margin-bottom:clamp(28px,5vw,52px)}
+.section-head{margin-bottom:18px}
+.section-head h2{letter-spacing:-.025em}
+.games{gap:14px}
+.game{background:linear-gradient(155deg,#1b1913,#10100e 78%);border:1px solid #3c321c;border-radius:20px;box-shadow:0 12px 28px #0005;overflow:hidden}
+.game:before,.game:after{opacity:.22}
+.game:hover{transform:translateY(-3px);box-shadow:0 18px 35px #0008;border-color:#8b6c27}
+.game:nth-child(n){--accent:#e4bd54}
+.game .label{background:#211b0d;border-color:#57451f;color:#f4d77f}
+.game h3{letter-spacing:-.02em}
+.game p{color:#c7c4bb;line-height:1.6}
+.game .btn,.btn,.nav-cta{box-shadow:none}
+.btn{border-radius:12px}
+.home-shortcuts{gap:12px}
+.shortcut{border:1px solid #373020;background:linear-gradient(145deg,#171611,#10100e);border-radius:16px;box-shadow:none}
+.shortcut:hover{transform:translateY(-2px);border-color:#8c6c2b}
+.shortcut>span:first-child{filter:saturate(.82)}
+.education-shell,.hub-card,.info-panel,.video-banner,.newsletter,.social{box-shadow:none;border-radius:20px}
+.education-shell,.info-panel,.newsletter{border-color:#3c321c}
+.hub-grid{gap:14px}
+.hub-card{background:linear-gradient(150deg,#191813,#10100e);border-color:#373020}
+.hub-card p,.guide p,.info-panel p{line-height:1.65;color:#c7c4bb}
+.guide-grid{gap:12px}
+.guide{border:1px solid #302b20;border-radius:15px;background:#12120f}
+.video-banner{background:linear-gradient(120deg,#201a0d,#11110f);border:1px solid #49391b}
+.social-links a{border-radius:12px}
+footer{border-top:1px solid #29251b;color:#a9a69c}
+.welcome-inner{background:radial-gradient(ellipse at top,#28200e,#10100e 62%);border:1px solid #57451f;box-shadow:0 24px 80px #000b}
+.welcome-inner:before{opacity:.16}
+.welcome-kicker{letter-spacing:.13em;color:#e7ca78}
+.welcome-title{letter-spacing:-.04em;line-height:1.02}
+.welcome-title span{color:#f1cf67}
+.welcome-subtitle{max-width:590px;line-height:1.65;color:#d0cdc4}
+.welcome-enter{border-radius:13px;box-shadow:none}
+@media(max-width:720px){
+ .topbar{padding:8px 4%;gap:8px}.scores-link{padding:8px 9px}
+ .hero{padding-top:26px;padding-bottom:18px}
+ .section{margin-top:30px;margin-bottom:30px}
+ .games{gap:11px}.game{border-radius:16px}
+ .game p{font-size:13px}
+ .hub-grid{gap:11px}
+ .welcome-inner{padding:22px 16px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body class="welcome-active">
