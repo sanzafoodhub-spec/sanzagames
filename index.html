@@ -621,7 +621,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);
    brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
    smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
-   if(isSpeaking){const syllable=Math.abs(Math.sin(now*.026))+Math.abs(Math.sin(now*.043))*.42;mouthInner.scale.y=.012+syllable*.052+(now<speechPulse?.025:0);mouthTeeth.scale.y=.008+syllable*.008;tongue.scale.y=.008+syllable*.022;mouthTeeth.position.y=-.112+syllable*.006;}
+   if(isSpeaking){const syllable=Math.abs(Math.sin(now*.012))+Math.abs(Math.sin(now*.019))*.28;mouthInner.scale.y=.012+syllable*.034+(now<speechPulse?.012:0);mouthTeeth.scale.y=.008+syllable*.005;tongue.scale.y=.008+syllable*.012;mouthTeeth.position.y=-.112+syllable*.004;}
    wheelA.rotation.z=-t*(2.7+rev);wheelB.rotation.z=-t*(2.7+rev);
    const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
    body.position.y=.62+Math.sin(t*4)*.035+(tricking?Math.max(0,trickPulse)*.22:0);
