@@ -582,6 +582,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   cylinder(body,skin,[0,1.43,.01],.12,.13,.2);
   // Hoodie's front pocket, drawstrings and signature badge.
   box(body,hoodieShade,[0,.82,.285],[.39,.19,.055]);
+  // Fine gold piping on the hoodie pocket and cuffs catches the stage lighting.
+  rod(body,goldTrim,[-.19,.91,.318],[-.19,.75,.318],.008);rod(body,goldTrim,[.19,.91,.318],[.19,.75,.318],.008);
   rod(body,goldTrim,[-.09,1.29,.29],[-.11,1.04,.30],.012);
   rod(body,goldTrim,[.09,1.29,.29],[.11,1.04,.30],.012);
   sphere(body,gold,[0,1.13,.32],[.105,.105,.025]);
@@ -606,6 +608,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   head=new THREE.Group();head.position.set(0,1.77,.015);body.add(head);
   sphere(head,skin,[0,0,0],[.39,.43,.34]);
   sphere(head,skin,[-.37,-.055,.015],[.095,.145,.10]);sphere(head,skin,[.37,-.055,.015],[.095,.145,.10]);
+  // Small gold ear studs and refined hoodie stitching add a more finished, premium SanZa look.
+  sphere(head,goldTrim,[-.405,-.085,.095],[.026,.026,.018]);sphere(head,goldTrim,[.405,-.085,.095],[.026,.026,.018]);
   sphere(head,blush,[-.235,-.12,.286],[.09,.045,.018]);sphere(head,blush,[.235,-.12,.286],[.09,.045,.018]);
   // Textured-looking layered copper-red swept hair and chunky curls.
   sphere(head,hairmat,[0,.285,-.025],[.405,.245,.36]);
