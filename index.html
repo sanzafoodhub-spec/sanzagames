@@ -676,7 +676,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   if(mascotShell)mascotShell.appendChild(micHint);
   const tapControl=document.getElementById('yupbro-tap');
   if(tapControl)tapControl.remove();
-  let audioContext=null,analyser=null,source=null,monitorFrame=0,detectedVoice=false,lastLoudAt=0,segmentStartedAt=0,segmentActive=false;
+  let audioContext=null,analyser=null,source=null,monitorFrame=0,detectedVoice=false,lastLoudAt=0,segmentStartedAt=0,segmentActive=false,processingSegment=false;
   let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
   function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
@@ -711,7 +711,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   function finishSegment(){
    if(!recording||recording.state!=='recording')return;
    segmentActive=false;
-   try{recording.stop();}catch(e){}
+   processingSegment=true;
+   try{recording.stop();}catch(e){processingSegment=false;}
   }
   function startSegmentRecorder(){
    if(!micStream||voiceBusy||!recording||recording.state==='recording')return;
@@ -739,24 +740,25 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     recording.onerror=()=>{micHint.textContent='The mic had a wobble, bro. Refresh and allow microphone access again.';voiceBusy=false;};
     recording.onstop=()=>{
      const chunks=recordedChunks.slice();
-     if(!chunks.length){segmentActive=false;return;}
-     const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});
+     const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
      segmentActive=false;
-     if(detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS){
-      if(spokenUrl)URL.revokeObjectURL(spokenUrl);
-      spokenUrl=URL.createObjectURL(blob);
-      if(speech)speech.textContent='I HEARD YOU, BRO! 😂';
-      micHint.textContent='😂 Yup Bro heard you and is repeating you. Poke him for your voice phrase!';
-      try{
-       if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
-       replayAudio=new Audio(spokenUrl);
-       setMouthTalking(true);
-       replayAudio.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
-       replayAudio.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
-       const p=replayAudio.play();
-       if(p&&p.catch)p.catch(()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();});
-      }catch(e){setMouthTalking(false);startSegmentRecorder();}
-     }else if(micStream){startSegmentRecorder();}
+     if(!valid){processingSegment=false;if(micStream)startSegmentRecorder();return;}
+     const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});
+     if(spokenUrl)URL.revokeObjectURL(spokenUrl);
+     spokenUrl=URL.createObjectURL(blob);
+     if(speech)speech.textContent='I HEARD YOU, BRO! 😂';
+     micHint.textContent='😂 Yup Bro heard you and is repeating you in a funny voice!';
+     try{
+      if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+      replayAudio=new Audio(spokenUrl);
+      replayAudio.playbackRate=1.28;
+      setMouthTalking(true);
+      const resumeListening=()=>{setMouthTalking(false);processingSegment=false;if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+      replayAudio.onended=resumeListening;
+      replayAudio.onerror=resumeListening;
+      const p=replayAudio.play();
+      if(p&&p.catch)p.catch(()=>{resumeListening();micHint.textContent='Bro heard you, but Chrome blocked playback. Tap Yup Bro once and try again.';});
+     }catch(e){setMouthTalking(false);processingSegment=false;if(micStream)startSegmentRecorder();}
     };
     voiceBusy=false;
     micHint.textContent='🟢 LISTENING, BRO! Just talk to Yup Bro — no mic button.';
@@ -773,7 +775,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
      if(segmentActive&&recording&&recording.state==='recording'){
       if(rms>VOICE_THRESHOLD){detectedVoice=true;lastLoudAt=now;}
       if(detectedVoice&&now-lastLoudAt>SILENCE_MS)finishSegment();
-     }else if(!segmentActive&&recording&&recording.state==='inactive'&&!(replayAudio&&!replayAudio.paused&&!replayAudio.ended)){
+     }else if(!processingSegment&&!segmentActive&&recording&&recording.state==='inactive'&&!(replayAudio&&!replayAudio.paused&&!replayAudio.ended)){
       startSegmentRecorder();
      }
      monitorFrame=requestAnimationFrame(monitorAudio);
