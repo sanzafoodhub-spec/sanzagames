@@ -685,7 +685,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    try{
     if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
     replayAudio=new Audio(spokenUrl);
-    replayAudio.playbackRate=1.28; // fast, squeaky Talking-Tom-style playback
+    // Make recorded speech higher and funnier, not just faster at the original pitch.
+    replayAudio.preservesPitch=false;
+    replayAudio.mozPreservesPitch=false;
+    replayAudio.webkitPreservesPitch=false;
+    replayAudio.playbackRate=1.55;
     setMouthTalking(true);
     replayAudio.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
     replayAudio.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
@@ -751,7 +755,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
      try{
       if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
       replayAudio=new Audio(spokenUrl);
-      replayAudio.playbackRate=1.28;
+      // Disable pitch preservation so the user's recorded voice becomes genuinely squeaky.
+      replayAudio.preservesPitch=false;
+      replayAudio.mozPreservesPitch=false;
+      replayAudio.webkitPreservesPitch=false;
+      replayAudio.playbackRate=1.55;
       setMouthTalking(true);
       const resumeListening=()=>{setMouthTalking(false);processingSegment=false;if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
       replayAudio.onended=resumeListening;
