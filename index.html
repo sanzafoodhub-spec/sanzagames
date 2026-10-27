@@ -668,35 +668,51 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
   // Talking-style voice repeat: recordings stay in this browser session.
-  let spokenBlob=null,spokenUrl=null,recording=null,recordedChunks=[],micStream=null;
+  let spokenBlob=null,spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null;
   const micBtn=document.createElement('button');
-  micBtn.type='button';micBtn.textContent='🎤 SAY IT, BRO';
+  micBtn.type='button';micBtn.textContent='🎤 RECORD YOUR VOICE';
   micBtn.style.cssText='display:block;margin:8px auto;padding:12px 16px;border:1px solid #ffd34d;border-radius:12px;background:#171923;color:#ffe18a;font-weight:900;cursor:pointer';
+  const replayBtn=document.createElement('button');
+  replayBtn.type='button';replayBtn.textContent='🔊 PLAY MY VOICE';
+  replayBtn.style.cssText='display:none;margin:8px auto;padding:12px 16px;border:1px solid #ff68c7;border-radius:12px;background:#211626;color:#ffd2f0;font-weight:900;cursor:pointer';
   if(tapButton)tapButton.insertAdjacentElement('afterend',micBtn);
-  const micHint=document.createElement('div');micHint.textContent='Tap mic to record, tap again to stop and hear Yup Bro repeat you.';
+  micBtn.insertAdjacentElement('afterend',replayBtn);
+  const micHint=document.createElement('div');micHint.textContent='Tap RECORD, say your line, then tap STOP. Yup Bro plays your real recording back.';
   micHint.style.cssText='text-align:center;font-size:11px;color:#ddd;margin:6px auto 12px';
-  if(micBtn.parentElement)micBtn.insertAdjacentElement('afterend',micHint);
-  micBtn.addEventListener('click',async()=>{
-   if(recording&&recording.state==='recording'){recording.stop();micBtn.textContent='🎤 SAY IT, BRO';return;}
+  replayBtn.insertAdjacentElement('afterend',micHint);
+  function playMyVoice(){
+   if(!spokenUrl){micHint.textContent='Record a line first, bro! 🎤';return;}
    try{
+    if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+    replayAudio=new Audio(spokenUrl);setMouthTalking(true);
+    replayAudio.onended=()=>setMouthTalking(false);
+    replayAudio.onerror=()=>{setMouthTalking(false);micHint.textContent='Could not play that recording. Tap PLAY MY VOICE again.';};
+    replayAudio.play().then(()=>{micHint.textContent='😂 THAT’S YOUR VOICE, BRO! Record another line whenever you want.';if(speech)speech.textContent='I SOUND JUST LIKE YOU! 😂';}).catch(()=>{setMouthTalking(false);micHint.textContent='Phone blocked auto-play — tap PLAY MY VOICE to hear your recording.';});
+   }catch(e){setMouthTalking(false);micHint.textContent='Tap PLAY MY VOICE to try your recording again.';}
+  }
+  replayBtn.addEventListener('click',playMyVoice);
+  micBtn.addEventListener('click',async()=>{
+   if(recording&&recording.state==='recording'){recording.stop();micBtn.textContent='🎤 RECORD YOUR VOICE';return;}
+   try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)throw new Error('Microphone recording is not supported in this browser');
     micStream=await navigator.mediaDevices.getUserMedia({audio:true});
     recordedChunks=[];
     recording=new MediaRecorder(micStream);
     recording.ondataavailable=e=>{if(e.data&&e.data.size)recordedChunks.push(e.data)};
+    recording.onerror=()=>{micHint.textContent='Recording hiccup, bro — tap RECORD and try again.';};
     recording.onstop=()=>{
-     micStream.getTracks().forEach(t=>t.stop());
-     if(!recordedChunks.length){micHint.textContent='No audio caught — try again, bro.';return;}
+     if(micStream)micStream.getTracks().forEach(t=>t.stop());
+     if(!recordedChunks.length){micHint.textContent='No audio caught — say something while the red recording message is showing.';return;}
      if(spokenUrl)URL.revokeObjectURL(spokenUrl);
      spokenBlob=new Blob(recordedChunks,{type:recording.mimeType||'audio/webm'});
      spokenUrl=URL.createObjectURL(spokenBlob);
-     const replay=new Audio(spokenUrl);setMouthTalking(true);
-     replay.onended=()=>setMouthTalking(false);replay.onerror=()=>setMouthTalking(false);
-     replay.play().catch(()=>setMouthTalking(false));
-     micHint.textContent='😂 Yup Bro just repeated your voice! Tap the mic to do it again.';
-     if(speech)speech.textContent='THAT WAS YOU, BRO! 😂';
+     replayBtn.style.display='block';
+     micHint.textContent='Got it! 😎 Tap PLAY MY VOICE if it does not play automatically.';
+     if(speech)speech.textContent='REPLAY INCOMING, BRO! 🎤';
+     playMyVoice();
     };
-    recording.start();micBtn.textContent='⏹ STOP & REPEAT';micHint.textContent='🔴 Recording… say something, then tap stop!';
-   }catch(e){micHint.textContent='Allow microphone access in Chrome, then try again.';}
+    recording.start();micBtn.textContent='⏹ STOP & REPEAT';micHint.textContent='🔴 RECORDING! Say something funny, then tap STOP.';
+   }catch(e){micHint.textContent='Mic not available. Open this preview in Chrome, allow microphone access, then try again.';}
   });
   let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   function tapYupbro(){
@@ -742,7 +758,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    mascot.rotation.y=Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
    if(fallen){mascot.rotation.z+=(fallDirection*1.35-mascot.rotation.z)*.15;mascot.position.y+=(.12-mascot.position.y)*.15;if(now>=recoverAt){fallen=false;bonkCount=0;mascot.rotation.z=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}else{mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
-   mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0);
+   if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0);
    camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
    renderer.render(scene,camera);
