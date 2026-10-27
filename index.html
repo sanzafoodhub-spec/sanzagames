@@ -202,6 +202,7 @@ footer a{color:var(--gold)}
 .yupbro-status{position:absolute;z-index:3;left:13px;right:13px;bottom:13px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.yupbro-status span{font-size:9px;font-weight:1000;letter-spacing:.08em;color:#d8f9ff;background:#07121adf;border:1px solid #57e9ff44;border-radius:999px;padding:7px 9px;box-shadow:0 5px 18px #0004}.yupbro-status #yupbro-mood[data-mood="snack"]{color:#ffd34d;border-color:#ffd34d66}.yupbro-status #yupbro-mood[data-mood="hype"]{color:#ff68c7;border-color:#ff68c766}.yupbro-tap{position:absolute;z-index:4;left:50%;bottom:48px;transform:translateX(-50%);border:1px solid #57e9ff88;border-radius:999px;background:#09141df2;color:#fff;padding:10px 15px;font:900 11px system-ui,sans-serif;letter-spacing:.08em;box-shadow:0 6px 20px #0005;cursor:pointer;white-space:nowrap}
 .yupbro-tap:active{transform:translateX(-50%) scale(.96)}
 .yupbro-tap:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.yupbro-dance-btn{position:absolute;z-index:6;left:50%;bottom:43px;transform:translateX(-50%);border:1px solid #ffe99b;border-radius:999px;background:linear-gradient(110deg,#ffd34d,#fff0a8);color:#15110a;padding:12px 17px;font:1000 11px system-ui,sans-serif;letter-spacing:.07em;box-shadow:0 7px 25px #ffd34d40,0 0 0 3px #08090d88;white-space:nowrap;cursor:pointer;touch-action:manipulation}.yupbro-dance-btn:active{transform:translateX(-50%) scale(.96)}.yupbro-dance-btn:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}.yupbro-dance-btn.dancing{background:linear-gradient(110deg,#ff68c7,#ffd34d);box-shadow:0 0 30px #ff68c766}
 @media(max-width:720px){.yupbro-speech{top:9px;left:9px;font-size:11px}.yupbro-status{left:8px;right:8px;bottom:8px}.yupbro-status span{font-size:8px;padding:6px 7px}.yupbro-tap{bottom:43px;padding:9px 12px}}
 @media(max-width:720px){.mascot-stage{grid-template-columns:1fr;gap:4px;padding:17px;margin-bottom:26px}.mascot-copy{padding:5px 3px 0}.mascot-copy h2{font-size:31px}.mascot-copy p{font-size:14px}.mascot-canvas-wrap{height:350px;grid-row:1}.mascot-hint{bottom:8px;right:8px}}
 @media(prefers-reduced-motion:reduce){.mascot-stage *{scroll-behavior:auto!important}}
@@ -540,7 +541,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
  const canvas=document.getElementById('yupbro-3d-canvas');
  if(!canvas)return;
  const wrap=canvas.parentElement;
- let renderer,scene,camera,mascot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
+ let renderer,scene,camera,mascot,fallPivot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
  try{
   renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
@@ -561,45 +562,79 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
   const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,18),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
   const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
-  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=-.9;
-  const scooter=new THREE.Group();mascot.add(scooter);
-  box(scooter,gold,[0,.42,0],[1.75,.13,.34]);
-  box(scooter,black,[-.08,.5,0],[.78,.035,.37]);
-  wheelA=new THREE.Group();wheelB=new THREE.Group();scooter.add(wheelA,wheelB);
-  [wheelA,wheelB].forEach((w,i)=>{w.position.set(i===0?-.72:.72,.31,0);const tire=new THREE.Mesh(new THREE.TorusGeometry(.24,.075,12,28),rubber);w.add(tire);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.13,20),gold);hub.rotation.x=Math.PI/2;w.add(hub);const center=sphere(w,cyan,[0,0,0],[.075,.075,.075]);for(let k=0;k<6;k++){const angle=k*Math.PI/3;rod(w,white,[Math.cos(angle)*.07,Math.sin(angle)*.07,-.035],[Math.cos(angle)*.19,Math.sin(angle)*.19,-.035],.012)}});
-  rod(scooter,black,[.56,.47,0],[.48,1.62,0],.055);rod(scooter,gold,[.25,1.62,0],[.72,1.62,0],.045);
-  sphere(scooter,cyan,[.48,1.62,.02],[.08,.08,.08]);
-  const body=new THREE.Group();body.position.set(-.05,.62,0);mascot.add(body);
-  cylinder(body,shirt,[0,.65,0],.31,.39,.78);
-  sphere(body,red,[0,.82,.02],[.35,.28,.3]);
-  // Backpack and bright straps
-  box(body,black,[-.33,.79,-.14],[.28,.48,.27]);box(body,gold,[-.33,.8,.01],[.23,.07,.025]);
-  rod(body,gold,[-.23,.95,.22],[-.12,.38,.22],.035);
-  // Neck and expressive head
-  cylinder(body,skin,[.02,1.13,0],.12,.13,.22);
-  head=new THREE.Group();head.position.set(.04,1.55,.01);body.add(head);
+  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.25;
+  // Dedicated full-body pivot lets Yup Bro fall and recover without breaking the model.
+  fallPivot=new THREE.Group();mascot.add(fallPivot);fallPivot.position.y=.72;
+  // New full-body Yup Bro: original SanZa design, expressive and fully 3D.
+  // No scooter pose: standing mascot with layered streetwear, detailed face and sneakers.
+  wheelA=new THREE.Group();wheelB=new THREE.Group(); // retained as harmless animation handles for compatibility
+  const body=new THREE.Group();fallPivot.add(body);body.position.set(0,-.72,0);
+  const hoodie=mat('#171923',.62),hoodieShade=mat('#252936',.58),pants=mat('#20232d',.72),sole=mat('#d9dbe0',.48),orange=mat('#f15a2a',.66),goldTrim=mat('#ffd34d',.32,.18),blush=mat('#d99579',.7),dark=mat('#20161a',.62);
+  // Oversized hoodie and hood, with layered seams and a SanZa chest badge.
+  sphere(body,hoodie,[0,1.02,0],[.43,.53,.31]);
+  sphere(body,hoodieShade,[0,1.31,-.08],[.32,.29,.25]);
+  cylinder(body,skin,[0,1.43,.01],.12,.13,.2);
+  // Hoodie's front pocket, drawstrings and signature badge.
+  box(body,hoodieShade,[0,.82,.285],[.39,.19,.055]);
+  // Fine gold piping on the hoodie pocket and cuffs catches the stage lighting.
+  rod(body,goldTrim,[-.19,.91,.318],[-.19,.75,.318],.008);rod(body,goldTrim,[.19,.91,.318],[.19,.75,.318],.008);
+  rod(body,goldTrim,[-.09,1.29,.29],[-.11,1.04,.30],.012);
+  rod(body,goldTrim,[.09,1.29,.29],[.11,1.04,.30],.012);
+  sphere(body,gold,[0,1.13,.32],[.105,.105,.025]);
+  // Small embossed S mark built from a curved gold stroke.
+  const badgeS=new THREE.Mesh(new THREE.TorusGeometry(.045,.012,8,18,Math.PI*1.55),goldTrim);badgeS.position.set(0,1.13,.35);badgeS.rotation.z=.3;body.add(badgeS);
+  // Long legs, jogger cuffs and chunky white/gold trainers.
+  const leg1=new THREE.Group(),leg2=new THREE.Group();body.add(leg1,leg2);
+  leg1.position.set(-.2,.66,0);leg2.position.set(.2,.66,0);
+  rod(leg1,pants,[0,0,0],[-.025,-.39,0],.145);
+  rod(leg1,pants,[-.025,-.39,0],[-.055,-.68,.02],.125);
+  cylinder(leg1,hoodieShade,[-.055,-.63,.02],.13,.13,.075);
+  sphere(leg1,sole,[-.01,-.73,.12],[.22,.105,.32]);
+  sphere(leg1,white,[-.01,-.68,.17],[.20,.075,.23]);
+  box(leg1,goldTrim,[-.01,-.65,.28],[.13,.025,.025]);
+  rod(leg2,pants,[0,0,0],[.025,-.39,0],.145);
+  rod(leg2,pants,[.025,-.39,0],[.055,-.68,.02],.125);
+  cylinder(leg2,hoodieShade,[.055,-.63,.02],.13,.13,.075);
+  sphere(leg2,sole,[.09,-.73,.12],[.22,.105,.32]);
+  sphere(leg2,white,[.09,-.68,.17],[.20,.075,.23]);
+  box(leg2,goldTrim,[.09,-.65,.28],[.13,.025,.025]);
+  // Head and ears: intentionally stylised, friendly, expressive and not a copy of any existing mascot.
+  head=new THREE.Group();head.position.set(0,1.77,.015);body.add(head);
   sphere(head,skin,[0,0,0],[.39,.43,.34]);
-  sphere(head,hairmat,[-.03,.28,-.01],[.4,.24,.35]);
-  for(let i=0;i<5;i++)sphere(head,hairmat,[-.27+i*.12,.38+(i%2)*.06,.05],[.14,.15,.16]);
-  sphere(head,skin,[-.37,-.04,.02],[.09,.14,.1]);sphere(head,skin,[.37,-.04,.02],[.09,.14,.1]);
-  const eyeWhites=[sphere(head,white,[-.14,.02,.302],[.105,.12,.055]),sphere(head,white,[.14,.02,.302],[.105,.12,.055])];
-  const pupils=[sphere(head,black,[-.12,.015,.35],[.045,.065,.025]),sphere(head,black,[.16,.015,.35],[.045,.065,.025])];
-  const eyeGlints=[sphere(head,white,[-.13,.04,.37],[.015,.02,.01]),sphere(head,white,[.15,.04,.37],[.015,.02,.01])];
-  const brows=[rod(head,hairmat,[-.25,.17,.31],[-.07,.19,.32],.025),rod(head,hairmat,[.07,.19,.32],[.25,.17,.31],.025)];
-  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),black);smile.position.set(.02,-.14,.31);smile.rotation.z=Math.PI;head.add(smile);
-  // Version 2: a clearer, layered talking mouth with visible teeth and tongue.
-  const mouthInner=sphere(head,mat('#321017',.72),[.02,-.137,.326],[.125,.012,.034]);
-  const mouthTeeth=sphere(head,white,[.02,-.112,.354],[.078,.008,.009]);
-  const tongue=sphere(head,mat('#f06b83',.5),[.02,-.174,.353],[.048,.008,.01]);
+  sphere(head,skin,[-.37,-.055,.015],[.095,.145,.10]);sphere(head,skin,[.37,-.055,.015],[.095,.145,.10]);
+  // Small gold ear studs and refined hoodie stitching add a more finished, premium SanZa look.
+  sphere(head,goldTrim,[-.405,-.085,.095],[.026,.026,.018]);sphere(head,goldTrim,[.405,-.085,.095],[.026,.026,.018]);
+  sphere(head,blush,[-.235,-.12,.286],[.09,.045,.018]);sphere(head,blush,[.235,-.12,.286],[.09,.045,.018]);
+  // Textured-looking layered copper-red swept hair and chunky curls.
+  sphere(head,hairmat,[0,.285,-.025],[.405,.245,.36]);
+  sphere(head,orange,[-.13,.39,.11],[.23,.19,.22]);
+  for(let i=0;i<7;i++)sphere(head,hairmat,[-.32+i*.105,.36+(i%3)*.055,.045],[.13,.145,.15]);
+  sphere(head,hairmat,[.19,.47,-.01],[.18,.15,.18]);
+  // Eyes, pupils, highlights and expressive ginger brows.
+  const eyeWhites=[sphere(head,white,[-.14,.035,.303],[.112,.125,.058]),sphere(head,white,[.14,.035,.303],[.112,.125,.058])];
+  const pupils=[sphere(head,dark,[-.12,.025,.353],[.049,.068,.026]),sphere(head,dark,[.16,.025,.353],[.049,.068,.026])];
+  const eyeGlints=[sphere(head,white,[-.135,.055,.376],[.019,.023,.012]),sphere(head,white,[.145,.055,.376],[.019,.023,.012])];
+  const brows=[rod(head,hairmat,[-.26,.195,.31],[-.065,.215,.325],.03),rod(head,hairmat,[.065,.215,.325],[.26,.195,.31],.03)];
+  // Nose and layered mouth that animates with the supplied voice clips.
+  sphere(head,skin,[0,-.075,.335],[.065,.055,.055]);
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),dark);smile.position.set(.02,-.16,.315);smile.rotation.z=Math.PI;head.add(smile);
+  const mouthInner=sphere(head,mat('#321017',.72),[.02,-.155,.332],[.125,.012,.034]);
+  const mouthTeeth=sphere(head,white,[.02,-.13,.36],[.078,.008,.009]);
+  const tongue=sphere(head,mat('#f06b83',.5),[.02,-.192,.359],[.048,.008,.01]);
   mouthInner.visible=false;mouthTeeth.visible=false;tongue.visible=false;
-  // Arms bent toward handlebars
-  arms.push(new THREE.Group());arms.push(new THREE.Group());arms[0].position.set(-.29,.91,0);arms[1].position.set(.29,.91,0);body.add(arms[0],arms[1]);
-  rod(arms[0],red,[0,0,0],[-.18,-.2,.04],.105);rod(arms[0],skin,[-.18,-.2,.04],[.42,.1,.12],.075);sphere(arms[0],skin,[.42,.1,.12],[.09,.09,.09]);
-  rod(arms[1],red,[0,0,0],[.17,-.2,.04],.105);rod(arms[1],skin,[.17,-.2,.04],[.13,.18,.12],.075);sphere(arms[1],skin,[.13,.18,.12],[.09,.09,.09]);
-  // Seated legs and chunky sneakers
-  const leg1=new THREE.Group(),leg2=new THREE.Group();body.add(leg1,leg2);leg1.position.set(-.2,.35,0);leg2.position.set(.2,.35,0);
-  rod(leg1,black,[0,0,0],[-.1,-.28,.08],.12);rod(leg1,black,[-.1,-.28,.08],[.12,-.43,.22],.11);sphere(leg1,white,[.19,-.43,.26],[.22,.1,.15]);box(leg1,gold,[.19,-.38,.37],[.14,.035,.025]);
-  rod(leg2,black,[0,0,0],[.12,-.27,.08],.12);rod(leg2,black,[.12,-.27,.08],[.35,-.4,.22],.11);sphere(leg2,white,[.4,-.4,.26],[.22,.1,.15]);box(leg2,gold,[.4,-.35,.37],[.14,.035,.025]);
+  // Articulated arms with cuff details and hands; idle animation gives him a lively stance.
+  arms.push(new THREE.Group());arms.push(new THREE.Group());
+  arms[0].position.set(-.37,1.27,0);arms[1].position.set(.37,1.27,0);body.add(arms[0],arms[1]);
+  rod(arms[0],hoodie, [0,0,0],[-.12,-.26,.02],.135);
+  rod(arms[0],hoodie,[-.12,-.26,.02],[-.08,-.48,.08],.12);
+  cylinder(arms[0],goldTrim,[-.08,-.47,.08],.12,.12,.055);
+  sphere(arms[0],skin,[-.08,-.57,.1],[.105,.11,.11]);
+  rod(arms[1],hoodie,[0,0,0],[.12,-.26,.02],.135);
+  rod(arms[1],hoodie,[.12,-.26,.02],[.08,-.48,.08],.12);
+  cylinder(arms[1],goldTrim,[.08,-.47,.08],.12,.12,.055);
+  sphere(arms[1],skin,[.08,-.57,.1],[.105,.11,.11]);
+  // A subtle gold chain and wrist details give the outfit its own SanZa finish.
+  const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
@@ -633,27 +668,171 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();speakFallback(line,pitch,rate);});
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
-  function tapYupbro(){
-   tapCount++;const now=performance.now();boostUntil=now+2600;trickUntil=now+2800;moodUntil=now+2400;
-   const modes=[
-    {name:'COOL RIDER 😎',mood:'cool',line:'Respect the drip, bro!',pitch:0.9,rate:0.94},
-    {name:'BROWNIE RADAR 🍪',mood:'snack',line:'I smell brownies. Mission accepted!',pitch:1.22,rate:1.02},
-    {name:'FULL SANZA MODE ⚡',mood:'hype',line:'YUPBRO IN THE HOUSE! Let’s gooo!',pitch:1.28,rate:1.13},
-    {name:'CHEEKY MODE 😂',mood:'cheeky',line:'What are you looking at, legend?',pitch:1.08,rate:1.04},
-    {name:'SCOOTY SHOW-OFF 🛴',mood:'stunt',line:'Watch this tiny little spin, bro!',pitch:1.16,rate:1.08}
-   ];
-   const mode=modes[(tapCount-1)%modes.length];mood=mode.mood;
-   talk(lines[(tapCount-1)%lines.length]+' '+mode.line,mode.pitch,mode.rate);
-   head.rotation.z+=.18;head.rotation.x-=.08;mascot.rotation.y+=.32;mascot.rotation.x=-.09;
-   mascot.scale.set(1.1,1.1,1.1);
-   brows.forEach((b,i)=>{b.rotation.z+=(i===0?.25:-.25)});
-   if(moodLabel){moodLabel.textContent=mode.name;moodLabel.dataset.mood=mood;}
-   if(tapScore)tapScore.textContent='YUPBRO TAPS: '+tapCount;
-   if(tapButton){tapButton.textContent=['🛵 AGAIN, BRO!','😂 DO IT AGAIN!','🍪 BROWNIE POWER!','⚡ SANZA MODE!','😎 SHOW-OFF!'][tapCount%5];tapButton.classList.remove('yupbro-pop');void tapButton.offsetWidth;tapButton.classList.add('yupbro-pop');}
+  // Talking Tom-style Yup Bro: auto-request mic permission, listen continuously, repeat speech, and react to pokes.
+  let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false;
+  const micHint=document.createElement('div');
+  micHint.textContent='Yup Bro is ready, bro! Allow the mic once, then just talk or poke him. 😂';
+  micHint.style.cssText='text-align:center;font-size:11px;color:#ddd;margin:6px auto 12px';
+  const mascotShell=wrap.parentElement;
+  if(mascotShell)mascotShell.appendChild(micHint);
+  const tapControl=document.getElementById('yupbro-tap');
+  if(tapControl)tapControl.remove();
+  const danceBtn=document.createElement('button');danceBtn.type='button';danceBtn.className='yupbro-dance-btn';danceBtn.textContent='🕺 BOLLYWOOD DANCE';danceBtn.setAttribute('aria-label','Make Yup Bro perform a Bollywood dance');wrap.appendChild(danceBtn);
+  let danceUntil=0;
+  function stopDance(){danceUntil=0;danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
+  // Any tap/click elsewhere on the page ends the dance immediately, including on mobile.
+  document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
+  danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
+  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceUntil=performance.now()+60000;danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  let audioContext=null,analyser=null,source=null,monitorFrame=0,detectedVoice=false,lastLoudAt=0,segmentStartedAt=0,segmentActive=false,processingSegment=false;
+  let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
+  const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
+  function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+  function playRecordedPhrase(){
+   if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
+   try{
+    if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+    replayAudio=new Audio(spokenUrl);
+    // Make recorded speech higher and funnier, not just faster at the original pitch.
+    replayAudio.preservesPitch=false;
+    replayAudio.mozPreservesPitch=false;
+    replayAudio.webkitPreservesPitch=false;
+    replayAudio.playbackRate=1.55;
+    setMouthTalking(true);
+    replayAudio.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    replayAudio.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    const p=replayAudio.play();
+    if(p&&p.catch)p.catch(()=>{setMouthTalking(false);talk('OI! MY SOUND IS SHY, BRO! 😅',1.28,1.14);});
+   }catch(e){setMouthTalking(false);}
   }
-  if(tapButton)tapButton.addEventListener('click',tapYupbro);
-  canvas.addEventListener('click',tapYupbro);
-
+  function playPokeClip(){
+   try{
+    if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+    const clip=yupbroVoiceClips[Math.floor(Math.random()*yupbroVoiceClips.length)];
+    if(!clip)return;
+    yupbroVoiceClips.forEach(a=>{if(a!==clip){a.pause();a.currentTime=0;}});
+    if(recording&&recording.state==='recording')finishSegment();
+    clip.playbackRate=.9+Math.random()*.34;
+    setMouthTalking(true);
+    clip.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    clip.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    const p=clip.play();
+    if(p&&p.catch)p.catch(()=>{setMouthTalking(false);});
+   }catch(e){setMouthTalking(false);}
+  }
+  function finishSegment(){
+   if(!recording||recording.state!=='recording')return;
+   segmentActive=false;
+   processingSegment=true;
+   try{recording.stop();}catch(e){processingSegment=false;}
+  }
+  function startSegmentRecorder(){
+   if(!micStream||voiceBusy||!recording||recording.state==='recording')return;
+   recordedChunks=[];
+   detectedVoice=false;
+   segmentActive=true;
+   segmentStartedAt=performance.now();
+   lastLoudAt=segmentStartedAt;
+   try{recording.start(100);}catch(e){segmentActive=false;}
+  }
+  async function startAlwaysListening(){
+   if(voiceBusy||micStream)return;
+   voiceBusy=true;
+   try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)throw new Error('This browser does not support microphone recording');
+    micHint.textContent='🎤 Allow microphone access once — then Yup Bro listens while this page is open.';
+    if(speech)speech.textContent='ALLOW THE MIC, BRO! 👂';
+    micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+    audioContext=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioContext.state==='suspended')await audioContext.resume();
+    source=audioContext.createMediaStreamSource(micStream);
+    analyser=audioContext.createAnalyser();analyser.fftSize=1024;source.connect(analyser);
+    recording=new MediaRecorder(micStream);
+    recording.ondataavailable=e=>{if(e.data&&e.data.size)recordedChunks.push(e.data)};
+    recording.onerror=()=>{micHint.textContent='The mic had a wobble, bro. Refresh and allow microphone access again.';voiceBusy=false;};
+    recording.onstop=()=>{
+     const chunks=recordedChunks.slice();
+     const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
+     segmentActive=false;
+     if(!valid){processingSegment=false;if(micStream)startSegmentRecorder();return;}
+     const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});
+     if(spokenUrl)URL.revokeObjectURL(spokenUrl);
+     spokenUrl=URL.createObjectURL(blob);
+     if(speech)speech.textContent='I HEARD YOU, BRO! 😂';
+     micHint.textContent='😂 Yup Bro heard you and is repeating you in a funny voice!';
+     try{
+      if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+      replayAudio=new Audio(spokenUrl);
+      // Disable pitch preservation so the user's recorded voice becomes genuinely squeaky.
+      replayAudio.preservesPitch=false;
+      replayAudio.mozPreservesPitch=false;
+      replayAudio.webkitPreservesPitch=false;
+      replayAudio.playbackRate=1.55;
+      setMouthTalking(true);
+      const resumeListening=()=>{setMouthTalking(false);processingSegment=false;if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+      replayAudio.onended=resumeListening;
+      replayAudio.onerror=resumeListening;
+      const p=replayAudio.play();
+      if(p&&p.catch)p.catch(()=>{resumeListening();micHint.textContent='Bro heard you, but Chrome blocked playback. Tap Yup Bro once and try again.';});
+     }catch(e){setMouthTalking(false);processingSegment=false;if(micStream)startSegmentRecorder();}
+    };
+    voiceBusy=false;
+    micHint.textContent='🟢 LISTENING, BRO! Just talk to Yup Bro — no mic button.';
+    if(speech)speech.textContent='I’M LISTENING, BRO! 👂';
+    startSegmentRecorder();
+    const samples=new Uint8Array(analyser.fftSize);
+    function monitorAudio(){
+     monitorFrame=0;
+     if(!micStream||!analyser)return;
+     analyser.getByteTimeDomainData(samples);
+     let sum=0;
+     for(let i=0;i<samples.length;i++){const v=(samples[i]-128)/128;sum+=v*v;}
+     const rms=Math.sqrt(sum/samples.length),now=performance.now();
+     if(segmentActive&&recording&&recording.state==='recording'){
+      if(rms>VOICE_THRESHOLD){detectedVoice=true;lastLoudAt=now;}
+      if(detectedVoice&&now-lastLoudAt>SILENCE_MS)finishSegment();
+     }else if(!processingSegment&&!segmentActive&&recording&&recording.state==='inactive'&&!(replayAudio&&!replayAudio.paused&&!replayAudio.ended)){
+      startSegmentRecorder();
+     }
+     monitorFrame=requestAnimationFrame(monitorAudio);
+    }
+    monitorAudio();
+   }catch(e){
+    voiceBusy=false;stopMicTracks();
+    micHint.textContent='Bro, Chrome needs microphone permission. Tap the character once if the browser needs a user gesture, then allow the mic.';
+    if(speech)speech.textContent='LET ME HEAR YOU, BRO! 🎤';
+   }
+  }
+  function tapYupbro(){
+   if(fallen){return;}
+   bonkCount++;
+   if(bonkCount>=5){
+    fallen=true;recoverAt=performance.now()+3200;fallDirection=Math.random()>.5?1:-1;fallPivot.userData.fallStart=performance.now();
+    if(moodLabel)moodLabel.textContent='KNOCKED OUT, BRO! 😵';
+    if(speech)speech.textContent='FIVE POKES?! I’M FINISHED! 💀';
+    playPokeClip();
+    return;
+   }
+   tapCount++;
+   const now=performance.now();boostUntil=now+2600;trickUntil=now+2800;moodUntil=now+2400;
+   const modes=[
+    {name:'HEY! EASY, BRO! 😳',mood:'cheeky'},
+    {name:'OI! WATCH IT! 😂',mood:'hype'},
+    {name:'BRO, PERSONAL SPACE! 🙄',mood:'cool'},
+    {name:'I’M TELLING YOUR MAM! 🤣',mood:'snack'}
+   ];
+   const mode=modes[(bonkCount-1)%modes.length];mood=mode.mood;
+   playPokeClip();
+   head.rotation.z+=.22;head.rotation.x-=.1;mascot.rotation.y+=.38;mascot.rotation.x=-.12;
+   mascot.scale.set(1.1,1.1,1.1);
+   brows.forEach((b,i)=>{b.rotation.z+=(i===0?.3:-.3)});
+   if(moodLabel){moodLabel.textContent=mode.name;moodLabel.dataset.mood=mood;}
+   if(tapScore)tapScore.textContent='YUPBRO POKES: '+bonkCount+'/5';
+  }
+  // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
+  canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
+  // Request permission on page entry. Browsers may require one tap before granting it.
+  startAlwaysListening();
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
@@ -661,22 +840,27 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   let visible=true;
   if('IntersectionObserver'in window){observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(animate);},{threshold:.05});observer.observe(wrap)}
   function animate(now){raf=0;if(!visible)return;raf=requestAnimationFrame(animate);const t=(now-start)/1000;if(now-last<28)return;last=now;
-   const rev=now<boostUntil?4.2:0,tricking=now<trickUntil,reacting=now<moodUntil;
+   const rev=now<boostUntil?4.2:0,tricking=now<trickUntil,reacting=now<moodUntil,dancing=now<danceUntil,dancePhase=t*9.2;
+   if(!dancing&&danceBtn.classList.contains('dancing'))stopDance();
    const scale=1+Math.max(0,(boostUntil-now)/2600)*.1;mascot.scale.lerp(new THREE.Vector3(scale,scale,scale),.12);
    if(now>nextBlink){blinkUntil=now+145;nextBlink=now+2200+Math.random()*2600;}
    const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);
    brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
    smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
    if(isSpeaking){const syllable=Math.abs(Math.sin(now*.012))+Math.abs(Math.sin(now*.019))*.28;mouthInner.scale.y=.012+syllable*.034+(now<speechPulse?.012:0);mouthTeeth.scale.y=.008+syllable*.005;tongue.scale.y=.008+syllable*.012;mouthTeeth.position.y=-.112+syllable*.004;}
-   wheelA.rotation.z=-t*(2.7+rev);wheelB.rotation.z=-t*(2.7+rev);
+   // Full-body character no longer rides a scooter; keep legacy wheel handles inert.
    const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
-   body.position.y=.62+Math.sin(t*4)*.035+(tricking?Math.max(0,trickPulse)*.22:0);
-   head.rotation.y=Math.sin(t*.8)*.12;head.rotation.z=Math.sin(t*1.7)*.035+(tricking?Math.sin(t*12)*.16:0);
-   arms[0].rotation.z=Math.sin(t*3)*.035+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=-Math.sin(t*3)*.035-(tricking?Math.sin(t*10)*.5:0);
-   mascot.rotation.y=Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
-   mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;
+   body.position.y=-.72+Math.sin(t*4)*.025+(tricking&&!fallen?Math.max(0,trickPulse)*.12:0)+(dancing&&!fallen?Math.abs(Math.sin(dancePhase*2))*.095:0);
+   head.rotation.y=Math.sin(t*.8)*.12+(dancing?Math.sin(dancePhase)*.24:0);head.rotation.z=Math.sin(t*1.7)*.035+(tricking?Math.sin(t*12)*.16:0)+(dancing?Math.sin(dancePhase*2)*.09:0);
+   // Bollywood-inspired bhangra: alternating raised arms, shoulder rolls, hip bounce and quick heel steps.
+   arms[0].rotation.z=dancing?1.35+Math.sin(dancePhase)*.52:Math.sin(t*2.2)*.055+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=dancing?-1.35+Math.sin(dancePhase+Math.PI)*.52:-Math.sin(t*2.2)*.055-(tricking?Math.sin(t*10)*.5:0);
+   arms[0].rotation.x=dancing?Math.sin(dancePhase+1)*.35:0;arms[1].rotation.x=dancing?Math.sin(dancePhase+Math.PI+1)*.35:0;
+   leg1.rotation.x=dancing?Math.max(0,Math.sin(dancePhase*2))*.42:tricking?Math.max(0,trickPulse)*.18:Math.sin(t*2)*.018;leg2.rotation.x=dancing?Math.max(0,Math.sin(dancePhase*2+Math.PI))*.42:tricking?-Math.max(0,trickPulse)*.18:-Math.sin(t*2)*.018;
+   leg1.rotation.z=dancing?Math.sin(dancePhase*2)*.12:0;leg2.rotation.z=dancing?-Math.sin(dancePhase*2)*.12:0;
+   mascot.rotation.y=dancing?Math.sin(dancePhase)*.34:Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
+   if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/520);const ease=1-Math.pow(1-fallProgress,3);fallPivot.rotation.z=fallDirection*1.48*ease;fallPivot.position.x=fallDirection*.23*ease;mascot.position.y=.25-.08*ease+Math.sin(elapsed*.025)*.018;if(now>=recoverAt){const upProgress=Math.min(1,(now-recoverAt)/520);const upEase=1-Math.pow(1-upProgress,3);fallPivot.rotation.z=fallDirection*1.48*(1-upEase);fallPivot.position.x=fallDirection*.23*(1-upEase);mascot.position.y=.25-.08*(1-upEase);if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}}else{fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
-   mascot.position.y=-.9+Math.sin(t*2)*.035+(tricking?Math.max(0,trickPulse)*.16:0);
+   if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
    camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
    renderer.render(scene,camera);
@@ -793,6 +977,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
 })();
 </script>
+
+
 
 </body>
 </html>
