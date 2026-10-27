@@ -1,0 +1,16 @@
+{
+  "name": "sanza-android-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SanZa Games and SanZa Food Hub Android app",
+  "scripts": {
+    "build:android": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
+  }
+}
