@@ -757,7 +757,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
      if(segmentActive&&recording&&recording.state==='recording'){
       if(rms>VOICE_THRESHOLD){detectedVoice=true;lastLoudAt=now;}
       if(detectedVoice&&now-lastLoudAt>SILENCE_MS)finishSegment();
-     }else if(!segmentActive&&recording&&recording.state==='inactive'&&!replayAudio?.currentTime){
+     }else if(!segmentActive&&recording&&recording.state==='inactive'&&!(replayAudio&&!replayAudio.paused&&!replayAudio.ended)){
       startSegmentRecorder();
      }
      monitorFrame=requestAnimationFrame(monitorAudio);
