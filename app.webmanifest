@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "SanZa — Games & Food Hub",
+  "short_name": "SanZa",
+  "description": "One SanZa. One Family. Play SanZa Games, explore SanZa Food Hub and discover offers.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "categories": ["games", "food", "entertainment"],
+  "icons": [
+    {
+      "src": "/sanza-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
