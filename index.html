@@ -567,45 +567,73 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
   const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,18),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
   const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
-  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=-.9;
-  const scooter=new THREE.Group();mascot.add(scooter);
-  box(scooter,gold,[0,.42,0],[1.75,.13,.34]);
-  box(scooter,black,[-.08,.5,0],[.78,.035,.37]);
-  wheelA=new THREE.Group();wheelB=new THREE.Group();scooter.add(wheelA,wheelB);
-  [wheelA,wheelB].forEach((w,i)=>{w.position.set(i===0?-.72:.72,.31,0);const tire=new THREE.Mesh(new THREE.TorusGeometry(.24,.075,12,28),rubber);w.add(tire);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.13,20),gold);hub.rotation.x=Math.PI/2;w.add(hub);const center=sphere(w,cyan,[0,0,0],[.075,.075,.075]);for(let k=0;k<6;k++){const angle=k*Math.PI/3;rod(w,white,[Math.cos(angle)*.07,Math.sin(angle)*.07,-.035],[Math.cos(angle)*.19,Math.sin(angle)*.19,-.035],.012)}});
-  rod(scooter,black,[.56,.47,0],[.48,1.62,0],.055);rod(scooter,gold,[.25,1.62,0],[.72,1.62,0],.045);
-  sphere(scooter,cyan,[.48,1.62,.02],[.08,.08,.08]);
-  const body=new THREE.Group();body.position.set(-.05,.62,0);mascot.add(body);
-  cylinder(body,shirt,[0,.65,0],.31,.39,.78);
-  sphere(body,red,[0,.82,.02],[.35,.28,.3]);
-  // Backpack and bright straps
-  box(body,black,[-.33,.79,-.14],[.28,.48,.27]);box(body,gold,[-.33,.8,.01],[.23,.07,.025]);
-  rod(body,gold,[-.23,.95,.22],[-.12,.38,.22],.035);
-  // Neck and expressive head
-  cylinder(body,skin,[.02,1.13,0],.12,.13,.22);
-  head=new THREE.Group();head.position.set(.04,1.55,.01);body.add(head);
+  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.05;
+  // New full-body Yup Bro: original SanZa design, expressive and fully 3D.
+  // No scooter pose: standing mascot with layered streetwear, detailed face and sneakers.
+  wheelA=new THREE.Group();wheelB=new THREE.Group(); // retained as harmless animation handles for compatibility
+  const body=new THREE.Group();mascot.add(body);body.position.set(0,0,0);
+  const hoodie=mat('#171923',.62),hoodieShade=mat('#252936',.58),pants=mat('#20232d',.72),sole=mat('#d9dbe0',.48),orange=mat('#f15a2a',.66),goldTrim=mat('#ffd34d',.32,.18),blush=mat('#d99579',.7),dark=mat('#20161a',.62);
+  // Oversized hoodie and hood, with layered seams and a SanZa chest badge.
+  sphere(body,hoodie,[0,1.02,0],[.43,.53,.31]);
+  sphere(body,hoodieShade,[0,1.31,-.08],[.32,.29,.25]);
+  cylinder(body,skin,[0,1.43,.01],.12,.13,.2);
+  // Hoodie's front pocket, drawstrings and signature badge.
+  box(body,hoodieShade,[0,.82,.285],[.39,.19,.055]);
+  rod(body,goldTrim,[-.09,1.29,.29],[-.11,1.04,.30],.012);
+  rod(body,goldTrim,[.09,1.29,.29],[.11,1.04,.30],.012);
+  sphere(body,gold,[0,1.13,.32],[.105,.105,.025]);
+  // Small embossed S mark built from a curved gold stroke.
+  const badgeS=new THREE.Mesh(new THREE.TorusGeometry(.045,.012,8,18,Math.PI*1.55),goldTrim);badgeS.position.set(0,1.13,.35);badgeS.rotation.z=.3;body.add(badgeS);
+  // Long legs, jogger cuffs and chunky white/gold trainers.
+  const leg1=new THREE.Group(),leg2=new THREE.Group();body.add(leg1,leg2);
+  leg1.position.set(-.2,.66,0);leg2.position.set(.2,.66,0);
+  rod(leg1,pants,[0,0,0],[-.025,-.39,0],.145);
+  rod(leg1,pants,[-.025,-.39,0],[-.055,-.68,.02],.125);
+  cylinder(leg1,hoodieShade,[-.055,-.63,.02],.13,.13,.075);
+  sphere(leg1,sole,[-.01,-.73,.12],[.22,.105,.32]);
+  sphere(leg1,white,[-.01,-.68,.17],[.20,.075,.23]);
+  box(leg1,goldTrim,[-.01,-.65,.28],[.13,.025,.025]);
+  rod(leg2,pants,[0,0,0],[.025,-.39,0],.145);
+  rod(leg2,pants,[.025,-.39,0],[.055,-.68,.02],.125);
+  cylinder(leg2,hoodieShade,[.055,-.63,.02],.13,.13,.075);
+  sphere(leg2,sole,[.09,-.73,.12],[.22,.105,.32]);
+  sphere(leg2,white,[.09,-.68,.17],[.20,.075,.23]);
+  box(leg2,goldTrim,[.09,-.65,.28],[.13,.025,.025]);
+  // Head and ears: intentionally stylised, friendly, expressive and not a copy of any existing mascot.
+  head=new THREE.Group();head.position.set(0,1.77,.015);body.add(head);
   sphere(head,skin,[0,0,0],[.39,.43,.34]);
-  sphere(head,hairmat,[-.03,.28,-.01],[.4,.24,.35]);
-  for(let i=0;i<5;i++)sphere(head,hairmat,[-.27+i*.12,.38+(i%2)*.06,.05],[.14,.15,.16]);
-  sphere(head,skin,[-.37,-.04,.02],[.09,.14,.1]);sphere(head,skin,[.37,-.04,.02],[.09,.14,.1]);
-  const eyeWhites=[sphere(head,white,[-.14,.02,.302],[.105,.12,.055]),sphere(head,white,[.14,.02,.302],[.105,.12,.055])];
-  const pupils=[sphere(head,black,[-.12,.015,.35],[.045,.065,.025]),sphere(head,black,[.16,.015,.35],[.045,.065,.025])];
-  const eyeGlints=[sphere(head,white,[-.13,.04,.37],[.015,.02,.01]),sphere(head,white,[.15,.04,.37],[.015,.02,.01])];
-  const brows=[rod(head,hairmat,[-.25,.17,.31],[-.07,.19,.32],.025),rod(head,hairmat,[.07,.19,.32],[.25,.17,.31],.025)];
-  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),black);smile.position.set(.02,-.14,.31);smile.rotation.z=Math.PI;head.add(smile);
-  // Version 2: a clearer, layered talking mouth with visible teeth and tongue.
-  const mouthInner=sphere(head,mat('#321017',.72),[.02,-.137,.326],[.125,.012,.034]);
-  const mouthTeeth=sphere(head,white,[.02,-.112,.354],[.078,.008,.009]);
-  const tongue=sphere(head,mat('#f06b83',.5),[.02,-.174,.353],[.048,.008,.01]);
+  sphere(head,skin,[-.37,-.055,.015],[.095,.145,.10]);sphere(head,skin,[.37,-.055,.015],[.095,.145,.10]);
+  sphere(head,blush,[-.235,-.12,.286],[.09,.045,.018]);sphere(head,blush,[.235,-.12,.286],[.09,.045,.018]);
+  // Textured-looking layered copper-red swept hair and chunky curls.
+  sphere(head,hairmat,[0,.285,-.025],[.405,.245,.36]);
+  sphere(head,orange,[-.13,.39,.11],[.23,.19,.22]);
+  for(let i=0;i<7;i++)sphere(head,hairmat,[-.32+i*.105,.36+(i%3)*.055,.045],[.13,.145,.15]);
+  sphere(head,hairmat,[.19,.47,-.01],[.18,.15,.18]);
+  // Eyes, pupils, highlights and expressive ginger brows.
+  const eyeWhites=[sphere(head,white,[-.14,.035,.303],[.112,.125,.058]),sphere(head,white,[.14,.035,.303],[.112,.125,.058])];
+  const pupils=[sphere(head,dark,[-.12,.025,.353],[.049,.068,.026]),sphere(head,dark,[.16,.025,.353],[.049,.068,.026])];
+  const eyeGlints=[sphere(head,white,[-.135,.055,.376],[.019,.023,.012]),sphere(head,white,[.145,.055,.376],[.019,.023,.012])];
+  const brows=[rod(head,hairmat,[-.26,.195,.31],[-.065,.215,.325],.03),rod(head,hairmat,[.065,.215,.325],[.26,.195,.31],.03)];
+  // Nose and layered mouth that animates with the supplied voice clips.
+  sphere(head,skin,[0,-.075,.335],[.065,.055,.055]);
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),dark);smile.position.set(.02,-.16,.315);smile.rotation.z=Math.PI;head.add(smile);
+  const mouthInner=sphere(head,mat('#321017',.72),[.02,-.155,.332],[.125,.012,.034]);
+  const mouthTeeth=sphere(head,white,[.02,-.13,.36],[.078,.008,.009]);
+  const tongue=sphere(head,mat('#f06b83',.5),[.02,-.192,.359],[.048,.008,.01]);
   mouthInner.visible=false;mouthTeeth.visible=false;tongue.visible=false;
-  // Arms bent toward handlebars
-  arms.push(new THREE.Group());arms.push(new THREE.Group());arms[0].position.set(-.29,.91,0);arms[1].position.set(.29,.91,0);body.add(arms[0],arms[1]);
-  rod(arms[0],red,[0,0,0],[-.18,-.2,.04],.105);rod(arms[0],skin,[-.18,-.2,.04],[.42,.1,.12],.075);sphere(arms[0],skin,[.42,.1,.12],[.09,.09,.09]);
-  rod(arms[1],red,[0,0,0],[.17,-.2,.04],.105);rod(arms[1],skin,[.17,-.2,.04],[.13,.18,.12],.075);sphere(arms[1],skin,[.13,.18,.12],[.09,.09,.09]);
-  // Seated legs and chunky sneakers
-  const leg1=new THREE.Group(),leg2=new THREE.Group();body.add(leg1,leg2);leg1.position.set(-.2,.35,0);leg2.position.set(.2,.35,0);
-  rod(leg1,black,[0,0,0],[-.1,-.28,.08],.12);rod(leg1,black,[-.1,-.28,.08],[.12,-.43,.22],.11);sphere(leg1,white,[.19,-.43,.26],[.22,.1,.15]);box(leg1,gold,[.19,-.38,.37],[.14,.035,.025]);
-  rod(leg2,black,[0,0,0],[.12,-.27,.08],.12);rod(leg2,black,[.12,-.27,.08],[.35,-.4,.22],.11);sphere(leg2,white,[.4,-.4,.26],[.22,.1,.15]);box(leg2,gold,[.4,-.35,.37],[.14,.035,.025]);
+  // Articulated arms with cuff details and hands; idle animation gives him a lively stance.
+  arms.push(new THREE.Group());arms.push(new THREE.Group());
+  arms[0].position.set(-.37,1.27,0);arms[1].position.set(.37,1.27,0);body.add(arms[0],arms[1]);
+  rod(arms[0],hoodie, [0,0,0],[-.12,-.26,.02],.135);
+  rod(arms[0],hoodie,[-.12,-.26,.02],[-.08,-.48,.08],.12);
+  cylinder(arms[0],goldTrim,[-.08,-.47,.08],.12,.12,.055);
+  sphere(arms[0],skin,[-.08,-.57,.1],[.105,.11,.11]);
+  rod(arms[1],hoodie,[0,0,0],[.12,-.26,.02],.135);
+  rod(arms[1],hoodie,[.12,-.26,.02],[.08,-.48,.08],.12);
+  cylinder(arms[1],goldTrim,[.08,-.47,.08],.12,.12,.055);
+  sphere(arms[1],skin,[.08,-.57,.1],[.105,.11,.11]);
+  // A subtle gold chain and wrist details give the outfit its own SanZa finish.
+  const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
@@ -674,15 +702,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
    smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
    if(isSpeaking){const syllable=Math.abs(Math.sin(now*.012))+Math.abs(Math.sin(now*.019))*.28;mouthInner.scale.y=.012+syllable*.034+(now<speechPulse?.012:0);mouthTeeth.scale.y=.008+syllable*.005;tongue.scale.y=.008+syllable*.012;mouthTeeth.position.y=-.112+syllable*.004;}
-   wheelA.rotation.z=-t*(2.7+rev);wheelB.rotation.z=-t*(2.7+rev);
+   // Full-body character no longer rides a scooter; keep legacy wheel handles inert.
    const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
-   body.position.y=.62+Math.sin(t*4)*.035+(tricking?Math.max(0,trickPulse)*.22:0);
+   body.position.y=Math.sin(t*4)*.025+(tricking?Math.max(0,trickPulse)*.12:0);
    head.rotation.y=Math.sin(t*.8)*.12;head.rotation.z=Math.sin(t*1.7)*.035+(tricking?Math.sin(t*12)*.16:0);
-   arms[0].rotation.z=Math.sin(t*3)*.035+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=-Math.sin(t*3)*.035-(tricking?Math.sin(t*10)*.5:0);
+   arms[0].rotation.z=Math.sin(t*2.2)*.055+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=-Math.sin(t*2.2)*.055-(tricking?Math.sin(t*10)*.5:0);leg1.rotation.x=tricking?Math.max(0,trickPulse)*.18:Math.sin(t*2)*.018;leg2.rotation.x=tricking?-Math.max(0,trickPulse)*.18:-Math.sin(t*2)*.018;
    mascot.rotation.y=Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
    mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
-   mascot.position.y=-.9+Math.sin(t*2)*.035+(tricking?Math.max(0,trickPulse)*.16:0);
+   mascot.position.y=.05+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0);
    camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
    renderer.render(scene,camera);
