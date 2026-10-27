@@ -546,7 +546,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
  const canvas=document.getElementById('yupbro-3d-canvas');
  if(!canvas)return;
  const wrap=canvas.parentElement;
- let renderer,scene,camera,mascot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
+ let renderer,scene,camera,mascot,fallPivot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
  try{
   renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
@@ -567,7 +567,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
   const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,18),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
   const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
-  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.25;
+  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.25;\n  // Dedicated full-body pivot lets Yup Bro fall and recover without breaking the model.\n  fallPivot=new THREE.Group();mascot.add(fallPivot);
   const fallPivot=new THREE.Group();mascot.add(fallPivot);fallPivot.position.y=.72;
   // New full-body Yup Bro: original SanZa design, expressive and fully 3D.
   // No scooter pose: standing mascot with layered streetwear, detailed face and sneakers.
