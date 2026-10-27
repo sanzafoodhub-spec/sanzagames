@@ -41,6 +41,19 @@ h1{letter-spacing:-.04em;text-wrap:balance}
 footer{border-top:1px solid #302b20}
 
 </style>
+
+<style id="sanza-hungry-float-style">
+  .sanza-hungry-float{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));z-index:9999;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:11px 16px;border:1px solid #ffe58a;border-radius:999px;background:linear-gradient(135deg,#ffe68b,#ffd34d 52%,#e7b62e);color:#111;font:900 13px/1.1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;letter-spacing:.35px;text-decoration:none;box-shadow:0 7px 24px #0009,0 0 0 1px #ffd34d22;transition:filter .18s ease;-webkit-tap-highlight-color:transparent;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+  .sanza-hungry-float:hover{filter:brightness(1.06)}
+  .sanza-hungry-float:active{cursor:grabbing}
+  .sanza-hungry-float:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .sanza-hungry-float .sanza-hungry-emoji{font-size:19px;line-height:1}
+  .sanza-hungry-float.sanza-hungry-nudge{animation:sanzaHungryNudge .8s ease-in-out,sanzaHungryGlow .8s ease-in-out}
+  @keyframes sanzaHungryNudge{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-7px) rotate(-3deg)}50%{transform:translateY(0) rotate(3deg)}75%{transform:translateY(-4px) rotate(-2deg)}}
+  @keyframes sanzaHungryGlow{0%,100%{box-shadow:0 7px 24px #0009,0 0 0 1px #ffd34d22}50%{box-shadow:0 8px 27px #0009,0 0 0 5px #ffd34d44}}
+  @media(max-width:420px){.sanza-hungry-float{min-height:46px;padding:10px 13px;font-size:12px;gap:6px}}
+  @media(prefers-reduced-motion:reduce){.sanza-hungry-float.sanza-hungry-nudge{animation:none}}
+</style>
 </head>
 <body>
 <header>
@@ -89,5 +102,41 @@ Explore living things and biological systems while breaking down difficult conce
 <a href="index.html">← Back to SanZa Games</a>
 <p><a href="https://www.sanzafood.ie/">Visit SanZa Food Hub</a></p>
 </footer>
+
+<a class="sanza-hungry-float" href="https://www.sanzafood.ie/" aria-label="Hungry? Visit SanZa Food Hub" title="Hungry? Order from SanZa Food Hub"><span class="sanza-hungry-emoji" aria-hidden="true">🍔</span><span>HUNGRY?</span></a>
+
+<script id="sanza-hungry-drag-script">
+(function(){
+  const button=document.querySelector('.sanza-hungry-float');
+  if(!button)return;
+  let startX=0,startY=0,originX=0,originY=0,dragging=false,moved=false,suppressClick=false;
+  button.addEventListener('pointerdown',function(e){
+    if(e.button!==undefined&&e.button!==0)return;
+    const r=button.getBoundingClientRect();startX=e.clientX;startY=e.clientY;originX=r.left;originY=r.top;dragging=true;moved=false;
+    if(button.setPointerCapture)button.setPointerCapture(e.pointerId);
+  });
+  button.addEventListener('pointermove',function(e){
+    if(!dragging)return;
+    const dx=e.clientX-startX,dy=e.clientY-startY;
+    if(Math.abs(dx)>5||Math.abs(dy)>5)moved=true;
+    if(!moved)return;
+    const x=Math.min(Math.max(0,window.innerWidth-button.offsetWidth),Math.max(0,originX+dx));
+    const y=Math.min(Math.max(0,window.innerHeight-button.offsetHeight),Math.max(0,originY+dy));
+    button.style.left=x+'px';button.style.top=y+'px';button.style.right='auto';button.style.bottom='auto';e.preventDefault();
+  });
+  function endDrag(){if(!dragging)return;dragging=false;if(moved){suppressClick=true;setTimeout(function(){suppressClick=false},350)}}
+  button.addEventListener('pointerup',endDrag);button.addEventListener('pointercancel',endDrag);
+  button.addEventListener('click',function(e){if(suppressClick){e.preventDefault();e.stopPropagation();suppressClick=false}},true);
+  window.addEventListener('resize',function(){
+    if(!button.style.left||!button.style.top)return;
+    button.style.left=Math.min(Math.max(0,window.innerWidth-button.offsetWidth),parseFloat(button.style.left)||0)+'px';
+    button.style.top=Math.min(Math.max(0,window.innerHeight-button.offsetHeight),parseFloat(button.style.top)||0)+'px';
+  });
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    window.setInterval(function(){button.classList.remove('sanza-hungry-nudge');void button.offsetWidth;button.classList.add('sanza-hungry-nudge')},20000);
+    button.addEventListener('animationend',function(){button.classList.remove('sanza-hungry-nudge')});
+  }
+})();
+</script>
 </body>
 </html>
