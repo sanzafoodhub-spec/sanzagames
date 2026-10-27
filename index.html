@@ -681,15 +681,31 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
   function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
   function playRecordedPhrase(){
-   if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.18,1.05);return;}
+   if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
    try{
     if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
     replayAudio=new Audio(spokenUrl);
+    replayAudio.playbackRate=1.28; // fast, squeaky Talking-Tom-style playback
     setMouthTalking(true);
     replayAudio.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
     replayAudio.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
     const p=replayAudio.play();
-    if(p&&p.catch)p.catch(()=>{setMouthTalking(false);talk('OI! MY SOUND IS SHY, BRO! 😅',1.15,1.05);});
+    if(p&&p.catch)p.catch(()=>{setMouthTalking(false);talk('OI! MY SOUND IS SHY, BRO! 😅',1.28,1.14);});
+   }catch(e){setMouthTalking(false);}
+  }
+  function playPokeClip(){
+   try{
+    if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+    const clip=yupbroVoiceClips[Math.floor(Math.random()*yupbroVoiceClips.length)];
+    if(!clip)return;
+    yupbroVoiceClips.forEach(a=>{if(a!==clip){a.pause();a.currentTime=0;}});
+    if(recording&&recording.state==='recording')finishSegment();
+    clip.playbackRate=.9+Math.random()*.34;
+    setMouthTalking(true);
+    clip.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    clip.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    const p=clip.play();
+    if(p&&p.catch)p.catch(()=>{setMouthTalking(false);});
    }catch(e){setMouthTalking(false);}
   }
   function finishSegment(){
@@ -776,7 +792,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     fallen=true;recoverAt=performance.now()+3200;fallDirection=Math.random()>.5?1:-1;
     if(moodLabel)moodLabel.textContent='KNOCKED OUT, BRO! 😵';
     if(speech)speech.textContent='FIVE POKES?! I’M FINISHED! 💀';
-    playRecordedPhrase();
+    playPokeClip();
     return;
    }
    tapCount++;
@@ -788,7 +804,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     {name:'I’M TELLING YOUR MAM! 🤣',mood:'snack'}
    ];
    const mode=modes[(bonkCount-1)%modes.length];mood=mode.mood;
-   playRecordedPhrase();
+   playPokeClip();
    head.rotation.z+=.22;head.rotation.x-=.1;mascot.rotation.y+=.38;mascot.rotation.x=-.12;
    mascot.scale.set(1.1,1.1,1.1);
    brows.forEach((b,i)=>{b.rotation.z+=(i===0?.3:-.3)});
