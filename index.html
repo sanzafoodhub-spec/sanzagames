@@ -567,7 +567,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
   const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,18),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
   const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
-  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.05;
+  mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.25;
   // New full-body Yup Bro: original SanZa design, expressive and fully 3D.
   // No scooter pose: standing mascot with layered streetwear, detailed face and sneakers.
   wheelA=new THREE.Group();wheelB=new THREE.Group(); // retained as harmless animation handles for compatibility
@@ -710,7 +710,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    mascot.rotation.y=Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
    mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
-   mascot.position.y=.05+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0);
+   mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0);
    camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
    renderer.render(scene,camera);
