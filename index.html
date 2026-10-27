@@ -568,11 +568,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,18),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
   const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
   mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.25;
-  const fallPivot=new THREE.Group();mascot.add(fallPivot);fallPivot.position.y=.72;
   // New full-body Yup Bro: original SanZa design, expressive and fully 3D.
   // No scooter pose: standing mascot with layered streetwear, detailed face and sneakers.
   wheelA=new THREE.Group();wheelB=new THREE.Group(); // retained as harmless animation handles for compatibility
-  const body=new THREE.Group();fallPivot.add(body);body.position.set(0,-.72,0);
+  const body=new THREE.Group();mascot.add(body);body.position.set(0,0,0);
   const hoodie=mat('#171923',.62),hoodieShade=mat('#252936',.58),pants=mat('#20232d',.72),sole=mat('#d9dbe0',.48),orange=mat('#f15a2a',.66),goldTrim=mat('#ffd34d',.32,.18),blush=mat('#d99579',.7),dark=mat('#20161a',.62);
   // Oversized hoodie and hood, with layered seams and a SanZa chest badge.
   sphere(body,hoodie,[0,1.02,0],[.43,.53,.31]);
@@ -800,7 +799,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(fallen){return;}
    bonkCount++;
    if(bonkCount>=5){
-    fallen=true;recoverAt=performance.now()+3000;fallDirection=Math.random()>.5?1:-1;fallPivot.userData.fallStart=performance.now();fallPivot.userData.startLeg1=leg1.rotation.z;fallPivot.userData.startLeg2=leg2.rotation.z;
+    fallen=true;recoverAt=performance.now()+3000;fallDirection=Math.random()>.5?1:-1;mascot.userData.fallStart=performance.now();fallPivot.userData.startLeg1=leg1.rotation.z;fallPivot.userData.startLeg2=leg2.rotation.z;
     if(moodLabel)moodLabel.textContent='KNOCKED OUT, BRO! 😵';
     if(speech)speech.textContent='FIVE POKES?! I’M FINISHED! 💀';
     playPokeClip();
@@ -842,11 +841,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(isSpeaking){const syllable=Math.abs(Math.sin(now*.012))+Math.abs(Math.sin(now*.019))*.28;mouthInner.scale.y=.012+syllable*.034+(now<speechPulse?.012:0);mouthTeeth.scale.y=.008+syllable*.005;tongue.scale.y=.008+syllable*.012;mouthTeeth.position.y=-.112+syllable*.004;}
    // Full-body character no longer rides a scooter; keep legacy wheel handles inert.
    const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
-   body.position.y=-.72+Math.sin(t*4)*.025+(tricking&&!fallen?Math.max(0,trickPulse)*.12:0);
+   body.position.y=Math.sin(t*4)*.025+(tricking&&!fallen?Math.max(0,trickPulse)*.12:0);
    head.rotation.y=Math.sin(t*.8)*.12;head.rotation.z=Math.sin(t*1.7)*.035+(tricking?Math.sin(t*12)*.16:0);
-   const fallElapsed=fallen?now-fallPivot.userData.fallStart:0;const flail=fallen&&fallElapsed<560?Math.sin(fallElapsed*.035)*(1-fallElapsed/560):0;arms[0].rotation.z=fallen?-.95-flail*.7:Math.sin(t*2.2)*.055+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=fallen?.95+flail*.7:-Math.sin(t*2.2)*.055-(tricking?Math.sin(t*10)*.5:0);arms[0].rotation.x=fallen?-.55:0;arms[1].rotation.x=fallen?-.55:0;leg1.rotation.x=fallen?Math.sin(fallElapsed*.02)*.24:(tricking?Math.max(0,trickPulse)*.18:Math.sin(t*2)*.018);leg2.rotation.x=fallen?-Math.sin(fallElapsed*.022)*.2:(tricking?-Math.max(0,trickPulse)*.18:-Math.sin(t*2)*.018);leg1.rotation.z=fallen?-.28:0;leg2.rotation.z=fallen?.28:0;
+   const fallElapsed=fallen?now-mascot.userData.fallStart:0;const flail=fallen&&fallElapsed<560?Math.sin(fallElapsed*.035)*(1-fallElapsed/560):0;arms[0].rotation.z=fallen?-.95-flail*.7:Math.sin(t*2.2)*.055+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=fallen?.95+flail*.7:-Math.sin(t*2.2)*.055-(tricking?Math.sin(t*10)*.5:0);arms[0].rotation.x=fallen?-.55:0;arms[1].rotation.x=fallen?-.55:0;leg1.rotation.x=fallen?Math.sin(fallElapsed*.02)*.24:(tricking?Math.max(0,trickPulse)*.18:Math.sin(t*2)*.018);leg2.rotation.x=fallen?-Math.sin(fallElapsed*.022)*.2:(tricking?-Math.max(0,trickPulse)*.18:-Math.sin(t*2)*.018);leg1.rotation.z=fallen?-.28:0;leg2.rotation.z=fallen?.28:0;
    mascot.rotation.y=Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
-   if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/650);const ease=1-Math.pow(1-fallProgress,3);const recovering=now>=recoverAt;const upProgress=recovering?Math.min(1,(now-recoverAt)/720):0;const upEase=1-Math.pow(1-upProgress,3);const lean=recovering?1-upEase:ease;fallPivot.rotation.z=fallDirection*1.53*lean;fallPivot.position.x=fallDirection*.29*lean;fallPivot.rotation.x=recovering?-.08*(1-upEase):Math.min(.13,fallProgress*.13);mascot.position.y=.25-.105*lean+(elapsed<650?Math.sin(elapsed*.04)*.025:Math.sin(elapsed*.006)*.008);if(recovering){arms[0].rotation.z=-.95*(1-upEase);arms[1].rotation.z=.95*(1-upEase);arms[0].rotation.x=-.55*(1-upEase);arms[1].rotation.x=-.55*(1-upEase);leg1.rotation.z=-.28*(1-upEase);leg2.rotation.z=.28*(1-upEase);}if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.rotation.x=0;fallPivot.position.x=0;mascot.position.y=.25;arms[0].rotation.x=arms[1].rotation.x=0;leg1.rotation.z=leg2.rotation.z=0;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}else{fallPivot.rotation.z=0;fallPivot.rotation.x=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;
+   if(fallen){const elapsed=now-mascot.userData.fallStart;const fallProgress=Math.min(1,elapsed/650);const ease=1-Math.pow(1-fallProgress,3);const recovering=now>=recoverAt;const upProgress=recovering?Math.min(1,(now-recoverAt)/720):0;const upEase=1-Math.pow(1-upProgress,3);const lean=recovering?1-upEase:ease;fallPivot.rotation.z=fallDirection*1.53*lean;fallPivot.position.x=fallDirection*.29*lean;fallPivot.rotation.x=recovering?-.08*(1-upEase):Math.min(.13,fallProgress*.13);mascot.position.y=.25-.105*lean+(elapsed<650?Math.sin(elapsed*.04)*.025:Math.sin(elapsed*.006)*.008);if(recovering){arms[0].rotation.z=-.95*(1-upEase);arms[1].rotation.z=.95*(1-upEase);arms[0].rotation.x=-.55*(1-upEase);arms[1].rotation.x=-.55*(1-upEase);leg1.rotation.z=-.28*(1-upEase);leg2.rotation.z=.28*(1-upEase);}if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.rotation.x=0;fallPivot.position.x=0;mascot.position.y=.25;arms[0].rotation.x=arms[1].rotation.x=0;leg1.rotation.z=leg2.rotation.z=0;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}else{fallPivot.rotation.z=0;fallPivot.rotation.x=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0);
    camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
