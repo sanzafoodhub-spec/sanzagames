@@ -667,110 +667,138 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();speakFallback(line,pitch,rate);});
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
-  // Button-free Talking Tom-style voice interaction: tap Yup Bro, speak, and he repeats after silence.
+  // Talking Tom-style Yup Bro: auto-request mic permission, listen continuously, repeat speech, and react to pokes.
   let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false;
   const micHint=document.createElement('div');
-  micHint.textContent='Tap Yup Bro and say something, bro! 🎤';
+  micHint.textContent='Yup Bro is ready, bro! Allow the mic once, then just talk or poke him. 😂';
   micHint.style.cssText='text-align:center;font-size:11px;color:#ddd;margin:6px auto 12px';
   const mascotShell=wrap.parentElement;
   if(mascotShell)mascotShell.appendChild(micHint);
   const tapControl=document.getElementById('yupbro-tap');
   if(tapControl)tapControl.remove();
-  async function listenAndRepeat(){
-   if(voiceBusy)return;
-   voiceBusy=true;
-   let audioContext=null, analyser=null, source=null, rafId=0, detectedVoice=false, lastLoudAt=0, startedAt=performance.now();
+  let audioContext=null,analyser=null,source=null,monitorFrame=0,detectedVoice=false,lastLoudAt=0,segmentStartedAt=0,segmentActive=false;
+  let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
+  const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
+  function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+  function playRecordedPhrase(){
+   if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.18,1.05);return;}
    try{
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)throw new Error('Microphone recording is not supported');
-    micHint.textContent='🎤 I’m listening, bro…';
-    if(speech)speech.textContent='GO ON, BRO… I’M LISTENING 👂';
-    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
-    recordedChunks=[];
-    recording=new MediaRecorder(micStream);
+    if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+    replayAudio=new Audio(spokenUrl);
+    setMouthTalking(true);
+    replayAudio.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    replayAudio.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+    const p=replayAudio.play();
+    if(p&&p.catch)p.catch(()=>{setMouthTalking(false);talk('OI! MY SOUND IS SHY, BRO! 😅',1.15,1.05);});
+   }catch(e){setMouthTalking(false);}
+  }
+  function finishSegment(){
+   if(!recording||recording.state!=='recording')return;
+   segmentActive=false;
+   try{recording.stop();}catch(e){}
+  }
+  function startSegmentRecorder(){
+   if(!micStream||voiceBusy||!recording||recording.state==='recording')return;
+   recordedChunks=[];
+   detectedVoice=false;
+   segmentActive=true;
+   segmentStartedAt=performance.now();
+   lastLoudAt=segmentStartedAt;
+   try{recording.start(100);}catch(e){segmentActive=false;}
+  }
+  async function startAlwaysListening(){
+   if(voiceBusy||micStream)return;
+   voiceBusy=true;
+   try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)throw new Error('This browser does not support microphone recording');
+    micHint.textContent='🎤 Allow microphone access once — then Yup Bro listens while this page is open.';
+    if(speech)speech.textContent='ALLOW THE MIC, BRO! 👂';
+    micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
     audioContext=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioContext.state==='suspended')await audioContext.resume();
     source=audioContext.createMediaStreamSource(micStream);
     analyser=audioContext.createAnalyser();analyser.fftSize=1024;source.connect(analyser);
-    const samples=new Uint8Array(analyser.fftSize);
+    recording=new MediaRecorder(micStream);
     recording.ondataavailable=e=>{if(e.data&&e.data.size)recordedChunks.push(e.data)};
-    recording.onerror=()=>{micHint.textContent='Oops bro, the mic had a wobble. Tap Yup Bro and try again.';voiceBusy=false;};
+    recording.onerror=()=>{micHint.textContent='The mic had a wobble, bro. Refresh and allow microphone access again.';voiceBusy=false;};
     recording.onstop=()=>{
-     if(micStream)micStream.getTracks().forEach(t=>t.stop());
-     if(audioContext&&audioContext.state!=='closed')audioContext.close().catch(()=>{});
-     voiceBusy=false;
-     if(!recordedChunks.length){
-      micHint.textContent='I didn’t catch that, bro. Tap Yup Bro and speak a little louder.';
-      if(speech)speech.textContent='SAY THAT AGAIN, BRO! 😅';
-      return;
-     }
-     const blob=new Blob(recordedChunks,{type:recording.mimeType||'audio/webm'});
-     if(spokenUrl)URL.revokeObjectURL(spokenUrl);
-     spokenUrl=URL.createObjectURL(blob);
-     if(!detectedVoice){
-      micHint.textContent='Tap Yup Bro and say a phrase to make him repeat you.';
-      tapYupbro();
-      return;
-     }
-     try{
-      if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
-      replayAudio=new Audio(spokenUrl);
-      setMouthTalking(true);
-      replayAudio.onended=()=>{setMouthTalking(false);};
-      replayAudio.onerror=()=>{setMouthTalking(false);micHint.textContent='Couldn’t play that phrase, bro. Tap Yup Bro and try again.';};
-      replayAudio.play().then(()=>{
-       micHint.textContent='😂 THAT’S YOUR VOICE! Tap Yup Bro to say another line.';
-       if(speech)speech.textContent='DID I SOUND LIKE YOU, BRO? 😂';
-      }).catch(()=>{
-       setMouthTalking(false);
-       micHint.textContent='Phone blocked playback. Tap Yup Bro once more to hear your line.';
-      });
-     }catch(e){setMouthTalking(false);micHint.textContent='Couldn’t play that phrase. Tap Yup Bro and try again.';}
+     const chunks=recordedChunks.slice();
+     if(!chunks.length){segmentActive=false;return;}
+     const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});
+     segmentActive=false;
+     if(detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS){
+      if(spokenUrl)URL.revokeObjectURL(spokenUrl);
+      spokenUrl=URL.createObjectURL(blob);
+      if(speech)speech.textContent='I HEARD YOU, BRO! 😂';
+      micHint.textContent='😂 Yup Bro heard you and is repeating you. Poke him for your voice phrase!';
+      try{
+       if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+       replayAudio=new Audio(spokenUrl);
+       setMouthTalking(true);
+       replayAudio.onended=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+       replayAudio.onerror=()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();};
+       const p=replayAudio.play();
+       if(p&&p.catch)p.catch(()=>{setMouthTalking(false);if(micStream&&recording&&recording.state==='inactive')startSegmentRecorder();});
+      }catch(e){setMouthTalking(false);startSegmentRecorder();}
+     }else if(micStream){startSegmentRecorder();}
     };
-    recording.start(150);
+    voiceBusy=false;
+    micHint.textContent='🟢 LISTENING, BRO! Just talk to Yup Bro — no mic button.';
+    if(speech)speech.textContent='I’M LISTENING, BRO! 👂';
+    startSegmentRecorder();
+    const samples=new Uint8Array(analyser.fftSize);
     function monitorAudio(){
-     if(!recording||recording.state!=='recording')return;
+     monitorFrame=0;
+     if(!micStream||!analyser)return;
      analyser.getByteTimeDomainData(samples);
      let sum=0;
      for(let i=0;i<samples.length;i++){const v=(samples[i]-128)/128;sum+=v*v;}
-     const rms=Math.sqrt(sum/samples.length);
-     const now=performance.now();
-     if(rms>.035){detectedVoice=true;lastLoudAt=now;}
-     if(detectedVoice&&now-lastLoudAt>1050){recording.stop();return;}
-     if(!detectedVoice&&now-startedAt>1800){recording.stop();return;}
-     rafId=requestAnimationFrame(monitorAudio);
+     const rms=Math.sqrt(sum/samples.length),now=performance.now();
+     if(segmentActive&&recording&&recording.state==='recording'){
+      if(rms>VOICE_THRESHOLD){detectedVoice=true;lastLoudAt=now;}
+      if(detectedVoice&&now-lastLoudAt>SILENCE_MS)finishSegment();
+     }else if(!segmentActive&&recording&&recording.state==='inactive'&&!replayAudio?.currentTime){
+      startSegmentRecorder();
+     }
+     monitorFrame=requestAnimationFrame(monitorAudio);
     }
-    lastLoudAt=startedAt;
     monitorAudio();
-    if(speech)speech.textContent='SPEAK NOW, BRO! 🎤';
    }catch(e){
-    if(micStream)micStream.getTracks().forEach(t=>t.stop());
-    if(audioContext&&audioContext.state!=='closed')audioContext.close().catch(()=>{});
-    voiceBusy=false;
-    micHint.textContent='Allow microphone access in Chrome, then tap Yup Bro again.';
-    if(speech)speech.textContent='BRO, I NEED THE MIC! 🎤';
+    voiceBusy=false;stopMicTracks();
+    micHint.textContent='Bro, Chrome needs microphone permission. Tap the character once if the browser needs a user gesture, then allow the mic.';
+    if(speech)speech.textContent='LET ME HEAR YOU, BRO! 🎤';
    }
   }
-  let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   function tapYupbro(){
-   if(fallen){fallen=false;bonkCount=0;mascot.rotation.z=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK UP, BRO 😎';if(speech)speech.textContent='I’M BACK! 😂';return;} bonkCount++;if(bonkCount>=8){fallen=true;recoverAt=performance.now()+3000;fallDirection=Math.random()>.5?1:-1;if(moodLabel)moodLabel.textContent='DIZZY 😵';if(speech)speech.textContent='BROOO… GIVE ME A SECOND!';if(tapButton)tapButton.textContent='🫨 HELP HIM UP!';return;} tapCount++;const now=performance.now();boostUntil=now+2600;trickUntil=now+2800;moodUntil=now+2400;
+   if(fallen){fallen=false;bonkCount=0;mascot.rotation.z=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK UP, BRO 😎';if(speech)speech.textContent='I’M BACK! 😂';return;}
+   bonkCount++;
+   if(bonkCount>=5){
+    fallen=true;recoverAt=performance.now()+3200;fallDirection=Math.random()>.5?1:-1;
+    if(moodLabel)moodLabel.textContent='KNOCKED OUT, BRO! 😵';
+    if(speech)speech.textContent='FIVE POKES?! I’M FINISHED! 💀';
+    playRecordedPhrase();
+    return;
+   }
+   tapCount++;
+   const now=performance.now();boostUntil=now+2600;trickUntil=now+2800;moodUntil=now+2400;
    const modes=[
-    {name:'COOL RIDER 😎',mood:'cool',line:'Respect the drip, bro!',pitch:0.9,rate:0.94},
-    {name:'BROWNIE RADAR 🍪',mood:'snack',line:'I smell brownies. Mission accepted!',pitch:1.22,rate:1.02},
-    {name:'FULL SANZA MODE ⚡',mood:'hype',line:'YUPBRO IN THE HOUSE! Let’s gooo!',pitch:1.28,rate:1.13},
-    {name:'CHEEKY MODE 😂',mood:'cheeky',line:'What are you looking at, legend?',pitch:1.08,rate:1.04},
-    {name:'SCOOTY SHOW-OFF 🛴',mood:'stunt',line:'Watch this tiny little spin, bro!',pitch:1.16,rate:1.08}
+    {name:'HEY! EASY, BRO! 😳',mood:'cheeky'},
+    {name:'OI! WATCH IT! 😂',mood:'hype'},
+    {name:'BRO, PERSONAL SPACE! 🙄',mood:'cool'},
+    {name:'I’M TELLING YOUR MAM! 🤣',mood:'snack'}
    ];
-   const mode=modes[(tapCount-1)%modes.length];mood=mode.mood;
-   talk(lines[(tapCount-1)%lines.length]+' '+mode.line,mode.pitch,mode.rate);
-   head.rotation.z+=.18;head.rotation.x-=.08;mascot.rotation.y+=.32;mascot.rotation.x=-.09;
+   const mode=modes[(bonkCount-1)%modes.length];mood=mode.mood;
+   playRecordedPhrase();
+   head.rotation.z+=.22;head.rotation.x-=.1;mascot.rotation.y+=.38;mascot.rotation.x=-.12;
    mascot.scale.set(1.1,1.1,1.1);
-   brows.forEach((b,i)=>{b.rotation.z+=(i===0?.25:-.25)});
+   brows.forEach((b,i)=>{b.rotation.z+=(i===0?.3:-.3)});
    if(moodLabel){moodLabel.textContent=mode.name;moodLabel.dataset.mood=mood;}
-   if(tapScore)tapScore.textContent='YUPBRO TAPS: '+tapCount;
-   if(tapButton){tapButton.textContent=['🛵 AGAIN, BRO!','😂 DO IT AGAIN!','🍪 BROWNIE POWER!','⚡ SANZA MODE!','😎 SHOW-OFF!'][tapCount%5];tapButton.classList.remove('yupbro-pop');void tapButton.offsetWidth;tapButton.classList.add('yupbro-pop');}
+   if(tapScore)tapScore.textContent='YUPBRO POKES: '+bonkCount+'/5';
   }
-  if(tapButton)tapButton.remove();
-  canvas.addEventListener('click',listenAndRepeat);
-
+  // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
+  canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
+  // Request permission on page entry. Browsers may require one tap before granting it.
+  startAlwaysListening();
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
