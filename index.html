@@ -667,53 +667,88 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();speakFallback(line,pitch,rate);});
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
-  // Talking-style voice repeat: recordings stay in this browser session.
-  let spokenBlob=null,spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null;
-  const micBtn=document.createElement('button');
-  micBtn.type='button';micBtn.textContent='🎤 RECORD YOUR VOICE';
-  micBtn.style.cssText='display:block;margin:8px auto;padding:12px 16px;border:1px solid #ffd34d;border-radius:12px;background:#171923;color:#ffe18a;font-weight:900;cursor:pointer';
-  const replayBtn=document.createElement('button');
-  replayBtn.type='button';replayBtn.textContent='🔊 PLAY MY VOICE';
-  replayBtn.style.cssText='display:none;margin:8px auto;padding:12px 16px;border:1px solid #ff68c7;border-radius:12px;background:#211626;color:#ffd2f0;font-weight:900;cursor:pointer';
-  if(tapButton)tapButton.insertAdjacentElement('afterend',micBtn);
-  micBtn.insertAdjacentElement('afterend',replayBtn);
-  const micHint=document.createElement('div');micHint.textContent='Tap RECORD, say your line, then tap STOP. Yup Bro plays your real recording back.';
+  // Button-free Talking Tom-style voice interaction: tap Yup Bro, speak, and he repeats after silence.
+  let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false;
+  const micHint=document.createElement('div');
+  micHint.textContent='Tap Yup Bro and say something, bro! 🎤';
   micHint.style.cssText='text-align:center;font-size:11px;color:#ddd;margin:6px auto 12px';
-  replayBtn.insertAdjacentElement('afterend',micHint);
-  function playMyVoice(){
-   if(!spokenUrl){micHint.textContent='Record a line first, bro! 🎤';return;}
+  const mascotShell=wrap.parentElement;
+  if(mascotShell)mascotShell.appendChild(micHint);
+  const tapControl=document.getElementById('yupbro-tap');
+  if(tapControl)tapControl.remove();
+  async function listenAndRepeat(){
+   if(voiceBusy)return;
+   voiceBusy=true;
+   let audioContext=null, analyser=null, source=null, rafId=0, detectedVoice=false, lastLoudAt=0, startedAt=performance.now();
    try{
-    if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
-    replayAudio=new Audio(spokenUrl);setMouthTalking(true);
-    replayAudio.onended=()=>setMouthTalking(false);
-    replayAudio.onerror=()=>{setMouthTalking(false);micHint.textContent='Could not play that recording. Tap PLAY MY VOICE again.';};
-    replayAudio.play().then(()=>{micHint.textContent='😂 THAT’S YOUR VOICE, BRO! Record another line whenever you want.';if(speech)speech.textContent='I SOUND JUST LIKE YOU! 😂';}).catch(()=>{setMouthTalking(false);micHint.textContent='Phone blocked auto-play — tap PLAY MY VOICE to hear your recording.';});
-   }catch(e){setMouthTalking(false);micHint.textContent='Tap PLAY MY VOICE to try your recording again.';}
-  }
-  replayBtn.addEventListener('click',playMyVoice);
-  micBtn.addEventListener('click',async()=>{
-   if(recording&&recording.state==='recording'){recording.stop();micBtn.textContent='🎤 RECORD YOUR VOICE';return;}
-   try{
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)throw new Error('Microphone recording is not supported in this browser');
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)throw new Error('Microphone recording is not supported');
+    micHint.textContent='🎤 I’m listening, bro…';
+    if(speech)speech.textContent='GO ON, BRO… I’M LISTENING 👂';
     micStream=await navigator.mediaDevices.getUserMedia({audio:true});
     recordedChunks=[];
     recording=new MediaRecorder(micStream);
+    audioContext=new (window.AudioContext||window.webkitAudioContext)();
+    source=audioContext.createMediaStreamSource(micStream);
+    analyser=audioContext.createAnalyser();analyser.fftSize=1024;source.connect(analyser);
+    const samples=new Uint8Array(analyser.fftSize);
     recording.ondataavailable=e=>{if(e.data&&e.data.size)recordedChunks.push(e.data)};
-    recording.onerror=()=>{micHint.textContent='Recording hiccup, bro — tap RECORD and try again.';};
+    recording.onerror=()=>{micHint.textContent='Oops bro, the mic had a wobble. Tap Yup Bro and try again.';voiceBusy=false;};
     recording.onstop=()=>{
      if(micStream)micStream.getTracks().forEach(t=>t.stop());
-     if(!recordedChunks.length){micHint.textContent='No audio caught — say something while the red recording message is showing.';return;}
+     if(audioContext&&audioContext.state!=='closed')audioContext.close().catch(()=>{});
+     voiceBusy=false;
+     if(!recordedChunks.length){
+      micHint.textContent='I didn’t catch that, bro. Tap Yup Bro and speak a little louder.';
+      if(speech)speech.textContent='SAY THAT AGAIN, BRO! 😅';
+      return;
+     }
+     const blob=new Blob(recordedChunks,{type:recording.mimeType||'audio/webm'});
      if(spokenUrl)URL.revokeObjectURL(spokenUrl);
-     spokenBlob=new Blob(recordedChunks,{type:recording.mimeType||'audio/webm'});
-     spokenUrl=URL.createObjectURL(spokenBlob);
-     replayBtn.style.display='block';
-     micHint.textContent='Got it! 😎 Tap PLAY MY VOICE if it does not play automatically.';
-     if(speech)speech.textContent='REPLAY INCOMING, BRO! 🎤';
-     playMyVoice();
+     spokenUrl=URL.createObjectURL(blob);
+     if(!detectedVoice){
+      micHint.textContent='Tap Yup Bro and say a phrase to make him repeat you.';
+      tapYupbro();
+      return;
+     }
+     try{
+      if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+      replayAudio=new Audio(spokenUrl);
+      setMouthTalking(true);
+      replayAudio.onended=()=>{setMouthTalking(false);};
+      replayAudio.onerror=()=>{setMouthTalking(false);micHint.textContent='Couldn’t play that phrase, bro. Tap Yup Bro and try again.';};
+      replayAudio.play().then(()=>{
+       micHint.textContent='😂 THAT’S YOUR VOICE! Tap Yup Bro to say another line.';
+       if(speech)speech.textContent='DID I SOUND LIKE YOU, BRO? 😂';
+      }).catch(()=>{
+       setMouthTalking(false);
+       micHint.textContent='Phone blocked playback. Tap Yup Bro once more to hear your line.';
+      });
+     }catch(e){setMouthTalking(false);micHint.textContent='Couldn’t play that phrase. Tap Yup Bro and try again.';}
     };
-    recording.start();micBtn.textContent='⏹ STOP & REPEAT';micHint.textContent='🔴 RECORDING! Say something funny, then tap STOP.';
-   }catch(e){micHint.textContent='Mic not available. Open this preview in Chrome, allow microphone access, then try again.';}
-  });
+    recording.start(150);
+    function monitorAudio(){
+     if(!recording||recording.state!=='recording')return;
+     analyser.getByteTimeDomainData(samples);
+     let sum=0;
+     for(let i=0;i<samples.length;i++){const v=(samples[i]-128)/128;sum+=v*v;}
+     const rms=Math.sqrt(sum/samples.length);
+     const now=performance.now();
+     if(rms>.035){detectedVoice=true;lastLoudAt=now;}
+     if(detectedVoice&&now-lastLoudAt>1050){recording.stop();return;}
+     if(!detectedVoice&&now-startedAt>1800){recording.stop();return;}
+     rafId=requestAnimationFrame(monitorAudio);
+    }
+    lastLoudAt=startedAt;
+    monitorAudio();
+    if(speech)speech.textContent='SPEAK NOW, BRO! 🎤';
+   }catch(e){
+    if(micStream)micStream.getTracks().forEach(t=>t.stop());
+    if(audioContext&&audioContext.state!=='closed')audioContext.close().catch(()=>{});
+    voiceBusy=false;
+    micHint.textContent='Allow microphone access in Chrome, then tap Yup Bro again.';
+    if(speech)speech.textContent='BRO, I NEED THE MIC! 🎤';
+   }
+  }
   let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   function tapYupbro(){
    if(fallen){fallen=false;bonkCount=0;mascot.rotation.z=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK UP, BRO 😎';if(speech)speech.textContent='I’M BACK! 😂';return;} bonkCount++;if(bonkCount>=8){fallen=true;recoverAt=performance.now()+3000;fallDirection=Math.random()>.5?1:-1;if(moodLabel)moodLabel.textContent='DIZZY 😵';if(speech)speech.textContent='BROOO… GIVE ME A SECOND!';if(tapButton)tapButton.textContent='🫨 HELP HIM UP!';return;} tapCount++;const now=performance.now();boostUntil=now+2600;trickUntil=now+2800;moodUntil=now+2400;
@@ -733,8 +768,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(tapScore)tapScore.textContent='YUPBRO TAPS: '+tapCount;
    if(tapButton){tapButton.textContent=['🛵 AGAIN, BRO!','😂 DO IT AGAIN!','🍪 BROWNIE POWER!','⚡ SANZA MODE!','😎 SHOW-OFF!'][tapCount%5];tapButton.classList.remove('yupbro-pop');void tapButton.offsetWidth;tapButton.classList.add('yupbro-pop');}
   }
-  if(tapButton)tapButton.addEventListener('click',tapYupbro);
-  canvas.addEventListener('click',tapYupbro);
+  if(tapButton)tapButton.remove();
+  canvas.addEventListener('click',listenAndRepeat);
 
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
