@@ -759,8 +759,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     recording.onerror=()=>{micHint.textContent='The mic had a wobble, bro. Refresh and allow microphone access again.';voiceBusy=false;};
     recording.onstop=()=>{
      const chunks=recordedChunks.slice();
-     const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
      segmentActive=false;
+     // MediaRecorder can fire onstop after leaving Yup Bro's home screen.
+     // Discard that pending segment so it cannot trigger a delayed voice reply.
+     if(!yupBroHomeVisible||!micStream){
+      recordedChunks=[];processingSegment=false;
+      if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+      yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0;});
+      return;
+     }
+     const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
      if(!valid){processingSegment=false;if(micStream)startSegmentRecorder();return;}
      const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});
      if(spokenUrl)URL.revokeObjectURL(spokenUrl);
