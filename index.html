@@ -3,9 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
 <meta name="description" content="Discover SanZa Games, original family-friendly browser games, SanZa Food Hub and SanZa Grinds in Dublin. Run, ride, smash and play with the SanZa crew.">
 <title>SanZa Games | One Family. One SanZa.</title>
 <link rel="icon" href="/sanza-logo.png">
+<link rel="manifest" href="/app.webmanifest">
+<link rel="apple-touch-icon" href="/sanza-logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SanZa">
+<meta name="mobile-web-app-capable" content="yes">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6388038197791086" crossorigin="anonymous"></script>
 <style>
 :root{color-scheme:dark;--bg:#08090d;--panel:#11131b;--panel2:#171a24;--gold:#ffd34d;--cyan:#57e9ff;--pink:#ff68c7;--purple:#a995ff;--green:#a5ff80;--muted:#b8bdcb;--line:#2a2e3c}
@@ -386,13 +392,14 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA FAMILY</div>
   <h1>HOWAYA, YA<br><span class="hero-title">ABSOLUTE LEGEND?! 😂</span></h1>
   <p class="intro">One SanZa. One Family. Endless craic! 😂 Play our games, meet Yup Bro, discover SanZa Grinds, watch our videos and join the newsletter for family fun, updates and offers. Come for a game, stay for the laughs!</p>
-  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">EXPLORE THE HUB</a></div>
+  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">EXPLORE THE HUB</a><a class="btn" href="https://github.com/sanzafoodhub-spec/sanzagames/raw/refs/heads/main/SanZa-Logo-APK.apk" download="SanZa-Logo-APK.apk">📲 Download SanZa App for Android</a></div>
+  <p style="max-width:620px;margin:10px auto 0;color:#b8bdcb;font-size:12px;line-height:1.7">Android only: download the APK, open it from Downloads, then tap Install. If Android asks, allow your browser or file manager to install this app. Only install SanZa’s APK if you trust this source.</p>
 </section>
 
 <nav class="home-shortcuts wrap" aria-label="Explore SanZa">
+  <a class="shortcut shortcut-chaos" href="funny-zone.html"><span aria-hidden="true">😂</span><span><strong>Funny Zone</strong><small>Jokes, riddles &amp; mini-games</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-games" href="#games"><span aria-hidden="true">🎮</span><span><strong>Play games</strong><small>Jump into the arcade</small></span><b aria-hidden="true">↘</b></a>
   <a class="shortcut shortcut-videos" href="videos.html"><span aria-hidden="true">▶️</span><span><strong>Watch videos</strong><small>Clips from SanZa</small></span><b aria-hidden="true">↗</b></a>
-  <a class="shortcut shortcut-chaos" href="funny-zone.html"><span aria-hidden="true">😂</span><span><strong>Funny Zone</strong><small>Jokes, riddles & mini-games</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-chaos" href="daily-chaos.html"><span aria-hidden="true">💀</span><span><strong>Daily Chaos</strong><small>Challenges & Yup Bro memes</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-music" href="music.html"><span aria-hidden="true">🎧</span><span><strong>SanZa Music</strong><small>Listen to your vibe</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-tv" href="tv.html"><span aria-hidden="true">📺</span><span><strong>SanZa TV</strong><small>Official, authorised viewing</small></span><b aria-hidden="true">↗</b></a>
@@ -753,8 +760,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     recording.onerror=()=>{micHint.textContent='The mic had a wobble, bro. Refresh and allow microphone access again.';voiceBusy=false;};
     recording.onstop=()=>{
      const chunks=recordedChunks.slice();
-     const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
      segmentActive=false;
+     // MediaRecorder can fire onstop after leaving Yup Bro's home screen.
+     // Discard that pending segment so it cannot trigger a delayed voice reply.
+     if(!yupBroHomeVisible||!micStream){
+      recordedChunks=[];processingSegment=false;
+      if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+      yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0;});
+      return;
+     }
+     const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
      if(!valid){processingSegment=false;if(micStream)startSegmentRecorder();return;}
      const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});
      if(spokenUrl)URL.revokeObjectURL(spokenUrl);
@@ -832,8 +847,54 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
   canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
-  // Request permission on page entry. Browsers may require one tap before granting it.
-  startAlwaysListening();
+  // Privacy guard: Yup Bro only listens while his home character is on screen.
+  let yupBroHomeVisible=false;
+  function stopYupBroListening(){
+   yupBroHomeVisible=false;
+   segmentActive=false;processingSegment=false;detectedVoice=false;
+   if(monitorFrame){cancelAnimationFrame(monitorFrame);monitorFrame=0;}
+   try{if(recording&&recording.state==='recording')recording.stop();}catch(e){}
+   if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+   yupbroVoiceClips.forEach(a=>{try{a.pause();a.currentTime=0;}catch(e){}});
+   if(window.speechSynthesis)window.speechSynthesis.cancel();
+   stopMicTracks();
+   if(audioContext){try{audioContext.close();}catch(e){}audioContext=null;}
+   source=null;analyser=null;recording=null;voiceBusy=false;
+   if(micHint)micHint.textContent='🔇 Yup Bro only listens while he is on screen. Scroll back to him to chat!';
+   if(speech)speech.textContent='COME BACK TO ME, BRO! 👋';
+   setMouthTalking(false);
+  }
+  function updateYupBroListening(isVisible){
+   if(isVisible===yupBroHomeVisible)return;
+   yupBroHomeVisible=isVisible;
+   if(!isVisible){stopYupBroListening();return;}
+   if(micHint)micHint.textContent='🏠 Yup Bro is back on screen! Tap him if your browser needs permission again.';
+   startAlwaysListening();
+  }
+  // Leaving the welcome/home area via Explore or another section link must stop Yup Bro immediately.
+  document.addEventListener('click',event=>{
+   const link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
+   if(!link)return;
+   const href=link.getAttribute('href')||'';
+   if(href==='#sanza-hub'||href==='#games'||href==='#sanza-grinds'||href==='#videos'||href.startsWith('http')){
+    stopYupBroListening();
+   }
+  },true);
+  if('IntersectionObserver' in window && wrap){
+   const yupBroObserver=new IntersectionObserver(entries=>{
+    const entry=entries[0];
+    const visible=!!entry&&entry.isIntersecting&&entry.intersectionRatio>=0.15;
+    if(visible&&!yupBroHomeVisible&&window.scrollY<window.innerHeight*0.8)updateYupBroListening(true);
+    else if(!visible)updateYupBroListening(false);
+   },{threshold:[0,0.15,0.3]});
+   yupBroObserver.observe(wrap);
+  }else{
+   // Safe fallback: don't auto-start listening on browsers without visibility observation.
+   yupBroHomeVisible=false;
+   if(micHint)micHint.textContent='🔇 Automatic listening is unavailable in this browser.';
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopYupBroListening();else if(yupBroHomeVisible)startAlwaysListening();});
+  window.addEventListener('pagehide',stopYupBroListening);
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
@@ -979,7 +1040,17 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 })();
 </script>
 
-
+<script id="sanza-pwa-register">
+(function(){
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('/service-worker.js').catch(function(error){
+        console.warn('SanZa offline support could not start yet.', error);
+      });
+    });
+  }
+})();
+</script>
 
 </body>
 </html>
