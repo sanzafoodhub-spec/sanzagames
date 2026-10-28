@@ -28,6 +28,26 @@ jobs:
         run: npx cap add android
       - name: Sync app assets
         run: npx cap sync android
+      - name: Apply SanZa logo to Android launcher icons
+        working-directory: .
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/sanzafoodhub-spec/sanzagames/android-app-preview/sanza-logo.png -o /tmp/sanza-logo.png
+          for item in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
+            set -- $item
+            density="$1"
+            size="$2"
+            dir="android-app/android/app/src/main/res/mipmap-$density"
+            mkdir -p "$dir"
+            convert /tmp/sanza-logo.png -resize "${size}x${size}" -background "#080808" -gravity center -extent "${size}x${size}" "$dir/ic_launcher.png"
+            cp "$dir/ic_launcher.png" "$dir/ic_launcher_round.png"
+          done
+          mkdir -p android-app/android/app/src/main/res/drawable-nodpi
+          convert /tmp/sanza-logo.png -resize 192x192 -background "#080808" -gravity center -extent 192x192 android-app/android/app/src/main/res/drawable-nodpi/sanza_launcher.png
+          cat > android-app/android/app/src/main/res/drawable/ic_launcher_foreground.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+            <path android:fillColor="#080808" android:pathData="M0,0h108v108h-108z"/>
+          </vector>
+          EOF
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
