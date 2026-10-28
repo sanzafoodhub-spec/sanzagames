@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08090d">
+<meta name="description" content="Yup Bro's free, family-friendly joke and riddle zone from SanZa Games.">
+<title>Yup Bro's Funny Zone | SanZa Games</title>
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#12141d;--gold:#ffd34d;--muted:#c1c5d0;--line:#2b2f3c;--green:#a5ffb0}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,#30230a 0,transparent 36%),radial-gradient(ellipse at 90% 30%,#17143a 0,transparent 34%),var(--bg);color:#fff;font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{width:min(760px,92%);margin:auto;padding:28px 0 40px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.logo{width:54px;height:54px;border-radius:17px;background:linear-gradient(145deg,#ffe68a,#b77c10);color:#15110a;display:grid;place-items:center;font-size:30px;box-shadow:0 7px 26px #ffd34d22}
+.brand{font-weight:900;letter-spacing:.08em;color:var(--gold);font-size:13px}
+h1{font-size:clamp(2rem,7vw,3.2rem);line-height:1.04;margin:3px 0}
+.tag{color:var(--muted);margin:5px 0 0}
+.card{border:1px solid var(--line);background:#11131bdc;border-radius:24px;padding:clamp(17px,4vw,28px);box-shadow:0 18px 60px #0005}
+.hero{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.mascot{font-size:64px;line-height:1;filter:drop-shadow(0 5px 12px #ffd34d22)}
+.hero p{margin:6px 0 0;color:var(--muted)}
+.gold{color:var(--gold)}
+.chat{height:min(44vh,380px);min-height:240px;overflow:auto;display:flex;flex-direction:column;gap:12px;padding:14px;background:#090b11;border:1px solid #242835;border-radius:17px;margin:18px 0}
+.bubble{max-width:92%;padding:11px 14px;border-radius:17px;white-space:pre-wrap;overflow-wrap:anywhere}
+.bot{align-self:flex-start;background:#20212a;border:1px solid #333542;border-bottom-left-radius:5px}
+.user{align-self:flex-end;background:#3c3011;border:1px solid #80651c;border-bottom-right-radius:5px}
+small{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+form{display:flex;gap:9px}
+input{flex:1;min-width:0;background:#090b11;border:1px solid #414657;border-radius:14px;padding:14px;color:white;font:inherit;outline-offset:3px}
+button{border:0;border-radius:14px;padding:13px 17px;background:var(--gold);color:#17130a;font-weight:900;font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid white}
+button:active{transform:scale(.98)}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+.quick button{background:#1b1e29;color:#fff;border:1px solid #393e4e;padding:8px 12px;font-size:14px}
+.notice{color:var(--muted);font-size:13px;margin:16px 2px 0}
+footer{text-align:center;color:#8f95a5;font-size:12px;margin-top:18px}
+@media(max-width:480px){form{flex-direction:column}form button{width:100%}.hero{align-items:flex-start}.mascot{font-size:52px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header><div class="logo" aria-hidden="true">🍫</div><div><div class="brand">SANZA GAMES</div><div style="font-weight:800">One Family. One SanZa.</div></div></header>
+<section class="card" aria-labelledby="title">
+<div class="hero"><div class="mascot" aria-hidden="true">🤪</div><div><h1 id="title">Yup Bro's <span class="gold">Funny Zone!</span> 😂</h1><p>Jokes, riddles and absolute brownie nonsense.</p></div></div>
+<div class="chat" id="chat" role="log" aria-live="polite" aria-label="Funny chat">
+<div class="bubble bot"><strong>YUP BRO:</strong> Yoooo! How are ya, bro? 🤣 Ask for a joke, a riddle, or tell me your favourite food. Just warning ya: my last two brain cells are fighting over a brownie. 🍫</div>
+</div>
+<form id="form"><input id="message" maxlength="180" autocomplete="off" aria-label="Type a message" placeholder="Type something silly, bro..." required><button type="submit">Make me laugh 😂</button></form>
+<div class="quick" aria-label="Try a prompt"><button type="button" data-prompt="Tell me a joke">Tell me a joke</button><button type="button" data-prompt="Give me a riddle">Give me a riddle</button><button type="button" data-prompt="Tell me a silly story">Silly story</button><button type="button" data-prompt="Say OH MY GARLIC NAAN">Garlic naan!</button></div>
+<p class="notice">🔒 Free and local: messages stay in this page and are not sent to an AI service. Yup Bro uses a collection of prewritten replies, so he may not understand every question. Keep personal details private.</p>
+</section>
+<footer>SanZa Funny Zone · Family-friendly fun · No account needed</footer>
+</main>
+<script>
+(function(){
+const chat=document.getElementById('chat'),input=document.getElementById('message'),form=document.getElementById('form');
+const jokes=[
+"Why did the cookie go to the doctor? It was feeling crumby! 🍪",
+"What do you call a sleeping pizza? A piZZZa! 🍕",
+"Why did the banana go to the party? Because it was a-peeling! 🍌",
+"What do you call cheese that isn't yours? Nacho cheese! 🧀",
+"Why did the computer go to the dentist? It had Bluetooth! 🦷",
+"What is a cat's favourite colour? Purrr-ple! 🐱",
+"Why did the teddy bear say no to dessert? It was stuffed! 🧸",
+"What do you call a dinosaur that crashes its car? Tyrannosaurus Wrecks! 🦖",
+"Why did the bicycle fall over? It was two-tired! 🚲",
+"What do you call a funny potato? A comedi-tater! 🥔",
+"Why don't eggs tell jokes? They might crack each other up! 🥚",
+"What do you call a bear with no teeth? A gummy bear! 🐻"
+];
+const riddles=[
+"RIDDLE TIME! What has hands but can't clap? 🤔\n\nAnswer: A clock! ⏰",
+"What gets wetter the more it dries? A towel! 🧼",
+"What has lots of keys but can't open a door? A piano! 🎹",
+"What has one eye but can't see? A needle! 🪡",
+"What has a neck but no head? A bottle! 🍼",
+"What goes up but never comes down? Your age! 🎂"
+];
+const stories=[
+"Once upon a time, Yup Bro opened a bakery. He ate every brownie to check if they were safe. After 47 checks, the bakery was mysteriously empty. Case closed. 🍫🕵️",
+"Yup Bro entered a running race. He sprinted to the snack table, grabbed a cookie, and shouted, 'I WON THE SNACKATHON!' 🏆🍪",
+"A tiny alien landed in Finglas and asked for Earth's smartest life-form. Yup Bro pointed at a microwave because it makes popcorn without even having hands. 👽🍿"
+];
+const silly=[
+"OH MY GARLIC NAAN! 🤣 That question made my imaginary moustache spin!",
+"Bro, my brain just slipped on a banana peel. 🍌 Give me another go!",
+"That's so silly, even my socks are laughing. And I'm not wearing socks! 🧦😂",
+"Official SanZa science says: one giggle equals 3.7 brownie crumbs. Don't ask how we measured it. 🤓🍫",
+"YUP BRO HAS A VERY IMPORTANT ANNOUNCEMENT: I forgot what I was going to say. Thank you for listening. 📢🤣",
+"That was more confusing than a chicken ordering a scooter. OH MY GARLIC NAAN! 🐔🛴"
+];
+const safe=[
+"Whoa there, bro! Let's keep this zone kind, safe and funny. I can tell a joke or give you a riddle instead. 😊",
+"That's not something I can help with, bro. Let's switch to a silly story, a joke or a riddle! 🧩"
+];
+const privateInfo=/\b(my (address|phone|password|school|full name)|where do i live|what is my password|phone number|home address)\b/i;
+const unsafe=/\b(hurt myself|kill myself|suicide|how to make a bomb|make a weapon|how to hurt|sexual|naked|porn|drugs)\b/i;
+function pick(list){return list[Math.floor(Math.random()*list.length)]}
+function replyFor(s){
+ if(privateInfo.test(s)) return "Hey bro, keep private details private — no names, addresses, schools, passwords or phone numbers here. 🔒 Let's keep it fun: "+pick(jokes);
+ if(unsafe.test(s)) return "Hey bro, I can't help with that. If something serious is happening or you're feeling unsafe, tell a trusted grown-up who can help. We can do a harmless joke together, too. ❤️";
+ if(/riddle|brain teaser|puzzle/i.test(s)) return pick(riddles);
+ if(/story|once upon|bedtime/i.test(s)) return pick(stories);
+ if(/joke|funny|laugh|make me smile/i.test(s)) return pick(jokes);
+ if(/garlic naan|oh my garlic|sanza|yup bro|brownie|cookie|food|hungry/i.test(s)) return pick(["OH MY GARLIC NAAN! 🍞🍫 SanZa rule number one: never trust a brownie that says it is a cucumber.","Bro, I ordered one brownie and the box arrived empty. The brownie escaped to start a new life. 🕵️🍫", "My favourite exercise is running... out of cookies. 🏃🍪", "A spice bag told me a secret, but it was too seasoned to repeat. 🤫🌶️"]);
+ if(/hello|hi\b|hey\b|how are you|what's up|whats up/i.test(s)) return pick(["Yoooo, bro! I'm 73% giggles and 27% brownie crumbs today. How are ya? 🤣","HOW ARE YA, MY SANZATION! Ready for some nonsense? 🍫","Hey hey! My imaginary hair is looking fabulous today. Thanks for asking! 😎"]);
+ if(/thank/i.test(s)) return "Anytime, bro! My payment is one imaginary brownie and a high-five. ✋🍫";
+ if(/bye|goodnight|good night/i.test(s)) return "Catch ya later, legend! Don't let the bed bugs steal your brownies. 🌙🤣";
+ return pick(silly)+"\n\nTry asking me for a joke, a riddle or a silly story! 😂";
+}
+function add(text,who){const div=document.createElement('div');div.className='bubble '+who;const label=document.createElement('strong');label.textContent=who==='user'?'YOU: ':'YUP BRO: ';div.appendChild(label);div.appendChild(document.createTextNode(text));chat.appendChild(div);chat.scrollTop=chat.scrollHeight;}
+function send(text){const cleaned=String(text||'').trim().slice(0,180);if(!cleaned)return;add(cleaned,'user');add(replyFor(cleaned),'bot');}
+form.addEventListener('submit',function(e){e.preventDefault();send(input.value);input.value='';input.focus();});
+document.querySelectorAll('[data-prompt]').forEach(function(btn){btn.addEventListener('click',function(){send(btn.getAttribute('data-prompt'));});});
+})();
+</script>
+</body>
+</html>
