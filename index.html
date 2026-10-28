@@ -986,49 +986,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 
 <script id="sanza-pwa-register">
 (function(){
-  var deferredPrompt = null;
-  var button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'btn';
-  button.textContent = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') ? '📲 Add SanZa to iPhone' : '📲 Install SanZa for Android';
-  button.setAttribute('aria-label','Install the SanZa Games and Food Hub app');
-  button.style.cssText = 'margin:12px auto 0;cursor:pointer;border:1px solid #ffd34d;background:#ffd34d;color:#101014;font:inherit;font-size:12px;font-weight:1000;padding:13px 18px;border-radius:13px;box-shadow:0 7px 25px #ffd34d19';
-  var actions = document.querySelector('.hero .hero-actions');
-  if (actions && actions.parentNode) actions.insertAdjacentElement('afterend', button);
-  window.addEventListener('beforeinstallprompt', function(event){
-    event.preventDefault();
-    deferredPrompt = event;
-  });
-  button.addEventListener('click', async function(){
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-      alert('SanZa is already installed on this device. Enjoy, bro! 🖤💛');
-      return;
-    }
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      try { await deferredPrompt.userChoice; } catch(e) {}
-      deferredPrompt = null;
-      return;
-    }
-    var ua = navigator.userAgent || '';
-    var isSamsung = /SamsungBrowser/i.test(ua);
-    var isIOS = /iPhone|iPad|iPod/i.test(ua);
-    var isEdge = /EdgA?\//i.test(ua);
-    var isFirefox = /Firefox\//i.test(ua);
-    var msg;
-    if (isSamsung) {
-      msg = 'Install SanZa on Samsung Internet:\n\n1. Close this message.\n2. Tap the ☰ menu at the bottom (or ⋮ menu).\n3. Choose “Add page to” or “Add page to Home screen”.\n4. Confirm Add.\n\nIf that option is missing, update Samsung Internet and open the website directly in it.';
-    } else if (isIOS) {
-      msg = 'Install SanZa on iPhone or iPad:\n\n1. Tap Share.\n2. Choose “Add to Home Screen”.\n3. Tap Add.';
-    } else if (isEdge) {
-      msg = 'Install SanZa in Microsoft Edge:\n\n1. Open the ⋮ menu.\n2. Look for “Add to phone” or “Install app”.\n3. Follow the prompts.';
-    } else if (isFirefox) {
-      msg = 'This browser may not support full PWA installation. On Android, try Samsung Internet or Chrome and use the browser menu’s “Add to Home screen” option.';
-    } else {
-      msg = 'To install SanZa, open this page directly in your browser (not inside another app), then open its menu and look for “Install app” or “Add to Home screen”.';
-    }
-    alert(msg);
-  });
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){
       navigator.serviceWorker.register('/service-worker.js').catch(function(error){
