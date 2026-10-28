@@ -1,0 +1,72 @@
+name: Build SanZa Android APK
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - android-app-preview
+    paths:
+      - "android-app/**"
+      - ".github/workflows/build-sanza-android.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
+    steps:
+      - name: Checkout preview branch
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install app dependencies
+        run: npm install
+      - name: Generate Android project
+        run: npx cap add android
+      - name: Sync app assets
+        run: npx cap sync android
+      - name: Install image tools
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+      - name: Apply SanZa logo to Android launcher icons
+        working-directory: .
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/sanzafoodhub-spec/sanzagames/android-app-preview/sanza-logo.png -o /tmp/sanza-logo.png
+          for item in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
+            set -- $item
+            density="$1"
+            size="$2"
+            dir="android-app/android/app/src/main/res/mipmap-$density"
+            mkdir -p "$dir"
+            convert /tmp/sanza-logo.png -resize "${size}x${size}" -background "#080808" -gravity center -extent "${size}x${size}" "$dir/ic_launcher.png"
+            cp "$dir/ic_launcher.png" "$dir/ic_launcher_round.png"
+          done
+          mkdir -p android-app/android/app/src/main/res/drawable-nodpi
+          convert /tmp/sanza-logo.png -resize 192x192 -background "#080808" -gravity center -extent 192x192 android-app/android/app/src/main/res/drawable-nodpi/sanza_launcher.png
+          mkdir -p android-app/android/app/src/main/res/mipmap-anydpi-v26
+          cat > android-app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml <<'EOF'
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+            <background android:drawable="@android:color/black"/>
+            <foreground android:drawable="@drawable/sanza_launcher"/>
+          </adaptive-icon>
+          EOF
+          cp android-app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml android-app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Build debug APK
+        working-directory: android-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - name: Upload installable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SanZa-Android-APK
+          path: android-app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
