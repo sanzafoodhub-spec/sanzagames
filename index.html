@@ -841,10 +841,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Privacy guard: Yup Bro only listens while his home character is on screen.
   let yupBroHomeVisible=false;
   function stopYupBroListening(){
+   yupBroHomeVisible=false;
    segmentActive=false;processingSegment=false;detectedVoice=false;
    if(monitorFrame){cancelAnimationFrame(monitorFrame);monitorFrame=0;}
    try{if(recording&&recording.state==='recording')recording.stop();}catch(e){}
    if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+   yupbroVoiceClips.forEach(a=>{try{a.pause();a.currentTime=0;}catch(e){}});
    if(window.speechSynthesis)window.speechSynthesis.cancel();
    stopMicTracks();
    if(audioContext){try{audioContext.close();}catch(e){}audioContext=null;}
@@ -860,10 +862,21 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(micHint)micHint.textContent='🏠 Yup Bro is back on screen! Tap him if your browser needs permission again.';
    startAlwaysListening();
   }
+  // Leaving the welcome/home area via Explore or another section link must stop Yup Bro immediately.
+  document.addEventListener('click',event=>{
+   const link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
+   if(!link)return;
+   const href=link.getAttribute('href')||'';
+   if(href==='#sanza-hub'||href==='#games'||href==='#sanza-grinds'||href==='#videos'||href.startsWith('http')){
+    stopYupBroListening();
+   }
+  },true);
   if('IntersectionObserver' in window && wrap){
    const yupBroObserver=new IntersectionObserver(entries=>{
     const entry=entries[0];
-    updateYupBroListening(!!entry&&entry.isIntersecting&&entry.intersectionRatio>=0.15);
+    const visible=!!entry&&entry.isIntersecting&&entry.intersectionRatio>=0.15;
+    if(visible&&!yupBroHomeVisible&&window.scrollY<window.innerHeight*0.8)updateYupBroListening(true);
+    else if(!visible)updateYupBroListening(false);
    },{threshold:[0,0.15,0.3]});
    yupBroObserver.observe(wrap);
   }else{
