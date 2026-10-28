@@ -838,8 +838,41 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
   canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
-  // Request permission on page entry. Browsers may require one tap before granting it.
-  startAlwaysListening();
+  // Privacy guard: Yup Bro only listens while his home character is on screen.
+  let yupBroHomeVisible=false;
+  function stopYupBroListening(){
+   segmentActive=false;processingSegment=false;detectedVoice=false;
+   if(monitorFrame){cancelAnimationFrame(monitorFrame);monitorFrame=0;}
+   try{if(recording&&recording.state==='recording')recording.stop();}catch(e){}
+   if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+   if(window.speechSynthesis)window.speechSynthesis.cancel();
+   stopMicTracks();
+   if(audioContext){try{audioContext.close();}catch(e){}audioContext=null;}
+   source=null;analyser=null;recording=null;voiceBusy=false;
+   if(micHint)micHint.textContent='🔇 Yup Bro only listens while he is on screen. Scroll back to him to chat!';
+   if(speech)speech.textContent='COME BACK TO ME, BRO! 👋';
+   setMouthTalking(false);
+  }
+  function updateYupBroListening(isVisible){
+   if(isVisible===yupBroHomeVisible)return;
+   yupBroHomeVisible=isVisible;
+   if(!isVisible){stopYupBroListening();return;}
+   if(micHint)micHint.textContent='🏠 Yup Bro is back on screen! Tap him if your browser needs permission again.';
+   startAlwaysListening();
+  }
+  if('IntersectionObserver' in window && wrap){
+   const yupBroObserver=new IntersectionObserver(entries=>{
+    const entry=entries[0];
+    updateYupBroListening(!!entry&&entry.isIntersecting&&entry.intersectionRatio>=0.15);
+   },{threshold:[0,0.15,0.3]});
+   yupBroObserver.observe(wrap);
+  }else{
+   // Safe fallback: don't auto-start listening on browsers without visibility observation.
+   yupBroHomeVisible=false;
+   if(micHint)micHint.textContent='🔇 Automatic listening is unavailable in this browser.';
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopYupBroListening();else if(yupBroHomeVisible)startAlwaysListening();});
+  window.addEventListener('pagehide',stopYupBroListening);
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
