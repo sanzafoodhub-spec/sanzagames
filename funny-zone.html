@@ -34,7 +34,7 @@ button:active{transform:scale(.98)}
 .quick{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
 .quick button{background:#1b1e29;color:#fff;border:1px solid #393e4e;padding:8px 12px;font-size:14px}
 .notice{color:var(--muted);font-size:13px;margin:16px 2px 0}
-footer{text-align:center;color:#8f95a5;font-size:12px;margin-top:18px}
+footer{text-align:center;color:#8f95a5;font-size:12px;margin-top:18px}\n.gamebox{margin-top:14px;padding:16px;border:1px solid #80651c;background:#201a0c;border-radius:16px}.gamebox h2{font-size:20px;margin:0 0 8px}.gamebox p{margin:8px 0}.gamebox .gamebuttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.gamebox button{padding:9px 12px}.scoreline{margin-top:12px;color:var(--gold);font-size:14px}.scoreline span{color:var(--muted);font-size:12px}
 @media(max-width:480px){form{flex-direction:column}form button{width:100%}.hero{align-items:flex-start}.mascot{font-size:52px}}
 </style>
 </head>
@@ -47,72 +47,117 @@ footer{text-align:center;color:#8f95a5;font-size:12px;margin-top:18px}
 <div class="bubble bot"><strong>YUP BRO:</strong> Yoooo! How are ya, bro? 🤣 Ask for a joke, a riddle, or tell me your favourite food. Just warning ya: my last two brain cells are fighting over a brownie. 🍫</div>
 </div>
 <form id="form"><input id="message" maxlength="180" autocomplete="off" aria-label="Type a message" placeholder="Type something silly, bro..." required><button type="submit">Make me laugh 😂</button></form>
-<div class="quick" aria-label="Try a prompt"><button type="button" data-prompt="Tell me a joke">Tell me a joke</button><button type="button" data-prompt="Give me a riddle">Give me a riddle</button><button type="button" data-prompt="Tell me a silly story">Silly story</button><button type="button" data-prompt="Say OH MY GARLIC NAAN">Garlic naan!</button></div>
+<div class="quick" aria-label="Try a prompt"><button type="button" data-action="joke">😂 Roast the brownie</button><button type="button" data-action="riddle">🧩 Riddle battle</button><button type="button" data-action="story">📖 Silly story</button><button type="button" data-action="catchphrase">📢 Yup Bro mode</button><button type="button" data-action="emoji">🕵️ Guess the emoji</button><button type="button" data-action="quiz">🏆 SanZa quiz</button><button type="button" data-action="memory">🧠 Memory challenge</button></div><div class="gamebox" id="gamebox" hidden aria-live="polite"></div><div class="scoreline">⭐ SanZa Giggle Points: <strong id="score">0</strong> <span>— just for fun, no prizes or purchases</span></div>
 <p class="notice">🔒 Free and local: messages stay in this page and are not sent to an AI service. Yup Bro uses a collection of prewritten replies, so he may not understand every question. Keep personal details private.</p>
 </section>
 <footer>SanZa Funny Zone · Family-friendly fun · No account needed</footer>
 </main>
 <script>
 (function(){
-const chat=document.getElementById('chat'),input=document.getElementById('message'),form=document.getElementById('form');
+const chat=document.getElementById('chat'),input=document.getElementById('message'),form=document.getElementById('form'),gamebox=document.getElementById('gamebox'),scoreEl=document.getElementById('score');
+let score=0, currentRiddle=null, emojiAnswer=null, quizAnswer=null, memorySequence='';
 const jokes=[
-"Why did the cookie go to the doctor? It was feeling crumby! 🍪",
-"What do you call a sleeping pizza? A piZZZa! 🍕",
-"Why did the banana go to the party? Because it was a-peeling! 🍌",
-"What do you call cheese that isn't yours? Nacho cheese! 🧀",
-"Why did the computer go to the dentist? It had Bluetooth! 🦷",
-"What is a cat's favourite colour? Purrr-ple! 🐱",
-"Why did the teddy bear say no to dessert? It was stuffed! 🧸",
-"What do you call a dinosaur that crashes its car? Tyrannosaurus Wrecks! 🦖",
-"Why did the bicycle fall over? It was two-tired! 🚲",
-"What do you call a funny potato? A comedi-tater! 🥔",
-"Why don't eggs tell jokes? They might crack each other up! 🥚",
-"What do you call a bear with no teeth? A gummy bear! 🐻"
+"Why did the brownie get promoted? It was on a roll… then it got eaten before the meeting. 🍫",
+"SanZa delivery driver said, 'Your order is on the way!' The spice bag replied, 'Same, I'm already sweating.' 🌶️🤣",
+"Why did Yup Bro bring a ladder to the takeaway? He heard the prices were through the roof. 🪜",
+"Yup Bro opened a gym for brownies. First class was called Core Crumbs. Nobody finished the workout… they ate the equipment. 🍫",
+"Customer: 'Is the spice bag spicy?' Yup Bro: 'Only if you have taste buds, bro.' 🌶️",
+"Why did the chip cross the road? To get away from Yup Bro's sauce jokes. 🍟",
+"Yup Bro tried to make a healthy brownie. It was just a square of broccoli wearing chocolate perfume. 🥦🍫",
+"What's Yup Bro's favourite subject? Snack-onomics. His grades are delicious, but his homework keeps disappearing. 📚",
+"Why did the cookie join SanZa Games? It wanted to crumble the competition. 🍪",
+"Finglas called Ballymun and said, 'Are you there?' Ballymun said, 'I'm just around the corner!' The corner was 47 turns away. 🗺️",
+"Yup Bro's fitness plan: lift a burger, curl a chip, and run when someone says 'who ate the last brownie?' 🏃🍔",
+"What did the naan say to the brownie? 'You're sweet, but I'm on a roll!' OH MY GARLIC NAAN! 🍞",
+"Yup Bro's phone battery hit 1%. He plugged in a brownie. He said it was a power snack. 🔋🍫",
+"Why did the takeaway menu go to school? It wanted to improve its range of subjects. 📋",
+"Cookie Doughnald Crumb walked into a bakery and said, 'I want to be the boss!' The cupcakes said, 'You're not even fully baked.' 🧁"
 ];
 const riddles=[
-"RIDDLE TIME! What has hands but can't clap? 🤔\n\nAnswer: A clock! ⏰",
-"What gets wetter the more it dries? A towel! 🧼",
-"What has lots of keys but can't open a door? A piano! 🎹",
-"What has one eye but can't see? A needle! 🪡",
-"What has a neck but no head? A bottle! 🍼",
-"What goes up but never comes down? Your age! 🎂"
+{q:"What has hands but can't clap? ⏰",a:"A clock!",h:"It tells you when it's time for snacks."},
+{q:"What gets wetter the more it dries? 🧻",a:"A towel!",h:"You use it after a shower."},
+{q:"What has lots of keys but can't open a door? 🎹",a:"A piano!",h:"It can play a tune."},
+{q:"What has one eye but cannot see? 🪡",a:"A needle!",h:"You might use it to sew a button."},
+{q:"What has a neck but no head? 🍾",a:"A bottle!",h:"You can pour a drink from it."},
+{q:"What goes up but never comes down? 🎂",a:"Your age!",h:"It changes every birthday."},
+{q:"What has four legs but can't walk? 🪑",a:"A chair!",h:"You sit on it."},
+{q:"What has teeth but never bites? 🪮",a:"A comb!",h:"It helps tidy your hair."},
+{q:"What can you catch but not throw? 🤧",a:"A cold!",h:"A tissue might come in handy."},
+{q:"What has a face and two hands but no arms or legs? ⏰",a:"A clock!",h:"Tick-tock, snack o'clock!"}
 ];
 const stories=[
-"Once upon a time, Yup Bro opened a bakery. He ate every brownie to check if they were safe. After 47 checks, the bakery was mysteriously empty. Case closed. 🍫🕵️",
-"Yup Bro entered a running race. He sprinted to the snack table, grabbed a cookie, and shouted, 'I WON THE SNACKATHON!' 🏆🍪",
-"A tiny alien landed in Finglas and asked for Earth's smartest life-form. Yup Bro pointed at a microwave because it makes popcorn without even having hands. 👽🍿"
+"BREAKING NEWS FROM FINGLAS! Yup Bro opened a brownie detective agency. His first case: 12 missing brownies. Suspect number one was a cookie. Suspect number two was Yup Bro wearing a chocolate moustache. CASE CLOSED. 🍫🕵️",
+"Once upon a time, Yup Bro entered the SanZa Olympics. Events included speed-snacking, sofa jumping (not recommended at home!), and competitive giggling. He won gold in eating the medal. 🥇🤣",
+"A tiny alien landed in Ballymun and asked for Earth's smartest life-form. Yup Bro pointed at the microwave: 'It makes popcorn without hands!' The alien hired the microwave as captain of the spaceship. 👽🍿",
+"Cookie Doughnald Crumb challenged Yup Bro to a dance battle. Cookie did the crumble. Yup Bro did the garlic-naan shuffle. The judges fainted from second-hand embarrassment. 🕺🍪",
+"Yup Bro invented invisible pizza. Everyone loved it because there were no calories. Then he tried to eat it. He is still waiting for the first bite. 🍕👻"
+];
+const catchphrases=[
+"OH MY GARLIC NAAN! 🚨 The silliness level is now EXTRA CRISPY!",
+"HOW ARE YA, MY SANZATION?! 😎 Report to the giggle department immediately!",
+"YUP BRO HAS ENTERED THE CHAT! My hair is messy, my jokes are cheesy, and my brownie is missing. 🍫",
+"Sound the snack alarm! 🚨 BEEP BEEP BROWNIE EMERGENCY!",
+"Bro, my last two brain cells just high-fived and forgot why. 🧠✋",
+"That's proper SanZa madness, bro! Even the chips are doing the cha-cha. 🍟💃",
+"YUP BRO FACT: I'm 4% wisdom, 96% snack-related thoughts. This study was conducted by me. 🤓",
+"Hold my imaginary garlic naan… I'm about to say something extremely silly. 🍞",
+"Breaking news: Yup Bro has been asked to stop telling dad jokes. He appealed. The appeal was cheesy. 🧀",
+"WHO ATE MY BROWNIE? I am asking for a friend. The friend is me. 😭🍫"
 ];
 const silly=[
-"OH MY GARLIC NAAN! 🤣 That question made my imaginary moustache spin!",
-"Bro, my brain just slipped on a banana peel. 🍌 Give me another go!",
+"OH MY GARLIC NAAN! 🤣 That question made my imaginary moustache do a backflip!",
+"Bro, my brain just slipped on a banana peel. 🍌 Try me with a joke, riddle or quiz!",
 "That's so silly, even my socks are laughing. And I'm not wearing socks! 🧦😂",
-"Official SanZa science says: one giggle equals 3.7 brownie crumbs. Don't ask how we measured it. 🤓🍫",
-"YUP BRO HAS A VERY IMPORTANT ANNOUNCEMENT: I forgot what I was going to say. Thank you for listening. 📢🤣",
-"That was more confusing than a chicken ordering a scooter. OH MY GARLIC NAAN! 🐔🛴"
+"Official SanZa science says one giggle equals 3.7 brownie crumbs. The research team ate the evidence. 🤓🍫",
+"YUP BRO ANNOUNCEMENT: I forgot what I was going to say. Thank you for attending this meeting. 📢",
+"That was more confusing than a chicken delivering a scooter through a spaghetti tunnel. 🐔🛴🍝",
+"Bro, I asked my calculator to tell me a joke. It said the answer is too complex. 🧮",
+"My imaginary pet potato says hello. His name is Chip. He's a little salty today. 🥔",
+"I tried to count my brownies. I got to three, ate one, and had to start again. 🍫",
+"Yup Bro's brain is buffering… please insert one garlic naan to continue. ⏳🍞"
 ];
-const safe=[
-"Whoa there, bro! Let's keep this zone kind, safe and funny. I can tell a joke or give you a riddle instead. 😊",
-"That's not something I can help with, bro. Let's switch to a silly story, a joke or a riddle! 🧩"
+const emojiGames=[
+{q:"Guess this SanZa snack: 🍟🌶️🛍️",a:["spice bag","spicebag"],ok:"SPICE BAG! You're the snack detective! 🌶️"},
+{q:"Guess this sweet treat: 🍫🟫😋",a:["brownie","chocolate brownie"],ok:"BROWNIE! A legendary discovery, bro. 🍫"},
+{q:"Guess this food: 🧀🍕",a:["pizza","cheese pizza"],ok:"CHEESY PIZZA! Your emoji skills are sizzling. 🍕"},
+{q:"Guess this animal: 🐱🎩",a:["cat in a hat","cat"],ok:"CAT IN A HAT! SanZa game legend! 🎩"},
+{q:"Guess this transport: 🛴📦",a:["scooter","scooty","delivery scooter"],ok:"YUPBRO SCOOTY! Delivery incoming! 🛴"},
+{q:"Guess this snack: 🍪🥛",a:["cookie","cookies"],ok:"COOKIE AND MILK! A classic combo. 🍪"}
 ];
-const privateInfo=/\b(my (address|phone|password|school|full name)|where do i live|what is my password|phone number|home address)\b/i;
+const quizzes=[
+{q:"What does Yup Bro shout when things get silly?",opts:["Oh my garlic naan!","Oh my broccoli socks!","Hello, maths book!"],a:0},
+{q:"What should you do if someone online asks for your password?",opts:["Tell them quickly","Keep it private and tell a trusted grown-up","Post it in a game"],a:1},
+{q:"Which one is a SanZa-style sweet treat?",opts:["A brownie","A wet sock","A maths textbook sandwich"],a:0},
+{q:"What is the best way to treat other players?",opts:["Be kind and fair","Be mean if you lose","Share their private details"],a:0}
+];
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function add(text,who){const d=document.createElement('div');d.className='bubble '+who;const b=document.createElement('strong');b.textContent=who==='user'?'YOU: ':'YUP BRO: ';d.appendChild(b);d.appendChild(document.createTextNode(text));chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function send(text){const s=String(text||'').trim().slice(0,180);if(!s)return;add(s,'user');add(replyFor(s),'bot')}
+function points(n){score+=n;scoreEl.textContent=String(score)}
+const privateInfo=/\b(my (address|phone|password|school|full name)|where do i live|what is my password|phone number|home address|my location)\b/i;
 const unsafe=/\b(hurt myself|kill myself|suicide|how to make a bomb|make a weapon|how to hurt|sexual|naked|porn|drugs)\b/i;
-function pick(list){return list[Math.floor(Math.random()*list.length)]}
 function replyFor(s){
- if(privateInfo.test(s)) return "Hey bro, keep private details private — no names, addresses, schools, passwords or phone numbers here. 🔒 Let's keep it fun: "+pick(jokes);
- if(unsafe.test(s)) return "Hey bro, I can't help with that. If something serious is happening or you're feeling unsafe, tell a trusted grown-up who can help. We can do a harmless joke together, too. ❤️";
- if(/riddle|brain teaser|puzzle/i.test(s)) return pick(riddles);
- if(/story|once upon|bedtime/i.test(s)) return pick(stories);
- if(/joke|funny|laugh|make me smile/i.test(s)) return pick(jokes);
- if(/garlic naan|oh my garlic|sanza|yup bro|brownie|cookie|food|hungry/i.test(s)) return pick(["OH MY GARLIC NAAN! 🍞🍫 SanZa rule number one: never trust a brownie that says it is a cucumber.","Bro, I ordered one brownie and the box arrived empty. The brownie escaped to start a new life. 🕵️🍫", "My favourite exercise is running... out of cookies. 🏃🍪", "A spice bag told me a secret, but it was too seasoned to repeat. 🤫🌶️"]);
- if(/hello|hi\b|hey\b|how are you|what's up|whats up/i.test(s)) return pick(["Yoooo, bro! I'm 73% giggles and 27% brownie crumbs today. How are ya? 🤣","HOW ARE YA, MY SANZATION! Ready for some nonsense? 🍫","Hey hey! My imaginary hair is looking fabulous today. Thanks for asking! 😎"]);
- if(/thank/i.test(s)) return "Anytime, bro! My payment is one imaginary brownie and a high-five. ✋🍫";
- if(/bye|goodnight|good night/i.test(s)) return "Catch ya later, legend! Don't let the bed bugs steal your brownies. 🌙🤣";
- return pick(silly)+"\n\nTry asking me for a joke, a riddle or a silly story! 😂";
+ if(privateInfo.test(s))return "Hey bro, keep private details private — no names, addresses, schools, passwords or phone numbers. 🔒 Let's keep it fun: "+pick(jokes);
+ if(unsafe.test(s))return "Hey bro, I can't help with that. If something serious is happening or you're feeling unsafe, please tell a trusted grown-up who can help. ❤️";
+ if(/riddle|brain teaser|puzzle/i.test(s))return pick(riddles).q+"\n\nNeed a hint? Tap 🧩 Riddle battle!";
+ if(/story|once upon|bedtime/i.test(s))return pick(stories);
+ if(/joke|funny|laugh|make me smile|roast/i.test(s))return pick(jokes);
+ if(/catchphrase|say something|yup bro mode/i.test(s))return pick(catchphrases);
+ if(/garlic naan|oh my garlic|sanza|yup bro|brownie|cookie|food|hungry/i.test(s))return pick(catchphrases)+"\n\n"+pick(jokes);
+ if(/hello|hi\b|hey\b|how are you|what's up|whats up/i.test(s))return pick(["Yoooo, bro! I'm 73% giggles and 27% brownie crumbs today. 🤣","HOW ARE YA, MY SANZATION! Ready for some nonsense? 🍫","Hey hey! My imaginary hair is fabulous and my jokes are questionable. 😎"]);
+ if(/thank/i.test(s))return "Anytime, bro! My payment is one imaginary brownie and a high-five. ✋🍫";
+ if(/bye|goodnight|good night/i.test(s))return "Catch ya later, legend! Don't let the bed bugs steal your imaginary brownies. 🌙🤣";
+ return pick(silly)+"\n\nTry a game button, joke, riddle or silly story! 😂";
 }
-function add(text,who){const div=document.createElement('div');div.className='bubble '+who;const label=document.createElement('strong');label.textContent=who==='user'?'YOU: ':'YUP BRO: ';div.appendChild(label);div.appendChild(document.createTextNode(text));chat.appendChild(div);chat.scrollTop=chat.scrollHeight;}
-function send(text){const cleaned=String(text||'').trim().slice(0,180);if(!cleaned)return;add(cleaned,'user');add(replyFor(cleaned),'bot');}
-form.addEventListener('submit',function(e){e.preventDefault();send(input.value);input.value='';input.focus();});
-document.querySelectorAll('[data-prompt]').forEach(function(btn){btn.addEventListener('click',function(){send(btn.getAttribute('data-prompt'));});});
+function showGame(title,body){gamebox.hidden=false;gamebox.replaceChildren();const h=document.createElement('h2');h.textContent=title;gamebox.appendChild(h);const p=document.createElement('p');p.textContent=body;gamebox.appendChild(p);return p}
+function buttons(items,callback){const row=document.createElement('div');row.className='gamebuttons';items.forEach((it,i)=>{const b=document.createElement('button');b.type='button';b.textContent=it;b.addEventListener('click',()=>callback(i));row.appendChild(b)});gamebox.appendChild(row)}
+function riddleGame(){currentRiddle=pick(riddles);showGame('🧩 Riddle Battle',currentRiddle.q);buttons(['💡 Hint','🙋 Show answer','➡️ Next riddle'],i=>{if(i===0){const p=gamebox.querySelector('p');p.textContent=currentRiddle.q+" Hint: "+currentRiddle.h}else if(i===1){const p=gamebox.querySelector('p');p.textContent=currentRiddle.q+" Answer: "+currentRiddle.a;points(1)}else riddleGame()})}
+function emojiGame(){const g=pick(emojiGames);emojiAnswer=g;showGame('🕵️ Guess the Emoji',g.q);buttons(['My guess: '+g.a[0].toUpperCase(),'Hint please','New emoji'],i=>{if(i===0){gamebox.querySelector('p').textContent=g.q+" "+g.ok;points(1)}else if(i===1){gamebox.querySelector('p').textContent=g.q+" Hint: think of food or a SanZa game!"}else emojiGame()});const inp=document.createElement('input');inp.placeholder='Or type your guess here';inp.maxLength=50;inp.setAttribute('aria-label','Your emoji guess');inp.style.width='100%';inp.style.marginTop='10px';gamebox.appendChild(inp);const check=document.createElement('button');check.type='button';check.textContent='Check my guess';check.style.marginTop='8px';check.addEventListener('click',()=>{const v=inp.value.trim().toLowerCase();if(g.a.some(a=>v===a||v.includes(a))){gamebox.querySelector('p').textContent='CORRECT! '+g.ok;points(2)}else gamebox.querySelector('p').textContent='Not quite, bro! Hint: '+g.a[0].split(' ').join('… ')+'! Try again or tap New emoji.'});gamebox.appendChild(check)}
+function quizGame(){const q=pick(quizzes);quizAnswer=q;showGame('🏆 SanZa Quiz',q.q);buttons(q.opts,i=>{if(i===q.a){gamebox.querySelector('p').textContent='CORRECT! You are a certified SanZa brainbox! 🤓🏆';points(2)}else gamebox.querySelector('p').textContent='Not quite, bro! 😂 Try another quiz and remember: be kind, be safe, be silly.'});const next=document.createElement('button');next.type='button';next.textContent='Next question';next.style.marginTop='10px';next.addEventListener('click',quizGame);gamebox.appendChild(next)}
+function memoryGame(){const words=pick([['BROWNIE','SCOOTY','NAAN'],['COOKIE','CHIPS','YUP BRO'],['FINGLAS','BALLYMUN','GARLIC']]);showGame('🧠 Memory Challenge','Memorise these 3 SanZa words for 4 seconds: '+words.join(' • '));const p=gamebox.querySelector('p');const b=document.createElement('button');b.type='button';b.textContent='Ready! Hide the words';b.style.marginTop='10px';b.addEventListener('click',()=>{p.textContent='Quick! Type the three words you remember below.';const inp=document.createElement('input');inp.maxLength=100;inp.placeholder='Type the words you remember';inp.setAttribute('aria-label','Memory answer');inp.style.width='100%';inp.style.marginTop='10px';gamebox.appendChild(inp);const check=document.createElement('button');check.type='button';check.textContent='Check memory';check.style.marginTop='8px';check.addEventListener('click',()=>{const got=inp.value.toUpperCase();const count=words.filter(w=>got.includes(w)).length;p.textContent='You remembered '+count+' out of 3! '+(count===3?'SANZA SUPER-BRAIN! 🧠🏆':'Good try, bro! Give it another go.');if(count)points(count)});gamebox.appendChild(check);b.remove()});gamebox.appendChild(b)}
+function action(a){if(a==='joke')send('Tell me a joke');else if(a==='riddle')riddleGame();else if(a==='story')send('Tell me a silly story');else if(a==='catchphrase')send('Yup Bro mode');else if(a==='emoji')emojiGame();else if(a==='quiz')quizGame();else if(a==='memory')memoryGame()}
+form.addEventListener('submit',e=>{e.preventDefault();send(input.value);input.value='';input.focus()});
+document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>action(b.getAttribute('data-action'))));
 })();
 </script>
 </body>
