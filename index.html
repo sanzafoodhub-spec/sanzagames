@@ -1042,7 +1042,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 
 <script id="sanza-yupbro-fullscreen">
 (function(){
-  var stage=document.getElementById('3d-mascot');
+  var stage=document.querySelector('.mascot-stage');
   if(!stage||document.getElementById('yupbro-fullscreen-toggle'))return;
   var style=document.createElement('style');
   style.textContent=`
@@ -1050,7 +1050,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     .yupbro-fullscreen-btn:focus-visible{outline:3px solid #57e9ff;outline-offset:3px}
     .mascot-stage.yupbro-faux-fullscreen{position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:12px!important;border-radius:0!important;background:#08090d!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
     .mascot-stage.yupbro-faux-fullscreen .mascot-canvas-wrap{width:100%!important;height:calc(100% - 62px)!important;max-height:none!important;flex:1 1 auto}
-    #3d-mascot.yupbro-faux-fullscreen .yupbro-fullscreen-btn{flex:0 0 auto;margin:8px auto}
+    .mascot-stage.yupbro-faux-fullscreen .yupbro-fullscreen-btn{flex:0 0 auto;margin:8px auto}
     body.yupbro-fullscreen-active{overflow:hidden!important}
     body.yupbro-fullscreen-active .sanza-hungry-float{display:none!important}
     @media(max-width:600px){.yupbro-fullscreen-btn{min-height:50px;font-size:14px}}
