@@ -387,18 +387,25 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   </div>
 </header>
 <div class="wrap">
+<nav class="home-shortcuts wrap" aria-label="Explore SanZa">
+  <a class="shortcut shortcut-chaos" href="funny-zone.html"><span aria-hidden="true">😂</span><span><strong>Funny Zone</strong><small>Jokes, riddles &amp; mini-games</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-games" href="#games"><span aria-hidden="true">🎮</span><span><strong>Play games</strong><small>Jump into the arcade</small></span><b aria-hidden="true">↘</b></a>
+  <a class="shortcut shortcut-videos" href="videos.html"><span aria-hidden="true">▶️</span><span><strong>Watch videos</strong><small>Clips from SanZa</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-chaos" href="daily-chaos.html"><span aria-hidden="true">💀</span><span><strong>Daily Chaos</strong><small>Challenges & Yup Bro memes</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-music" href="music.html"><span aria-hidden="true">🎧</span><span><strong>SanZa Music</strong><small>Listen to your vibe</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-tv" href="tv.html"><span aria-hidden="true">📺</span><span><strong>SanZa TV</strong><small>Official, authorised viewing</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-grinds" href="sanza-grinds.html"><span aria-hidden="true">📚</span><span><strong>Get grinds</strong><small>Learning support</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-food" href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">🍔</span><span><strong>Food Hub</strong><small>Menu and ordering</small></span><b aria-hidden="true">↗</b></a>
+</nav>
 <main>
 <section class="hero reveal">
   <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA FAMILY</div>
   <h1>HOWAYA, YA<br><span class="hero-title">ABSOLUTE LEGEND?! 😂</span></h1>
   <p class="intro">One SanZa. One Family. Endless craic! 😂 Play our games, meet Yup Bro, discover SanZa Grinds, watch our videos and join the newsletter for family fun, updates and offers. Come for a game, stay for the laughs!</p>
-  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">EXPLORE THE HUB</a><a class="btn" href="https://github.com/sanzafoodhub-spec/sanzagames/raw/refs/heads/android-app-preview/SanZa-Logo-APK.apk" download="SanZa-Logo-APK.apk">📲 Download SanZa App for Android</a></div>
-  <p style="max-width:620px;margin:10px auto 0;color:#b8bdcb;font-size:12px;line-height:1.7">Android only: download the APK, open it from Downloads, then tap Install. If Android asks, allow your browser or file manager to install this app. Only install SanZa’s APK if you trust this source.</p>
-  <details style="max-width:760px;margin:12px auto;padding:14px 16px;border:1px solid #ffd34d;border-radius:14px;background:#11131b;color:#fff;text-align:left"><summary style="cursor:pointer;color:#ffd34d;font-weight:800">🍎 iPhone users: Add SanZa to your Home Screen</summary><ol style="line-height:1.8;padding-left:22px"><li>Open <strong>Safari</strong> on your iPhone and visit <a href="https://sanzagames.ie" style="color:#ffd34d">sanzagames.ie</a>.</li><li>Tap the <strong>Share</strong> button (the square with the upward arrow).</li><li>Scroll down and tap <strong>Add to Home Screen</strong>. If you don’t see it, tap <strong>Edit Actions</strong> and add it.</li><li>Leave the name as <strong>SanZa</strong>, then tap <strong>Add</strong>.</li></ol><p style="font-size:12px;color:#b8bdcb;margin-bottom:0">SanZa will appear as an icon on your Home Screen. This free version is a web app; it is not yet an App Store download. Use Safari for setup.</p></details>
+  <div class="hero-actions"><a class="btn" href="#games">🎮 LET'S PLAY ↓</a><a class="btn btn-ghost" href="#sanza-hub">EXPLORE THE HUB</a></div>
 </section>
 
 <nav class="home-shortcuts wrap" aria-label="Explore SanZa">
-  <a class="shortcut shortcut-chaos" href="funny-zone.html"><span aria-hidden="true">😂</span><span><strong>Funny Zone</strong><small>Jokes, riddles &amp; mini-games</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-games" href="#games"><span aria-hidden="true">🎮</span><span><strong>Play games</strong><small>Jump into the arcade</small></span><b aria-hidden="true">↘</b></a>
   <a class="shortcut shortcut-videos" href="videos.html"><span aria-hidden="true">▶️</span><span><strong>Watch videos</strong><small>Clips from SanZa</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-chaos" href="daily-chaos.html"><span aria-hidden="true">💀</span><span><strong>Daily Chaos</strong><small>Challenges & Yup Bro memes</small></span><b aria-hidden="true">↗</b></a>
@@ -687,12 +694,27 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const tapControl=document.getElementById('yupbro-tap');
   if(tapControl)tapControl.remove();
   const danceBtn=document.createElement('button');danceBtn.type='button';danceBtn.className='yupbro-dance-btn';danceBtn.textContent='🕺 BOLLYWOOD DANCE';danceBtn.setAttribute('aria-label','Make Yup Bro perform a Bollywood dance');wrap.appendChild(danceBtn);
-  let danceUntil=0;
+  let danceUntil=0,danceStyle=-1;
   function stopDance(){danceUntil=0;danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
   // Any tap/click elsewhere on the page ends the dance immediately, including on mobile.
   document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
   danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceUntil=performance.now()+60000;danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  // Secret dance helper: three quick pokes unlock a bonus filmi routine.
+  function startSurpriseDance(style,line){
+    if(danceUntil)stopDance();
+    danceStyle=style;danceUntil=performance.now()+8500;danceBtn.classList.add('dancing');
+    danceBtn.textContent='✨ SECRET DANCE — TAP TO STOP';
+    if(speech)speech.textContent=line;
+    if(moodLabel){moodLabel.textContent='SECRET MOVE! 🤫';moodLabel.dataset.mood='hype';}
+  }
+  // Three quick pokes unlock a bonus filmi dance (the normal five-poke faint still works).
+  let secretTapTimes=[];
+  canvas.addEventListener('pointerdown',()=>{
+    const now=performance.now();secretTapTimes=secretTapTimes.filter(t=>now-t<1700);secretTapTimes.push(now);
+    if(secretTapTimes.length===3&&!fallen){secretTapTimes=[];startSurpriseDance(3,'THREE TAPS?! SECRET MOVE UNLOCKED, BRO! 🤫🕺');}
+  },{passive:true});
+
   let audioContext=null,analyser=null,source=null,monitorFrame=0,detectedVoice=false,lastLoudAt=0,segmentStartedAt=0,segmentActive=false,processingSegment=false;
   let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
@@ -761,16 +783,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     recording.onerror=()=>{micHint.textContent='The mic had a wobble, bro. Refresh and allow microphone access again.';voiceBusy=false;};
     recording.onstop=()=>{
      const chunks=recordedChunks.slice();
-     segmentActive=false;
-     // MediaRecorder can fire onstop after leaving Yup Bro's home screen.
-     // Discard that pending segment so it cannot trigger a delayed voice reply.
-     if(!yupBroHomeVisible||!micStream){
-      recordedChunks=[];processingSegment=false;
-      if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
-      yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0;});
-      return;
-     }
      const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
+     segmentActive=false;
      if(!valid){processingSegment=false;if(micStream)startSegmentRecorder();return;}
      const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});
      if(spokenUrl)URL.revokeObjectURL(spokenUrl);
@@ -848,54 +862,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
   canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
-  // Privacy guard: Yup Bro only listens while his home character is on screen.
-  let yupBroHomeVisible=false;
-  function stopYupBroListening(){
-   yupBroHomeVisible=false;
-   segmentActive=false;processingSegment=false;detectedVoice=false;
-   if(monitorFrame){cancelAnimationFrame(monitorFrame);monitorFrame=0;}
-   try{if(recording&&recording.state==='recording')recording.stop();}catch(e){}
-   if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
-   yupbroVoiceClips.forEach(a=>{try{a.pause();a.currentTime=0;}catch(e){}});
-   if(window.speechSynthesis)window.speechSynthesis.cancel();
-   stopMicTracks();
-   if(audioContext){try{audioContext.close();}catch(e){}audioContext=null;}
-   source=null;analyser=null;recording=null;voiceBusy=false;
-   if(micHint)micHint.textContent='🔇 Yup Bro only listens while he is on screen. Scroll back to him to chat!';
-   if(speech)speech.textContent='COME BACK TO ME, BRO! 👋';
-   setMouthTalking(false);
-  }
-  function updateYupBroListening(isVisible){
-   if(isVisible===yupBroHomeVisible)return;
-   yupBroHomeVisible=isVisible;
-   if(!isVisible){stopYupBroListening();return;}
-   if(micHint)micHint.textContent='🏠 Yup Bro is back on screen! Tap him if your browser needs permission again.';
-   startAlwaysListening();
-  }
-  // Leaving the welcome/home area via Explore or another section link must stop Yup Bro immediately.
-  document.addEventListener('click',event=>{
-   const link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
-   if(!link)return;
-   const href=link.getAttribute('href')||'';
-   if(href==='#sanza-hub'||href==='#games'||href==='#sanza-grinds'||href==='#videos'||href.startsWith('http')){
-    stopYupBroListening();
-   }
-  },true);
-  if('IntersectionObserver' in window && wrap){
-   const yupBroObserver=new IntersectionObserver(entries=>{
-    const entry=entries[0];
-    const visible=!!entry&&entry.isIntersecting&&entry.intersectionRatio>=0.15;
-    if(visible&&!yupBroHomeVisible&&window.scrollY<window.innerHeight*0.8)updateYupBroListening(true);
-    else if(!visible)updateYupBroListening(false);
-   },{threshold:[0,0.15,0.3]});
-   yupBroObserver.observe(wrap);
-  }else{
-   // Safe fallback: don't auto-start listening on browsers without visibility observation.
-   yupBroHomeVisible=false;
-   if(micHint)micHint.textContent='🔇 Automatic listening is unavailable in this browser.';
-  }
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopYupBroListening();else if(yupBroHomeVisible)startAlwaysListening();});
-  window.addEventListener('pagehide',stopYupBroListening);
+  // Request permission on page entry. Browsers may require one tap before granting it.
+  startAlwaysListening();
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
@@ -903,7 +871,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   let visible=true;
   if('IntersectionObserver'in window){observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(animate);},{threshold:.05});observer.observe(wrap)}
   function animate(now){raf=0;if(!visible)return;raf=requestAnimationFrame(animate);const t=(now-start)/1000;if(now-last<28)return;last=now;
-   const rev=now<boostUntil?4.2:0,tricking=now<trickUntil,reacting=now<moodUntil,dancing=now<danceUntil,dancePhase=t*9.2;
+   const rev=now<boostUntil?4.2:0,tricking=now<trickUntil,reacting=now<moodUntil,dancing=now<danceUntil,dancePhase=t*9.2,danceBeat=t*9.2,danceStyleNow=Math.max(0,danceStyle);
    if(!dancing&&danceBtn.classList.contains('dancing'))stopDance();
    const scale=1+Math.max(0,(boostUntil-now)/2600)*.1;mascot.scale.lerp(new THREE.Vector3(scale,scale,scale),.12);
    if(now>nextBlink){blinkUntil=now+145;nextBlink=now+2200+Math.random()*2600;}
@@ -913,14 +881,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(isSpeaking){const syllable=Math.abs(Math.sin(now*.012))+Math.abs(Math.sin(now*.019))*.28;mouthInner.scale.y=.012+syllable*.034+(now<speechPulse?.012:0);mouthTeeth.scale.y=.008+syllable*.005;tongue.scale.y=.008+syllable*.012;mouthTeeth.position.y=-.112+syllable*.004;}
    // Full-body character no longer rides a scooter; keep legacy wheel handles inert.
    const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
-   body.position.y=-.72+Math.sin(t*4)*.025+(tricking&&!fallen?Math.max(0,trickPulse)*.12:0)+(dancing&&!fallen?Math.abs(Math.sin(dancePhase*2))*.095:0);
-   head.rotation.y=Math.sin(t*.8)*.12+(dancing?Math.sin(dancePhase)*.24:0);head.rotation.z=Math.sin(t*1.7)*.035+(tricking?Math.sin(t*12)*.16:0)+(dancing?Math.sin(dancePhase*2)*.09:0);
-   // Bollywood-inspired bhangra: alternating raised arms, shoulder rolls, hip bounce and quick heel steps.
-   arms[0].rotation.z=dancing?1.35+Math.sin(dancePhase)*.52:Math.sin(t*2.2)*.055+(tricking?Math.sin(t*10)*.5:0);arms[1].rotation.z=dancing?-1.35+Math.sin(dancePhase+Math.PI)*.52:-Math.sin(t*2.2)*.055-(tricking?Math.sin(t*10)*.5:0);
-   arms[0].rotation.x=dancing?Math.sin(dancePhase+1)*.35:0;arms[1].rotation.x=dancing?Math.sin(dancePhase+Math.PI+1)*.35:0;
-   leg1.rotation.x=dancing?Math.max(0,Math.sin(dancePhase*2))*.42:tricking?Math.max(0,trickPulse)*.18:Math.sin(t*2)*.018;leg2.rotation.x=dancing?Math.max(0,Math.sin(dancePhase*2+Math.PI))*.42:tricking?-Math.max(0,trickPulse)*.18:-Math.sin(t*2)*.018;
-   leg1.rotation.z=dancing?Math.sin(dancePhase*2)*.12:0;leg2.rotation.z=dancing?-Math.sin(dancePhase*2)*.12:0;
-   mascot.rotation.y=dancing?Math.sin(dancePhase)*.34:Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
+   body.position.y=-.72+Math.sin(t*4)*.025+(tricking&&!fallen?Math.max(0,trickPulse)*.12:0)+(dancing&&!fallen?(danceStyleNow===0?Math.abs(Math.sin(danceBeat*2))*.095:danceStyleNow===1?Math.abs(Math.sin(danceBeat*1.5))*.13:danceStyleNow===2?Math.abs(Math.sin(danceBeat*3))*.07:Math.abs(Math.sin(danceBeat))*.11):0);
+   head.rotation.y=Math.sin(t*.8)*.12+(dancing?Math.sin(danceBeat*(danceStyleNow===2?1:1.3))*(danceStyleNow===1?.34:.24):0);head.rotation.z=Math.sin(t*1.7)*.035+(tricking?Math.sin(t*12)*.16:0)+(dancing?(danceStyleNow===1?Math.sin(danceBeat)*.16:Math.sin(danceBeat*2)*.09):0);
+   // Four rotating Bollywood routines: bhangra, overhead party steps, shoulder shimmy and cross-step filmi groove.
+   arms[0].rotation.z=dancing?(danceStyleNow===0?1.35+Math.sin(danceBeat)*.52:danceStyleNow===1?1.85+Math.sin(danceBeat*1.5)*.22:danceStyleNow===2?.45+Math.sin(danceBeat*2)*.65:1.05+Math.sin(danceBeat*1.5)*.5):Math.sin(t*2.2)*.055+(tricking?Math.sin(t*10)*.5:0);
+   arms[1].rotation.z=dancing?(danceStyleNow===0?-1.35+Math.sin(danceBeat+Math.PI)*.52:danceStyleNow===1?-1.85+Math.sin(danceBeat*1.5+Math.PI)*.22:danceStyleNow===2?-.45+Math.sin(danceBeat*2+Math.PI)*.65:-1.05+Math.sin(danceBeat*1.5+Math.PI)*.5):-Math.sin(t*2.2)*.055-(tricking?Math.sin(t*10)*.5:0);
+   arms[0].rotation.x=dancing?(danceStyleNow===1?Math.sin(danceBeat*1.5)*.55:danceStyleNow===2?Math.sin(danceBeat*2)*.85:Math.sin(danceBeat+1)*.35):0;arms[1].rotation.x=dancing?(danceStyleNow===1?Math.sin(danceBeat*1.5+Math.PI)*.55:danceStyleNow===2?Math.sin(danceBeat*2+Math.PI)*.85:Math.sin(danceBeat+Math.PI+1)*.35):0;
+   leg1.rotation.x=dancing?(danceStyleNow===2?Math.max(0,Math.sin(danceBeat*3))*.3:Math.max(0,Math.sin(danceBeat*(danceStyleNow===1?1.5:2)))* (danceStyleNow===3?.55:.42)):tricking?Math.max(0,trickPulse)*.18:Math.sin(t*2)*.018;leg2.rotation.x=dancing?(danceStyleNow===2?Math.max(0,Math.sin(danceBeat*3+Math.PI))*.3:Math.max(0,Math.sin(danceBeat*(danceStyleNow===1?1.5:2)+Math.PI))*(danceStyleNow===3?.55:.42)):tricking?-Math.max(0,trickPulse)*.18:-Math.sin(t*2)*.018;
+   leg1.rotation.z=dancing?(danceStyleNow===1?Math.sin(danceBeat*1.5)*.25: danceStyleNow===3?Math.sin(danceBeat*2)*.22:Math.sin(danceBeat*2)*.12):0;leg2.rotation.z=dancing?(danceStyleNow===1?-Math.sin(danceBeat*1.5)*.25:danceStyleNow===3?-Math.sin(danceBeat*2)*.22:-Math.sin(danceBeat*2)*.12):0;
+   mascot.rotation.y=dancing?(danceStyleNow===1?Math.sin(danceBeat*.75)*.5:danceStyleNow===2?Math.sin(danceBeat*2)*.18:Math.sin(danceBeat)*.34):Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
    if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/520);const ease=1-Math.pow(1-fallProgress,3);fallPivot.rotation.z=fallDirection*1.48*ease;fallPivot.position.x=fallDirection*.23*ease;mascot.position.y=.25-.08*ease+Math.sin(elapsed*.025)*.018;if(now>=recoverAt){const upProgress=Math.min(1,(now-recoverAt)/520);const upEase=1-Math.pow(1-upProgress,3);fallPivot.rotation.z=fallDirection*1.48*(1-upEase);fallPivot.position.x=fallDirection*.23*(1-upEase);mascot.position.y=.25-.08*(1-upEase);if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}}else{fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
@@ -940,7 +909,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   var gate=document.getElementById('welcome-gate');
   var enter=document.getElementById('welcome-enter');
   var home=document.querySelector('.navlinks .home-return');
-  var stage=document.getElementById('3d-mascot');
+  var stage=document.querySelector('.mascot-stage');
   function openSanZa(){
     if(!gate)return;
     gate.hidden=true;
@@ -1043,6 +1012,49 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 
 <script id="sanza-pwa-register">
 (function(){
+  var deferredPrompt = null;
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'btn';
+  button.textContent = '📲 Install SanZa App';
+  button.setAttribute('aria-label','Install the SanZa Games and Food Hub app');
+  button.style.cssText = 'margin:12px auto 0;cursor:pointer;border:1px solid #ffd34d;background:#ffd34d;color:#101014;font:inherit;font-size:12px;font-weight:1000;padding:13px 18px;border-radius:13px;box-shadow:0 7px 25px #ffd34d19';
+  var actions = document.querySelector('.hero .hero-actions');
+  if (actions && actions.parentNode) actions.insertAdjacentElement('afterend', button);
+  window.addEventListener('beforeinstallprompt', function(event){
+    event.preventDefault();
+    deferredPrompt = event;
+  });
+  button.addEventListener('click', async function(){
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      alert('SanZa is already installed on this device. Enjoy, bro! 🖤💛');
+      return;
+    }
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      try { await deferredPrompt.userChoice; } catch(e) {}
+      deferredPrompt = null;
+      return;
+    }
+    var ua = navigator.userAgent || '';
+    var isSamsung = /SamsungBrowser/i.test(ua);
+    var isIOS = /iPhone|iPad|iPod/i.test(ua);
+    var isEdge = /EdgA?\//i.test(ua);
+    var isFirefox = /Firefox\//i.test(ua);
+    var msg;
+    if (isSamsung) {
+      msg = 'Install SanZa on Samsung Internet:\n\n1. Close this message.\n2. Tap the ☰ menu at the bottom (or ⋮ menu).\n3. Choose “Add page to” or “Add page to Home screen”.\n4. Confirm Add.\n\nIf that option is missing, update Samsung Internet and open the website directly in it.';
+    } else if (isIOS) {
+      msg = 'Install SanZa on iPhone or iPad:\n\n1. Tap Share.\n2. Choose “Add to Home Screen”.\n3. Tap Add.';
+    } else if (isEdge) {
+      msg = 'Install SanZa in Microsoft Edge:\n\n1. Open the ⋮ menu.\n2. Look for “Add to phone” or “Install app”.\n3. Follow the prompts.';
+    } else if (isFirefox) {
+      msg = 'This browser may not support full PWA installation. On Android, try Samsung Internet or Chrome and use the browser menu’s “Add to Home screen” option.';
+    } else {
+      msg = 'To install SanZa, open this page directly in your browser (not inside another app), then open its menu and look for “Install app” or “Add to Home screen”.';
+    }
+    alert(msg);
+  });
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){
       navigator.serviceWorker.register('/service-worker.js').catch(function(error){
@@ -1050,6 +1062,51 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
       });
     });
   }
+})();
+</script>
+
+
+<script id="sanza-yupbro-fullscreen">
+(function(){
+  var stage=document.querySelector('.mascot-canvas-wrap');
+  if(!stage||document.getElementById('yupbro-fullscreen-toggle'))return;
+  var style=document.createElement('style');
+  style.textContent=`
+    .yupbro-fullscreen-btn{position:absolute;z-index:20;left:50%;bottom:100px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px);max-width:420px;min-height:48px;margin:0;padding:13px 18px;border:1px solid #ffd34d;border-radius:13px;background:linear-gradient(135deg,#ffd34d,#ffb928);color:#101014;font:900 13px system-ui,sans-serif;letter-spacing:.4px;cursor:pointer;box-shadow:0 8px 25px #ffd34d24;touch-action:manipulation}
+    .yupbro-fullscreen-btn:focus-visible{outline:3px solid #57e9ff;outline-offset:3px}
+    .mascot-canvas-wrap.yupbro-faux-fullscreen{position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100dvh!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;border-radius:0!important;overflow:hidden!important;background:#08090d!important;display:block!important}
+    .mascot-canvas-wrap.yupbro-faux-fullscreen #yupbro-3d-canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+    .mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-fullscreen-btn{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+    body.yupbro-fullscreen-active{overflow:hidden!important}
+    body.yupbro-fullscreen-active .sanza-hungry-float{display:none!important}
+    @media(max-width:600px){.yupbro-fullscreen-btn{min-height:50px;font-size:14px}}
+  `;
+  document.head.appendChild(style);
+  var btn=document.createElement('button');
+  btn.id='yupbro-fullscreen-toggle';btn.type='button';btn.className='yupbro-fullscreen-btn';
+  btn.textContent='⛶ FULL SCREEN YUP BRO';
+  btn.setAttribute('aria-label','Open Yup Bro in full screen');
+  stage.appendChild(btn);
+  function isExpanded(){return document.fullscreenElement===stage||stage.classList.contains('yupbro-faux-fullscreen');}
+  function closeFallback(){stage.classList.remove('yupbro-faux-fullscreen');document.body.classList.remove('yupbro-fullscreen-active');btn.textContent='⛶ FULL SCREEN YUP BRO';btn.setAttribute('aria-label','Open Yup Bro in full screen');window.dispatchEvent(new Event('resize'));}
+  async function toggle(){
+    if(isExpanded()){
+      if(document.fullscreenElement&&document.exitFullscreen){try{await document.exitFullscreen();}catch(e){}}
+      closeFallback();return;
+    }
+    if(stage.requestFullscreen){
+      try{await stage.requestFullscreen();btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');window.dispatchEvent(new Event('resize'));return;}catch(e){}
+    }
+    stage.classList.add('yupbro-faux-fullscreen');document.body.classList.add('yupbro-fullscreen-active');
+    btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');
+    window.dispatchEvent(new Event('resize'));
+  }
+  btn.addEventListener('click',toggle);
+  document.addEventListener('fullscreenchange',function(){
+    if(document.fullscreenElement===stage){btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');}
+    else if(!stage.classList.contains('yupbro-faux-fullscreen')){btn.textContent='⛶ FULL SCREEN YUP BRO';btn.setAttribute('aria-label','Open Yup Bro in full screen');window.dispatchEvent(new Event('resize'));}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&stage.classList.contains('yupbro-faux-fullscreen'))closeFallback();});
 })();
 </script>
 
