@@ -25,7 +25,8 @@ h1{font-size:clamp(2rem,8vw,3.4rem);line-height:1.03;margin:28px 0 10px}h1 span{
 <div class="status" id="status" role="status">Ready, bro. Tap Talk to me and allow microphone access when asked.</div>
 <div class="samples"><button class="chip" data-q="Tell me a joke">🤣 Joke</button><button class="chip" data-q="Give me a riddle">🧩 Riddle</button><button class="chip" data-q="Help me with homework">📚 Homework</button><button class="chip" data-q="Are you clever">🤓 Are you clever?</button></div>
 </section>
-<section class="card"><label for="pitch">Squeak level <span id="pitchVal">1.7×</span></label><input class="range" id="pitch" type="range" min="1" max="2" value="1.7" step=".1"><p class="foot">The exact sound depends on voices installed on your phone. Higher pitch may sound cartoonier, but this is not a custom AI voice. Voice recognition support varies by browser.</p></section>
+<section class="card"><label for="pitch">Browser voice squeak level <span id="pitchVal">1.7×</span></label><input class="range" id="pitch" type="range" min="1" max="2" value="1.7" step=".1"><p class="foot">This slider changes the phone's built-in voice only. It cannot turn that voice into your recorded voice.</p></section>
+<section class="card"><h2 style="margin:0 0 8px;color:var(--gold)">🎙️ Make YOUR voice go SQUEEEAK!</h2><p class="foot">Choose one of your recorded Yup Bro clips from your phone. It stays on your device — it is not uploaded. We'll play it faster and higher so you can test the cartoon effect.</p><label for="voiceClip">Choose your voice recording (MP3, M4A, WAV, etc.)</label><input id="voiceClip" type="file" accept="audio/*"><label for="clipPitch">Cartoon squeak <span id="clipPitchVal">1.35×</span></label><input class="range" id="clipPitch" type="range" min="1" max="1.8" value="1.35" step=".05"><div class="row"><button class="btn primary" id="playClip" disabled>🤣 Play my squeaky voice</button><button class="btn secondary" id="stopClip" disabled>Stop clip</button></div><audio id="voiceAudio" hidden></audio><div class="status" id="clipStatus" role="status">Choose a recording to try it, bro.</div><p class="foot">Honest limitation: this transforms recorded clips, not every brand-new answer. Free browser speech still uses a built-in voice. We can use your transformed recordings for Yup Bro's signature catchphrases; fully dynamic answers in your own transformed voice would need a more involved voice-processing setup.</p></section>
 <p class="foot">Prototype only. Responses are generated locally from simple patterns, not OpenAI. Nothing here sends your questions to a server. Preview feature is not live on the main SanZa website.</p>
 </main>
 <script>
@@ -79,6 +80,28 @@ $('ask').addEventListener('click',()=>ask());
 input.addEventListener('keydown',e=>{if(e.key==='Enter')ask()});
 document.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>ask(b.dataset.q)));
 $('pitch').addEventListener('input',e=>$('pitchVal').textContent=Number(e.target.value).toFixed(1)+'×');
+const clipInput=$('voiceClip'), clipAudio=$('voiceAudio'), playClip=$('playClip'), stopClip=$('stopClip'), clipStatus=$('clipStatus');
+let clipUrl=null;
+clipInput.addEventListener('change',()=>{
+ if(clipUrl){URL.revokeObjectURL(clipUrl);clipUrl=null}
+ clipAudio.pause();clipAudio.removeAttribute('src');clipAudio.load();
+ const file=clipInput.files&&clipInput.files[0];
+ if(!file){playClip.disabled=true;stopClip.disabled=true;clipStatus.textContent='Choose a recording to try it, bro.';return}
+ if(!file.type.startsWith('audio/')){playClip.disabled=true;clipStatus.textContent='That file does not look like audio. Choose an audio recording, bro.';return}
+ clipUrl=URL.createObjectURL(file);clipAudio.src=clipUrl;playClip.disabled=false;stopClip.disabled=false;
+ clipStatus.textContent='Loaded locally: '+file.name+' — nothing uploaded. Tap play!';
+});
+$('clipPitch').addEventListener('input',e=>$('clipPitchVal').textContent=Number(e.target.value).toFixed(2)+'×');
+playClip.addEventListener('click',()=>{
+ if(!clipUrl)return;
+ if(window.speechSynthesis)window.speechSynthesis.cancel();
+ clipAudio.pause();clipAudio.currentTime=0;
+ clipAudio.playbackRate=Number($('clipPitch').value);
+ try{clipAudio.preservesPitch=false}catch(e){}
+ clipAudio.play().then(()=>{clipStatus.textContent='YUP BROOO! Squeaky recording playing! 😂'}).catch(()=>{clipStatus.textContent='Could not play that file. Try an MP3 or WAV recording.'});
+});
+stopClip.addEventListener('click',()=>{clipAudio.pause();clipAudio.currentTime=0;clipStatus.textContent='Clip stopped. Try another squeak level, bro!'});
+clipAudio.addEventListener('ended',()=>{clipStatus.textContent='Clip finished! Pick another squeak level or try it again.'});
 $('stop').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();if(recognition)try{recognition.stop()}catch(e){};speaking=false;mascot.textContent='🤪';status.textContent='Stopped. Yup Bro has been muted, bro. 🤐'});
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){recognition=new SR();recognition.lang='en-IE';recognition.interimResults=false;recognition.maxAlternatives=1;
