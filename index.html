@@ -695,15 +695,18 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   if(tapControl)tapControl.remove();
   const danceBtn=document.createElement('button');danceBtn.type='button';danceBtn.className='yupbro-dance-btn';danceBtn.textContent='🕺 BOLLYWOOD DANCE';danceBtn.setAttribute('aria-label','Make Yup Bro perform a Bollywood dance');wrap.appendChild(danceBtn);
   let danceUntil=0,danceStyle=-1;
-  function stopDance(){danceUntil=0;danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
+  const danceMusic=new Audio('/Yupbro.mp3');danceMusic.preload='auto';danceMusic.loop=true;danceMusic.volume=0.7;
+  function startDanceMusic(){try{danceMusic.currentTime=0;const p=danceMusic.play();if(p&&p.catch)p.catch(()=>{});}catch(_){}}
+  function stopDanceMusic(){danceMusic.pause();try{danceMusic.currentTime=0;}catch(_){}}
+  function stopDance(){danceUntil=0;stopDanceMusic();danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
   // Any tap/click elsewhere on the page ends the dance immediately, including on mobile.
   document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
   danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;startDanceMusic();danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
   // Secret dance helper: three quick pokes unlock a bonus filmi routine.
   function startSurpriseDance(style,line){
     if(danceUntil)stopDance();
-    danceStyle=style;danceUntil=performance.now()+8500;danceBtn.classList.add('dancing');
+    danceStyle=style;danceUntil=performance.now()+8500;startDanceMusic();danceBtn.classList.add('dancing');
     danceBtn.textContent='✨ SECRET DANCE — TAP TO STOP';
     if(speech)speech.textContent=line;
     if(moodLabel){moodLabel.textContent='SECRET MOVE! 🤫';moodLabel.dataset.mood='hype';}
