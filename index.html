@@ -690,6 +690,37 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
   danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
   danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  // Random SanZa surprises, kept in the preview build.
+  const surpriseBtn=document.createElement('button');
+  surpriseBtn.type='button';surpriseBtn.textContent='🎲 SURPRISE ME, BRO!';
+  surpriseBtn.setAttribute('aria-label','Make Yup Bro do a random funny surprise');
+  surpriseBtn.style.cssText='display:block;margin:10px auto 14px;min-height:44px;padding:11px 17px;border:1px solid #57e9ff;border-radius:12px;background:#111923;color:#57e9ff;font:900 12px system-ui,sans-serif;letter-spacing:.3px;cursor:pointer;box-shadow:0 6px 20px #57e9ff18';
+  if(mascotShell)mascotShell.appendChild(surpriseBtn);
+  function startSurpriseDance(style,line){
+    if(danceUntil)stopDance();
+    danceStyle=style;danceUntil=performance.now()+8500;danceBtn.classList.add('dancing');
+    danceBtn.textContent='✨ SECRET DANCE — TAP TO STOP';
+    if(speech)speech.textContent=line;
+    if(moodLabel){moodLabel.textContent='SECRET MOVE! 🤫';moodLabel.dataset.mood='hype';}
+  }
+  surpriseBtn.addEventListener('pointerdown',e=>e.stopPropagation());
+  surpriseBtn.addEventListener('click',e=>{
+    e.stopPropagation();
+    const surprises=[
+      ()=>{startSurpriseDance(Math.floor(Math.random()*4),'SURPRISE BOLLYWOOD TIME, BRO! 🕺😂');},
+      ()=>{const now=performance.now();boostUntil=now+3800;trickUntil=now+3600;moodUntil=now+3500;mood='hype';if(speech)speech.textContent='VICTORY DANCE WITHOUT THE DANCE! 🏆🤣';if(moodLabel){moodLabel.textContent='WINNER MODE 🏆';moodLabel.dataset.mood='hype';}},
+      ()=>{const now=performance.now();trickUntil=now+4200;boostUntil=now+2400;moodUntil=now+4200;mood='cheeky';if(speech)speech.textContent='BROOO, MY LEGS HAVE THEIR OWN PLANS! 🤪';if(moodLabel){moodLabel.textContent='WOBBLE MODE 🤪';moodLabel.dataset.mood='cheeky';}},
+      ()=>{startSurpriseDance(3,'SECRET FILMI GROOVE UNLOCKED! 🤫✨');}
+    ];
+    surprises[Math.floor(Math.random()*surprises.length)]();
+  });
+  // Three quick pokes unlock a bonus filmi dance (the normal five-poke faint still works).
+  let secretTapTimes=[];
+  canvas.addEventListener('pointerdown',()=>{
+    const now=performance.now();secretTapTimes=secretTapTimes.filter(t=>now-t<1700);secretTapTimes.push(now);
+    if(secretTapTimes.length===3&&!fallen){secretTapTimes=[];startSurpriseDance(3,'THREE TAPS?! SECRET MOVE UNLOCKED, BRO! 🤫🕺');}
+  },{passive:true});
+
   let audioContext=null,analyser=null,source=null,monitorFrame=0,detectedVoice=false,lastLoudAt=0,segmentStartedAt=0,segmentActive=false,processingSegment=false;
   let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
