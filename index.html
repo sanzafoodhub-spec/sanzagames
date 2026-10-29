@@ -883,7 +883,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   var gate=document.getElementById('welcome-gate');
   var enter=document.getElementById('welcome-enter');
   var home=document.querySelector('.navlinks .home-return');
-  var stage=document.getElementById('3d-mascot');
+  var stage=document.querySelector('.mascot-stage');
   function openSanZa(){
     if(!gate)return;
     gate.hidden=true;
@@ -1048,8 +1048,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   style.textContent=`
     .yupbro-fullscreen-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px);max-width:420px;min-height:48px;margin:12px auto 8px;padding:13px 18px;border:1px solid #ffd34d;border-radius:13px;background:linear-gradient(135deg,#ffd34d,#ffb928);color:#101014;font:900 13px system-ui,sans-serif;letter-spacing:.4px;cursor:pointer;box-shadow:0 8px 25px #ffd34d24;touch-action:manipulation}
     .yupbro-fullscreen-btn:focus-visible{outline:3px solid #57e9ff;outline-offset:3px}
-    #3d-mascot.yupbro-faux-fullscreen{position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:12px!important;border-radius:0!important;background:#08090d!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
-    #3d-mascot.yupbro-faux-fullscreen canvas{width:100%!important;height:calc(100% - 62px)!important;max-height:none!important;flex:1 1 auto}
+    .mascot-stage.yupbro-faux-fullscreen{position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:12px!important;border-radius:0!important;background:#08090d!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+    .mascot-stage.yupbro-faux-fullscreen .mascot-canvas-wrap{width:100%!important;height:calc(100% - 62px)!important;max-height:none!important;flex:1 1 auto}
     #3d-mascot.yupbro-faux-fullscreen .yupbro-fullscreen-btn{flex:0 0 auto;margin:8px auto}
     body.yupbro-fullscreen-active{overflow:hidden!important}
     body.yupbro-fullscreen-active .sanza-hungry-float{display:none!important}
