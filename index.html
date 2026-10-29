@@ -1042,15 +1042,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 
 <script id="sanza-yupbro-fullscreen">
 (function(){
-  var stage=document.querySelector('.mascot-stage');
+  var stage=document.querySelector('.mascot-canvas-wrap');
   if(!stage||document.getElementById('yupbro-fullscreen-toggle'))return;
   var style=document.createElement('style');
   style.textContent=`
-    .yupbro-fullscreen-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px);max-width:420px;min-height:48px;margin:12px auto 8px;padding:13px 18px;border:1px solid #ffd34d;border-radius:13px;background:linear-gradient(135deg,#ffd34d,#ffb928);color:#101014;font:900 13px system-ui,sans-serif;letter-spacing:.4px;cursor:pointer;box-shadow:0 8px 25px #ffd34d24;touch-action:manipulation}
+    .yupbro-fullscreen-btn{position:absolute;z-index:20;left:50%;bottom:10px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px);max-width:420px;min-height:48px;margin:0;padding:13px 18px;border:1px solid #ffd34d;border-radius:13px;background:linear-gradient(135deg,#ffd34d,#ffb928);color:#101014;font:900 13px system-ui,sans-serif;letter-spacing:.4px;cursor:pointer;box-shadow:0 8px 25px #ffd34d24;touch-action:manipulation}
     .yupbro-fullscreen-btn:focus-visible{outline:3px solid #57e9ff;outline-offset:3px}
-    .mascot-stage.yupbro-faux-fullscreen{position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:12px!important;border-radius:0!important;background:#08090d!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
-    .mascot-stage.yupbro-faux-fullscreen .mascot-canvas-wrap{width:100%!important;height:calc(100% - 62px)!important;max-height:none!important;flex:1 1 auto}
-    .mascot-stage.yupbro-faux-fullscreen .yupbro-fullscreen-btn{flex:0 0 auto;margin:8px auto}
+    .mascot-canvas-wrap.yupbro-faux-fullscreen{position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100dvh!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;border-radius:0!important;overflow:hidden!important;background:#08090d!important;display:block!important}
+    .mascot-canvas-wrap.yupbro-faux-fullscreen #yupbro-3d-canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+    .mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-fullscreen-btn{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
     body.yupbro-fullscreen-active{overflow:hidden!important}
     body.yupbro-fullscreen-active .sanza-hungry-float{display:none!important}
     @media(max-width:600px){.yupbro-fullscreen-btn{min-height:50px;font-size:14px}}
@@ -1069,7 +1069,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
       closeFallback();return;
     }
     if(stage.requestFullscreen){
-      try{await stage.requestFullscreen();btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');return;}catch(e){}
+      try{await stage.requestFullscreen();btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');window.dispatchEvent(new Event('resize'));return;}catch(e){}
     }
     stage.classList.add('yupbro-faux-fullscreen');document.body.classList.add('yupbro-fullscreen-active');
     btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');
