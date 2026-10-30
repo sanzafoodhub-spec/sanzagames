@@ -1,28 +1,32 @@
-/* SanZa Magic: date-driven seasonal effects use Ireland/Dublin calendar */
+/* SanZa Magic — optional, lightweight site-wide motion. No seasonal decorations. */
 (()=>{'use strict';
-const zone='Europe/Dublin';
-const parts=()=>{const p=new Intl.DateTimeFormat('en-GB',{timeZone:zone,year:'numeric',month:'numeric',day:'numeric'}).formatToParts(new Date());const o={};p.forEach(x=>o[x.type]=Number(x.value));return o};
-const today=parts(),m=today.month,d=today.day,y=today.year;
-const between=(a,b)=>{const n=m*100+d;return n>=a&&n<b};
-let season=null;
-if(between(1001,1101))season='halloween';
-else if(between(1125,1228))season='christmas';
-else if(between(1230,1232)||between(101,102))season='newyear';
-const key='sanza-magic-enabled-v2';
-let enabled=localStorage.getItem(key)!=='false';
+const key='sanza-magic-enabled-v3';
 const root=document.documentElement;
-const layer=document.createElement('div');layer.id='sanza-season-layer';document.body.appendChild(layer);
-const toggle=document.createElement('button');toggle.id='sanza-magic-toggle';toggle.type='button';
-const render=()=>{root.classList.toggle('sanza-magic-on',enabled);toggle.textContent=enabled?'✨ SanZa Magic: ON':'✨ SanZa Magic: OFF';toggle.setAttribute('aria-pressed',String(enabled));layer.replaceChildren();document.querySelectorAll('.sanza-magic-reveal').forEach(e=>e.classList.remove('sanza-magic-reveal'));
-const stage=document.querySelector('.mascot-canvas-wrap');
-if(stage){stage.querySelector('.yupbro-season-sparkles')?.remove();stage.removeAttribute('data-sanza-season');}
-if(!enabled||!season)return;
-const cfg={halloween:['🎃','👻','🦇','✨'],christmas:['❄️','✨','🎄'],newyear:['🎆','✨','🎉']}[season];
-if(stage){stage.dataset.sanzaSeason=season;const decor=document.createElement('div');decor.className='yupbro-season-sparkles';decor.setAttribute('aria-hidden','true');const designs={halloween:[['🎃','pumpkin'],['🦇','bat'],['👻','ghost'],['🦇','bat bat-two'],['✨','twinkle']],christmas:[['❄️','snow snow-one'],['❄️','snow snow-two'],['🎄','tree'],['✨','twinkle'],['❄️','snow snow-three']],newyear:[['🎆','firework burst-one'],['🎇','firework burst-two'],['🎉','confetti'],['✨','twinkle'],['🎆','firework burst-three']]};designs[season].forEach(([symbol,kind],i)=>{const p=document.createElement('span');p.textContent=symbol;p.className='yupbro-season-object '+kind+' object-'+(i+1);decor.appendChild(p)});stage.appendChild(decor);}
-for(let i=0;i<16;i++){const p=document.createElement('span');p.className='sanza-season-particle';p.textContent=cfg[i%cfg.length];p.style.left=(Math.random()*100)+'%';p.style.animationDuration=(9+Math.random()*12)+'s';p.style.animationDelay=(-Math.random()*18)+'s';p.style.fontSize=(12+Math.random()*12)+'px';p.style.setProperty('--drift',(Math.random()*100-50)+'px');layer.appendChild(p)}
-if(season==='newyear'){const target=new Date(y+((m===12)?1:0),0,1);const box=document.createElement('div');box.className='sanza-countdown';box.setAttribute('aria-label','New Year countdown');document.querySelector('main,.hero,.wrap')?.appendChild(box);const update=()=>{const diff=Math.max(0,target-Date.now());const days=Math.floor(diff/86400000),hours=Math.floor(diff%86400000/3600000),mins=Math.floor(diff%3600000/60000),secs=Math.floor(diff%60000/1000);box.innerHTML=[days+'|Days',hours+'|Hours',mins+'|Mins',secs+'|Secs'].map(v=>{const [n,l]=v.split('|');return '<span>'+n+'<small>'+l+'</small></span>'}).join('')};update();setInterval(update,1000)}
+let enabled=true;
+try{enabled=localStorage.getItem(key)!=='false'}catch(_){}
+const toggle=document.createElement('button');
+toggle.id='sanza-magic-toggle';
+toggle.type='button';
+toggle.setAttribute('aria-label','Toggle SanZa visual effects');
+const revealTargets='.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner';
+const render=()=>{
+  root.classList.toggle('sanza-magic-on',enabled);
+  toggle.textContent=enabled?'✨ SanZa Magic: ON':'✨ SanZa Magic: OFF';
+  toggle.setAttribute('aria-pressed',String(enabled));
 };
-toggle.addEventListener('click',()=>{enabled=!enabled;localStorage.setItem(key,String(enabled));document.querySelectorAll('.sanza-countdown').forEach(e=>e.remove());render()});
-document.body.appendChild(toggle);render();
-if(enabled&&'IntersectionObserver'in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('sanza-magic-reveal');io.unobserve(e.target)}}),{threshold:.08});document.querySelectorAll('.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner').forEach(e=>io.observe(e))}
+toggle.addEventListener('click',()=>{
+  enabled=!enabled;
+  try{localStorage.setItem(key,String(enabled))}catch(_){}
+  render();
+});
+document.addEventListener('DOMContentLoaded',()=>{
+  document.body.appendChild(toggle);
+  render();
+  if(enabled&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver'in window){
+    const io=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('sanza-magic-reveal');io.unobserve(entry.target)}
+    }),{threshold:.08});
+    document.querySelectorAll(revealTargets).forEach(el=>io.observe(el));
+  }
+});
 })();
