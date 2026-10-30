@@ -38,3 +38,11 @@ html.sanza-magic-on{scroll-behavior:smooth}
 .sanza-magic-on .mascot-canvas-wrap:after{z-index:2}
 @keyframes yupbroStageBreathe{0%,100%{box-shadow:0 0 0 1px #ffd34d22,0 14px 42px #ffd34d12}50%{box-shadow:0 0 0 2px #ffd34d66,0 14px 55px #ffd34d28}}
 @media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap{animation:none!important}}
+
+.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:after{background:#ffd34d55;filter:blur(22px);animation:yupbroDanceGlow .55s ease-in-out infinite alternate}
+.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:before{content:"✦ ✧ ✨ ✦ ✧";animation:yupbroDanceSparkle .8s ease-in-out infinite alternate}
+@keyframes yupbroDanceGlow{from{opacity:.4;transform:scaleX(.86)}to{opacity:1;transform:scaleX(1.12)}}
+@keyframes yupbroDanceSparkle{from{transform:translateY(3px) rotate(-4deg);opacity:.45}to{transform:translateY(-5px) rotate(5deg);opacity:1}}
+.sanza-magic-on .sanza-halloween-corner,.sanza-magic-on .sanza-halloween-bat,.sanza-magic-on .sanza-halloween-banner,.sanza-magic-on .sanza-halloween-web{display:block}
+html:not(.sanza-magic-on) .sanza-halloween-corner,html:not(.sanza-magic-on) .sanza-halloween-bat,html:not(.sanza-magic-on) .sanza-halloween-banner,html:not(.sanza-magic-on) .sanza-halloween-web{display:none!important}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:after,.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:before{animation:none!important}}
