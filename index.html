@@ -736,12 +736,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Direct reaction controls make every animation easy to test on touchscreens.
   const reactionPanel=document.createElement('div');
   reactionPanel.className='yupbro-reaction-controls';
-  reactionPanel.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:9px;padding:14px 10px;position:relative;z-index:20;width:min(100%,760px);margin:12px auto 24px;background:linear-gradient(135deg,#171923,#101118);border:1px solid #554526;border-radius:18px;box-shadow:0 8px 24px #0005';
+  reactionPanel.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:10px 8px;position:absolute;z-index:30;left:50%;bottom:10px;transform:translateX(-50%);width:calc(100% - 16px);max-width:760px;margin:0;background:#101118ed;border:1px solid #554526;border-radius:16px;box-shadow:0 8px 24px #0008;box-sizing:border-box';
   const reactionChoices=[['🤣 LAUGH','laugh'],['🕺 DANCE','dance'],['🛵 SCOOTY','scooty'],['😱 SHOCK','shock'],['🍫 MUNCH','snack']];
   let giggleContext=null;
   function playGiggle(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;giggleContext=giggleContext||new AC();if(giggleContext.state==='suspended')giggleContext.resume();const ctx=giggleContext,base=ctx.currentTime;[0,.19,.38,.62,.82].forEach((offset,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(430+(i%2)*110,base+offset);osc.frequency.exponentialRampToValueAtTime(760+(i%2)*90,base+offset+.075);osc.frequency.exponentialRampToValueAtTime(390,base+offset+.15);gain.gain.setValueAtTime(.0001,base+offset);gain.gain.exponentialRampToValueAtTime(.12,base+offset+.025);gain.gain.exponentialRampToValueAtTime(.0001,base+offset+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(base+offset);osc.stop(base+offset+.17);});}catch(e){}}
   reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+(mode==='scooty'?4600:3600);if(mode==='laugh')playGiggle();if(speech)speech.textContent=({laugh:'HAHAHAHA! AHAHA! MY BELLY HURTS! 🤣',dance:'BOLLYWOOD SUPERSTAR! 🕺',scooty:'BRRRRR! WHEEEEE! YUP BROOOO! OUTTA MY WAYYYYY! 🛵💨',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH… SAVE ME A BROWNIE! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
-  wrap.insertAdjacentElement('afterend',reactionPanel);
+  wrap.appendChild(reactionPanel);
   canvas.addEventListener('pointerdown',()=>{
     if(fallen)return;
     const now=performance.now();
@@ -1192,7 +1192,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     .yupbro-fullscreen-btn:focus-visible{outline:3px solid #57e9ff;outline-offset:3px}
     .mascot-canvas-wrap.yupbro-faux-fullscreen{position:fixed!important;inset:0!important;z-index:99999!important;width:100vw!important;height:100dvh!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;border-radius:0!important;overflow:hidden!important;background:#08090d!important;display:block!important}
     .mascot-canvas-wrap.yupbro-faux-fullscreen #yupbro-3d-canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
-    .mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-fullscreen-btn{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+    .mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-fullscreen-btn{bottom:calc(112px + env(safe-area-inset-bottom,0px))}.mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-tap{display:none!important}.mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-reaction-controls{bottom:calc(10px + env(safe-area-inset-bottom,0px));gap:6px;padding:8px 5px}.mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-reaction-controls button{padding:9px 10px;font-size:11px}
     body.yupbro-fullscreen-active{overflow:hidden!important}
     body.yupbro-fullscreen-active .sanza-hungry-float{display:none!important}
     @media(max-width:600px){.yupbro-fullscreen-btn{min-height:50px;font-size:14px}}
