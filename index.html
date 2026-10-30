@@ -724,6 +724,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    ['YOU AGAIN? BESTIE! ❤️','chill'],
    ['OH MY GARLIC NAAN! 🤪','hype']
   ];
+  // Direct reaction controls make every animation easy to test on touchscreens.
+  const reactionPanel=document.createElement('div');
+  reactionPanel.className='yupbro-reaction-controls';
+  reactionPanel.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:7px;padding:10px 8px;position:relative;z-index:5';
+  const reactionChoices=[['🤣 LAUGH','laugh'],['🕺 DANCE','dance'],['🛵 SCOOTY','scooty'],['😱 SHOCK','shock'],['🍫 MUNCH','snack']];
+  reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+2200;if(speech)speech.textContent=({laugh:'HAHAHA! I CAN’T STOP! 🤣',dance:'BOLLYWOOD SUPERSTAR! 🕺',scooty:'SCOOTY ESCAPE! 🛵',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
+  wrap.appendChild(reactionPanel);
   canvas.addEventListener('pointerdown',()=>{
     if(fallen)return;
     const now=performance.now();
@@ -956,6 +963,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    leg1.rotation.x=dancing?(danceStyleNow===2?Math.max(0,Math.sin(danceBeat*3))*.3:Math.max(0,Math.sin(danceBeat*(danceStyleNow===1?1.5:2)))* (danceStyleNow===3?.55:.42)):tricking?Math.max(0,trickPulse)*.18:Math.sin(t*2)*.018;leg2.rotation.x=dancing?(danceStyleNow===2?Math.max(0,Math.sin(danceBeat*3+Math.PI))*.3:Math.max(0,Math.sin(danceBeat*(danceStyleNow===1?1.5:2)+Math.PI))*(danceStyleNow===3?.55:.42)):tricking?-Math.max(0,trickPulse)*.18:-Math.sin(t*2)*.018;
    leg1.rotation.z=dancing?(danceStyleNow===1?Math.sin(danceBeat*1.5)*.25: danceStyleNow===3?Math.sin(danceBeat*2)*.22:Math.sin(danceBeat*2)*.12):0;leg2.rotation.z=dancing?(danceStyleNow===1?-Math.sin(danceBeat*1.5)*.25:danceStyleNow===3?-Math.sin(danceBeat*2)*.22:-Math.sin(danceBeat*2)*.12):0;
    mascot.rotation.y=dancing?(danceStyleNow===1?Math.sin(danceBeat*.75)*.5:danceStyleNow===2?Math.sin(danceBeat*2)*.18:Math.sin(danceBeat)*.34):Math.sin(t*.45)*.14+(reacting?Math.sin(t*5)*.12:0);
+   // Apply reaction poses after the normal idle/dance pose so they remain visible.
+   if(reactionActive){
+    const phase=(1900-(reactionUntil-now))/1900,beat=Math.sin(phase*Math.PI*8);
+    if(reactionMode==='laugh'){fallPivot.rotation.z=Math.sin(phase*Math.PI*8)*.22;body.position.y+=Math.abs(beat)*.20;head.rotation.z+=Math.sin(phase*Math.PI*8)*.22;}
+    if(reactionMode==='dance'){mascot.rotation.y+=Math.sin(phase*Math.PI*6)*.55;body.position.y+=Math.abs(beat)*.15;arms[0].rotation.z+=1.45+Math.sin(phase*Math.PI*8)*.25;arms[1].rotation.z-=1.45+Math.sin(phase*Math.PI*8)*.25;leg1.rotation.x+=Math.max(0,beat)*.5;leg2.rotation.x+=Math.max(0,-beat)*.5;}
+    if(reactionMode==='scooty'){mascot.position.x=Math.sin(phase*Math.PI*2)*.52;mascot.rotation.z=-.15;body.position.y+=Math.abs(beat)*.07;arms[0].rotation.x-=.4;arms[1].rotation.x-=.4;leg1.rotation.x+=.22;leg2.rotation.x+=.22;}
+    if(reactionMode==='shock'){head.rotation.x-=.32;head.rotation.z+=Math.sin(phase*Math.PI*2)*.12;arms[0].rotation.z+=1.0;arms[1].rotation.z-=1.0;body.position.y+=Math.max(0,beat)*.20;}
+    if(reactionMode==='snack'){head.rotation.x+=.28+Math.abs(beat)*.08;arms[0].rotation.z-=.9;arms[1].rotation.z+=.9;body.position.y+=Math.abs(beat)*.06;}
+   }else{mascot.position.x*=.82;mascot.rotation.z*=.82;}
+
    if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/520);const ease=1-Math.pow(1-fallProgress,3);fallPivot.rotation.z=fallDirection*1.48*ease;fallPivot.position.x=fallDirection*.23*ease;mascot.position.y=.25-.08*ease+Math.sin(elapsed*.025)*.018;if(now>=recoverAt){const upProgress=Math.min(1,(now-recoverAt)/520);const upEase=1-Math.pow(1-upProgress,3);fallPivot.rotation.z=fallDirection*1.48*(1-upEase);fallPivot.position.x=fallDirection*.23*(1-upEase);mascot.position.y=.25-.08*(1-upEase);if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}}else{fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
