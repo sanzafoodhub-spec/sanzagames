@@ -8,7 +8,7 @@ let season=null;
 if(between(1001,1101))season='halloween';
 else if(between(1125,1228))season='christmas';
 else if(between(1230,1232)||between(101,102))season='newyear';
-const key='sanza-magic-enabled';
+const key='sanza-magic-enabled-v2';
 let enabled=localStorage.getItem(key)!=='false';
 const root=document.documentElement;
 const layer=document.createElement('div');layer.id='sanza-season-layer';document.body.appendChild(layer);
