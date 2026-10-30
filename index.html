@@ -713,6 +713,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Three quick pokes unlock a bonus filmi dance (the normal five-poke faint still works).
   let secretTapTimes=[];
   let personalityTapCount=0,lastPersonalityTap=0,personalityUntil=0,personalityMode='wink';
+  let reactionMode='laugh',reactionUntil=0;
   const personalityLines=[
    ['OI! THAT’S MY FACE, BRO! 😂','cheeky'],
    ['HOW ARE YOU, MY SANZATION! 😎','hype'],
@@ -729,6 +730,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     secretTapTimes=secretTapTimes.filter(t=>now-t<1700);secretTapTimes.push(now);
     if(now-lastPersonalityTap>2600)personalityTapCount=0;
     personalityTapCount++;lastPersonalityTap=now;personalityUntil=now+850;personalityMode=personalityTapCount%3===0?'wink':'bounce';
+    if(!danceUntil){const reactions=['laugh','dance','scooty','shock','snack'];reactionMode=reactions[Math.floor(Math.random()*reactions.length)];reactionUntil=now+1900;}
     if(speech&&!danceUntil){
       const [line,nextMood]=personalityLines[Math.floor(Math.random()*personalityLines.length)];
       talk(line,1.16,1.04);if(moodLabel){moodLabel.textContent=nextMood==='snack'?'BROWNIE MODE 🍫':nextMood==='hype'?'HYPED UP! 🤪':'CHEEKY MODE 😏';moodLabel.dataset.mood=nextMood;}
@@ -933,6 +935,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const trickPulse=tricking?Math.sin((2100-(trickUntil-now))/2100*Math.PI*3):0;
    body.position.y=-.72+Math.sin(t*4)*.025+(tricking&&!fallen?Math.max(0,trickPulse)*.12:0)+(dancing&&!fallen?(danceStyleNow===0?Math.abs(Math.sin(danceBeat*2))*.095:danceStyleNow===1?Math.abs(Math.sin(danceBeat*1.5))*.13:danceStyleNow===2?Math.abs(Math.sin(danceBeat*3))*.07:Math.abs(Math.sin(danceBeat))*.11):0);
    const personalityActive=now<personalityUntil;
+   const reactionActive=now<reactionUntil&&!dancing&&!fallen;
+   const reactionTime=(1900-(reactionUntil-now))/1900;
+   const reactionBeat=Math.sin(reactionTime*Math.PI*7);
+   if(reactionActive){
+    if(reactionMode==='laugh'){fallPivot.rotation.z=Math.sin(reactionTime*Math.PI*8)*.20;body.position.y+=Math.abs(reactionBeat)*.16;head.rotation.z+=Math.sin(reactionTime*Math.PI*8)*.18;}
+    if(reactionMode==='dance'){mascot.rotation.y+=Math.sin(reactionTime*Math.PI*6)*.48;body.position.y+=Math.abs(reactionBeat)*.12;arms[0].rotation.z+=1.15+Math.sin(reactionTime*Math.PI*8)*.25;arms[1].rotation.z-=1.15+Math.sin(reactionTime*Math.PI*8)*.25;leg1.rotation.x+=Math.max(0,reactionBeat)*.42;leg2.rotation.x+=Math.max(0,-reactionBeat)*.42;}
+    if(reactionMode==='scooty'){mascot.position.x=Math.sin(reactionTime*Math.PI*2)*.48;mascot.rotation.z=-.13;body.position.y+=Math.abs(reactionBeat)*.055;arms[0].rotation.x+=-.35;arms[1].rotation.x+=-.35;leg1.rotation.x+=.18;leg2.rotation.x+=.18;}
+    if(reactionMode==='shock'){head.rotation.x-=.24;head.rotation.z+=Math.sin(reactionTime*Math.PI*2)*.10;arms[0].rotation.z+=.85;arms[1].rotation.z-=.85;body.position.y+=Math.max(0,reactionBeat)*.18;}
+    if(reactionMode==='snack'){head.rotation.x+=.22+Math.abs(reactionBeat)*.06;arms[0].rotation.z-=.75;arms[1].rotation.z+=.75;body.position.y+=Math.abs(reactionBeat)*.045;}
+   }else{mascot.position.x*=.82;}
    head.rotation.y=Math.sin(t*.8)*.12+(personalityActive?Math.sin((personalityUntil-now)*.008)*.13:0)+(dancing?Math.sin(danceBeat*(danceStyleNow===2?1:1.3))*(danceStyleNow===1?.34:.24):0);
    head.rotation.z=Math.sin(t*1.7)*.035+(personalityActive?(personalityMode==='wink'?.16:-.10):0)+(tricking?Math.sin(t*12)*.16:0)+(dancing?(danceStyleNow===1?Math.sin(danceBeat)*.16:Math.sin(danceBeat*2)*.09):0);
    if(personalityActive&&!dancing){body.position.y+=Math.sin((personalityUntil-now)*.018)*.045;if(personalityMode==='wink')eyeWhites[1].scale.y=.012;}
