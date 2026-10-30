@@ -30,3 +30,11 @@ html.sanza-magic-on{scroll-behavior:smooth}
 @keyframes yupbroSpeechFloat{0%,100%{translate:0 0}50%{translate:0 -3px}}
 @keyframes yupbroTapGlow{0%,100%{box-shadow:0 0 0 #ffd34d00}50%{box-shadow:0 0 16px #ffd34d35}}
 @media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap:before,.sanza-magic-on .mascot-canvas-wrap:after,.sanza-magic-on .yupbro-speech,.sanza-magic-on .yupbro-tap{animation:none!important}}
+
+
+/* Visible Yup Bro magic: the stage, sparkle layer and speech bubble move together. */
+.sanza-magic-on .mascot-canvas-wrap{isolation:isolate;position:relative;box-shadow:0 0 0 1px #ffd34d44,0 14px 48px #ffd34d20;animation:yupbroStageBreathe 4s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap:before{z-index:5;inset:22px 18px auto auto}
+.sanza-magic-on .mascot-canvas-wrap:after{z-index:2}
+@keyframes yupbroStageBreathe{0%,100%{box-shadow:0 0 0 1px #ffd34d22,0 14px 42px #ffd34d12}50%{box-shadow:0 0 0 2px #ffd34d66,0 14px 55px #ffd34d28}}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap{animation:none!important}}
