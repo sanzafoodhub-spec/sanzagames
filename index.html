@@ -670,19 +670,19 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const yupbroVoiceFiles=['7yup.m4a','Banging.m4a','Bestie.m4a','Charlie.m4a','Chicken curry.m4a','Colacoco.m4a','Fanta.m4a','Sanzalicious.m4a','Sanzations.m4a','Voice 261026_134443.m4a','What do u want.m4a','What isvwrong.m4a','Yup bro.m4a'];
   const yupbroVoiceClips=yupbroVoiceFiles.map(src=>{const audio=new Audio(encodeURI(src));audio.preload='auto';return audio});
   let nextVoiceClip=0;
-  function speakFallback(line,pitch,rate){if(!('speechSynthesis' in window))return;try{const u=new SpeechSynthesisUtterance(line.toLowerCase().replace(/\\byupbro\\b/g,'Yupbro'));u.lang='en-IN';u.pitch=pitch;u.rate=rate;u.volume=.9;u.onstart=()=>setMouthTalking(true);u.onend=()=>setMouthTalking(false);u.onerror=()=>setMouthTalking(false);window.speechSynthesis.speak(u)}catch(e){setMouthTalking(false)}}
+  // No browser speech synthesis: Yup Bro must never switch to an AI/computer voice.
+  function voiceClipUnavailable(){setMouthTalking(false);if(micHint)micHint.textContent='Bro, my voice clip did not load. Refresh and try again! 😂';}
   function talk(line,pitch=1.12,rate=1.02){
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
    try{
-    if('speechSynthesis' in window)window.speechSynthesis.cancel();
     yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0});
     const clip=yupbroVoiceClips[nextVoiceClip%yupbroVoiceClips.length];nextVoiceClip++;
     setMouthTalking(true);
     const finish=()=>setMouthTalking(false);
-    clip.onended=finish;clip.onerror=finish;
+    clip.onended=finish;clip.onerror=voiceClipUnavailable;
     const playback=clip.play();
-    if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();speakFallback(line,pitch,rate);});
-   }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
+    if(playback&&typeof playback.catch==='function')playback.catch(()=>{voiceClipUnavailable();});
+   }catch(e){voiceClipUnavailable();console.info('SanZa voice clip unavailable',e)}
   }
   // Talking Tom-style Yup Bro: auto-request mic permission, listen continuously, repeat speech, and react to pokes.
   let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false;
