@@ -711,7 +711,31 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   let audioContext=null,analyser=null,source=null,monitorFrame=0,detectedVoice=false,lastLoudAt=0,segmentStartedAt=0,segmentActive=false,processingSegment=false;
   let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
-  function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+  function stopMicTracks(){
+   if(monitorFrame){cancelAnimationFrame(monitorFrame);monitorFrame=0;}
+   if(recording&&recording.state==='recording'){try{recording.onstop=null;recording.stop();}catch(e){}}
+   recording=null;segmentActive=false;processingSegment=false;detectedVoice=false;
+   if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;replayAudio=null;}
+   if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;
+   if(audioContext){try{audioContext.close();}catch(e){}audioContext=null;}
+   analyser=null;source=null;voiceBusy=false;
+  }
+  let yupbroInView=true;
+  function pauseYupBroListening(){
+   stopMicTracks();
+   micHint.textContent='😴 Yup Bro is taking a break. Tap him when you want to chat again!';
+   if(speech)speech.textContent='I’M TAKING FIVE, BRO! 😴';
+  }
+  window.addEventListener('pagehide',()=>{pauseYupBroListening();stopDance();},{once:true});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){pauseYupBroListening();stopDance();}});
+  if('IntersectionObserver' in window&&mascotShell){
+   const listeningObserver=new IntersectionObserver(entries=>{
+    const inView=entries.some(entry=>entry.isIntersecting);
+    if(!inView&&yupbroInView){yupbroInView=false;pauseYupBroListening();}
+    else if(inView&&!yupbroInView){yupbroInView=true;micHint.textContent='👋 Back again? Tap Yup Bro to wake him up and chat!';if(speech)speech.textContent='TAP ME, BRO! 👋';}
+   },{threshold:0.05});
+   listeningObserver.observe(mascotShell);
+  }
   function playRecordedPhrase(){
    if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
    try{
@@ -853,10 +877,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(moodLabel){moodLabel.textContent=mode.name;moodLabel.dataset.mood=mood;}
    if(tapScore)tapScore.textContent='YUPBRO POKES: '+bonkCount+'/5';
   }
-  // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
-  canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
-  // Request permission on page entry. Browsers may require one tap before granting it.
-  startAlwaysListening();
+  // The character is the control surface. Wake the microphone only after a deliberate tap.
+  canvas.addEventListener('pointerdown',function(){tapYupbro();if(yupbroInView&&!micStream&&!voiceBusy)startAlwaysListening();},{passive:true});
+  // Start while Yup Bro is on screen; leaving his area/page shuts the microphone down.
+  if(mascotShell&&'IntersectionObserver' in window){
+   const initialMicObserver=new IntersectionObserver(entries=>{
+    if(entries.some(entry=>entry.isIntersecting)&&yupbroInView&&!micStream&&!voiceBusy){initialMicObserver.disconnect();startAlwaysListening();}
+   },{threshold:0.05});
+   initialMicObserver.observe(mascotShell);
+  }else startAlwaysListening();
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
