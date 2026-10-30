@@ -1,0 +1,19 @@
+/* SanZa Magic — lightweight, accessible site-wide motion */
+:root{--sanza-magic-gold:#ffd34d}
+html.sanza-magic-on{scroll-behavior:smooth}
+.sanza-magic-on :where(a,button,.btn,.game,.hub-card,.subject-card,.navlinks a,.scores-link){transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background-color .22s ease}
+.sanza-magic-on :where(.btn,button){transform-origin:center}
+.sanza-magic-on :where(.btn,button):hover{transform:translateY(-2px) scale(1.025);box-shadow:0 8px 24px #ffd34d28}
+.sanza-magic-on :where(.game,.hub-card,.subject-card):hover{transform:translateY(-4px) scale(1.012)}
+.sanza-magic-on .sanza-magic-reveal{animation:sanzaMagicReveal .55s cubic-bezier(.2,.75,.25,1) both}
+@keyframes sanzaMagicReveal{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+#sanza-magic-toggle{position:fixed;right:14px;bottom:16px;z-index:9998;display:flex;align-items:center;gap:7px;border:1px solid #78602b;border-radius:999px;padding:10px 13px;background:#11131bea;color:#ffd34d;font:800 12px system-ui;box-shadow:0 5px 22px #0008;cursor:pointer;backdrop-filter:blur(10px)}
+#sanza-season-layer{position:fixed;inset:0;z-index:9997;pointer-events:none;overflow:hidden}
+.sanza-season-particle{position:absolute;top:-12vh;opacity:.72;animation:sanzaSeasonFall linear infinite}
+@keyframes sanzaSeasonFall{to{transform:translate3d(var(--drift,30px),115vh,0) rotate(360deg)}}
+.sanza-season-banner{position:fixed;top:82px;left:50%;transform:translateX(-50%);z-index:30;padding:8px 14px;border:1px solid #78602b;border-radius:999px;background:#11131bdc;color:#ffd34d;font:800 11px system-ui;pointer-events:none;white-space:nowrap}
+.sanza-countdown{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:12px auto}
+.sanza-countdown span{min-width:54px;padding:8px;border:1px solid #78602b;border-radius:10px;background:#11131b;color:#ffd34d;font-weight:900;text-align:center}
+.sanza-countdown small{display:block;color:#c8cbd5;font-size:9px;font-weight:700}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on *,#sanza-season-layer *{animation:none!important;transition:none!important;scroll-behavior:auto!important}#sanza-magic-toggle{transition:none}}
+@media(max-width:600px){#sanza-magic-toggle{right:9px;bottom:10px;font-size:11px;padding:9px 11px}.sanza-season-banner{top:72px}}
