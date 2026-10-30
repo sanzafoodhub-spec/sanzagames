@@ -703,11 +703,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Any tap/click elsewhere on the page ends the dance immediately, including on mobile.
   document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
   danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;startDanceMusic();danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;wrap.classList.add('yupbro-music-dancing');startDanceMusic();danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
   // Secret dance helper: three quick pokes unlock a bonus filmi routine.
   function startSurpriseDance(style,line){
     if(danceUntil)stopDance();
-    danceStyle=style;danceUntil=performance.now()+8500;startDanceMusic();danceBtn.classList.add('dancing');
+    danceStyle=style;danceUntil=performance.now()+8500;wrap.classList.add('yupbro-music-dancing');startDanceMusic();danceBtn.classList.add('dancing');
     danceBtn.textContent='✨ SECRET DANCE — TAP TO STOP';
     if(speech)speech.textContent=line;
     if(moodLabel){moodLabel.textContent='SECRET MOVE! 🤫';moodLabel.dataset.mood='hype';}
