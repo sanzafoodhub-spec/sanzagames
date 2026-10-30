@@ -727,10 +727,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Direct reaction controls make every animation easy to test on touchscreens.
   const reactionPanel=document.createElement('div');
   reactionPanel.className='yupbro-reaction-controls';
-  reactionPanel.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:7px;padding:10px 8px;position:relative;z-index:5';
+  reactionPanel.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:9px;padding:14px 10px;position:relative;z-index:20;width:min(100%,760px);margin:12px auto 24px;background:linear-gradient(135deg,#171923,#101118);border:1px solid #554526;border-radius:18px;box-shadow:0 8px 24px #0005';
   const reactionChoices=[['🤣 LAUGH','laugh'],['🕺 DANCE','dance'],['🛵 SCOOTY','scooty'],['😱 SHOCK','shock'],['🍫 MUNCH','snack']];
   reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+2200;if(speech)speech.textContent=({laugh:'HAHAHA! I CAN’T STOP! 🤣',dance:'BOLLYWOOD SUPERSTAR! 🕺',scooty:'SCOOTY ESCAPE! 🛵',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
-  wrap.appendChild(reactionPanel);
+  wrap.insertAdjacentElement('afterend',reactionPanel);
   canvas.addEventListener('pointerdown',()=>{
     if(fallen)return;
     const now=performance.now();
