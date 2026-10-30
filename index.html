@@ -651,6 +651,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   sphere(arms[1],skin,[.08,-.57,.1],[.105,.11,.11]);
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
   const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
+  const reactionScooty=new THREE.Group();scene.add(reactionScooty);reactionScooty.visible=false;
+  const scooterRed=mat('#d52b32',.36,.18),scooterMetal=mat('#aeb8c4',.28,.72);
+  const wheelGeo=new THREE.TorusGeometry(.19,.055,10,24),sw1=new THREE.Mesh(wheelGeo,rubber),sw2=new THREE.Mesh(wheelGeo,rubber);
+  sw1.position.set(-.48,.22,.05);sw2.position.set(.48,.22,.05);reactionScooty.add(sw1,sw2);
+  box(reactionScooty,scooterRed,[0,.43,.05],[.9,.12,.2]);rod(reactionScooty,scooterMetal,[.35,.28,.05],[.48,.88,.05],.035);rod(reactionScooty,black,[.32,.88,.05],[.65,.88,.05],.035);sphere(reactionScooty,gold,[0,.49,.17],[.15,.035,.018]);
+  const brownie=new THREE.Group();scene.add(brownie);brownie.visible=false;
+  const brownieBase=mat('#713719',.82),brownieTop=mat('#3b1b12',.45),chipMat=mat('#ffd36a',.42);
+  box(brownie,brownieBase,[0,0,0],[.48,.22,.38]);box(brownie,brownieTop,[0,.115,0],[.49,.045,.39]);
+  for(let i=0;i<7;i++)sphere(brownie,chipMat,[-.18+(i%3)*.17,.145,-.12+Math.floor(i/3)*.12],[.025,.012,.025]);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
@@ -729,7 +738,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   reactionPanel.className='yupbro-reaction-controls';
   reactionPanel.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:9px;padding:14px 10px;position:relative;z-index:20;width:min(100%,760px);margin:12px auto 24px;background:linear-gradient(135deg,#171923,#101118);border:1px solid #554526;border-radius:18px;box-shadow:0 8px 24px #0005';
   const reactionChoices=[['🤣 LAUGH','laugh'],['🕺 DANCE','dance'],['🛵 SCOOTY','scooty'],['😱 SHOCK','shock'],['🍫 MUNCH','snack']];
-  reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+2200;if(speech)speech.textContent=({laugh:'HAHAHA! I CAN’T STOP! 🤣',dance:'BOLLYWOOD SUPERSTAR! 🕺',scooty:'SCOOTY ESCAPE! 🛵',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
+  let giggleContext=null;
+  function playGiggle(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;giggleContext=giggleContext||new AC();if(giggleContext.state==='suspended')giggleContext.resume();const ctx=giggleContext,base=ctx.currentTime;[0,.19,.38,.62,.82].forEach((offset,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(430+(i%2)*110,base+offset);osc.frequency.exponentialRampToValueAtTime(760+(i%2)*90,base+offset+.075);osc.frequency.exponentialRampToValueAtTime(390,base+offset+.15);gain.gain.setValueAtTime(.0001,base+offset);gain.gain.exponentialRampToValueAtTime(.12,base+offset+.025);gain.gain.exponentialRampToValueAtTime(.0001,base+offset+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(base+offset);osc.stop(base+offset+.17);});}catch(e){}}
+  reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+3600;if(mode==='laugh')playGiggle();if(speech)speech.textContent=({laugh:'HAHAHAHA! AHAHA! MY BELLY HURTS! 🤣',dance:'BOLLYWOOD SUPERSTAR! 🕺',scooty:'CLEAR THE ROAD! YUP BRO COMING THROUGH! 🛵',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH… SAVE ME A BROWNIE! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
   wrap.insertAdjacentElement('afterend',reactionPanel);
   canvas.addEventListener('pointerdown',()=>{
     if(fallen)return;
@@ -978,6 +989,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
    camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
+   const sceneReaction=now<reactionUntil&&!fallen&&!dancing;
+   reactionScooty.visible=sceneReaction&&reactionMode==='scooty';brownie.visible=sceneReaction&&reactionMode==='snack';
+   if(reactionScooty.visible){const p=(3600-(reactionUntil-now))/3600;reactionScooty.position.set(-1.9+p*3.8,.02,.55);sw1.rotation.y=sw2.rotation.y=now*.025;mascot.rotation.z=-.18;body.rotation.x=-.12;arms[0].rotation.z=1;arms[1].rotation.z=-1;leg1.rotation.x=.28;leg2.rotation.x=.28;}
+   else{reactionScooty.visible=false;body.rotation.x=0;}
+   if(brownie.visible){brownie.position.set(.53,1.22,.72);brownie.rotation.set(.15,Math.sin(now*.006)*.16,-.18);brownie.scale.setScalar(.9+Math.sin(now*.012)*.08);head.rotation.x=.48+Math.sin(now*.013)*.12;arms[0].rotation.z=-.72;arms[1].rotation.z=.92;arms[0].rotation.x=-.25;arms[1].rotation.x=-.35;}
+   else brownie.visible=false;
+   if(sceneReaction&&reactionMode==='laugh'){const beat=Math.abs(Math.sin(now*.025));fallPivot.rotation.z=Math.sin(now*.022)*.19;body.position.y+=beat*.12;head.rotation.z=Math.sin(now*.035)*.20;head.rotation.x=-.12+beat*.12;arms[0].rotation.z=-.45-beat*.35;arms[1].rotation.z=.45+beat*.35;mouthInner.visible=true;mouthTeeth.visible=true;mouthInner.scale.y=.045;}
    renderer.render(scene,camera);
   }
   if(!observer)raf=requestAnimationFrame(animate);
