@@ -46,3 +46,13 @@ html.sanza-magic-on{scroll-behavior:smooth}
 .sanza-magic-on .sanza-halloween-corner,.sanza-magic-on .sanza-halloween-bat,.sanza-magic-on .sanza-halloween-banner,.sanza-magic-on .sanza-halloween-web{display:block}
 html:not(.sanza-magic-on) .sanza-halloween-corner,html:not(.sanza-magic-on) .sanza-halloween-bat,html:not(.sanza-magic-on) .sanza-halloween-banner,html:not(.sanza-magic-on) .sanza-halloween-web{display:none!important}
 @media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:after,.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:before{animation:none!important}}
+
+/* A few quiet seasonal accents orbit Yup Bro without covering his face or controls. */
+.yupbro-season-sparkles{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.yupbro-season-sparkles span{position:absolute;display:block;font-size:clamp(14px,2.4vw,21px);opacity:.62;filter:drop-shadow(0 2px 7px #0008);animation:yupbroSeasonFloat 5.8s ease-in-out infinite}
+.yupbro-season-sparkles .sparkle-1{left:8%;top:18%;animation-delay:-1.2s}
+.yupbro-season-sparkles .sparkle-2{right:9%;top:27%;animation-delay:-3.1s;font-size:17px}
+.yupbro-season-sparkles .sparkle-3{left:13%;bottom:23%;animation-delay:-2.2s;font-size:16px}
+.yupbro-season-sparkles .sparkle-4{right:12%;bottom:19%;animation-delay:-4.1s;font-size:15px}
+@keyframes yupbroSeasonFloat{0%,100%{transform:translate3d(0,0,0) rotate(-7deg);opacity:.38}50%{transform:translate3d(3px,-9px,0) rotate(8deg);opacity:.78}}
+@media(prefers-reduced-motion:reduce){.yupbro-season-sparkles span{animation:none!important}}
