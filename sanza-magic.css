@@ -17,3 +17,16 @@ html.sanza-magic-on{scroll-behavior:smooth}
 .sanza-countdown small{display:block;color:#c8cbd5;font-size:9px;font-weight:700}
 @media(prefers-reduced-motion:reduce){.sanza-magic-on *,#sanza-season-layer *{animation:none!important;transition:none!important;scroll-behavior:auto!important}#sanza-magic-toggle{transition:none}}
 @media(max-width:600px){#sanza-magic-toggle{right:9px;bottom:10px;font-size:11px;padding:9px 11px}.sanza-season-banner{top:72px}}
+
+
+/* Yup Bro screen: subtle gold sparkle, soft stage glow and speech-bubble bounce */
+.sanza-magic-on .mascot-canvas-wrap{isolation:isolate}
+.sanza-magic-on .mascot-canvas-wrap:before{content:"✦  ·  ✧       ·  ✦";position:absolute;z-index:2;inset:22px 18px auto auto;color:#ffd34d;letter-spacing:18px;font-size:16px;opacity:.72;pointer-events:none;text-shadow:0 0 12px #ffd34d88;animation:yupbroSparkleDrift 4.8s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap:after{animation:yupbroStageGlow 3.6s ease-in-out infinite}
+.sanza-magic-on .yupbro-speech:not(.is-talking){animation:yupbroSpeechFloat 3.2s ease-in-out infinite}
+.sanza-magic-on .yupbro-tap{animation:yupbroTapGlow 2.8s ease-in-out infinite}
+@keyframes yupbroSparkleDrift{0%,100%{transform:translateY(0) rotate(0);opacity:.48}50%{transform:translateY(7px) rotate(5deg);opacity:.9}}
+@keyframes yupbroStageGlow{0%,100%{opacity:.45;transform:scaleX(.94)}50%{opacity:.9;transform:scaleX(1.04)}}
+@keyframes yupbroSpeechFloat{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes yupbroTapGlow{0%,100%{box-shadow:0 0 0 #ffd34d00}50%{box-shadow:0 0 16px #ffd34d35}}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap:before,.sanza-magic-on .mascot-canvas-wrap:after,.sanza-magic-on .yupbro-speech,.sanza-magic-on .yupbro-tap{animation:none!important}}
