@@ -75,3 +75,12 @@ html:not(.sanza-magic-on) .sanza-halloween-corner,html:not(.sanza-magic-on) .san
 @keyframes seasonFirework{0%,100%{transform:scale(.7) rotate(-8deg);opacity:.45}45%{transform:scale(1.25) rotate(10deg);opacity:1}70%{transform:scale(.9) rotate(-4deg);opacity:.7}}
 @keyframes seasonConfetti{0%,100%{transform:translateY(0) rotate(-15deg)}50%{transform:translate(8px,-14px) rotate(25deg)}}
 @media(prefers-reduced-motion:reduce){.yupbro-season-object{animation:none!important}}
+
+
+/* Yup Bro's dance-time cool shades 😎 */
+.yupbro-dance-shades{position:absolute;z-index:8;left:50%;top:35%;width:clamp(76px,19%,112px);height:30px;display:flex;align-items:center;justify-content:space-between;gap:4px;transform:translate(-50%,-50%) translateY(-18px) rotate(-5deg) scale(.35);opacity:0;pointer-events:none;filter:drop-shadow(0 3px 3px #0009)}
+.yupbro-wearing-shades .yupbro-dance-shades{animation:yupbroShadesDrop .32s cubic-bezier(.2,1.5,.45,1) forwards}
+.yupbro-dance-shades .shade-lens{display:block;width:43%;height:23px;border:3px solid #08090d;border-radius:7px 7px 12px 12px;background:linear-gradient(145deg,#303944 0%,#050608 48%,#161c25 100%);box-shadow:inset 0 1px 0 #ffffff70,0 0 0 1px #d6b64b}
+.yupbro-dance-shades .shade-bridge{width:10px;height:4px;border-radius:4px;background:#08090d;flex:0 0 10px}
+@keyframes yupbroShadesDrop{0%{opacity:0;transform:translate(-50%,-50%) translateY(-18px) rotate(-5deg) scale(.35)}75%{opacity:1;transform:translate(-50%,-50%) translateY(2px) rotate(-5deg) scale(1.08)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(-5deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.yupbro-wearing-shades .yupbro-dance-shades{animation:none;opacity:1;transform:translate(-50%,-50%) rotate(-5deg)}}
