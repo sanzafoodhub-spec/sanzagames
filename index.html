@@ -354,6 +354,7 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   @media(max-width:420px){.sanza-hungry-float{min-height:46px;padding:10px 13px;font-size:12px;gap:6px}}
   @media(prefers-reduced-motion:reduce){.sanza-hungry-float.sanza-hungry-nudge{animation:none}}
 </style>
+<link rel="stylesheet" href="/sanza-magic.css">
 </head>
 <body class="welcome-active">
 
@@ -698,7 +699,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const danceMusic=new Audio('/Yupbro.mp3');danceMusic.preload='auto';danceMusic.loop=true;danceMusic.volume=0.7;
   function startDanceMusic(){try{danceMusic.currentTime=0;const p=danceMusic.play();if(p&&p.catch)p.catch(()=>{});}catch(_){}}
   function stopDanceMusic(){danceMusic.pause();try{danceMusic.currentTime=0;}catch(_){}}
-  function stopDance(){danceUntil=0;stopDanceMusic();danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
+  function stopDance(){danceUntil=0;wrap.classList.remove('yupbro-music-dancing','yupbro-wearing-shades');stopDanceMusic();danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
   // Any tap/click elsewhere on the page ends the dance immediately, including on mobile.
   document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
   danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
@@ -1113,5 +1114,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 })();
 </script>
 
+<script src="/sanza-magic.js" defer></script>
 </body>
 </html>
