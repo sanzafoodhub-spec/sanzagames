@@ -17,7 +17,8 @@ body{background:radial-gradient(ellipse at 50% -15%,#29200d 0,transparent 42%),#
 button,.home{border-radius:12px}
 .output{border-color:#55451f;background:#12110d}
 
-</style></head>
+</style><link rel="stylesheet" href="/sanza-magic.css">
+</head>
 <body><header class="wrap top"><a class="brand" href="index.html">✨ SANZA GAMES</a><a class="home" href="index.html">🏠 HOME</a></header>
 <main class="wrap"><section class="hero"><div class="eyebrow">ONE SANZA · ONE FAMILY</div><h1>DAILY <span style="color:var(--gold)">CHAOS.</span> 💀</h1><p class="muted">Tiny challenges. Maximum craic. And Yup Bro has absolutely no chill.</p></section>
 <section class="panel" aria-labelledby="challenge-title"><div class="eyebrow">🔥 TODAY'S CHALLENGE</div><h2 id="challenge-title">Can you handle it?</h2><div class="challenge" id="challenge">Loading today's chaos…</div><div class="row"><button class="primary" id="new-challenge" type="button">🎲 Give me another</button><button id="copy-challenge" type="button">📋 Copy challenge</button></div><p class="note">Challenges rotate by date. No account needed — just play for fun.</p><div class="output" id="challenge-result" aria-live="polite">Your mission awaits, legend.</div></section>
@@ -59,4 +60,5 @@ document.querySelectorAll("[data-mood]").forEach(btn=>btn.addEventListener("clic
 document.getElementById("another-meme").addEventListener("click",()=>pickMeme(memeMood));
 document.getElementById("copy-meme").addEventListener("click",()=>copyFrom("meme-output"));
 })();
-</script></body></html>
+</script><script src="/sanza-magic.js" defer></script>
+</body></html>
