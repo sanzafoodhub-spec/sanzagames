@@ -622,6 +622,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const eyeWhites=[sphere(head,white,[-.14,.035,.303],[.112,.125,.058]),sphere(head,white,[.14,.035,.303],[.112,.125,.058])];
   const pupils=[sphere(head,dark,[-.12,.025,.353],[.049,.068,.026]),sphere(head,dark,[.16,.025,.353],[.049,.068,.026])];
   const eyeGlints=[sphere(head,white,[-.135,.055,.376],[.019,.023,.012]),sphere(head,white,[.145,.055,.376],[.019,.023,.012])];
+  // Real 3D dance sunglasses attached to Yup Bro's head, so they follow every movement.
+  const danceGlasses=new THREE.Group();head.add(danceGlasses);danceGlasses.position.set(0,.035,.405);danceGlasses.visible=false;
+  const shadeFrame=mat('#080a0f',.24,.35),shadeLens=new THREE.MeshStandardMaterial({color:'#101923',roughness:.18,metalness:.35,transparent:true,opacity:.9});
+  box(danceGlasses,shadeFrame,[-.14,0,0],[.245,.17,.045]);box(danceGlasses,shadeFrame,[.14,0,0],[.245,.17,.045]);
+  box(danceGlasses,shadeLens,[-.14,0,.026],[.205,.125,.012]);box(danceGlasses,shadeLens,[.14,0,.026],[.205,.125,.012]);
+  box(danceGlasses,goldTrim,[0,.005,.005],[.065,.035,.04]);
+  rod(danceGlasses,shadeFrame,[-.265,.005,0],[-.39,-.015,-.12],.018);rod(danceGlasses,shadeFrame,[.265,.005,0],[.39,-.015,-.12],.018);
+  danceGlasses.rotation.z=-.04;
   const brows=[rod(head,hairmat,[-.26,.195,.31],[-.065,.215,.325],.03),rod(head,hairmat,[.065,.215,.325],[.26,.195,.31],.03)];
   // Nose and layered mouth that animates with the supplied voice clips.
   sphere(head,skin,[0,-.075,.335],[.065,.055,.055]);
@@ -686,14 +694,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const tapControl=document.getElementById('yupbro-tap');
   if(tapControl)tapControl.remove();
   const danceBtn=document.createElement('button');danceBtn.type='button';danceBtn.className='yupbro-dance-btn';danceBtn.textContent='🕺 BOLLYWOOD DANCE';danceBtn.setAttribute('aria-label','Make Yup Bro perform a Bollywood dance');wrap.appendChild(danceBtn);
-  const danceShades=document.createElement('div');danceShades.className='yupbro-dance-shades';danceShades.setAttribute('aria-hidden','true');danceShades.innerHTML='<span class="shade-lens"></span><span class="shade-bridge"></span><span class="shade-lens"></span>';wrap.appendChild(danceShades);
+  
   const danceTrack=new Audio('/Yupbro.mp3');danceTrack.preload='auto';danceTrack.loop=true;danceTrack.volume=0.78;
   let danceUntil=0,danceStyle=-1;
-  function stopDance(){danceUntil=0;danceTrack.pause();danceTrack.currentTime=0;danceBtn.classList.remove('dancing');wrap.classList.remove('yupbro-music-dancing','yupbro-wearing-shades');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
+  function stopDance(){danceUntil=0;danceTrack.pause();danceTrack.currentTime=0;danceBtn.classList.remove('dancing');wrap.classList.remove('yupbro-music-dancing','yupbro-wearing-shades');if(typeof danceGlasses!=='undefined')danceGlasses.visible=false;danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
   // Any tap/click elsewhere on the page ends the dance immediately, including on mobile.
   document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
   danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;danceBtn.classList.add('dancing');wrap.classList.add('yupbro-music-dancing','yupbro-wearing-shades');danceBtn.textContent='✨ DANCING — TAP TO STOP';danceTrack.currentTime=0;danceTrack.play().catch(()=>{if(speech)speech.textContent='BRO, THE MUSIC FILE IS NOT LOADED YET! 🎵';});if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;danceBtn.classList.add('dancing');wrap.classList.add('yupbro-music-dancing');danceGlasses.visible=true;danceBtn.textContent='✨ DANCING — TAP TO STOP';danceTrack.currentTime=0;danceTrack.play().catch(()=>{if(speech)speech.textContent='BRO, THE MUSIC FILE IS NOT LOADED YET! 🎵';});if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
   // Secret dance helper: three quick pokes unlock a bonus filmi routine.
   function startSurpriseDance(style,line){
     if(danceUntil)stopDance();
