@@ -339,6 +339,34 @@ header{background:rgba(9,10,13,.92);border-bottom-color:#343747}
 footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
 @media(max-width:720px){.wrap{width:min(calc(100% - 28px),560px)}.nav{gap:8px}.brand{gap:7px;letter-spacing:.6px}.navlinks{gap:6px}.navlinks a{padding:9px 10px;min-height:40px}.hero{padding-top:28px}.hero .kicker{font-size:10px;padding:8px 11px}.hero .hero-actions .btn{flex:1 1 150px}.section-head{margin-bottom:16px}.mascot-stage{padding:17px;border-radius:22px}.game{box-shadow:0 10px 26px #0003}.hub-card{border-radius:18px}.social{padding-top:32px}}
 @media(prefers-reduced-motion:reduce){.game-icon,.game-icon:after{animation:none!important}.game:hover,.btn:hover,.social-links a:hover{transform:none!important}}
+
+/* GEN Z MOTION PACK — lively arcade energy, still lightweight */
+:root{--sanza-neon:0 0 22px #ffd34d35,0 0 48px #a995ff16}
+body:after{content:"";position:fixed;inset:-25%;z-index:-2;pointer-events:none;background:conic-gradient(from 180deg at 50% 50%,#ffd34d0b,#57e9ff09,#ff68c70a,#a995ff0b,#ffd34d0b);filter:blur(70px);animation:genZAurora 24s linear infinite}
+.hero .kicker{animation:kickerPop .8s cubic-bezier(.2,.8,.2,1) both}
+.hero h1{background:linear-gradient(100deg,#fff 5%,#ffd34d 35%,#fff 53%,#57e9ff 75%,#fff 95%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:genZShine 8s linear infinite}
+.hero .intro{animation:softRise .8s .12s both}
+.btn{position:relative;overflow:hidden;isolation:isolate}
+.btn:before{content:"";position:absolute;inset:0;z-index:-1;transform:translateX(-130%) skewX(-20deg);background:linear-gradient(90deg,transparent,#ffffff65,transparent);transition:transform .65s}
+.btn:hover:before,.btn:focus-visible:before{transform:translateX(130%) skewX(-20deg)}
+.btn:hover{filter:saturate(1.18)}
+.navlinks a,.scores-link{transition:transform .22s ease,background .22s ease,box-shadow .22s ease}
+.navlinks a:hover,.scores-link:hover{transform:translateY(-2px);box-shadow:var(--sanza-neon)}
+.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner{transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s,box-shadow .28s}
+.game:hover,.hub-card:hover{transform:translateY(-7px) rotate(-.35deg);box-shadow:0 18px 44px #0008,var(--sanza-neon)}
+.game-icon{filter:drop-shadow(0 8px 16px #0005)}
+.section-head .eyebrow{display:inline-block;animation:eyebrowPulse 3.2s ease-in-out infinite}
+.pill{transition:transform .2s,border-color .2s,background .2s}
+.pill:hover{transform:translateY(-3px) rotate(-1deg);background:#1c2030;border-color:var(--gold)}
+.social-links a:hover{box-shadow:0 10px 28px #57e9ff18}
+@keyframes genZAurora{to{transform:rotate(360deg)}}
+@keyframes genZShine{to{background-position:220% center}}
+@keyframes kickerPop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes softRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes eyebrowPulse{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 13px #ffd34d75}}
+@media(hover:none){.game:hover,.hub-card:hover{transform:none;box-shadow:none}.btn:active{transform:scale(.97)}}
+@media(prefers-reduced-motion:reduce){body:after,.hero .kicker,.hero h1,.hero .intro,.section-head .eyebrow{animation:none!important}.hero h1{background:none;color:#fff;-webkit-text-fill-color:#fff}}
+
 </style>
 <style>@media(max-width:720px){.navlinks a[href="tiktok-ideas.html"]{display:inline-flex!important}}</style>
 
@@ -1228,5 +1256,18 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 
 
 <script src="/sanza-magic.js" defer></script>
+
+<script id="sanza-genz-reveals">
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var items=document.querySelectorAll('.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner');
+  if(!('IntersectionObserver' in window)){items.forEach(function(el){el.classList.add('is-visible')});return;}
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}});
+  },{threshold:.12,rootMargin:'0px 0px -35px 0px'});
+  items.forEach(function(el){observer.observe(el)});
+})();
+</script>
+
 </body>
 </html>
