@@ -1,6 +1,6 @@
 /* SanZa PWA service worker — deliberately caches only the app shell and offline fallback. */
-const CACHE_NAME = 'sanza-app-shell-v1';
-const CORE_FILES = ['/', '/index.html', '/app.webmanifest', '/offline.html', '/sanza-logo.png', '/app-icon.svg'];
+const CACHE_NAME = 'sanza-app-shell-v4';
+const CORE_FILES = ['/', '/index.html', '/app.webmanifest', '/offline.html', '/sanza-logo.png', '/sanza-magic.css', '/sanza-magic.js', '/app-icon.svg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
