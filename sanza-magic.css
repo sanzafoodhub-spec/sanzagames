@@ -21,3 +21,26 @@ html.sanza-magic-on{scroll-behavior:smooth}
 @media(hover:none){.sanza-magic-on :where(.game,.hub-card,.subject-card):hover{transform:none}}
 @media(max-width:600px){#sanza-magic-toggle{right:9px;bottom:10px;font-size:11px;padding:9px 11px}}
 @media(prefers-reduced-motion:reduce){.sanza-magic-on *,#sanza-magic-toggle{animation:none!important;transition:none!important;scroll-behavior:auto!important}.sanza-magic-on .mascot-canvas-wrap{animation:none!important}}
+
+/* SanZa Magic v2 — shared motion language across every SanZa page */
+.sanza-magic-on :where(.hero h1,h1,.hero .intro,.hero p,.section-head,.mascot-stage,.welcome-character-slot,.panel,.card,.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner,.newsletter,.subjects,.mood-grid,.chat,.chat-box){animation:sanzaMagicLift .62s cubic-bezier(.2,.75,.25,1) both}
+.sanza-magic-on :where(.hero h1,h1){animation-delay:.04s}
+.sanza-magic-on :where(.hero .intro,.hero p){animation-delay:.12s}
+.sanza-magic-on :where(.game,.hub-card,.subject-card,.card,.panel,.mood,.guide,.coming){transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease,filter .24s ease}
+.sanza-magic-on :where(.game,.hub-card,.subject-card,.card,.panel,.mood,.guide):hover{transform:translateY(-5px);box-shadow:0 14px 34px #0005,0 0 0 1px #ffd34d22}
+.sanza-magic-on :where(.btn,.button,button,.home,.link,.nav a){position:relative;overflow:hidden}
+.sanza-magic-on :where(.btn,.button,button,.home,.link,.nav a)::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 20%,#fff5 48%,transparent 72%);transform:translateX(-130%);transition:transform .65s ease}
+.sanza-magic-on :where(.btn,.button,button,.home,.link,.nav a):hover::after{transform:translateX(130%)}
+.sanza-magic-on .game-icon,.sanza-magic-on .emoji,.sanza-magic-on .coming-icon{animation:sanzaIconBob 3.4s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap{box-shadow:0 0 0 1px #ffd34d44,0 18px 55px #ffd34d20;animation:sanzaStageGlow 3.8s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap canvas{filter:drop-shadow(0 10px 20px #ffd34d16)}
+.sanza-magic-on .yupbro-dance-btn{animation:sanzaDanceButton 2s ease-in-out infinite}
+.sanza-magic-on .yupbro-dance-btn.dancing{animation:sanzaDanceButton .5s ease-in-out infinite}
+@keyframes sanzaMagicLift{from{opacity:0;translate:0 13px}to{opacity:1;translate:0 0}}
+@keyframes sanzaIconBob{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -5px;rotate:2deg}}
+@keyframes sanzaStageGlow{0%,100%{box-shadow:0 0 0 1px #ffd34d22,0 18px 45px #ffd34d12}50%{box-shadow:0 0 0 2px #ffd34d66,0 18px 58px #ffd34d30}}
+@keyframes sanzaDanceButton{0%,100%{filter:brightness(1);box-shadow:0 7px 25px #ffd34d40}50%{filter:brightness(1.12);box-shadow:0 0 28px #ff68c766}}
+#sanza-magic-toggle{min-height:44px;touch-action:manipulation}
+#sanza-magic-toggle:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(hover:none){.sanza-magic-on :where(.game,.hub-card,.subject-card,.card,.panel,.mood,.guide):hover{transform:none;box-shadow:none}}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on :where(*,::before,::after){animation:none!important;transition:none!important;scroll-behavior:auto!important;translate:none!important;rotate:none!important}#sanza-magic-toggle{animation:none!important}}
