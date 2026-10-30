@@ -18,6 +18,7 @@ body{background:radial-gradient(ellipse at 50% -12%,#29200d 0,transparent 42%),#
 button{border-radius:12px}
 
 </style>
+<link rel="stylesheet" href="/sanza-magic.css">
 </head>
 <body><div class="wrap">
 <nav class="nav"><a class="brand" href="index.html">SANZA <b>GAMES</b></a><a href="index.html">← Back to arcade</a></nav>
@@ -66,4 +67,5 @@ drawRoad();items.forEach(o=>o.type==='brownie'?drawBrownie(o.x,o.y):drawObstacle
 function idle(){drawRoad();drawPlayer();ctx.fillStyle='#050811bb';ctx.fillRect(32,220,356,100);ctx.textAlign='center';ctx.fillStyle='#ffd34d';ctx.font='1000 25px system-ui';ctx.fillText('YUPBRO BROWNIE RUN',210,258);ctx.fillStyle='#fff';ctx.font='bold 13px system-ui';ctx.fillText('DODGE · JUMP · COLLECT',210,285);ctx.textAlign='start'}
 idle();
 })();
-</script></body></html>
+</script><script src="/sanza-magic.js" defer></script>
+</body></html>

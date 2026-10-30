@@ -1,0 +1,52 @@
+/* SanZa Magic — lightweight, optional and accessible motion. No seasonal decorations. */
+:root{--sanza-magic-gold:#ffd34d}
+html.sanza-magic-on{scroll-behavior:smooth}
+.sanza-magic-on :where(a,button,.btn,.game,.hub-card,.subject-card,.navlinks a,.scores-link){transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background-color .22s ease}
+.sanza-magic-on :where(.btn,button){transform-origin:center}
+.sanza-magic-on :where(.btn,button):hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 24px #ffd34d28}
+.sanza-magic-on :where(.game,.hub-card,.subject-card):hover{transform:translateY(-4px) scale(1.01)}
+.sanza-magic-on .sanza-magic-reveal{animation:sanzaMagicReveal .55s cubic-bezier(.2,.75,.25,1) both}
+@keyframes sanzaMagicReveal{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+#sanza-magic-toggle{position:fixed;right:14px;bottom:16px;z-index:9998;display:flex;align-items:center;gap:7px;border:1px solid #78602b;border-radius:999px;padding:10px 13px;background:#11131bea;color:#ffd34d;font:800 12px system-ui;box-shadow:0 5px 22px #0008;cursor:pointer;backdrop-filter:blur(10px)}
+.sanza-magic-on .mascot-canvas-wrap{isolation:isolate;position:relative;box-shadow:0 0 0 1px #ffd34d22,0 14px 42px #ffd34d12;animation:yupbroStageBreathe 4s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap:before{content:"✦ · ✧ · ✦";position:absolute;z-index:5;inset:22px 18px auto auto;color:#ffd34d;letter-spacing:10px;font-size:16px;opacity:.65;pointer-events:none;text-shadow:0 0 12px #ffd34d88;animation:yupbroSparkleDrift 4.8s ease-in-out infinite}
+.sanza-magic-on .yupbro-speech:not(.is-talking){animation:yupbroSpeechFloat 3.2s ease-in-out infinite}
+.sanza-magic-on .yupbro-tap{animation:yupbroTapGlow 2.8s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:after{background:#ffd34d55;filter:blur(22px);animation:yupbroDanceGlow .55s ease-in-out infinite alternate}
+@keyframes yupbroStageBreathe{0%,100%{box-shadow:0 0 0 1px #ffd34d22,0 14px 42px #ffd34d12}50%{box-shadow:0 0 0 2px #ffd34d66,0 14px 55px #ffd34d28}}
+@keyframes yupbroSparkleDrift{0%,100%{transform:translateY(0) rotate(0);opacity:.4}50%{transform:translateY(7px) rotate(5deg);opacity:.85}}
+@keyframes yupbroSpeechFloat{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes yupbroTapGlow{0%,100%{box-shadow:0 0 0 #ffd34d00}50%{box-shadow:0 0 16px #ffd34d35}}
+@keyframes yupbroDanceGlow{from{opacity:.4;transform:scaleX(.86)}to{opacity:1;transform:scaleX(1.12)}}
+@media(hover:none){.sanza-magic-on :where(.game,.hub-card,.subject-card):hover{transform:none}}
+@media(max-width:600px){#sanza-magic-toggle{right:9px;bottom:10px;font-size:11px;padding:9px 11px}}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on *,#sanza-magic-toggle{animation:none!important;transition:none!important;scroll-behavior:auto!important}.sanza-magic-on .mascot-canvas-wrap{animation:none!important}}
+
+/* SanZa Magic v2 — shared motion language across every SanZa page */
+.sanza-magic-on :where(.hero h1,h1,.hero .intro,.hero p,.section-head,.mascot-stage,.welcome-character-slot,.panel,.card,.game,.hub-card,.subject-card,.coming,.info-panel,.video-banner,.newsletter,.subjects,.mood-grid,.chat,.chat-box){animation:sanzaMagicLift .62s cubic-bezier(.2,.75,.25,1) both}
+.sanza-magic-on :where(.hero h1,h1){animation-delay:.04s}
+.sanza-magic-on :where(.hero .intro,.hero p){animation-delay:.12s}
+.sanza-magic-on :where(.game,.hub-card,.subject-card,.card,.panel,.mood,.guide,.coming){transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease,filter .24s ease}
+.sanza-magic-on :where(.game,.hub-card,.subject-card,.card,.panel,.mood,.guide):hover{transform:translateY(-5px);box-shadow:0 14px 34px #0005,0 0 0 1px #ffd34d22}
+.sanza-magic-on :where(.btn,.button,button,.home,.link,.nav a){position:relative;overflow:hidden}
+.sanza-magic-on :where(.btn,.button,button,.home,.link,.nav a)::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 20%,#fff5 48%,transparent 72%);transform:translateX(-130%);transition:transform .65s ease}
+.sanza-magic-on :where(.btn,.button,button,.home,.link,.nav a):hover::after{transform:translateX(130%)}
+.sanza-magic-on .game-icon,.sanza-magic-on .emoji,.sanza-magic-on .coming-icon{animation:sanzaIconBob 3.4s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap{box-shadow:0 0 0 1px #ffd34d44,0 18px 55px #ffd34d20;animation:sanzaStageGlow 3.8s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap canvas{filter:drop-shadow(0 10px 20px #ffd34d16)}
+.sanza-magic-on .yupbro-dance-btn{animation:sanzaDanceButton 2s ease-in-out infinite}
+.sanza-magic-on .yupbro-dance-btn.dancing{animation:sanzaDanceButton .5s ease-in-out infinite}
+@keyframes sanzaMagicLift{from{opacity:0;translate:0 13px}to{opacity:1;translate:0 0}}
+@keyframes sanzaIconBob{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -5px;rotate:2deg}}
+@keyframes sanzaStageGlow{0%,100%{box-shadow:0 0 0 1px #ffd34d22,0 18px 45px #ffd34d12}50%{box-shadow:0 0 0 2px #ffd34d66,0 18px 58px #ffd34d30}}
+@keyframes sanzaDanceButton{0%,100%{filter:brightness(1);box-shadow:0 7px 25px #ffd34d40}50%{filter:brightness(1.12);box-shadow:0 0 28px #ff68c766}}
+#sanza-magic-toggle{min-height:44px;touch-action:manipulation}
+#sanza-magic-toggle:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(hover:none){.sanza-magic-on :where(.game,.hub-card,.subject-card,.card,.panel,.mood,.guide):hover{transform:none;box-shadow:none}}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on :where(*,::before,::after){animation:none!important;transition:none!important;scroll-behavior:auto!important;translate:none!important;rotate:none!important}#sanza-magic-toggle{animation:none!important}}
+
+#sanza-spotlight-toggle{position:fixed;right:14px;bottom:68px;z-index:9998;border:1px solid #80652e;border-radius:999px;padding:10px 13px;background:#17131bea;color:#ffe28a;font:800 12px system-ui;box-shadow:0 5px 22px #0008;cursor:pointer;backdrop-filter:blur(10px)}
+#sanza-spotlight-toggle[aria-pressed="true"]{background:linear-gradient(110deg,#ffd34d,#fff0a8);color:#15110a}
+.sanza-stage-spotlight{outline:2px solid #ffd34d;outline-offset:4px;box-shadow:0 0 24px #ffd34d66,0 0 70px #ffd34d25!important;animation:sanzaStageGlow 1.8s ease-in-out infinite!important}
+@media(max-width:600px){#sanza-spotlight-toggle{right:9px;bottom:62px;font-size:11px;padding:9px 11px}}
+@media(prefers-reduced-motion:reduce){.sanza-stage-spotlight{animation:none!important}}

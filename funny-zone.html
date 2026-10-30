@@ -37,6 +37,7 @@ button:active{transform:scale(.98)}
 footer{text-align:center;color:#8f95a5;font-size:12px;margin-top:18px}\n.gamebox{margin-top:14px;padding:16px;border:1px solid #80651c;background:#201a0c;border-radius:16px}.gamebox h2{font-size:20px;margin:0 0 8px}.gamebox p{margin:8px 0}.gamebox .gamebuttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.gamebox button{padding:9px 12px}.scoreline{margin-top:12px;color:var(--gold);font-size:14px}.scoreline span{color:var(--muted);font-size:12px}
 @media(max-width:480px){form{flex-direction:column}form button{width:100%}.hero{align-items:flex-start}.mascot{font-size:52px}}
 </style>
+<link rel="stylesheet" href="/sanza-magic.css">
 </head>
 <body>
 <main class="wrap">
@@ -160,5 +161,6 @@ form.addEventListener('submit',e=>{e.preventDefault();send(input.value);input.va
 document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>action(b.getAttribute('data-action'))));
 })();
 </script>
+<script src="/sanza-magic.js" defer></script>
 </body>
 </html>
