@@ -1,0 +1,77 @@
+/* SanZa Magic — lightweight, accessible site-wide motion */
+:root{--sanza-magic-gold:#ffd34d}
+html.sanza-magic-on{scroll-behavior:smooth}
+.sanza-magic-on :where(a,button,.btn,.game,.hub-card,.subject-card,.navlinks a,.scores-link){transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background-color .22s ease}
+.sanza-magic-on :where(.btn,button){transform-origin:center}
+.sanza-magic-on :where(.btn,button):hover{transform:translateY(-2px) scale(1.025);box-shadow:0 8px 24px #ffd34d28}
+.sanza-magic-on :where(.game,.hub-card,.subject-card):hover{transform:translateY(-4px) scale(1.012)}
+.sanza-magic-on .sanza-magic-reveal{animation:sanzaMagicReveal .55s cubic-bezier(.2,.75,.25,1) both}
+@keyframes sanzaMagicReveal{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+#sanza-magic-toggle{position:fixed;right:14px;bottom:16px;z-index:9998;display:flex;align-items:center;gap:7px;border:1px solid #78602b;border-radius:999px;padding:10px 13px;background:#11131bea;color:#ffd34d;font:800 12px system-ui;box-shadow:0 5px 22px #0008;cursor:pointer;backdrop-filter:blur(10px)}
+
+
+/* Yup Bro screen: subtle gold sparkle, soft stage glow and speech-bubble bounce */
+.sanza-magic-on .mascot-canvas-wrap{isolation:isolate}
+.sanza-magic-on .mascot-canvas-wrap:before{content:"✦  ·  ✧       ·  ✦";position:absolute;z-index:2;inset:22px 18px auto auto;color:#ffd34d;letter-spacing:18px;font-size:16px;opacity:.72;pointer-events:none;text-shadow:0 0 12px #ffd34d88;animation:yupbroSparkleDrift 4.8s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap:after{animation:yupbroStageGlow 3.6s ease-in-out infinite}
+.sanza-magic-on .yupbro-speech:not(.is-talking){animation:yupbroSpeechFloat 3.2s ease-in-out infinite}
+.sanza-magic-on .yupbro-tap{animation:yupbroTapGlow 2.8s ease-in-out infinite}
+@keyframes yupbroSparkleDrift{0%,100%{transform:translateY(0) rotate(0);opacity:.48}50%{transform:translateY(7px) rotate(5deg);opacity:.9}}
+@keyframes yupbroStageGlow{0%,100%{opacity:.45;transform:scaleX(.94)}50%{opacity:.9;transform:scaleX(1.04)}}
+@keyframes yupbroSpeechFloat{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes yupbroTapGlow{0%,100%{box-shadow:0 0 0 #ffd34d00}50%{box-shadow:0 0 16px #ffd34d35}}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap:before,.sanza-magic-on .mascot-canvas-wrap:after,.sanza-magic-on .yupbro-speech,.sanza-magic-on .yupbro-tap{animation:none!important}}
+
+
+/* Visible Yup Bro magic: the stage, sparkle layer and speech bubble move together. */
+.sanza-magic-on .mascot-canvas-wrap{isolation:isolate;position:relative;box-shadow:0 0 0 1px #ffd34d44,0 14px 48px #ffd34d20;animation:yupbroStageBreathe 4s ease-in-out infinite}
+.sanza-magic-on .mascot-canvas-wrap:before{z-index:5;inset:22px 18px auto auto}
+.sanza-magic-on .mascot-canvas-wrap:after{z-index:2}
+@keyframes yupbroStageBreathe{0%,100%{box-shadow:0 0 0 1px #ffd34d22,0 14px 42px #ffd34d12}50%{box-shadow:0 0 0 2px #ffd34d66,0 14px 55px #ffd34d28}}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap{animation:none!important}}
+
+.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:after{background:#ffd34d55;filter:blur(22px);animation:yupbroDanceGlow .55s ease-in-out infinite alternate}
+.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:before{content:"✦ ✧ ✨ ✦ ✧";animation:yupbroDanceSparkle .8s ease-in-out infinite alternate}
+@keyframes yupbroDanceGlow{from{opacity:.4;transform:scaleX(.86)}to{opacity:1;transform:scaleX(1.12)}}
+@keyframes yupbroDanceSparkle{from{transform:translateY(3px) rotate(-4deg);opacity:.45}to{transform:translateY(-5px) rotate(5deg);opacity:1}}
+.sanza-magic-on .sanza-halloween-corner,.sanza-magic-on .sanza-halloween-bat,.sanza-magic-on .sanza-halloween-banner,.sanza-magic-on .sanza-halloween-web{display:block}
+html:not(.sanza-magic-on) .sanza-halloween-corner,html:not(.sanza-magic-on) .sanza-halloween-bat,html:not(.sanza-magic-on) .sanza-halloween-banner,html:not(.sanza-magic-on) .sanza-halloween-web{display:none!important}
+@media(prefers-reduced-motion:reduce){.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:after,.sanza-magic-on .mascot-canvas-wrap.yupbro-music-dancing:before{animation:none!important}}
+
+
+
+/* Seasonal motion around Yup Bro: playful edge-orbit animations, never over the mascot. */
+.yupbro-season-sparkles{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden}
+.yupbro-season-object{position:absolute;display:block;line-height:1;filter:drop-shadow(0 2px 7px #0009);will-change:transform,opacity}
+.yupbro-season-object.pumpkin{left:5%;top:19%;font-size:clamp(19px,3vw,27px);animation:seasonBob 3.8s ease-in-out infinite}
+.yupbro-season-object.bat{right:7%;top:17%;font-size:clamp(18px,2.8vw,25px);animation:seasonBat 5s ease-in-out infinite}
+.yupbro-season-object.bat-two{left:9%;bottom:19%;font-size:17px;animation:seasonBat 6.2s ease-in-out -2s infinite}
+.yupbro-season-object.ghost{right:6%;bottom:20%;font-size:clamp(18px,2.8vw,24px);animation:seasonGhost 4.6s ease-in-out infinite}
+.yupbro-season-object.twinkle{left:49%;top:7%;font-size:16px;animation:seasonTwinkle 2.4s ease-in-out infinite}
+.yupbro-season-object.snow{font-size:18px;opacity:.82;animation:seasonSnow 7s ease-in-out infinite}
+.yupbro-season-object.snow-one{left:7%;top:5%}
+.yupbro-season-object.snow-two{right:8%;top:8%;animation-delay:-3s}
+.yupbro-season-object.snow-three{right:13%;bottom:9%;animation-delay:-5s}
+.yupbro-season-object.tree{left:5%;bottom:16%;font-size:22px;animation:seasonBob 4.5s ease-in-out infinite}
+.yupbro-season-object.firework{font-size:23px;animation:seasonFirework 2.8s ease-in-out infinite}
+.yupbro-season-object.burst-one{left:5%;top:13%}
+.yupbro-season-object.burst-two{right:5%;top:13%;animation-delay:-1.1s}
+.yupbro-season-object.burst-three{right:8%;bottom:13%;animation-delay:-1.9s}
+.yupbro-season-object.confetti{left:8%;bottom:14%;font-size:19px;animation:seasonConfetti 3.4s ease-in-out infinite}
+@keyframes seasonBob{0%,100%{transform:translateY(0) rotate(-7deg)}50%{transform:translateY(-11px) rotate(8deg)}}
+@keyframes seasonBat{0%,100%{transform:translate(0,0) rotate(-9deg)}25%{transform:translate(-13px,-9px) rotate(8deg)}55%{transform:translate(-24px,3px) rotate(-5deg)}}
+@keyframes seasonGhost{0%,100%{transform:translateY(3px) rotate(-5deg);opacity:.65}50%{transform:translateY(-13px) rotate(7deg);opacity:1}}
+@keyframes seasonTwinkle{0%,100%{transform:scale(.7) rotate(0);opacity:.35}50%{transform:scale(1.25) rotate(45deg);opacity:1}}
+@keyframes seasonSnow{0%,100%{transform:translate(0,0) rotate(0);opacity:.35}50%{transform:translate(7px,12px) rotate(90deg);opacity:.95}}
+@keyframes seasonFirework{0%,100%{transform:scale(.7) rotate(-8deg);opacity:.45}45%{transform:scale(1.25) rotate(10deg);opacity:1}70%{transform:scale(.9) rotate(-4deg);opacity:.7}}
+@keyframes seasonConfetti{0%,100%{transform:translateY(0) rotate(-15deg)}50%{transform:translate(8px,-14px) rotate(25deg)}}
+@media(prefers-reduced-motion:reduce){.yupbro-season-object{animation:none!important}}
+
+
+/* Yup Bro's dance-time cool shades 😎 */
+.yupbro-dance-shades{position:absolute;z-index:8;left:50%;top:29%;width:clamp(96px,24%,136px);height:34px;display:flex;align-items:center;justify-content:space-between;gap:4px;transform:translate(-50%,-50%) translateY(-18px) rotate(-5deg) scale(.35);opacity:0;pointer-events:none;filter:drop-shadow(0 3px 3px #0009)}
+.yupbro-wearing-shades .yupbro-dance-shades{animation:yupbroShadesDrop .32s cubic-bezier(.2,1.5,.45,1) forwards}
+.yupbro-dance-shades .shade-lens{display:block;width:43%;height:23px;border:3px solid #08090d;border-radius:7px 7px 12px 12px;background:linear-gradient(145deg,#303944 0%,#050608 48%,#161c25 100%);box-shadow:inset 0 1px 0 #ffffff70,0 0 0 1px #d6b64b}
+.yupbro-dance-shades .shade-bridge{width:10px;height:4px;border-radius:4px;background:#08090d;flex:0 0 10px}
+@keyframes yupbroShadesDrop{0%{opacity:0;transform:translate(-50%,-50%) translateY(-18px) rotate(-5deg) scale(.35)}75%{opacity:1;transform:translate(-50%,-50%) translateY(2px) rotate(-5deg) scale(1.08)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(-5deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.yupbro-wearing-shades .yupbro-dance-shades{animation:none;opacity:1;transform:translate(-50%,-50%) rotate(-5deg)}}
