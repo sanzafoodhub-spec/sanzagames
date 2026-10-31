@@ -638,6 +638,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const mouthInner=sphere(head,mat('#321017',.72),[.02,-.155,.332],[.125,.012,.034]);
   const mouthTeeth=sphere(head,white,[.02,-.13,.36],[.078,.008,.009]);
   const tongue=sphere(head,mat('#f06b83',.5),[.02,-.192,.359],[.048,.008,.01]);
+  // A clearly visible chocolate brownie appears beside Yup Bro's mouth during MUNCH.
+  const brownieTreat=new THREE.Group();head.add(brownieTreat);brownieTreat.position.set(.29,-.23,.43);brownieTreat.rotation.z=-.16;brownieTreat.visible=false;
+  const brownieBase=mat('#6b321b',.78),icing=mat('#f3c45a',.36),sprinkle=mat('#ff5b8b',.4);
+  const brownieCube=new THREE.Mesh(new THREE.BoxGeometry(.25,.16,.12),brownieBase);brownieTreat.add(brownieCube);
+  const brownieFrost=new THREE.Mesh(new THREE.BoxGeometry(.255,.045,.125),icing);brownieFrost.position.y=.095;brownieTreat.add(brownieFrost);
+  for(let i=0;i<5;i++){const bit=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6),i%2?gold:sprinkle);bit.position.set(-.09+(i%3)*.085,.122,(i%2?-.035:.035));brownieTreat.add(bit);}
   mouthInner.visible=false;mouthTeeth.visible=false;tongue.visible=false;
   // Articulated arms with cuff details and hands; idle animation gives him a lively stance.
   arms.push(new THREE.Group());arms.push(new THREE.Group());
@@ -653,6 +659,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
   const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
+  // Visible 3D scooter prop for Yup Bro's SCOOTY reaction.
+  const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(.66,.18,.42);scootyRig.scale.setScalar(.82);scootyRig.visible=false;
+  const scooterMetal=mat('#c7d2dc',.28,.72),scooterRed=mat('#d52d36',.3,.35);
+  const scooterWheel=(x)=>{const w=new THREE.Mesh(new THREE.TorusGeometry(.17,.045,10,24),rubber);w.rotation.y=Math.PI/2;w.position.set(x,.19,0);scootyRig.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.08,16),scooterMetal);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);scootyRig.add(hub);};
+  scooterWheel(-.42);scooterWheel(.42);
+  box(scootyRig,scooterRed,[0,.24,0],[.92,.09,.2]);
+  box(scootyRig,black,[0,.295,0],[.62,.025,.205]);
+  rod(scootyRig,scooterMetal,[-.38,.22,0],[-.47,.82,0],.035);
+  rod(scootyRig,black,[-.62,.82,0],[-.32,.82,0],.045);
+  sphere(scootyRig,gold,[-.47,.82,0],[.065,.065,.065]);
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
   for(let i=0;i<24;i++){const p=sphere(particles,i%3===0?cyan:gold,[(Math.random()-.5)*4,Math.random()*3.1-.2,(Math.random()-.5)*1.2],[.018,.018,.018]);p.userData.phase=Math.random()*6.28;p.userData.baseY=p.position.y}
@@ -915,6 +931,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const reactionActive=now<reactionUntil&&!dancing&&!fallen;
    const reactionTime=(1900-(reactionUntil-now))/1900;
    const reactionBeat=Math.sin(reactionTime*Math.PI*7);
+   scootyRig.visible=reactionActive&&reactionMode==='scooty';if(scootyRig.visible){scootyRig.position.y=.18+Math.abs(reactionBeat)*.07;scootyRig.rotation.y=Math.sin(reactionTime*Math.PI*2)*.16;}
+   brownieTreat.visible=reactionActive&&reactionMode==='snack';if(brownieTreat.visible){brownieTreat.position.y=-.23+Math.abs(reactionBeat)*.045;brownieTreat.rotation.z=-.16+Math.sin(reactionTime*Math.PI*4)*.06;}
    if(reactionActive){
     if(reactionMode==='laugh'){fallPivot.rotation.z=Math.sin(reactionTime*Math.PI*8)*.20;body.position.y+=Math.abs(reactionBeat)*.16;head.rotation.z+=Math.sin(reactionTime*Math.PI*8)*.18;}
     if(reactionMode==='dance'){mascot.rotation.y+=Math.sin(reactionTime*Math.PI*6)*.48;body.position.y+=Math.abs(reactionBeat)*.12;arms[0].rotation.z+=1.15+Math.sin(reactionTime*Math.PI*8)*.25;arms[1].rotation.z-=1.15+Math.sin(reactionTime*Math.PI*8)*.25;leg1.rotation.x+=Math.max(0,reactionBeat)*.42;leg2.rotation.x+=Math.max(0,-reactionBeat)*.42;}
