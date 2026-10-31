@@ -660,15 +660,17 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Visible 3D scooter prop for Yup Bro's SCOOTY reaction.
-  const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(.66,.18,.42);scootyRig.scale.setScalar(.82);scootyRig.visible=false;
+  const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(0,0,.02);scootyRig.scale.setScalar(1.12);scootyRig.visible=false;
   const scooterMetal=mat('#c7d2dc',.28,.72),scooterRed=mat('#d52d36',.3,.35);
   const scooterWheel=(x)=>{const w=new THREE.Mesh(new THREE.TorusGeometry(.17,.045,10,24),rubber);w.rotation.y=Math.PI/2;w.position.set(x,.19,0);scootyRig.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.08,16),scooterMetal);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);scootyRig.add(hub);};
   scooterWheel(-.42);scooterWheel(.42);
   box(scootyRig,scooterRed,[0,.24,0],[.92,.09,.2]);
   box(scootyRig,black,[0,.295,0],[.62,.025,.205]);
   rod(scootyRig,scooterMetal,[-.38,.22,0],[-.47,.82,0],.035);
-  rod(scootyRig,black,[-.62,.82,0],[-.32,.82,0],.045);
-  sphere(scootyRig,gold,[-.47,.82,0],[.065,.065,.065]);
+  rod(scootyRig,black,[-.62,.82,.18],[-.32,.82,.18],.045);
+  sphere(scootyRig,gold,[-.47,.82,.18],[.065,.065,.065]);
+  box(scootyRig,black,[0,.47,-.015],[.42,.12,.24]);
+  box(scootyRig,scooterRed,[.0,.39,-.02],[.34,.045,.22]);
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
   for(let i=0;i<24;i++){const p=sphere(particles,i%3===0?cyan:gold,[(Math.random()-.5)*4,Math.random()*3.1-.2,(Math.random()-.5)*1.2],[.018,.018,.018]);p.userData.phase=Math.random()*6.28;p.userData.baseY=p.position.y}
@@ -768,6 +770,20 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   let bonkCount=0,fallen=false,recoverAt=0,fallDirection=1;
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
   function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+  function stopMicForPageExit(){
+   const wasListening=!!micStream;stopMicTracks();
+   if(monitorFrame){cancelAnimationFrame(monitorFrame);monitorFrame=0;}
+   segmentActive=false;processingSegment=false;voiceBusy=false;
+   if(recording&&recording.state==='recording'){try{recording.stop();}catch(e){}}
+   if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+   if(audioContext&&audioContext.state!=='closed'){try{audioContext.close();}catch(e){}}
+   audioContext=null;analyser=null;source=null;
+   if(danceUntil)stopDance();
+   return wasListening;
+  }
+  let resumeMicAfterBackForward=false;
+  window.addEventListener('pagehide',()=>{resumeMicAfterBackForward=stopMicForPageExit();},{capture:true});
+  window.addEventListener('pageshow',e=>{if(e.persisted&&resumeMicAfterBackForward){resumeMicAfterBackForward=false;startAlwaysListening();}},{capture:true});
   function playRecordedPhrase(){
    if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
    try{
@@ -931,12 +947,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const reactionActive=now<reactionUntil&&!dancing&&!fallen;
    const reactionTime=(1900-(reactionUntil-now))/1900;
    const reactionBeat=Math.sin(reactionTime*Math.PI*7);
-   scootyRig.visible=reactionActive&&reactionMode==='scooty';if(scootyRig.visible){scootyRig.position.y=.18+Math.abs(reactionBeat)*.07;scootyRig.rotation.y=Math.sin(reactionTime*Math.PI*2)*.16;}
+   scootyRig.visible=reactionActive&&reactionMode==='scooty';if(scootyRig.visible){scootyRig.position.y=.0+Math.abs(reactionBeat)*.025;scootyRig.rotation.y=Math.sin(reactionTime*Math.PI*2)*.05;}
    brownieTreat.visible=reactionActive&&reactionMode==='snack';if(brownieTreat.visible){brownieTreat.position.y=-.23+Math.abs(reactionBeat)*.045;brownieTreat.rotation.z=-.16+Math.sin(reactionTime*Math.PI*4)*.06;}
    if(reactionActive){
     if(reactionMode==='laugh'){fallPivot.rotation.z=Math.sin(reactionTime*Math.PI*8)*.20;body.position.y+=Math.abs(reactionBeat)*.16;head.rotation.z+=Math.sin(reactionTime*Math.PI*8)*.18;}
     if(reactionMode==='dance'){mascot.rotation.y+=Math.sin(reactionTime*Math.PI*6)*.48;body.position.y+=Math.abs(reactionBeat)*.12;arms[0].rotation.z+=1.15+Math.sin(reactionTime*Math.PI*8)*.25;arms[1].rotation.z-=1.15+Math.sin(reactionTime*Math.PI*8)*.25;leg1.rotation.x+=Math.max(0,reactionBeat)*.42;leg2.rotation.x+=Math.max(0,-reactionBeat)*.42;}
-    if(reactionMode==='scooty'){mascot.position.x=Math.sin(reactionTime*Math.PI*2)*.48;mascot.rotation.z=-.13;body.position.y+=Math.abs(reactionBeat)*.055;arms[0].rotation.x+=-.35;arms[1].rotation.x+=-.35;leg1.rotation.x+=.18;leg2.rotation.x+=.18;}
+    if(reactionMode==='scooty'){mascot.position.x=Math.sin(reactionTime*Math.PI*2)*.07;mascot.rotation.z=-.035;body.position.y=-1.0+Math.abs(reactionBeat)*.018;arms[0].rotation.x=-.48;arms[1].rotation.x=-.48;arms[0].rotation.z=-.18;arms[1].rotation.z=.18;leg1.rotation.x=-.62;leg2.rotation.x=-.62;leg1.rotation.z=-.16;leg2.rotation.z=.16;}
     if(reactionMode==='shock'){head.rotation.x-=.24;head.rotation.z+=Math.sin(reactionTime*Math.PI*2)*.10;arms[0].rotation.z+=.85;arms[1].rotation.z-=.85;body.position.y+=Math.max(0,reactionBeat)*.18;}
     if(reactionMode==='snack'){head.rotation.x+=.22+Math.abs(reactionBeat)*.06;arms[0].rotation.z-=.75;arms[1].rotation.z+=.75;body.position.y+=Math.abs(reactionBeat)*.045;}
    }else{mascot.position.x*=.82;}
