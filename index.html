@@ -691,6 +691,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   let nextVoiceClip=0;
   function voiceClipUnavailable(){setMouthTalking(false);if(micHint)micHint.textContent='Bro, my voice clip did not load. Refresh and try again! 😂';}
   function talk(line,pitch=1.12,rate=1.02){
+   if(pageInactive)return;
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
    try{
     yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0});
@@ -703,7 +704,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
   // Talking Tom-style Yup Bro: auto-request mic permission, listen continuously, repeat speech, and react to pokes.
-  let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false;
+  let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false,pageInactive=false;
   const micHint=document.createElement('div');
   micHint.textContent='Yup Bro is ready, bro! Allow the mic once, then just talk or poke him. 😂';
   micHint.style.cssText='text-align:center;font-size:11px;color:#ddd;margin:6px auto 12px';
@@ -771,11 +772,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
   function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
   function stopMicForPageExit(){
+   pageInactive=true;
    const wasListening=!!micStream;stopMicTracks();
+   yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0;a.onended=null;a.onerror=null;});
    if(monitorFrame){cancelAnimationFrame(monitorFrame);monitorFrame=0;}
    segmentActive=false;processingSegment=false;voiceBusy=false;
    if(recording&&recording.state==='recording'){try{recording.stop();}catch(e){}}
-   if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
+   if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;replayAudio.onended=null;replayAudio.onerror=null;}
    if(audioContext&&audioContext.state!=='closed'){try{audioContext.close();}catch(e){}}
    audioContext=null;analyser=null;source=null;
    if(danceUntil)stopDance();
@@ -783,7 +786,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   let resumeMicAfterBackForward=false;
   window.addEventListener('pagehide',()=>{resumeMicAfterBackForward=stopMicForPageExit();},{capture:true});
-  window.addEventListener('pageshow',e=>{if(e.persisted&&resumeMicAfterBackForward){resumeMicAfterBackForward=false;startAlwaysListening();}},{capture:true});
+  window.addEventListener('pageshow',e=>{if(e.persisted){pageInactive=false;if(resumeMicAfterBackForward){resumeMicAfterBackForward=false;startAlwaysListening();}}},{capture:true});
+  document.addEventListener('sanza:leave-yupbro',stopMicForPageExit);
+  document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;startAlwaysListening();});
   function playRecordedPhrase(){
    if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
    try{
@@ -802,6 +807,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    }catch(e){setMouthTalking(false);}
   }
   function playPokeClip(){
+   if(pageInactive)return;
    try{
     if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
     const clip=yupbroVoiceClips[Math.floor(Math.random()*yupbroVoiceClips.length)];
@@ -832,7 +838,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    try{recording.start(100);}catch(e){segmentActive=false;}
   }
   async function startAlwaysListening(){
-   if(voiceBusy||micStream)return;
+   if(pageInactive||voiceBusy||micStream)return;
    voiceBusy=true;
    try{
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)throw new Error('This browser does not support microphone recording');
@@ -847,6 +853,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     recording.ondataavailable=e=>{if(e.data&&e.data.size)recordedChunks.push(e.data)};
     recording.onerror=()=>{micHint.textContent='The mic had a wobble, bro. Refresh and allow microphone access again.';voiceBusy=false;};
     recording.onstop=()=>{
+     if(pageInactive){recordedChunks=[];return;}
      const chunks=recordedChunks.slice();
      const valid=chunks.length>0&&detectedVoice&&performance.now()-segmentStartedAt>=MIN_SEGMENT_MS;
      segmentActive=false;
@@ -952,7 +959,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(reactionActive){
     if(reactionMode==='laugh'){fallPivot.rotation.z=Math.sin(reactionTime*Math.PI*8)*.20;body.position.y+=Math.abs(reactionBeat)*.16;head.rotation.z+=Math.sin(reactionTime*Math.PI*8)*.18;}
     if(reactionMode==='dance'){mascot.rotation.y+=Math.sin(reactionTime*Math.PI*6)*.48;body.position.y+=Math.abs(reactionBeat)*.12;arms[0].rotation.z+=1.15+Math.sin(reactionTime*Math.PI*8)*.25;arms[1].rotation.z-=1.15+Math.sin(reactionTime*Math.PI*8)*.25;leg1.rotation.x+=Math.max(0,reactionBeat)*.42;leg2.rotation.x+=Math.max(0,-reactionBeat)*.42;}
-    if(reactionMode==='scooty'){mascot.position.x=Math.sin(reactionTime*Math.PI*2)*.07;mascot.rotation.z=-.035;body.position.y=-1.0+Math.abs(reactionBeat)*.018;arms[0].rotation.x=-.48;arms[1].rotation.x=-.48;arms[0].rotation.z=-.18;arms[1].rotation.z=.18;leg1.rotation.x=-.62;leg2.rotation.x=-.62;leg1.rotation.z=-.16;leg2.rotation.z=.16;}
+    if(reactionMode==='scooty'){mascot.position.x=Math.sin(reactionTime*Math.PI*2)*.07;mascot.rotation.z=-.035;body.position.y=.45+Math.abs(reactionBeat)*.018;arms[0].rotation.x=-.48;arms[1].rotation.x=-.48;arms[0].rotation.z=-.18;arms[1].rotation.z=.18;leg1.rotation.x=-.62;leg2.rotation.x=-.62;leg1.rotation.z=-.16;leg2.rotation.z=.16;}
     if(reactionMode==='shock'){head.rotation.x-=.24;head.rotation.z+=Math.sin(reactionTime*Math.PI*2)*.10;arms[0].rotation.z+=.85;arms[1].rotation.z-=.85;body.position.y+=Math.max(0,reactionBeat)*.18;}
     if(reactionMode==='snack'){head.rotation.x+=.22+Math.abs(reactionBeat)*.06;arms[0].rotation.z-=.75;arms[1].rotation.z+=.75;body.position.y+=Math.abs(reactionBeat)*.045;}
    }else{mascot.position.x*=.82;}
@@ -1006,10 +1013,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     if(!gate)return;
     gate.hidden=true;
     document.body.classList.remove('welcome-active');
+    document.dispatchEvent(new Event('sanza:leave-yupbro'));
     if(stage)stage.scrollIntoView({block:'start',behavior:'smooth'});
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  function returnToWelcome(e){if(e)e.preventDefault();if(!gate)return;gate.hidden=false;document.body.classList.add('welcome-active');window.scrollTo({top:0,behavior:'smooth'});}
+  function returnToWelcome(e){if(e)e.preventDefault();if(!gate)return;gate.hidden=false;document.body.classList.add('welcome-active');document.dispatchEvent(new Event('sanza:return-yupbro'));window.scrollTo({top:0,behavior:'smooth'});}
   if(enter)enter.addEventListener('click',openSanZa);
   if(home)home.addEventListener('click',returnToWelcome);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&gate&&!gate.hidden)openSanZa();});
