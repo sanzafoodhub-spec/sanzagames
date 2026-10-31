@@ -983,55 +983,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 </script>
 
 
-<!-- SANZA_HALLOWEEN_2026: decorations shown through 31 Oct 2026 in Dublin time. -->
-<style id="sanza-halloween-style">
-  .sanza-halloween-banner{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 14px;padding:10px 15px;width:fit-content;max-width:94%;border:1px solid #704321;border-radius:999px;background:linear-gradient(100deg,#20120e,#18121a 60%,#21150b);color:#ffe3a1;font-size:11px;font-weight:950;letter-spacing:.5px;box-shadow:0 0 24px #ff7a1a20}
-  .sanza-halloween-banner .spooky-spark{color:#ff9b38;text-shadow:0 0 12px #ff7a1a88}
-  .sanza-halloween-corner{position:fixed;z-index:19;bottom:12px;font-size:clamp(30px,5vw,45px);line-height:1;pointer-events:none;user-select:none;filter:drop-shadow(0 0 12px #ff7a1a66);animation:sanzaSpookyBob 3.8s ease-in-out infinite}
-  .sanza-halloween-left{left:10px}.sanza-halloween-right{right:10px;animation-delay:-1.9s}
-  .sanza-halloween-bat{position:fixed;z-index:19;top:95px;right:7%;font-size:22px;opacity:.8;pointer-events:none;user-select:none;animation:sanzaBatFloat 5.5s ease-in-out infinite}
-  .sanza-halloween-web{position:absolute;top:0;right:0;width:90px;height:90px;opacity:.5;pointer-events:none;background:repeating-conic-gradient(from 0deg at 100% 0%,transparent 0deg 14deg,#ff9b3845 14.5deg 15.5deg,transparent 16deg 45deg);mask-image:radial-gradient(circle at 100% 0%,#000 0 68%,transparent 70%)}
-  .sanza-halloween-banner .spooky-pumpkin{display:inline-block;animation:sanzaPumpkinGlow 2.8s ease-in-out infinite}
-  @keyframes sanzaSpookyBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(4deg)}}
-  @keyframes sanzaBatFloat{0%,100%{transform:translate(0,0) rotate(-5deg)}50%{transform:translate(-12px,8px) rotate(7deg)}}
-  @keyframes sanzaPumpkinGlow{0%,100%{filter:drop-shadow(0 0 2px #ff7a1a)}50%{filter:drop-shadow(0 0 9px #ff7a1a)}}
-  @media(max-width:520px){.sanza-halloween-banner{font-size:10px;gap:6px;padding:8px 11px}.sanza-halloween-left{left:5px;bottom:7px}.sanza-halloween-right{right:5px;bottom:7px}.sanza-halloween-bat{right:5%;top:82px;font-size:18px}}
-  @media(prefers-reduced-motion:reduce){.sanza-halloween-corner,.sanza-halloween-bat,.sanza-halloween-banner .spooky-pumpkin{animation:none!important}}
-</style>
-<div class="sanza-halloween-corner sanza-halloween-left" aria-hidden="true">🎃</div>
-<div class="sanza-halloween-corner sanza-halloween-right" aria-hidden="true">👻</div>
-<div class="sanza-halloween-bat" aria-hidden="true">🦇</div>
-<script>
-(function(){
-  try {
-    var p = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
-    var d = {};
-    p.forEach(function(x){if(x.type!=='literal')d[x.type]=x.value;});
-    var today = d.year+'-'+d.month+'-'+d.day;
-    if (today < '2026-10-26' || today >= '2026-11-01') {
-      var ids = ['sanza-halloween-style'];
-      ids.forEach(function(id){var el=document.getElementById(id);if(el)el.remove();});
-      document.querySelectorAll('.sanza-halloween-corner,.sanza-halloween-bat,.sanza-halloween-banner,.sanza-halloween-web').forEach(function(el){el.remove();});
-      return;
-    }
-    var hero = document.querySelector('.hero');
-    if (hero) {
-      var banner = document.createElement('div');
-      banner.className = 'sanza-halloween-banner';
-      banner.innerHTML = '<span class="spooky-pumpkin" aria-hidden="true">🎃</span><span>TRICK, TREAT &amp; GAME!</span><span class="spooky-spark" aria-hidden="true">✦</span><span>SanZa Halloween takeover</span><span class="spooky-pumpkin" aria-hidden="true">🕸️</span>';
-      hero.insertBefore(banner, hero.firstChild);
-      var web = document.createElement('div');
-      web.className = 'sanza-halloween-web';
-      web.setAttribute('aria-hidden','true');
-      hero.appendChild(web);
-    }
-  } catch(e) {
-    /* Keep the homepage usable if seasonal decorations cannot be initialized. */
-  }
-})();
-</script>
-
-
 <a class="sanza-hungry-float" href="https://www.sanzafood.ie/" aria-label="Hungry? Visit SanZa Food Hub" title="Hungry? Order from SanZa Food Hub"><span class="sanza-hungry-emoji" aria-hidden="true">🍔</span><span>HUNGRY?</span></a>
 
 <script id="sanza-hungry-drag-script">
