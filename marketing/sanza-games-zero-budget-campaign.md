@@ -67,7 +67,7 @@ Suggested post:
 - Preserve existing privacy, consent and AdSense code. Never add ad clicks or ask visitors to click ads.
 
 ## QR sharing
-Use `assets/sanza-games-qr.svg` on flyers, posters or a phone screen. It points to https://sanzagames.ie/. Test-scan the printed copy before distributing; leave a clear white quiet-zone around the code and do not place a logo over it.
+Use the separately supplied print-ready `sanza-games-qr-poster.png` on flyers, posters or a phone screen. It points to https://sanzagames.ie/. Test-scan the printed copy before distributing; leave a clear white quiet-zone around the code and do not place a logo over it.
 
 ## Weekly rhythm (repeat for four weeks)
 - Monday: Yup Bro short video.
