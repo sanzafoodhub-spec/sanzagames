@@ -61,31 +61,29 @@ a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-
  const rooms={
   sanza:{topic:"The SanZa community lounge — sample messages only",samples:[["YupBroBot","How are ya, ya absolute legend?! 😂","gold"],["PixelPanda","Anyone up for a game?",""],["NaanStop","This room needs more garlic naan energy.",""]]},
   gaming:{topic:"Arcade talk — fictional sample messages",samples:[["YupBroBot","Who is taking the top score today? 😎","gold"],["PixelPanda","I am warming up my thumbs.",""],["GameGoblin","One more round. Famous last words.",""]]},
-  funnyzone:{topic:"Jokes and riddles — fictional sample messages",samples:[["YupBroBot","Why did the computer go to the doctor? It had a virus! 😂","gold"],["PixelPanda","That joke needs a software update.",""],["NaanStop","Still better than my dad jokes.",""]]}
- };
+  funnyzone:{topic:"Jokes and riddles — fictional sample messages",samples:[["YupBroBot","Why did the computer go to the doctor? It had a virus! 😂","gold"],["PixelPanda","That joke needs a software update.",""],["NaanStop","Still better than my dad jokes.",""]]}}
  const messages=document.getElementById("messages"),nickname=document.getElementById("nickname"),input=document.getElementById("messageInput"),send=document.getElementById("sendButton"),status=document.getElementById("status");
- let active="sanza",count=5;
- function add(text,kind,nick){
-  const row=document.createElement("div");row.className="msg"+(kind?" "+kind:"");
-  const time=document.createElement("span");time.className="time";time.textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
-  row.append(time);
-  if(nick){const n=document.createElement("span");n.className="nick";n.textContent=nick;row.append(n)}
-  const body=document.createElement("span");body.textContent=text;row.append(body);messages.append(row);messages.scrollTop=messages.scrollHeight;
- }
- function loadRoom(room){
-  active=room;document.getElementById("roomName").textContent="#"+room;document.getElementById("roomTopic").textContent=rooms[room].topic;
-  messages.replaceChildren();add("You joined the local preview of #"+room+".","system");
-  rooms[room].samples.forEach(x=>add(x[1],"",x[0]));
-  add("Sample content only — no other visitors are connected.","system");
-  document.querySelectorAll(".room").forEach(b=>b.classList.toggle("active",b.dataset.room===room));
+ let active="sanza",strikes=0,locked=false;
+ // Demo-side examples only. A real service must enforce equivalent checks on its server.
+ const badWords=/\b(fuck(?:er|ing|ed)?|shit(?:ty|ting)?|bitch(?:es)?|cunt|asshole|dickhead|motherfucker|porn|sex(?:ual)?|nude(?:s)?|slut|whore)\b/i;
+ const email=/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+ const phone=/(?:\+?\d[\d\s().-]{6,}\d)/;
+ const social=/(?:\b(?:instagram|insta|snapchat|snap|whatsapp|telegram|tiktok|discord)\b.{0,18}\b(?:me|add|follow|dm|@)|@[a-z0-9._]{3,})/i;
+ const address=/\b\d{1,5}\s+[A-Za-z0-9.' -]{2,35}\s(?:street|st|road|rd|avenue|ave|lane|ln|drive|dr|close|court)\b/i;
+ function add(text,kind,nick){const row=document.createElement("div");row.className="msg"+(kind?" "+kind:"");const time=document.createElement("span");time.className="time";time.textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});row.append(time);if(nick){const n=document.createElement("span");n.className="nick";n.textContent=nick;row.append(n)}const body=document.createElement("span");body.textContent=text;row.append(body);messages.append(row);messages.scrollTop=messages.scrollHeight;}
+ function loadRoom(room){active=room;document.getElementById("roomName").textContent="#"+room;document.getElementById("roomTopic").textContent=rooms[room].topic;messages.replaceChildren();add("You joined the local preview of #"+room+".","system");rooms[room].samples.forEach(x=>add(x[1],"",x[0]));add("Sample content only — no other visitors are connected.","system");document.querySelectorAll(".room").forEach(b=>b.classList.toggle("active",b.dataset.room===room));}
+ function setLocked(){locked=true;input.disabled=true;send.disabled=true;nickname.disabled=true;status.textContent="⛔ Three blocked attempts in a row. Chat is locked for this demo session. A real service would send this for moderator review and apply a server-side timeout.";}
+ function sendDemo(){if(locked)return;const nick=nickname.value.trim(),message=input.value.trim();if(!/^[A-Za-z0-9_-]{2,18}$/.test(nick)||!message)return;
+  let reason="";if(badWords.test(message))reason="That language isn't allowed here. Keep it kind.";else if(email.test(message)||phone.test(message)||social.test(message)||address.test(message))reason="Please don't share phone numbers, email addresses, social handles or addresses. Keep personal details private.";
+  if(reason){strikes++;input.value="";add("Message blocked by the demo safety filter.","system");status.textContent="⚠️ "+reason+" Strike "+strikes+" of 3.";if(strikes>=3)setLocked();return;}
+  strikes=0;add(message,"local",nick);input.value="";status.textContent="Looks good — added to this page only. No one else can see it.";
  }
  document.querySelectorAll(".room").forEach(b=>b.addEventListener("click",()=>loadRoom(b.dataset.room)));
- nickname.addEventListener("input",()=>{const ok=/^[A-Za-z0-9_-]{2,18}$/.test(nickname.value.trim());input.disabled=!ok;send.disabled=!ok;status.textContent=ok?"Demo nickname ready. Nothing is transmitted or stored.":"Use 2–18 letters, numbers, _ or - for a made-up nickname.";});
- function sendDemo(){const nick=nickname.value.trim(),message=input.value.trim();if(!/^[A-Za-z0-9_-]{2,18}$/.test(nick)||!message)return;add(message,"local",nick);input.value="";status.textContent="Added to this page only. It has not been sent or saved.";count++;}
+ nickname.addEventListener("input",()=>{const ok=/^[A-Za-z0-9_-]{2,18}$/.test(nickname.value.trim());input.disabled=!ok||locked;send.disabled=!ok||locked;status.textContent=ok?"Demo nickname ready. Safety filters are demo-only; nothing is transmitted or stored.":"Use 2–18 letters, numbers, _ or - for a made-up nickname.";});
  send.addEventListener("click",sendDemo);input.addEventListener("keydown",e=>{if(e.key==="Enter")sendDemo()});
- document.getElementById("clearButton").addEventListener("click",()=>{loadRoom(active);status.textContent="Your demo messages were cleared from this page.";});
- document.getElementById("rulesButton").addEventListener("click",()=>{status.textContent="Rules: be kind; no bullying, hate, sexual content, threats, personal details, links or attempts to contact others. A real service needs working moderation and reporting before launch.";});
- document.getElementById("reportButton").addEventListener("click",()=>{status.textContent="Demo only: this button does not submit a report. A live service must provide a monitored reporting route.";});
+ document.getElementById("clearButton").addEventListener("click",()=>{loadRoom(active);strikes=0;locked=false;nickname.disabled=false;input.disabled=true;send.disabled=true;status.textContent="Demo reset. Enter a made-up nickname to try again.";});
+ document.getElementById("rulesButton").addEventListener("click",()=>{status.textContent="Be kind. No swearing, bullying, hate, sexual content, threats, personal details, contact sharing or spam. Filters in this preview are only a demonstration."});
+ document.getElementById("reportButton").addEventListener("click",()=>{status.textContent="Demo only: no report is submitted. A live service needs a real, monitored reporting and escalation process."});
 })();
 </script>
 </body>
