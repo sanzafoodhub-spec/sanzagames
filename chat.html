@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08090d">
+<meta name="description" content="Preview the SanZa Chat room design. This is a local-only prototype, not a live chat service.">
+<meta name="robots" content="noindex,nofollow">
+<title>SanZa Chat — Preview only</title>
+<link rel="icon" href="/sanza-logo.png">
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#10131b;--panel2:#151a23;--line:#2b3340;--gold:#ffd34d;--green:#a5ff80;--cyan:#57e9ff;--muted:#aeb7c8;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#30230a66,transparent 34%),radial-gradient(ellipse at 90% 15%,#142b3266,transparent 32%),var(--bg);color:#eef2f7;font:14px system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 0;border-bottom:1px solid var(--line)}.brand{font-weight:1000;letter-spacing:1px;text-decoration:none}.brand span{color:var(--gold)}.home{color:var(--gold);text-decoration:none;font-weight:800;font-size:12px;border:1px solid #554526;background:#1b180f;padding:10px 13px;border-radius:10px}
+.hero{text-align:center;padding:30px 0 20px}.kicker{display:inline-flex;gap:8px;align-items:center;color:var(--gold);border:1px solid #554526;background:#17140d;padding:8px 12px;border-radius:999px;font-size:10px;letter-spacing:1.5px;font-weight:900}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}h1{font-size:clamp(36px,7vw,62px);letter-spacing:-3px;line-height:1;margin:17px 0 10px}.hero p{color:var(--muted);line-height:1.65;max-width:690px;margin:auto}
+.notice{margin:18px auto 20px;max-width:850px;padding:13px 15px;border:1px solid #715d29;background:#211b0e;border-radius:13px;color:#ffe8a5;font-size:12px;line-height:1.65}.notice strong{color:var(--gold)}
+.chat-shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:12px;max-width:1000px;margin:0 auto 26px;border:1px solid #303846;border-radius:18px;overflow:hidden;background:#0b0e14;box-shadow:0 24px 70px #0007}
+.sidebar{padding:16px;background:#0d1118;border-right:1px solid var(--line)}.side-title{font:900 10px ui-monospace,monospace;letter-spacing:1.6px;color:#8793a6;margin:5px 0 12px}.room{width:100%;text-align:left;display:flex;align-items:center;gap:9px;padding:11px 10px;border:1px solid transparent;border-radius:9px;background:transparent;color:#c8d0dd;font:700 12px ui-monospace,monospace;cursor:pointer;margin-bottom:5px}.room.active{background:#172019;border-color:#36563a;color:var(--green)}.room:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.room .hash{color:var(--gold);font-size:15px}.side-foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);color:#8490a2;font-size:11px;line-height:1.6}
+.main{min-width:0;display:flex;flex-direction:column;min-height:550px}.room-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 17px;border-bottom:1px solid var(--line);background:#111720}.room-name{font:900 14px ui-monospace,monospace;color:var(--green)}.room-topic{color:#8490a2;font-size:11px;margin-top:4px}.demo-tag{white-space:nowrap;font-size:9px;letter-spacing:1px;color:#ffe8a5;border:1px solid #655324;padding:6px 8px;border-radius:7px;background:#211b0e}
+.identity{display:flex;gap:9px;align-items:end;padding:12px 16px;border-bottom:1px solid #202936;background:#0d1219}.field{flex:1;min-width:0}.field label{display:block;font:800 10px ui-monospace,monospace;color:#98a5b8;margin:0 0 6px}.field input{width:100%;background:#080b10;border:1px solid #303a48;border-radius:8px;color:#fff;padding:10px 11px;font:13px ui-monospace,monospace}.field input::placeholder{color:#657184}.identity small{font-size:10px;color:#8793a6;max-width:180px;line-height:1.45}
+.messages{padding:17px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:230px;max-height:360px;overflow:auto;background:repeating-linear-gradient(0deg,transparent,transparent 27px,#ffffff04 28px)}.msg{font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.time{color:#68788c;margin-right:8px}.nick{font-weight:900;color:var(--cyan);margin-right:7px}.nick.gold{color:var(--gold)}.msg.system{color:#9aa7b8}.msg.system strong{color:var(--green)}.msg.local{border-left:2px solid var(--gold);padding-left:9px}
+.composer{display:flex;gap:8px;padding:13px 15px;border-top:1px solid var(--line);background:#111720}.composer input{flex:1;min-width:0;background:#080b10;border:1px solid #303a48;border-radius:9px;color:#fff;padding:12px;font:13px ui-monospace,monospace}.composer button{border:0;border-radius:9px;padding:0 16px;background:var(--gold);color:#101014;font-weight:1000;cursor:pointer}.composer button:disabled{opacity:.35;cursor:not-allowed}
+.controls{display:flex;flex-wrap:wrap;gap:8px;padding:0 15px 14px;background:#111720}.soft{background:#151b25;border:1px solid #354052;color:#c5d0df;border-radius:8px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer}.soft:hover{border-color:var(--cyan)}.status{padding:0 16px 12px;color:#8190a3;font-size:10px;background:#111720;min-height:24px}
+.rules{max-width:1000px;margin:0 auto 35px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule-card{border:1px solid var(--line);border-radius:14px;background:#10141c;padding:17px}.rule-card h2{font-size:15px;margin:0 0 8px}.rule-card p,.rule-card li{color:var(--muted);font-size:12px;line-height:1.65}.rule-card ul{padding-left:18px;margin:7px 0 0}.footer{text-align:center;color:#8490a2;font-size:11px;padding:0 0 30px}.footer a{color:var(--gold)}
+@media(max-width:680px){.chat-shell{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line);padding:12px}.side-title{margin-bottom:8px}.rooms{display:flex;gap:5px;overflow:auto}.room{white-space:nowrap;width:auto;margin:0}.side-foot{display:none}.main{min-height:520px}.identity{align-items:stretch;flex-wrap:wrap}.identity small{max-width:none;width:100%}.rules{grid-template-columns:1fr}.top{padding:13px 0}.hero{padding:25px 0 14px}.notice{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="/"><span>SANZA</span> CHAT</a><a class="home" href="/">← BACK TO SANZA GAMES</a></header>
+<section class="hero"><div class="kicker"><span class="dot"></span> OLD-SCHOOL CHAT ROOM VIBE</div><h1>HOWAYA, <span style="color:var(--gold)">SANZATIONS?</span></h1><p>A first look at the SanZa Chat room — retro terminal energy, modern safety thinking.</p></section>
+<div class="notice"><strong>PREVIEW ONLY — NOT A LIVE CHAT.</strong> Messages you type stay in this page on this device and disappear when you leave or refresh. They are not sent to anyone, saved, or shared. Do not enter real names, contact details or other personal information.</div>
+<section class="chat-shell" aria-label="SanZa Chat prototype">
+<aside class="sidebar"><div class="side-title">CHANNELS</div><div class="rooms">
+<button class="room active" data-room="sanza"><span class="hash">#</span> sanza</button>
+<button class="room" data-room="gaming"><span class="hash">#</span> gaming</button>
+<button class="room" data-room="funnyzone"><span class="hash">#</span> funnyzone</button>
+</div><div class="side-foot">● Prototype mode<br>3 sample channels<br><br>No accounts · No DMs<br>No uploads · No tracking</div></aside>
+<div class="main">
+<div class="room-head"><div><div class="room-name" id="roomName">#sanza</div><div class="room-topic" id="roomTopic">The SanZa community lounge — sample messages only</div></div><span class="demo-tag">LOCAL DEMO</span></div>
+<div class="identity"><div class="field"><label for="nickname">CHOOSE A DEMO NICKNAME</label><input id="nickname" maxlength="18" autocomplete="off" placeholder="e.g. GarlicNaanFan"></div><small>Use a made-up nickname only. It is kept in memory on this page and is not sent anywhere.</small></div>
+<div class="messages" id="messages" aria-live="polite">
+<div class="msg system"><span class="time">00:01</span><strong>*** SanZa Chat preview loaded.</strong></div>
+<div class="msg"><span class="time">00:02</span><span class="nick gold">YupBroBot</span>How are ya, ya absolute legend?! 😂</div>
+<div class="msg"><span class="time">00:03</span><span class="nick">PixelPanda</span>Anyone up for a game?</div>
+<div class="msg system"><span class="time">00:04</span>*** These are fictional sample messages, not other visitors.</div>
+</div>
+<div class="composer"><input id="messageInput" maxlength="240" placeholder="Type a demo message…" aria-label="Demo message" disabled><button id="sendButton" disabled>Send ↗</button></div>
+<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT (DEMO)</button><button class="soft" id="clearButton">CLEAR MY DEMO</button></div>
+<div class="status" id="status" role="status">Enter a made-up nickname to try the local-only demo.</div>
+</div></section>
+<section class="rules">
+<article class="rule-card"><h2>🛡️ Safety-first design</h2><ul><li>No private messages or file/image uploads.</li><li>Moderation, reporting and blocking must work before any public launch.</li><li>Child access and age-appropriate safeguards must be assessed before activation.</li><li>Never share personal or identifying information.</li></ul></article>
+<article class="rule-card"><h2>⚖️ Before a real launch</h2><p>This prototype does not establish legal compliance. A live service needs a documented GDPR assessment, lawful basis and transparent notices, data minimisation and retention rules, security controls, a child-safety risk assessment, and review of any applicable DSA and Irish online-safety duties. No live chat will be enabled until those steps are completed and reviewed by a qualified Irish/EU adviser.</p><p><a href="/privacy.html">Read SanZa's existing privacy page ↗</a></p></article>
+</section>
+<footer class="footer">One SanZa. One Family. 🖤💛<br>Prototype only · <a href="/">Return to SanZa Games</a></footer>
+</div>
+<script>
+(function(){
+ const rooms={
+  sanza:{topic:"The SanZa community lounge — sample messages only",samples:[["YupBroBot","How are ya, ya absolute legend?! 😂","gold"],["PixelPanda","Anyone up for a game?",""],["NaanStop","This room needs more garlic naan energy.",""]]},
+  gaming:{topic:"Arcade talk — fictional sample messages",samples:[["YupBroBot","Who is taking the top score today? 😎","gold"],["PixelPanda","I am warming up my thumbs.",""],["GameGoblin","One more round. Famous last words.",""]]},
+  funnyzone:{topic:"Jokes and riddles — fictional sample messages",samples:[["YupBroBot","Why did the computer go to the doctor? It had a virus! 😂","gold"],["PixelPanda","That joke needs a software update.",""],["NaanStop","Still better than my dad jokes.",""]]}
+ };
+ const messages=document.getElementById("messages"),nickname=document.getElementById("nickname"),input=document.getElementById("messageInput"),send=document.getElementById("sendButton"),status=document.getElementById("status");
+ let active="sanza",count=5;
+ function add(text,kind,nick){
+  const row=document.createElement("div");row.className="msg"+(kind?" "+kind:"");
+  const time=document.createElement("span");time.className="time";time.textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+  row.append(time);
+  if(nick){const n=document.createElement("span");n.className="nick";n.textContent=nick;row.append(n)}
+  const body=document.createElement("span");body.textContent=text;row.append(body);messages.append(row);messages.scrollTop=messages.scrollHeight;
+ }
+ function loadRoom(room){
+  active=room;document.getElementById("roomName").textContent="#"+room;document.getElementById("roomTopic").textContent=rooms[room].topic;
+  messages.replaceChildren();add("You joined the local preview of #"+room+".","system");
+  rooms[room].samples.forEach(x=>add(x[1],"",x[0]));
+  add("Sample content only — no other visitors are connected.","system");
+  document.querySelectorAll(".room").forEach(b=>b.classList.toggle("active",b.dataset.room===room));
+ }
+ document.querySelectorAll(".room").forEach(b=>b.addEventListener("click",()=>loadRoom(b.dataset.room)));
+ nickname.addEventListener("input",()=>{const ok=/^[A-Za-z0-9_-]{2,18}$/.test(nickname.value.trim());input.disabled=!ok;send.disabled=!ok;status.textContent=ok?"Demo nickname ready. Nothing is transmitted or stored.":"Use 2–18 letters, numbers, _ or - for a made-up nickname.";});
+ function sendDemo(){const nick=nickname.value.trim(),message=input.value.trim();if(!/^[A-Za-z0-9_-]{2,18}$/.test(nick)||!message)return;add(message,"local",nick);input.value="";status.textContent="Added to this page only. It has not been sent or saved.";count++;}
+ send.addEventListener("click",sendDemo);input.addEventListener("keydown",e=>{if(e.key==="Enter")sendDemo()});
+ document.getElementById("clearButton").addEventListener("click",()=>{loadRoom(active);status.textContent="Your demo messages were cleared from this page.";});
+ document.getElementById("rulesButton").addEventListener("click",()=>{status.textContent="Rules: be kind; no bullying, hate, sexual content, threats, personal details, links or attempts to contact others. A real service needs working moderation and reporting before launch.";});
+ document.getElementById("reportButton").addEventListener("click",()=>{status.textContent="Demo only: this button does not submit a report. A live service must provide a monitored reporting route.";});
+})();
+</script>
+</body>
+</html>
