@@ -45,7 +45,7 @@ a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-
 <div class="composer"><input id="messageInput" maxlength="500" placeholder="Type a message…" aria-label="Chat message" disabled><button id="sendButton" disabled>Send ↗</button></div>
 <div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT MESSAGE</button><button class="soft" id="clearButton">LEAVE ON THIS DEVICE</button><button class="soft" id="blockButton">BLOCK NICKNAME</button></div>
 <div class="status" id="status" role="status">Enter a nickname and tap Join.</div>
-<div style="padding:0 16px 12px;background:#111720"><div id="turnstileBox" style="margin-bottom:10px"></div><button class="soft" id="joinButton">JOIN #SANZA</button></div>
+<div style="padding:0 16px 12px;background:#111720"><div id="turnstileBox" style="margin-bottom:10px;min-height:65px"></div><p id="turnstileHelp" hidden style="color:#ffe8a5;font-size:12px;line-height:1.5">On iPhone Safari, try turning off content blockers for this website using the page menu, then reload. If using a VPN or iCloud Private Relay, temporarily turn it off for this test. CAPTCHA remains required.</p><button class="soft" id="joinButton">JOIN #SANZA</button></div>
 </div></section>
 <section class="rules">
 <article class="rule-card"><h2>🛡️ Safety-first design</h2><ul><li>No private messages or file/image uploads.</li><li>Moderation, reporting and blocking must work before any public launch.</li><li>Child access and age-appropriate safeguards must be assessed before activation.</li><li>Never share personal or identifying information.</li></ul></article>
@@ -60,7 +60,23 @@ const $=id=>document.getElementById(id);
 const nickname=$("nickname"),input=$("messageInput"),send=$("sendButton"),messages=$("messages"),status=$("status"),join=$("joinButton");
 const STORE="sanza_chat_beta_session_v1",BLOCK="sanza_chat_beta_blocks_v1";
 let session=null,me=null,busy=false,polling=false,renderKey="",captchaToken="";
-function mountCaptcha(){if(!window.turnstile){setTimeout(mountCaptcha,300);return}window.turnstile.render("#turnstileBox",{sitekey:"0x4AAAAAAF1FRqHQRNliPr4y",callback:token=>{captchaToken=token}, "expired-callback":()=>{captchaToken=""}, "error-callback":()=>{captchaToken="";info("CAPTCHA could not load. Please refresh.")}})}
+let captchaAttempts=0,captchaWidgetId=null;
+function mountCaptcha(){
+  if(!window.turnstile){
+    if(++captchaAttempts<=35){setTimeout(mountCaptcha,400);return}
+    info("CAPTCHA could not load on this browser. Check Safari content blockers, VPN or iCloud Private Relay, then reload.");
+    $("turnstileHelp").hidden=false;return;
+  }
+  try{
+    captchaWidgetId=window.turnstile.render("#turnstileBox",{
+      sitekey:"0x4AAAAAAF1FRqHQRNliPr4y",
+      theme:"auto",size:"normal",appearance:"always",
+      callback:token=>{captchaToken=token;info("CAPTCHA verified. Enter your nickname and join.");$("turnstileHelp").hidden=true},
+      "expired-callback":()=>{captchaToken="";info("CAPTCHA expired. Please verify again.")},
+      "error-callback":code=>{captchaToken="";info("CAPTCHA failed ("+(code||"connection")+"). Try reload or disable Safari content blockers for this page.");$("turnstileHelp").hidden=false}
+    });
+  }catch(e){info("CAPTCHA couldn't start on this browser. Please reload.");$("turnstileHelp").hidden=false}
+}
 let blocked=[];
 try{blocked=JSON.parse(localStorage.getItem(BLOCK)||"[]");if(!Array.isArray(blocked))blocked=[]}catch(_){blocked=[]}
 function info(t){status.textContent=t}
@@ -74,7 +90,7 @@ function show(items){const key=JSON.stringify([items.map(m=>[m.id,m.content]),bl
 for(const m of items){if(blocked.includes(m.nickname.toLowerCase()))continue;const row=document.createElement("div");row.className="msg";const time=document.createElement("span");time.className="time";time.textContent=new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const nick=document.createElement("span");nick.className="nick";nick.textContent=m.nickname;const body=document.createElement("span");body.textContent=m.content;row.append(time,nick,body);if(m.user_id!==me?.id){const report=document.createElement("button");report.className="soft";report.style.marginLeft="8px";report.textContent="Report";report.addEventListener("click",()=>reportMessage(m));row.append(report)}messages.append(row)}messages.scrollTop=messages.scrollHeight}
 async function load(){if(!session||polling||document.hidden)return;polling=true;try{const r=await call("list");show(r.messages||[])}catch(e){info(e.message)}finally{polling=false}}
 async function reportMessage(m){const reason=prompt("Why are you reporting this message? (No personal information)");if(!reason?.trim())return;try{await call("report",{message_id:m.id,reason:reason.trim().slice(0,500)});info("Report sent to moderators. Thank you.")}catch(e){info(e.message)}}
-join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}if(!captchaToken){info("Complete the CAPTCHA check first.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick,captcha_token:captchaToken},false);session=r.session;me=r.user;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");await load()}catch(e){info(e.message);join.disabled=false;captchaToken="";if(window.turnstile)window.turnstile.reset()}finally{busy=false}});
+join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}if(!captchaToken){info("Complete the CAPTCHA check first.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick,captcha_token:captchaToken},false);session=r.session;me=r.user;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");await load()}catch(e){info(e.message);join.disabled=false;captchaToken="";if(window.turnstile&&captchaWidgetId!==null)window.turnstile.reset(captchaWidgetId)}finally{busy=false}});
 async function sendMessage(){if(!session||busy)return;const content=input.value.trim();if(!content)return;busy=true;send.disabled=true;try{await call("send",{content});input.value="";info("Message sent.");await load()}catch(e){info(e.message)}finally{busy=false;send.disabled=false}}
 send.addEventListener("click",sendMessage);input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage()}});
 $("rulesButton").addEventListener("click",()=>info("Be kind. No abuse, slurs, sexual content, bullying, threats, links, contact details or spam. Report anything worrying."));
