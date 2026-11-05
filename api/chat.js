@@ -165,6 +165,28 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    if (action === "refresh") {
+      const refreshToken = typeof body.refresh_token === "string" ? body.refresh_token : "";
+      if (!refreshToken || refreshToken.length > 4096) {
+        return reply(res, 400, { error: "A valid session refresh token is required." });
+      }
+      const refreshed = await supa(config, "/auth/v1/token?grant_type=refresh_token", {
+        method: "POST",
+        body: { refresh_token: refreshToken }
+      });
+      if (!refreshed.ok || !refreshed.data || !refreshed.data.access_token) {
+        return reply(res, 401, { error: "Your chat session has expired. Please join again." });
+      }
+      return reply(res, 200, {
+        session: {
+          access_token: refreshed.data.access_token,
+          refresh_token: refreshed.data.refresh_token,
+          expires_at: refreshed.data.expires_at,
+          token_type: refreshed.data.token_type
+        }
+      });
+    }
+
     const user = await authenticate(config, req);
     if (!user) return reply(res, 401, { error: "Please sign in to SanZa Chat." });
     const member = await membership(config, user.id);
