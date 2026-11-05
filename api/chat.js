@@ -44,9 +44,10 @@ async function supa(config, path, options = {}, useService = false) {
   const key = useService ? config.service : config.anon;
   const headers = Object.assign({
     apikey: key,
-    Authorization: "Bearer " + (options.token || key),
     Accept: "application/json"
   }, options.headers || {});
+  if (options.token) headers.Authorization = "Bearer " + options.token;
+  else if (useService) headers.Authorization = "Bearer " + config.service;
   const init = { method: options.method || "GET", headers };
   if (options.body !== undefined) {
     headers["Content-Type"] = "application/json";
