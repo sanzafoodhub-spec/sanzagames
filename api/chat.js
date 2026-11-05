@@ -35,7 +35,7 @@ function containsBlockedLanguage(value) {
   for (const banned of BLOCKED_WORDS) {
     if(words.includes(banned)) return true;
     // Catch separated letters and punctuation within abusive words.
-    if(banned.length>=4 && (compact.includes(banned) || compressed.includes(banned))) return true;
+    if(banned.length>=4 && /[^a-z]/.test(normal) && (compact.includes(banned) || compressed.includes(banned))) return true;
   }
   const joined=words.join(" ");
   return BLOCKED_PHRASES.some(phrase=>joined.includes(phrase)||compact.includes(phrase.replace(/ /g,"")));
