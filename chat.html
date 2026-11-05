@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#08090d">
-<meta name="description" content="Preview the SanZa Chat room design. This is a local-only prototype, not a live chat service.">
+<meta name="description" content="Private beta preview of SanZa Chat with real messages for invited testers.">
 <meta name="robots" content="noindex,nofollow">
-<title>SanZa Chat — Preview only</title>
+<title>SanZa Chat — Private beta</title>
 <link rel="icon" href="/sanza-logo.png">
 <style>
 :root{color-scheme:dark;--bg:#08090d;--panel:#10131b;--panel2:#151a23;--line:#2b3340;--gold:#ffd34d;--green:#a5ff80;--cyan:#57e9ff;--muted:#aeb7c8;--red:#ff7777}
@@ -29,61 +29,60 @@ a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-
 <body>
 <div class="wrap">
 <header class="top"><a class="brand" href="/"><span>SANZA</span> CHAT</a><a class="home" href="/">← BACK TO SANZA GAMES</a></header>
-<section class="hero"><div class="kicker"><span class="dot"></span> OLD-SCHOOL CHAT ROOM VIBE</div><h1>HOWAYA, <span style="color:var(--gold)">SANZATIONS?</span></h1><p>A first look at the SanZa Chat room — retro terminal energy, modern safety thinking.</p></section>
-<div class="notice"><strong>PREVIEW ONLY — NOT A LIVE CHAT.</strong> Messages you type stay in this page on this device and disappear when you leave or refresh. They are not sent to anyone, saved, or shared. Do not enter real names, contact details or other personal information.</div>
+<section class="hero"><div class="kicker"><span class="dot"></span> OLD-SCHOOL CHAT ROOM VIBE</div><h1>HOWAYA, <span style="color:var(--gold)">SANZATIONS?</span></h1><p>An old-school chat room for invited testers. Real messages, no private chats.</p></section>
+<div class="notice"><strong>PRIVATE BETA — REAL MESSAGES.</strong> Messages are stored and visible to other members of #sanza. Use made-up nicknames only. No personal details, links, DMs or uploads. Do not share this preview publicly; safety controls are still being tested.</div>
 <section class="chat-shell" aria-label="SanZa Chat prototype">
 <aside class="sidebar"><div class="side-title">CHANNELS</div><div class="rooms">
 <button class="room active" data-room="sanza"><span class="hash">#</span> sanza</button>
-<button class="room" data-room="gaming"><span class="hash">#</span> gaming</button>
-<button class="room" data-room="funnyzone"><span class="hash">#</span> funnyzone</button>
-</div><div class="side-foot">● Prototype mode<br>3 sample channels<br><br>No accounts · No DMs<br>No uploads · No tracking</div></aside>
+
+
+</div><div class="side-foot">● Private beta<br>#sanza only<br><br>No DMs · No uploads</div></aside>
 <div class="main">
-<div class="room-head"><div><div class="room-name" id="roomName">#sanza</div><div class="room-topic" id="roomTopic">The SanZa community lounge — sample messages only</div></div><span class="demo-tag">LOCAL DEMO</span></div>
-<div class="identity"><div class="field"><label for="nickname">CHOOSE A DEMO NICKNAME</label><input id="nickname" maxlength="18" autocomplete="off" placeholder="e.g. GarlicNaanFan"></div><small>Use a made-up nickname only. It is kept in memory on this page and is not sent anywhere.</small></div>
-<div class="messages" id="messages" aria-live="polite">
-<div class="msg system"><span class="time">00:01</span><strong>*** SanZa Chat preview loaded.</strong></div>
-<div class="msg"><span class="time">00:02</span><span class="nick gold">YupBroBot</span>How are ya, ya absolute legend?! 😂</div>
-<div class="msg"><span class="time">00:03</span><span class="nick">PixelPanda</span>Anyone up for a game?</div>
-<div class="msg system"><span class="time">00:04</span>*** These are fictional sample messages, not other visitors.</div>
-</div>
-<div class="composer"><input id="messageInput" maxlength="240" placeholder="Type a demo message…" aria-label="Demo message" disabled><button id="sendButton" disabled>Send ↗</button></div>
-<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT (DEMO)</button><button class="soft" id="clearButton">CLEAR MY DEMO</button></div>
-<div class="status" id="status" role="status">Enter a made-up nickname to try the local-only demo.</div>
+<div class="room-head"><div><div class="room-name" id="roomName">#sanza</div><div class="room-topic" id="roomTopic">The SanZa community lounge — private beta</div></div><span class="demo-tag">PRIVATE BETA</span></div>
+<div class="identity"><div class="field"><label for="nickname">CHOOSE YOUR NICKNAME</label><input id="nickname" maxlength="18" autocomplete="off" placeholder="e.g. GarlicNaanFan"></div><small>3–18 letters, numbers or underscores. Nicknames are visible to others. Losing browser data may lose your nickname session.</small></div>
+<div class="messages" id="messages" aria-live="polite"><div class="msg system">Join with a nickname to see the real conversation.</div></div>
+<div class="composer"><input id="messageInput" maxlength="500" placeholder="Type a message…" aria-label="Chat message" disabled><button id="sendButton" disabled>Send ↗</button></div>
+<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT MESSAGE</button><button class="soft" id="clearButton">LEAVE ON THIS DEVICE</button><button class="soft" id="blockButton">BLOCK NICKNAME</button></div>
+<div class="status" id="status" role="status">Enter a nickname and tap Join.</div>
+<div style="padding:0 16px 12px;background:#111720"><button class="soft" id="joinButton">JOIN #SANZA</button></div>
 </div></section>
 <section class="rules">
 <article class="rule-card"><h2>🛡️ Safety-first design</h2><ul><li>No private messages or file/image uploads.</li><li>Moderation, reporting and blocking must work before any public launch.</li><li>Child access and age-appropriate safeguards must be assessed before activation.</li><li>Never share personal or identifying information.</li></ul></article>
-<article class="rule-card"><h2>⚖️ Before a real launch</h2><p>This prototype does not establish legal compliance. A live service needs a documented GDPR assessment, lawful basis and transparent notices, data minimisation and retention rules, security controls, a child-safety risk assessment, and review of any applicable DSA and Irish online-safety duties. No live chat will be enabled until those steps are completed and reviewed by a qualified Irish/EU adviser.</p><p><a href="/privacy.html">Read SanZa's existing privacy page ↗</a></p></article>
+<article class="rule-card"><h2>⚖️ Before a real launch</h2><p>This private beta does not establish legal compliance. A public service needs a documented GDPR assessment, lawful basis and transparent notices, data minimisation and retention rules, security controls, a child-safety risk assessment, and review of any applicable DSA and Irish online-safety duties. No live chat will be enabled until those steps are completed and reviewed by a qualified Irish/EU adviser.</p><p><a href="/privacy.html">Read SanZa's existing privacy page ↗</a></p></article>
 </section>
-<footer class="footer">One SanZa. One Family. 🖤💛<br>Prototype only · <a href="/">Return to SanZa Games</a></footer>
+<footer class="footer">One SanZa. One Family. 🖤💛<br>Private beta · <a href="/">Return to SanZa Games</a></footer>
 </div>
 <script>
 (function(){
- const rooms={
-  sanza:{topic:"The SanZa community lounge — sample messages only",samples:[["YupBroBot","How are ya, ya absolute legend?! 😂","gold"],["PixelPanda","Anyone up for a game?",""],["NaanStop","This room needs more garlic naan energy.",""]]},
-  gaming:{topic:"Arcade talk — fictional sample messages",samples:[["YupBroBot","Who is taking the top score today? 😎","gold"],["PixelPanda","I am warming up my thumbs.",""],["GameGoblin","One more round. Famous last words.",""]]},
-  funnyzone:{topic:"Jokes and riddles — fictional sample messages",samples:[["YupBroBot","Why did the computer go to the doctor? It had a virus! 😂","gold"],["PixelPanda","That joke needs a software update.",""],["NaanStop","Still better than my dad jokes.",""]]}}
- const messages=document.getElementById("messages"),nickname=document.getElementById("nickname"),input=document.getElementById("messageInput"),send=document.getElementById("sendButton"),status=document.getElementById("status");
- let active="sanza",strikes=0,locked=false;
- // Demo-side examples only. A real service must enforce equivalent checks on its server.
- const badWords=/\b(fuck(?:er|ing|ed)?|shit(?:ty|ting)?|bitch(?:es)?|cunt|asshole|dickhead|motherfucker|porn|sex(?:ual)?|nude(?:s)?|slut|whore)\b/i;
- const email=/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
- const phone=/(?:\+?\d[\d\s().-]{6,}\d)/;
- const social=/(?:\b(?:instagram|insta|snapchat|snap|whatsapp|telegram|tiktok|discord)\b.{0,18}\b(?:me|add|follow|dm|@)|@[a-z0-9._]{3,})/i;
- const address=/\b\d{1,5}\s+[A-Za-z0-9.' -]{2,35}\s(?:street|st|road|rd|avenue|ave|lane|ln|drive|dr|close|court)\b/i;
- function add(text,kind,nick){const row=document.createElement("div");row.className="msg"+(kind?" "+kind:"");const time=document.createElement("span");time.className="time";time.textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});row.append(time);if(nick){const n=document.createElement("span");n.className="nick";n.textContent=nick;row.append(n)}const body=document.createElement("span");body.textContent=text;row.append(body);messages.append(row);messages.scrollTop=messages.scrollHeight;}
- function loadRoom(room){active=room;document.getElementById("roomName").textContent="#"+room;document.getElementById("roomTopic").textContent=rooms[room].topic;messages.replaceChildren();add("You joined the local preview of #"+room+".","system");rooms[room].samples.forEach(x=>add(x[1],"",x[0]));add("Sample content only — no other visitors are connected.","system");document.querySelectorAll(".room").forEach(b=>b.classList.toggle("active",b.dataset.room===room));}
- function setLocked(){locked=true;input.disabled=true;send.disabled=true;nickname.disabled=true;status.textContent="⛔ Three blocked attempts in a row. Chat is locked for this demo session. A real service would send this for moderator review and apply a server-side timeout.";}
- function sendDemo(){if(locked)return;const nick=nickname.value.trim(),message=input.value.trim();if(!/^[A-Za-z0-9_-]{2,18}$/.test(nick)||!message)return;
-  let reason="";if(badWords.test(message))reason="That language isn't allowed here. Keep it kind.";else if(email.test(message)||phone.test(message)||social.test(message)||address.test(message))reason="Please don't share phone numbers, email addresses, social handles or addresses. Keep personal details private.";
-  if(reason){strikes++;input.value="";add("Message blocked by the demo safety filter.","system");status.textContent="⚠️ "+reason+" Strike "+strikes+" of 3.";if(strikes>=3)setLocked();return;}
-  strikes=0;add(message,"local",nick);input.value="";status.textContent="Looks good — added to this page only. No one else can see it.";
- }
- document.querySelectorAll(".room").forEach(b=>b.addEventListener("click",()=>loadRoom(b.dataset.room)));
- nickname.addEventListener("input",()=>{const ok=/^[A-Za-z0-9_-]{2,18}$/.test(nickname.value.trim());input.disabled=!ok||locked;send.disabled=!ok||locked;status.textContent=ok?"Demo nickname ready. Safety filters are demo-only; nothing is transmitted or stored.":"Use 2–18 letters, numbers, _ or - for a made-up nickname.";});
- send.addEventListener("click",sendDemo);input.addEventListener("keydown",e=>{if(e.key==="Enter")sendDemo()});
- document.getElementById("clearButton").addEventListener("click",()=>{loadRoom(active);strikes=0;locked=false;nickname.disabled=false;input.disabled=true;send.disabled=true;status.textContent="Demo reset. Enter a made-up nickname to try again.";});
- document.getElementById("rulesButton").addEventListener("click",()=>{status.textContent="Be kind. No swearing, bullying, hate, sexual content, threats, personal details, contact sharing or spam. Filters in this preview are only a demonstration."});
- document.getElementById("reportButton").addEventListener("click",()=>{status.textContent="Demo only: no report is submitted. A live service needs a real, monitored reporting and escalation process."});
+"use strict";
+const $=id=>document.getElementById(id);
+const nickname=$("nickname"),input=$("messageInput"),send=$("sendButton"),messages=$("messages"),status=$("status"),join=$("joinButton");
+const STORE="sanza_chat_beta_session_v1",BLOCK="sanza_chat_beta_blocks_v1";
+let session=null,me=null,busy=false,polling=false,renderKey="";
+let blocked=[];
+try{blocked=JSON.parse(localStorage.getItem(BLOCK)||"[]");if(!Array.isArray(blocked))blocked=[]}catch(_){blocked=[]}
+function info(t){status.textContent=t}
+function setJoined(yes){nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes}
+function save(){if(session&&me)localStorage.setItem(STORE,JSON.stringify({session,me}))}
+function clear(){session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
+function api(action,data={},auth=true){const headers={"Content-Type":"application/json"};if(auth&&session)headers.Authorization="Bearer "+session.access_token;return fetch("/api/chat",{method:"POST",headers,body:JSON.stringify({action,...data}),cache:"no-store"}).then(async r=>{let j={};try{j=await r.json()}catch(_){}if(!r.ok)throw new Error(j.error||"Chat request failed ("+r.status+").");return j})}
+async function refresh(){if(!session||!session.refresh_token)throw Error("Session expired.");const result=await api("refresh",{refresh_token:session.refresh_token},false);session=result.session;save()}
+async function call(action,data={}){try{return await api(action,data)}catch(e){if(/expired|sign in|401/i.test(e.message)&&session?.refresh_token){await refresh();return api(action,data)}throw e}}
+function show(items){const key=JSON.stringify([items.map(m=>[m.id,m.content]),blocked]);if(key===renderKey)return;renderKey=key;messages.replaceChildren();if(!items.length){const row=document.createElement("div");row.className="msg system";row.textContent="No messages yet. Be the first to say howaya!";messages.append(row)}
+for(const m of items){if(blocked.includes(m.nickname.toLowerCase()))continue;const row=document.createElement("div");row.className="msg";const time=document.createElement("span");time.className="time";time.textContent=new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const nick=document.createElement("span");nick.className="nick";nick.textContent=m.nickname;const body=document.createElement("span");body.textContent=m.content;row.append(time,nick,body);if(m.user_id!==me?.id){const report=document.createElement("button");report.className="soft";report.style.marginLeft="8px";report.textContent="Report";report.addEventListener("click",()=>reportMessage(m));row.append(report)}messages.append(row)}messages.scrollTop=messages.scrollHeight}
+async function load(){if(!session||polling||document.hidden)return;polling=true;try{const r=await call("list");show(r.messages||[])}catch(e){info(e.message)}finally{polling=false}}
+async function reportMessage(m){const reason=prompt("Why are you reporting this message? (No personal information)");if(!reason?.trim())return;try{await call("report",{message_id:m.id,reason:reason.trim().slice(0,500)});info("Report sent to moderators. Thank you.")}catch(e){info(e.message)}}
+join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick},false);session=r.session;me=r.user;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");await load()}catch(e){info(e.message);join.disabled=false}finally{busy=false}});
+async function sendMessage(){if(!session||busy)return;const content=input.value.trim();if(!content)return;busy=true;send.disabled=true;try{await call("send",{content});input.value="";info("Message sent.");await load()}catch(e){info(e.message)}finally{busy=false;send.disabled=false}}
+send.addEventListener("click",sendMessage);input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage()}});
+$("rulesButton").addEventListener("click",()=>info("Be kind. No abuse, slurs, sexual content, bullying, threats, links, contact details or spam. Report anything worrying."));
+$("reportButton").addEventListener("click",()=>info("Tap Report beside a message to submit it to moderators."));
+$("blockButton").addEventListener("click",()=>{const nick=prompt("Nickname to hide on this device:");if(!nick)return;const n=nick.trim().toLowerCase();if(n===me?.nickname?.toLowerCase())return;blocked=[...new Set([...blocked,n])];localStorage.setItem(BLOCK,JSON.stringify(blocked));renderKey="";load();info("Messages from "+nick+" will be hidden on this device.")});
+$("clearButton").addEventListener("click",()=>{if(confirm("Leave this chat on this device? Anonymous sessions cannot be recovered after clearing."))clear()});
+$("roomTopic").textContent="Real messages for invited beta testers only";
+$("roomName").textContent="#sanza";
+try{const old=JSON.parse(localStorage.getItem(STORE)||"null");if(old?.session?.access_token&&old?.me?.id){session=old.session;me=old.me;nickname.value=me.nickname;setJoined(true);info("Welcome back, "+me.nickname+".");load()}}catch(_){localStorage.removeItem(STORE)}
+setInterval(load,5000);
 })();
 </script>
 </body>
