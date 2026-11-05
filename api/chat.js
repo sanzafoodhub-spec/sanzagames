@@ -5,6 +5,8 @@
 
 const ROOM_ID = "0d17bbf7-8bf1-4766-a9a0-c6658e086e8c";
 const MAX_MESSAGE_LENGTH = 500;
+const MIN_SEND_INTERVAL_MS = 2500;
+const MAX_SENDS_PER_MINUTE = 12;
 const NICK_RE = /^[A-Za-z0-9_]{3,18}$/;
 // Preview-only strict family chat filter. Review false positives before public launch.
 const BLOCKED_WORDS = [
@@ -246,6 +248,9 @@ module.exports = async function handler(req, res) {
     const member = await membership(config, user.id);
     if (!member) return reply(res, 403, { error: "You are not an active member of this chat room." });
 
+    const admin = await isAdmin(config, user.id);
+    if (action === "whoami") return reply(res, 200, { admin });
+
     // A heartbeat is only sent while the tab is visible. Online means seen within 75 seconds.
     if (action === "presence") {
       const updated = await supa(config,
@@ -282,13 +287,23 @@ module.exports = async function handler(req, res) {
         "&order=nickname.asc&limit=100", {}, true);
       const online = onlineResult.ok && Array.isArray(onlineResult.data)
         ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
-      return reply(res, 200, { messages: messages.map(m => ({
+      return reply(res, 200, { admin, messages: messages.map(m => ({
         id: m.id, user_id: m.user_id, nickname: names[m.user_id] || "Member",
         content: m.content, created_at: m.created_at
       })), online });
     }
 
     if (action === "send") {
+      const cutoff = new Date(Date.now()-60000).toISOString();
+      const recent = await supa(config,
+        "/rest/v1/chat_messages?select=created_at&room_id=eq."+ROOM_ID+
+        "&user_id=eq."+encodeURIComponent(user.id)+"&created_at=gte."+encodeURIComponent(cutoff)+
+        "&order=created_at.desc&limit=13",{},true);
+      if(!recent.ok) return reply(res,503,{error:"Message safety check unavailable. Please try again."});
+      const timestamps=Array.isArray(recent.data)?recent.data:[];
+      if(timestamps.length>=MAX_SENDS_PER_MINUTE) return reply(res,429,{error:"Slow down! Maximum 12 messages per minute."});
+      if(timestamps.length&&Date.now()-new Date(timestamps[0].created_at).getTime()<MIN_SEND_INTERVAL_MS)
+        return reply(res,429,{error:"Please wait a couple of seconds between messages."});
       const checked = cleanMessage(body.content);
       if (!checked.ok) return reply(res, 400, { error: checked.error });
       const inserted = await supa(config, "/rest/v1/chat_messages", {
@@ -316,7 +331,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === "admin_reports" || action === "hide_message" || action === "suspend_member") {
-      if (!await isAdmin(config, user.id)) return reply(res, 403, { error: "Admin access required." });
+      if (!admin) return reply(res, 403, { error: "Admin access required." });
       if (action === "admin_reports") {
         const reports = await supa(config,
           "/rest/v1/chat_reports?select=id,room_id,message_id,reporter_id,reason,created_at&room_id=eq." +
@@ -340,6 +355,7 @@ module.exports = async function handler(req, res) {
         if (!/^[0-9a-f-]{36}$/i.test(targetId) || targetId === user.id) {
           return reply(res, 400, { error: "Invalid member." });
         }
+        if (await isAdmin(config,targetId)) return reply(res,403,{error:"Cannot suspend another administrator."});
         const suspended = await supa(config,
           "/rest/v1/chat_members?room_id=eq." + ROOM_ID + "&user_id=eq." + encodeURIComponent(targetId), {
             method: "PATCH", headers: { Prefer: "return=minimal" },
