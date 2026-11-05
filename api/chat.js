@@ -246,6 +246,18 @@ module.exports = async function handler(req, res) {
     const member = await membership(config, user.id);
     if (!member) return reply(res, 403, { error: "You are not an active member of this chat room." });
 
+    // A heartbeat is only sent while the tab is visible. Online means seen within 75 seconds.
+    if (action === "presence") {
+      const updated = await supa(config,
+        "/rest/v1/chat_members?room_id=eq." + ROOM_ID + "&user_id=eq." + encodeURIComponent(user.id) + "&is_active=eq.true", {
+          method: "PATCH",
+          headers: { Prefer: "return=minimal" },
+          body: { last_seen_at: new Date().toISOString() }
+        }, true);
+      if (!updated.ok) return reply(res, 503, { error: "Online status is not configured yet." });
+      return reply(res, 200, { ok: true });
+    }
+
     if (action === "list") {
       const messagesResult = await supa(config,
         "/rest/v1/chat_messages?select=id,room_id,user_id,content,created_at&room_id=eq." +
@@ -263,10 +275,17 @@ module.exports = async function handler(req, res) {
           for (const item of membersResult.data) names[item.user_id] = item.nickname || "Member";
         }
       }
+      const cutoff = new Date(Date.now() - 75000).toISOString();
+      const onlineResult = await supa(config,
+        "/rest/v1/chat_members?select=nickname&room_id=eq." + ROOM_ID +
+        "&is_active=eq.true&last_seen_at=gte." + encodeURIComponent(cutoff) +
+        "&order=nickname.asc&limit=100", {}, true);
+      const online = onlineResult.ok && Array.isArray(onlineResult.data)
+        ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
       return reply(res, 200, { messages: messages.map(m => ({
         id: m.id, user_id: m.user_id, nickname: names[m.user_id] || "Member",
         content: m.content, created_at: m.created_at
-      })) });
+      })), online });
     }
 
     if (action === "send") {
