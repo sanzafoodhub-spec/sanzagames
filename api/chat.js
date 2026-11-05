@@ -11,7 +11,7 @@ const NICK_RE = /^[A-Za-z0-9_]{3,18}$/;
 // Preview-only strict family chat filter. Review false positives before public launch.
 const BLOCKED_WORDS = [
   "fuck","fucking","fucker","shit","shitty","bitch","cunt","asshole","arsehole",
-  "bastard","wanker","twat","prick","dickhead","motherfucker","slut","whore",
+  "bastard","wanker","twat","prick","dickhead","dick","penis","penus","vagina","vagins","ass","arse","pussy","motherfucker","slut","whore",
   "sex","sexy","porn","porno","pornography","nude","nudes","naked","horny",
   "nigger","nigga","niga","niger","nga","negro","coon","golliwog","paki","pakis",
   "raghead","towelhead","chink","gook","spic","wetback","kike","wog",
