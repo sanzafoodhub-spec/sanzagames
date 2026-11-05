@@ -43,7 +43,7 @@ a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-
 <div class="identity"><div class="field"><label for="nickname">CHOOSE YOUR NICKNAME</label><input id="nickname" maxlength="18" autocomplete="off" placeholder="e.g. GarlicNaanFan"></div><small>3–18 letters, numbers or underscores. Nicknames are visible to others. Losing browser data may lose your nickname session.</small></div>
 <div class="messages" id="messages" aria-live="polite"><div class="msg system">Join with a nickname to see the real conversation.</div></div>
 <div class="composer"><input id="messageInput" maxlength="500" placeholder="Type a message…" aria-label="Chat message" disabled><button id="sendButton" disabled>Send ↗</button></div>
-<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT MESSAGE</button><button class="soft" id="clearButton">LEAVE ON THIS DEVICE</button><button class="soft" id="blockButton">BLOCK NICKNAME</button></div>
+<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT MESSAGE</button><button class="soft" id="clearButton">LEAVE ON THIS DEVICE</button><button class="soft" id="blockButton">BLOCK NICKNAME</button><button class="soft" id="soundButton" type="button" aria-pressed="false">🔇 SOUND OFF</button></div>
 <div class="status" id="status" role="status">Enter a nickname and tap Join.</div>
 <div style="padding:0 16px 12px;background:#111720"><div id="turnstileBox" style="margin-bottom:10px;min-height:65px"></div><p id="turnstileHelp" hidden style="color:#ffe8a5;font-size:12px;line-height:1.5">On iPhone Safari, try turning off content blockers for this website using the page menu, then reload. If using a VPN or iCloud Private Relay, temporarily turn it off for this test. CAPTCHA remains required.</p><button class="soft" id="joinButton">JOIN #SANZA</button></div>
 </div></section>
@@ -61,6 +61,31 @@ const nickname=$("nickname"),input=$("messageInput"),send=$("sendButton"),messag
 const STORE="sanza_chat_beta_session_v1",BLOCK="sanza_chat_beta_blocks_v1";
 let session=null,me=null,busy=false,polling=false,renderKey="",captchaToken="";
 let captchaAttempts=0,captchaWidgetId=null,lastPresence=0;
+let soundEnabled=false,audioCtx=null,onlineBaseline=null,messageBaseline=null,lastSoundAt=0;
+function playTone(kind){
+ if(!soundEnabled||document.hidden||!session||Date.now()-lastSoundAt<450)return;
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+  if(!audioCtx)audioCtx=new Ctx();if(audioCtx.state!=="running")return;
+  const t=audioCtx.currentTime,osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type="sine";osc.frequency.setValueAtTime(kind==="join"?880:620,t);
+  if(kind==="join")osc.frequency.setValueAtTime(1175,t+0.09);
+  gain.gain.setValueAtTime(0.0001,t);gain.gain.exponentialRampToValueAtTime(0.07,t+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t+(kind==="join"?0.27:0.15));
+  osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+(kind==="join"?0.28:0.16));
+  lastSoundAt=Date.now();
+ }catch(_){}
+}
+$("soundButton").addEventListener("click",async()=>{
+ soundEnabled=!soundEnabled;
+ if(soundEnabled){
+  try{const Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx){if(!audioCtx)audioCtx=new Ctx();await audioCtx.resume()}}catch(_){}
+  info("Sounds on: ding for new people, pop for messages.");
+ }else info("Chat sounds muted.");
+ $("soundButton").textContent=soundEnabled?"🔔 SOUND ON":"🔇 SOUND OFF";
+ $("soundButton").setAttribute("aria-pressed",String(soundEnabled));
+});
+
 function mountCaptcha(){
   if(!window.turnstile){
     if(++captchaAttempts<=35){setTimeout(mountCaptcha,400);return}
@@ -82,17 +107,17 @@ try{blocked=JSON.parse(localStorage.getItem(BLOCK)||"[]");if(!Array.isArray(bloc
 function info(t){status.textContent=t}
 function setJoined(yes){nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes}
 function save(){if(session&&me)localStorage.setItem(STORE,JSON.stringify({session,me}))}
-function clear(){$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
+function clear(){onlineBaseline=null;messageBaseline=null;$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
 function api(action,data={},auth=true){const headers={"Content-Type":"application/json"};if(auth&&session)headers.Authorization="Bearer "+session.access_token;return fetch("/api/chat",{method:"POST",headers,body:JSON.stringify({action,...data}),cache:"no-store"}).then(async r=>{let j={};try{j=await r.json()}catch(_){}if(!r.ok)throw new Error(j.error||"Chat request failed ("+r.status+").");return j})}
 async function refresh(){if(!session||!session.refresh_token)throw Error("Session expired.");const result=await api("refresh",{refresh_token:session.refresh_token},false);session=result.session;save()}
 async function call(action,data={}){try{return await api(action,data)}catch(e){if(/expired|sign in|401/i.test(e.message)&&session?.refresh_token){await refresh();return api(action,data)}throw e}}
-function showOnline(online){if(!Array.isArray(online)){$("onlineCount").textContent="● Online now: unavailable";$("onlineNames").textContent="Presence setup pending";return} $("onlineCount").textContent="● Online now: "+online.length;$("onlineNames").textContent=online.length?online.join(" · "):"No active users";}
+function showOnline(online){if(!Array.isArray(online)){$("onlineCount").textContent="● Online now: unavailable";$("onlineNames").textContent="Presence setup pending";return} $("onlineCount").textContent="● Online now: "+online.length;$("onlineNames").textContent=online.length?online.join(" · "):"No active users";const now=new Set(online.map(n=>String(n).toLowerCase()));if(onlineBaseline!==null&&[...now].some(n=>!onlineBaseline.has(n)&&n!==me?.nickname?.toLowerCase()))playTone("join");onlineBaseline=now;}
 async function heartbeat(){if(!session||document.hidden||Date.now()-lastPresence<18000)return;lastPresence=Date.now();try{await call("presence")}catch(e){lastPresence=0;}}
 function show(items){const key=JSON.stringify([items.map(m=>[m.id,m.content]),blocked]);if(key===renderKey)return;renderKey=key;messages.replaceChildren();if(!items.length){const row=document.createElement("div");row.className="msg system";row.textContent="No messages yet. Be the first to say howaya!";messages.append(row)}
 for(const m of items){if(blocked.includes(m.nickname.toLowerCase()))continue;const row=document.createElement("div");row.className="msg";const time=document.createElement("span");time.className="time";time.textContent=new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const nick=document.createElement("span");nick.className="nick";nick.textContent=m.nickname;const body=document.createElement("span");body.textContent=m.content;row.append(time,nick,body);if(m.user_id!==me?.id){const report=document.createElement("button");report.className="soft";report.style.marginLeft="8px";report.textContent="Report";report.addEventListener("click",()=>reportMessage(m));row.append(report)}messages.append(row)}messages.scrollTop=messages.scrollHeight}
-async function load(){if(!session||polling||document.hidden)return;polling=true;try{await heartbeat();const r=await call("list");show(r.messages||[]);showOnline(r.online)}catch(e){info(e.message)}finally{polling=false}}
+async function load(){if(!session||polling||document.hidden)return;polling=true;try{await heartbeat();const r=await call("list");const items=r.messages||[];const ids=new Set(items.map(m=>String(m.id)));if(messageBaseline!==null&&items.some(m=>!messageBaseline.has(String(m.id))&&m.user_id!==me?.id&&!blocked.includes(String(m.nickname).toLowerCase())))playTone("message");messageBaseline=ids;show(items);showOnline(r.online)}catch(e){info(e.message)}finally{polling=false}}
 async function reportMessage(m){const reason=prompt("Why are you reporting this message? (No personal information)");if(!reason?.trim())return;try{await call("report",{message_id:m.id,reason:reason.trim().slice(0,500)});info("Report sent to moderators. Thank you.")}catch(e){info(e.message)}}
-join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}if(!captchaToken){info("Complete the CAPTCHA check first.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick,captcha_token:captchaToken},false);session=r.session;me=r.user;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");await load()}catch(e){info(e.message);join.disabled=false;captchaToken="";if(window.turnstile&&captchaWidgetId!==null)window.turnstile.reset(captchaWidgetId)}finally{busy=false}});
+join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}if(!captchaToken){info("Complete the CAPTCHA check first.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick,captcha_token:captchaToken},false);session=r.session;me=r.user;onlineBaseline=null;messageBaseline=null;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");await load()}catch(e){info(e.message);join.disabled=false;captchaToken="";if(window.turnstile&&captchaWidgetId!==null)window.turnstile.reset(captchaWidgetId)}finally{busy=false}});
 async function sendMessage(){if(!session||busy)return;const content=input.value.trim();if(!content)return;busy=true;send.disabled=true;try{await call("send",{content});input.value="";info("Message sent.");await load()}catch(e){info(e.message)}finally{busy=false;send.disabled=false}}
 send.addEventListener("click",sendMessage);input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage()}});
 $("rulesButton").addEventListener("click",()=>info("Be kind. No abuse, slurs, sexual content, bullying, threats, links, contact details or spam. Report anything worrying."));
