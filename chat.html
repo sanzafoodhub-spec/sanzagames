@@ -43,7 +43,7 @@ a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-
 <div class="identity"><div class="field"><label for="nickname">CHOOSE YOUR NICKNAME</label><input id="nickname" maxlength="18" autocomplete="off" placeholder="e.g. GarlicNaanFan"></div><small>3–18 letters, numbers or underscores. Nicknames are visible to others. Losing browser data may lose your nickname session.</small></div>
 <div class="messages" id="messages" aria-live="polite"><div class="msg system">Join with a nickname to see the real conversation.</div></div>
 <div class="composer"><input id="messageInput" maxlength="500" placeholder="Type a message…" aria-label="Chat message" disabled><button id="sendButton" disabled>Send ↗</button></div>
-<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT MESSAGE</button><button class="soft" id="clearButton">LEAVE ON THIS DEVICE</button><button class="soft" id="blockButton">BLOCK NICKNAME</button><button class="soft" id="soundButton" type="button" aria-pressed="false">🔇 SOUND OFF</button></div>
+<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT MESSAGE</button><button class="soft" id="clearButton">LEAVE ON THIS DEVICE</button><button class="soft" id="blockButton">BLOCK NICKNAME</button><button class="soft" id="soundButton" type="button" aria-pressed="false">🔇 SOUND OFF</button><button class="soft" id="testSoundButton" type="button">🔊 TEST SOUNDS</button></div>
 <div class="status" id="status" role="status">Enter a nickname and tap Join.</div>
 <div style="padding:0 16px 12px;background:#111720"><div id="turnstileBox" style="margin-bottom:10px;min-height:65px"></div><p id="turnstileHelp" hidden style="color:#ffe8a5;font-size:12px;line-height:1.5">On iPhone Safari, try turning off content blockers for this website using the page menu, then reload. If using a VPN or iCloud Private Relay, temporarily turn it off for this test. CAPTCHA remains required.</p><button class="soft" id="joinButton">JOIN #SANZA</button></div>
 </div></section>
@@ -76,6 +76,27 @@ function playTone(kind){
   lastSoundAt=Date.now();
  }catch(_){}
 }
+$("testSoundButton").addEventListener("click",async()=>{
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx){info("Sound is not supported on this browser.");return}
+  if(!audioCtx)audioCtx=new Ctx();
+  await audioCtx.resume();
+  const now=audioCtx.currentTime;
+  function beep(freq,start,duration){
+   const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+   osc.type="sine";osc.frequency.value=freq;
+   gain.gain.setValueAtTime(0.0001,start);
+   gain.gain.exponentialRampToValueAtTime(0.07,start+0.015);
+   gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+   osc.connect(gain);gain.connect(audioCtx.destination);
+   osc.start(start);osc.stop(start+duration+0.01);
+  }
+  beep(880,now,0.12);beep(1175,now+0.13,0.15);
+  beep(620,now+0.7,0.16);
+  info("Test playing: BING for new person, then POP for message. Your sound setting stays the same.");
+ }catch(_){info("Unable to play sound. Check phone volume and silent mode.")}
+});
 $("soundButton").addEventListener("click",async()=>{
  soundEnabled=!soundEnabled;
  if(soundEnabled){
