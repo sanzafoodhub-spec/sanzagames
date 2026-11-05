@@ -411,6 +411,7 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   <a class="shortcut shortcut-music" href="music.html"><span aria-hidden="true">🎧</span><span><strong>SanZa Music</strong><small>Listen to your vibe</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-tv" href="tv.html"><span aria-hidden="true">📺</span><span><strong>SanZa TV</strong><small>Official, authorised viewing</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-grinds" href="sanza-grinds.html"><span aria-hidden="true">📚</span><span><strong>Get grinds</strong><small>Learning support</small></span><b aria-hidden="true">↗</b></a>
+  <a class="shortcut shortcut-ideas" href="tiktok-ideas.html"><span aria-hidden="true">💡</span><span><strong>Idea Zone</strong><small>Share your SanZa ideas</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-food" href="https://www.sanzafood.ie/" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">🍔</span><span><strong>Food Hub</strong><small>Menu and ordering</small></span><b aria-hidden="true">↗</b></a>
 </nav>
 <main id="sanza-explore">
@@ -1034,6 +1035,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     window.scrollTo({top:0,behavior:'smooth'});
   }
   function returnToWelcome(e){if(e)e.preventDefault();if(!gate)return;gate.hidden=false;document.body.classList.add('welcome-active');document.dispatchEvent(new Event('sanza:return-yupbro'));window.scrollTo({top:0,behavior:'smooth'});}
+  if(window.location.hash==='#sanza-explore')openSanZa();
   if(enter)enter.addEventListener('click',openSanZa);
   if(home)home.addEventListener('click',returnToWelcome);
   if(explore)explore.addEventListener('click',function(e){e.preventDefault();openSanZa();document.getElementById('sanza-explore')?.scrollIntoView({block:'start',behavior:'smooth'});});
