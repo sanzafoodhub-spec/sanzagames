@@ -1,6 +1,6 @@
 // SanZa Chat preview API — server-side Supabase access only.
 // Required Vercel Preview env vars (scope to branch sanza-chat-preview):
-// SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+// SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, TURNSTILE_SECRET_KEY
 // Never expose the service-role key to browser code.
 
 const ROOM_ID = "0d17bbf7-8bf1-4766-a9a0-c6658e086e8c";
@@ -18,8 +18,9 @@ function getConfig() {
   const url = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
   const anon = process.env.SUPABASE_ANON_KEY || "";
   const service = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-  if (!url || !anon || !service) return null;
-  return { url, anon, service };
+  const turnstile = process.env.TURNSTILE_SECRET_KEY || "";
+  if (!url || !anon || !service || !turnstile) return null;
+  return { url, anon, service, turnstile };
 }
 
 function readBody(req) {
@@ -58,6 +59,23 @@ async function supa(config, path, options = {}, useService = false) {
   let data = null;
   try { data = text ? JSON.parse(text) : null; } catch (_) { data = null; }
   return { ok: response.ok, status: response.status, data };
+}
+
+async function verifyTurnstile(config, token, req) {
+  if (typeof token !== "string" || !token || token.length > 2048) return false;
+  const params = new URLSearchParams({ secret: config.turnstile, response: token });
+  const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  if (ip) params.set("remoteip", ip);
+  const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString()
+  });
+  if (!response.ok) return false;
+  const result = await response.json();
+  return result.success === true &&
+    typeof result.hostname === "string" &&
+    (result.hostname === "sanzagames-preview-git-sanza-chat-preview-sanza3.vercel.app" ||
+      /^sanzagames-preview-[a-z0-9-]+-sanza3\\.vercel\\.app$/.test(result.hostname));
 }
 
 async function authenticate(config, req) {
@@ -124,6 +142,9 @@ module.exports = async function handler(req, res) {
       const nickname = typeof body.nickname === "string" ? body.nickname.trim() : "";
       if (!NICK_RE.test(nickname)) {
         return reply(res, 400, { error: "Use 3–18 letters, numbers or underscores for your nickname." });
+      }
+      if (!await verifyTurnstile(config, body.captcha_token, req)) {
+        return reply(res, 403, { error: "Please complete the CAPTCHA check before joining." });
       }
       const signup = await supa(config, "/auth/v1/signup", {
         method: "POST",
