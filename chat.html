@@ -105,5 +105,6 @@ try{const old=JSON.parse(localStorage.getItem(STORE)||"null");if(old?.session?.a
 mountCaptcha();setInterval(load,5000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){lastPresence=0;load()}});
 })();
 </script>
+<script src="/sanza-quicknav.js" defer></script>
 </body>
 </html>
