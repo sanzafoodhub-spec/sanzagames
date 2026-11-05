@@ -6,7 +6,7 @@
 const ROOM_ID = "0d17bbf7-8bf1-4766-a9a0-c6658e086e8c";
 const MAX_MESSAGE_LENGTH = 500;
 const NICK_RE = /^[A-Za-z0-9_]{3,18}$/;
-const BLOCKED_WORDS = ["fuck", "shit", "bitch", "cunt", "nigger", "faggot"];
+const BLOCKED_WORDS = ["fuck", "shit", "bitch", "cunt", "nigger", "faggot", "sex", "sexy", "bastard"];
 
 function reply(res, status, data) {
   res.setHeader("Cache-Control", "no-store");
