@@ -6,7 +6,40 @@
 const ROOM_ID = "0d17bbf7-8bf1-4766-a9a0-c6658e086e8c";
 const MAX_MESSAGE_LENGTH = 500;
 const NICK_RE = /^[A-Za-z0-9_]{3,18}$/;
-const BLOCKED_WORDS = ["fuck", "shit", "bitch", "cunt", "nigger", "faggot", "sex", "sexy", "bastard"];
+// Preview-only strict family chat filter. Review false positives before public launch.
+const BLOCKED_WORDS = [
+  "fuck","fucking","fucker","shit","shitty","bitch","cunt","asshole","arsehole",
+  "bastard","wanker","twat","prick","dickhead","motherfucker","slut","whore",
+  "sex","sexy","porn","porno","pornography","nude","nudes","naked","horny",
+  "nigger","nigga","niga","niger","nga","negro","coon","golliwog","paki","pakis",
+  "raghead","towelhead","chink","gook","spic","wetback","kike","wog",
+  "faggot","fag","dyke","tranny","homo","homosexual","gay","lesbian","ledbian",
+  "retard","retarded","mongoloid","monkeyboy","blackmonkey","blackmonker",
+  "whitepower","heilhitler","nazis","nazi"
+];
+const BLOCKED_PHRASES = [
+  "black monkey","black monker","go back to your country",
+  "white power","heil hitler","kill yourself","kys","dirty immigrant"
+];
+const LEET = { "0":"o","1":"i","!":"i","3":"e","4":"a","@":"a","5":"s","$":"s","7":"t","+":"t","8":"b" };
+function normalizeChatText(value) {
+  return value.normalize("NFKC").toLowerCase()
+    .replace(/[\u0300-\u036f\u200b-\u200f\u202a-\u202e\u2060\ufeff]/g,"")
+    .replace(/[0134578!@$+]/g,c=>LEET[c]||c);
+}
+function containsBlockedLanguage(value) {
+  const normal=normalizeChatText(value);
+  const words=normal.split(/[^a-z]+/).filter(Boolean);
+  const compact=normal.replace(/[^a-z]/g,"");
+  const compressed=compact.replace(/([a-z])\\1{2,}/g,"$1$1");
+  for (const banned of BLOCKED_WORDS) {
+    if(words.includes(banned)) return true;
+    // Catch separated letters and punctuation within abusive words.
+    if(banned.length>=4 && (compact.includes(banned) || compressed.includes(banned))) return true;
+  }
+  const joined=words.join(" ");
+  return BLOCKED_PHRASES.some(phrase=>joined.includes(phrase)||compact.includes(phrase.replace(/ /g,"")));
+}
 
 function reply(res, status, data) {
   res.setHeader("Cache-Control", "no-store");
@@ -113,9 +146,8 @@ function cleanMessage(value) {
       /(?:\+?\d[\d ()-]{7,}\d)/.test(text)) {
     return { ok: false, error: "Sharing links, contact details and social handles is not allowed." };
   }
-  const lower = text.toLowerCase();
-  if (BLOCKED_WORDS.some(word => new RegExp("(^|[^a-z])" + word + "([^a-z]|$)", "i").test(lower))) {
-    return { ok: false, error: "Please keep the chat respectful." };
+  if (containsBlockedLanguage(text)) {
+    return { ok: false, error: "That language is not allowed in SanZa Chat." };
   }
   return { ok: true, text };
 }
