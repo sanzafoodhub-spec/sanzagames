@@ -306,10 +306,32 @@ module.exports = async function handler(req, res) {
         return reply(res,429,{error:"Please wait a couple of seconds between messages."});
       const checked = cleanMessage(body.content);
       if (!checked.ok) return reply(res, 400, { error: checked.error });
+      let finalText = checked.text;
+      if (body.reply_to !== undefined && body.reply_to !== null) {
+        const replyId = typeof body.reply_to === "string" ? body.reply_to : "";
+        if (!/^[0-9a-f-]{36}$/i.test(replyId)) return reply(res, 400, { error: "Invalid reply target." });
+        const original = await supa(config,
+          "/rest/v1/chat_messages?select=id,user_id,content&room_id=eq." + ROOM_ID +
+          "&id=eq." + encodeURIComponent(replyId) + "&limit=1", {}, true);
+        if (!original.ok) return reply(res, 503, { error: "Couldn't verify the message being replied to." });
+        const target = Array.isArray(original.data) ? original.data[0] : null;
+        if (!target || /^\\[Message (deleted|removed) by /.test(target.content || ""))
+          return reply(res, 400, { error: "That message is no longer available to reply to." });
+        const author = await supa(config,
+          "/rest/v1/chat_members?select=nickname&room_id=eq." + ROOM_ID +
+          "&user_id=eq." + encodeURIComponent(target.user_id) + "&limit=1", {}, true);
+        if (!author.ok) return reply(res, 503, { error: "Couldn't verify the reply author." });
+        const nick = Array.isArray(author.data) && author.data[0] ? author.data[0].nickname : "Member";
+        const excerpt = String(target.content || "").replace(/\\s+/g, " ").slice(0, 70);
+        const prefix = "↪ " + nick + " said: “" + excerpt + "”\\n";
+        if (prefix.length + finalText.length > MAX_MESSAGE_LENGTH)
+          return reply(res, 400, { error: "Reply is too long. Shorten your message." });
+        finalText = prefix + finalText;
+      }
       const inserted = await supa(config, "/rest/v1/chat_messages", {
         method: "POST",
         headers: { Prefer: "return=representation" },
-        body: { room_id: ROOM_ID, user_id: user.id, content: checked.text, created_at: new Date().toISOString() }
+        body: { room_id: ROOM_ID, user_id: user.id, content: finalText, created_at: new Date().toISOString() }
       }, true);
       if (!inserted.ok) return reply(res, 502, { error: "Your message couldn't be sent. Please try again." });
       return reply(res, 201, { message: Array.isArray(inserted.data) ? inserted.data[0] : null });
