@@ -11,7 +11,7 @@ const NICK_RE = /^[A-Za-z0-9_]{3,18}$/;
 // Preview-only strict family chat filter. Review false positives before public launch.
 const BLOCKED_WORDS = [
   "fuck","fucking","fucker","shit","shitty","bitch","cunt","asshole","arsehole",
-  "bastard","wanker","twat","prick","dickhead","dick","penis","penus","vagina","vagins","ass","arse","pussy","motherfucker","slut","whore",
+  "bastard","wanker","wank","wanking","twat","prick","dickhead","dick","diks","dik","penis","penus","pen1s","vagina","vagins","vag","ass","arse","pussy","pussi","motherfucker","motherfuker","fuk","fuker","fucker","fuking","fucking","slut","slapper","whore","hore","hoe","arsehole",
   "sex","sexy","porn","porno","pornography","nude","nudes","naked","horny",
   "nigger","nigga","niga","niger","nga","negro","coon","golliwog","paki","pakis",
   "raghead","towelhead","chink","gook","spic","wetback","kike","wog",
@@ -33,7 +33,7 @@ function containsBlockedLanguage(value) {
   const normal=normalizeChatText(value);
   const words=normal.split(/[^a-z]+/).filter(Boolean);
   const compact=normal.replace(/[^a-z]/g,"");
-  const compressed=compact.replace(/([a-z])\\1{2,}/g,"$1$1");
+  const compressed=compact.replace(/([a-z])\1{2,}/g,"$1$1");
   for (const banned of BLOCKED_WORDS) {
     if(words.includes(banned)) return true;
     // Catch separated letters and punctuation within abusive words.
