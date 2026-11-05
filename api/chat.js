@@ -315,6 +315,24 @@ module.exports = async function handler(req, res) {
       return reply(res, 201, { message: Array.isArray(inserted.data) ? inserted.data[0] : null });
     }
 
+    if (action === "delete_own_message") {
+      const id=typeof body.message_id==="string"?body.message_id:"";
+      if(!/^[0-9a-f-]{36}$/i.test(id))return reply(res,400,{error:"Invalid message."});
+      const q="/rest/v1/chat_messages?select=id,user_id,created_at,content&room_id=eq."+ROOM_ID+"&id=eq."+encodeURIComponent(id)+"&limit=1";
+      const found=await supa(config,q,{},true);
+      if(!found.ok)return reply(res,503,{error:"Unable to verify message ownership."});
+      const msg=Array.isArray(found.data)?found.data[0]:null;
+      if(!msg||msg.user_id!==user.id)return reply(res,403,{error:"You can only delete your own messages."});
+      const age=Date.now()-new Date(msg.created_at).getTime();
+      if(!Number.isFinite(age)||age<0||age>10*60*1000)return reply(res,403,{error:"You can only delete a message within 10 minutes."});
+      if(msg.content==="[Message deleted by sender]")return reply(res,200,{message:"Already deleted."});
+      const updated=await supa(config,"/rest/v1/chat_messages?room_id=eq."+ROOM_ID+"&id=eq."+encodeURIComponent(id)+"&user_id=eq."+encodeURIComponent(user.id)+"&created_at=gte."+encodeURIComponent(new Date(Date.now()-10*60*1000).toISOString()),{
+        method:"PATCH",headers:{Prefer:"return=representation"},body:{content:"[Message deleted by sender]"}
+      },true);
+      if(!updated.ok||!Array.isArray(updated.data)||updated.data.length!==1)return reply(res,409,{error:"Message could not be deleted. It may be too old."});
+      return reply(res,200,{message:"Message deleted for everyone."});
+    }
+
     if (action === "report") {
       const messageId = typeof body.message_id === "string" ? body.message_id : "";
       const reason = typeof body.reason === "string" ? body.reason.trim().slice(0, 500) : "";
