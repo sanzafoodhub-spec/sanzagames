@@ -318,15 +318,15 @@ module.exports = async function handler(req, res) {
           "&id=eq." + encodeURIComponent(replyId) + "&limit=1", {}, true);
         if (!original.ok) return reply(res, 503, { error: "Couldn't verify the message being replied to." });
         const target = Array.isArray(original.data) ? original.data[0] : null;
-        if (!target || /^\\[Message (deleted|removed) by /.test(target.content || ""))
+        if (!target || /^\[Message (deleted|removed) by /.test(target.content || ""))
           return reply(res, 400, { error: "That message is no longer available to reply to." });
         const author = await supa(config,
           "/rest/v1/chat_members?select=nickname&room_id=eq." + ROOM_ID +
           "&user_id=eq." + encodeURIComponent(target.user_id) + "&limit=1", {}, true);
         if (!author.ok) return reply(res, 503, { error: "Couldn't verify the reply author." });
         const nick = Array.isArray(author.data) && author.data[0] ? author.data[0].nickname : "Member";
-        const excerpt = String(target.content || "").replace(/\\s+/g, " ").slice(0, 70);
-        const prefix = "↪ " + nick + " said: “" + excerpt + "”\\n";
+        const excerpt = String(target.content || "").replace(/\s+/g, " ").slice(0, 70);
+        const prefix = "↪ " + nick + " said: “" + excerpt + "”\n";
         if (prefix.length + finalText.length > MAX_MESSAGE_LENGTH)
           return reply(res, 400, { error: "Reply is too long. Shorten your message." });
         finalText = prefix + finalText;
