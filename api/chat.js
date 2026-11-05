@@ -107,10 +107,13 @@ async function verifyTurnstile(config, token, req) {
   });
   if (!response.ok) return false;
   const result = await response.json();
-  return result.success === true &&
-    typeof result.hostname === "string" &&
-    (result.hostname === "sanzagames-preview-git-sanza-chat-preview-sanza3.vercel.app" ||
-      /^sanzagames-preview-[a-z0-9-]+-sanza3\\.vercel\\.app$/.test(result.hostname));
+  const verifiedHost = typeof result.hostname === "string" ? result.hostname.toLowerCase() : "";
+  const requestHost = String(req.headers.host || "").toLowerCase().split(":")[0];
+  const isPreview = host => host === "sanzagames-preview.vercel.app" ||
+    host === "sanzagames-preview-sanza3.vercel.app" ||
+    /^sanzagames-preview-[a-z0-9-]+-sanza3\.vercel\.app$/.test(host);
+  return result.success === true && isPreview(verifiedHost) &&
+    verifiedHost === requestHost;
 }
 
 async function authenticate(config, req) {
