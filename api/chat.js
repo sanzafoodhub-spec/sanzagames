@@ -43,6 +43,32 @@ function containsBlockedLanguage(value) {
   return BLOCKED_PHRASES.some(phrase=>joined.includes(phrase)||compact.includes(phrase.replace(/ /g,"")));
 }
 
+// Nickname checks run server-side before creating an anonymous account.
+// Keep this separate from message filtering to avoid blocking ordinary names.
+const RESERVED_NICKNAMES = /^(?:admin|administrator|moderator|mod|owner|staff|support|system|sanzaadmin|sanzamod|sanzaowner|official|supabase|vercel|chatbot|security|helpdesk)(?:[0-9_]*)$/i;
+const NICKNAME_ABUSE = [
+  "fuck","fuk","fck","shit","bitch","cunt","wanker","twat","asshole","arsehole",
+  "motherfucker","dickhead","pussy","slut","whore","porn","nude","naked",
+  "nigger","nigga","raghead","towelhead","chink","gook","spic","wetback","kike",
+  "faggot","retard","whitepower","heilhitler","killyourself"
+];
+const NICKNAME_SHORTCUTS = /^(?:kys|stfu|gtfo|wtf|fu|fku|fuk|fck|n1gga|n1gger)(?:[0-9_]*)$/i;
+function validateNickname(value) {
+  if(typeof value!=="string" || !NICK_RE.test(value))
+    return "Use 3–18 letters, numbers or underscores for your nickname.";
+  if(RESERVED_NICKNAMES.test(value) || /^(?:sanza|official|staff|admin|mod)[_0-9]*(?:admin|owner|mod|staff|support)[_0-9]*$/i.test(value))
+    return "That nickname is reserved. Choose another.";
+  const normalized=normalizeChatText(value);
+  const compact=normalized.replace(/[^a-z]/g,"");
+  const squashed=compact.replace(/([a-z])\1+/g,"$1");
+  const chunks=normalized.split(/[^a-z]+/).filter(Boolean);
+  if(NICKNAME_SHORTCUTS.test(value) ||
+     NICKNAME_ABUSE.some(word=>chunks.includes(word) || compact.includes(word) ||
+       (word.length>=4 && squashed.includes(word.replace(/([a-z])\1+/g,"$1")))))
+    return "That nickname is not allowed in SanZa Chat. Choose a friendly one.";
+  return null;
+}
+
 function reply(res, status, data) {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -177,9 +203,8 @@ module.exports = async function handler(req, res) {
     // in the dedicated preview Supabase project's Auth settings.
     if (action === "register") {
       const nickname = typeof body.nickname === "string" ? body.nickname.trim() : "";
-      if (!NICK_RE.test(nickname)) {
-        return reply(res, 400, { error: "Use 3–18 letters, numbers or underscores for your nickname." });
-      }
+      const nicknameError = validateNickname(nickname);
+      if (nicknameError) return reply(res, 400, { error: nicknameError });
       if (!await verifyTurnstile(config, body.captcha_token, req)) {
         return reply(res, 403, { error: "Please complete the CAPTCHA check before joining." });
       }
