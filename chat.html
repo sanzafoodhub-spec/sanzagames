@@ -176,7 +176,7 @@ $("clearButton").addEventListener("click",()=>{if(confirm("Leave this chat on th
 $("roomTopic").textContent="Real messages for invited beta testers only";
 $("roomName").textContent="#sanza";
 try{const old=JSON.parse(localStorage.getItem(STORE)||"null");if(old?.session?.access_token&&old?.me?.id){session=old.session;me=old.me;nickname.value=me.nickname;setJoined(true);info("Welcome back, "+me.nickname+".");load()}}catch(_){localStorage.removeItem(STORE)}
-mountCaptcha();setInterval(load,2000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){lastPresence=0;load()}});
+mountCaptcha();window.addEventListener("load",()=>{if(session)void startRealtime()});setInterval(load,2000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){lastPresence=0;load()}});
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js" defer></script>\n<script src="/sanza-quicknav.js" defer></script>
