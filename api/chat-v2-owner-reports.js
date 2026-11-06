@@ -2,7 +2,7 @@
 // Read-only staging moderation queue. Never connects to legacy chat.
 const {COOKIE_NAME,parseCookies}=require("../v2/owner-session");
 const {findSession}=require("../v2/owner-session-store");
-const {readRole,ROLES}=require("../v2/role-permissions");
+const {readRole,ROLES,ACTIONS,can}=require("../v2/role-permissions");
 module.exports=async function handler(req,res){
  res.setHeader("Cache-Control","no-store");res.setHeader("X-Content-Type-Options","nosniff");
  if(req.method!=="GET"){res.setHeader("Allow","GET");return res.status(405).json({error:"Method not allowed."});}
@@ -13,7 +13,7 @@ module.exports=async function handler(req,res){
   if(!session)return res.status(401).json({error:"Session expired."});
   const base=process.env.CHAT_V2_SUPABASE_URL,key=process.env.CHAT_V2_SUPABASE_SERVICE_ROLE_KEY;
   const role=await readRole({supabaseUrl:base,serviceRoleKey:key,userId:session.owner_user_id});
-  if(role!==ROLES.OWNER)return res.status(403).json({error:"Owner permission required."});
+  if(!can(role,ACTIONS.VIEW_REPORTS))return res.status(403).json({error:"Moderation permission required."});
   if(!/^https:\/\/[^/]+\.supabase\.co\/?$/.test(base||"")||!key)return res.status(503).json({error:"Staging not configured."});
   const response=await fetch(base.replace(/\/$/,"")+"/rest/v1/chat_v2_moderation_reports?select=id,created_at,reason,status,message_excerpt&order=created_at.desc&limit=50",{
    headers:{apikey:key,Authorization:"Bearer "+key,Accept:"application/json"}
