@@ -17,7 +17,7 @@ module.exports=async function handler(req,res){
   if(!can(role,ACTIONS.VIEW_REPORTS))return res.status(403).json({error:"Moderation permission required."});
   if(!/^https:\/\/[^/]+\.supabase\.co\/?$/.test(base||"")||!key)return res.status(503).json({error:"Staging not configured."});
   const response=await fetch(base.replace(/\/$/,"")+"/rest/v1/chat_v2_moderation_reports?select=id,created_at,reason,status,message_excerpt&order=created_at.desc&limit=50",{
-   headers:{apikey:key,Authorization:"Bearer "+key,Accept:"application/json"}
+   headers:{apikey:key,...(key.startsWith("sb_secret_")?{}:{Authorization:"Bearer "+key}),Accept:"application/json"}
   });
   if(!response.ok)return res.status(503).json({error:"Report queue not configured in staging yet."});
   const rows=await response.json();
