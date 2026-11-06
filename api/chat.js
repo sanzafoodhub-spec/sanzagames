@@ -267,9 +267,17 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === "list") {
-      const messagesResult = await supa(config,
-        "/rest/v1/chat_messages?select=id,room_id,user_id,content,created_at&room_id=eq." +
-        ROOM_ID + "&order=created_at.desc&limit=50", {}, true);
+      // Run independent queries together to reduce round-trip latency.
+      const cutoff = new Date(Date.now() - 75000).toISOString();
+      const [messagesResult, onlineResult] = await Promise.all([
+        supa(config,
+          "/rest/v1/chat_messages?select=id,room_id,user_id,content,created_at&room_id=eq." +
+          ROOM_ID + "&order=created_at.desc&limit=50", {}, true),
+        supa(config,
+          "/rest/v1/chat_members?select=nickname&room_id=eq." + ROOM_ID +
+          "&is_active=eq.true&last_seen_at=gte." + encodeURIComponent(cutoff) +
+          "&order=nickname.asc&limit=100", {}, true)
+      ]);
       if (!messagesResult.ok) return reply(res, 502, { error: "Couldn't load chat messages." });
       const messages = Array.isArray(messagesResult.data) ? messagesResult.data.reverse() : [];
       const ids = Array.from(new Set(messages.map(m => m.user_id).filter(Boolean)));
@@ -283,11 +291,6 @@ module.exports = async function handler(req, res) {
           for (const item of membersResult.data) names[item.user_id] = item.nickname || "Member";
         }
       }
-      const cutoff = new Date(Date.now() - 75000).toISOString();
-      const onlineResult = await supa(config,
-        "/rest/v1/chat_members?select=nickname&room_id=eq." + ROOM_ID +
-        "&is_active=eq.true&last_seen_at=gte." + encodeURIComponent(cutoff) +
-        "&order=nickname.asc&limit=100", {}, true);
       const online = onlineResult.ok && Array.isArray(onlineResult.data)
         ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
       return reply(res, 200, { admin, messages: messages.map(m => ({
