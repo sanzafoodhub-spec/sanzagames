@@ -1,6 +1,7 @@
 // SanZa Chat V2 staging-only owner login. Never import from the working chat API.
-// This route authenticates but intentionally does not issue a session until
-// a revocable server-side session store and CSRF protections are ready.
+// Sessions are issued only after successful staging owner authentication.
+const { issueSessionRecord, sessionCookie } = require("../v2/owner-session");
+const { saveSession } = require("../v2/owner-session-store");
 const { verifyOwnerCredentials } = require("../v2/owner-auth-service");
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const attempts = new Map(); // best-effort per-instance throttle; not a production distributed rate limiter
@@ -39,6 +40,12 @@ module.exports = async function handler(req, res) {
     serviceRoleKey: process.env.CHAT_V2_SUPABASE_SERVICE_ROLE_KEY
   });
   if (!result.ok) return res.status(401).json({ error: "Invalid sign-in credentials." });
-  // No cookie/token returned: authentication alone must not imply an active session.
-  return res.status(503).json({ error: "Owner authentication verified, but secure sessions are not enabled yet." });
+  try {
+    const { token, record } = issueSessionRecord(result.ownerUserId);
+    await saveSession(record);
+    res.setHeader("Set-Cookie", sessionCookie(token));
+    return res.status(200).json({ ok: true });
+  } catch (_) {
+    return res.status(503).json({ error: "Owner sign-in temporarily unavailable." });
+  }
 };
