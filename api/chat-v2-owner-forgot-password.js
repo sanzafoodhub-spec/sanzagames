@@ -22,11 +22,19 @@ module.exports = async function handler(req,res) {
     return res.status(503).json({error:"Recovery is not configured yet."});
   try {
     // The Supabase Auth redirect URL must also be allowlisted in staging Auth settings.
-    await fetch(url.replace(/\/$/,"")+"/auth/v1/recover?redirect_to="+
+    const upstream = await fetch(url.replace(/\/$/,"")+"/auth/v1/recover?redirect_to="+
       encodeURIComponent(origin+"/v2/owner-reset.html"),{
       method:"POST",headers:{apikey:key,"Content-Type":"application/json"},
       body:JSON.stringify({email:email.trim()})
     });
-  } catch (_) { /* Generic response prevents account enumeration. */ }
+    if (upstream.status === 429) return res.status(429).json({error:"Email sending is rate-limited. Please wait before retrying."});
+    if (!upstream.ok) {
+      console.error("V2 recovery provider rejected request; status:", upstream.status);
+      return res.status(503).json({error:"Recovery email could not be requested. Check staging email settings or try later."});
+    }
+  } catch (_) {
+    console.error("V2 recovery provider connection failed");
+    return res.status(503).json({error:"Recovery service temporarily unavailable."});
+  }
   return res.status(200).json({ok:true,message:"If this email is registered, a reset link will arrive shortly."});
 };
