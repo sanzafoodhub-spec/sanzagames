@@ -42,7 +42,8 @@ form.addEventListener("submit",async event=>{
    const result=await response.json().catch(()=>({}));
    if(!response.ok){status.textContent=response.status===401?"Sign-in unsuccessful. Check your Owner email, password and confirmed account.":response.status===429?"Too many attempts. Please try again later.":response.status===403?"Secure request rejected. Reload this page and retry.":response.status===503?"Owner sign-in service temporarily unavailable.":"Sign-in failed. Please try again.";return;}
    form.elements.password.value="";
-   status.textContent="Signed in. Owner dashboard is not yet enabled.";
+   status.textContent="Signed in. Opening Owner dashboard…";
+   location.assign("/v2/owner-dashboard.html");
  }catch(_){
    status.textContent="Unable to reach Owner sign-in. Please try again.";
  }finally{form.elements.password.value="";button.disabled=false}
