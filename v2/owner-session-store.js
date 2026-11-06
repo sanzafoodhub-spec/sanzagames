@@ -17,7 +17,7 @@ async function request(method, query, body) {
   const { base, key } = config();
   const response = await fetch(base + "/rest/v1/" + TABLE + query, {
     method,
-    headers: { apikey: key, Authorization: "Bearer " + key,
+    headers: { apikey: key, ...(key.startsWith("sb_secret_") ? {} : { Authorization: "Bearer " + key }),
       "Content-Type": "application/json", Accept: "application/json",
       Prefer: method === "POST" ? "return=minimal" : "return=representation" },
     ...(body ? { body: JSON.stringify(body) } : {})
