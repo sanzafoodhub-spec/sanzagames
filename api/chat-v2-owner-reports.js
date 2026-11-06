@@ -7,7 +7,7 @@ module.exports=async function handler(req,res){
  res.setHeader("Cache-Control","no-store");res.setHeader("X-Content-Type-Options","nosniff");
  if(req.method!=="GET"){res.setHeader("Allow","GET");return res.status(405).json({error:"Method not allowed."});}
  const cookies=String(req.headers.cookie||"");
- const token=parseCookies(cookies)[COOKIE_NAME] || (cookies.match(/(?:^|;\\s*)__Host-sanza_moderator=([A-Za-z0-9_-]{43})(?:;|$)/)||[])[1];
+ const token=parseCookies(cookies)[COOKIE_NAME] || (cookies.match(/(?:^|;\s*)__Host-sanza_moderator=([A-Za-z0-9_-]{43})(?:;|$)/)||[])[1];
  if(!token)return res.status(401).json({error:"Sign in required."});
  try{
   const session=await findSession(token);
