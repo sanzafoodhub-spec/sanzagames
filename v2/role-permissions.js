@@ -32,13 +32,15 @@ function isUuid(value) {
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
-// Fetch role from the server-side roles table. Fail closed on lookup errors.
+// Fetch role from the staging roles table (user_id, role, granted_at).
+// Revocation in the current staging schema means deleting the moderator row.
+// Fail closed on lookup errors.
 // Do not accept a role supplied by the browser.
 async function readRole({ supabaseUrl, serviceRoleKey, userId, fetchImpl = fetch }) {
   if (!isUuid(userId) || !supabaseUrl || !serviceRoleKey) return ROLES.MEMBER;
   const endpoint = supabaseUrl.replace(/\/$/, "") +
     "/rest/v1/chat_v2_roles?select=role&user_id=eq." +
-    encodeURIComponent(userId) + "&revoked_at=is.null&limit=1";
+    encodeURIComponent(userId) + "&limit=1";
   try {
     const response = await fetchImpl(endpoint, {
       headers: {
