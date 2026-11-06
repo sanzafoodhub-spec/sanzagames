@@ -39,11 +39,11 @@ form.addEventListener("submit",async event=>{
      cache:"no-store",body:JSON.stringify({email,password})
    });
    const result=await response.json().catch(()=>({}));
-   if(!response.ok)throw new Error(result.error||"Owner sign-in is not available yet.");
+   if(!response.ok){status.textContent=response.status===401?"Sign-in unsuccessful. Check your Owner email, password and confirmed account.":response.status===429?"Too many attempts. Please try again later.":response.status===403?"Secure request rejected. Reload this page and retry.":response.status===503?"Owner sign-in service temporarily unavailable.":"Sign-in failed. Please try again.";return;}
    form.elements.password.value="";
    status.textContent="Signed in. Owner dashboard is not yet enabled.";
  }catch(_){
-   status.textContent="Owner sign-in is not enabled in this development build.";
+   status.textContent="Unable to reach Owner sign-in. Please try again.";
  }finally{form.elements.password.value="";button.disabled=false}
 });
 </script></body></html>
