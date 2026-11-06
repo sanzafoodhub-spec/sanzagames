@@ -27,7 +27,8 @@ document.getElementById("forgot").addEventListener("click",async()=>{
  if(!email || !form.elements.email.checkValidity()){status.textContent="Enter your Owner email first.";return;}
  status.textContent="Requesting password reset…";
  try{const response=await fetch("/api/chat-v2-owner-forgot-password",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({email})});
- status.textContent=response.ok?"If this email is registered, a reset link will arrive shortly.":"Password recovery is not available yet.";
+ const result=await response.json().catch(()=>({}));
+ status.textContent=response.ok?"If this email is registered, a reset link will arrive shortly.":response.status===429?"Too many requests. Wait 15 minutes before trying again.":result.error||"Password recovery is temporarily unavailable.";
  }catch(_){status.textContent="Password recovery is not available yet.";}
 });
 form.addEventListener("submit",async event=>{
