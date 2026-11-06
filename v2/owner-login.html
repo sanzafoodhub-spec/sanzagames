@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>SanZa Chat 2.0 | Private Owner Login</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0d0c0a;color:#f7e6ae}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:22px}
+main{width:min(100%,430px);background:#19160f;border:1px solid #8e722d;border-radius:20px;padding:28px;box-shadow:0 20px 70px #0008}
+h1{margin:0 0 8px;font-size:1.65rem}p{line-height:1.5;color:#d5c69c}
+label{display:block;margin:18px 0 7px;font-weight:650}input{width:100%;padding:14px;border-radius:9px;border:1px solid #7e714e;background:#0e0d0b;color:white;font-size:16px}
+button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:9px;background:#e7ba4c;color:#171107;font-size:16px;font-weight:800}
+button:disabled{opacity:.6;cursor:not-allowed}.note{font-size:.87rem}.status{min-height:25px;margin-top:14px}
+</style></head><body><main>
+<h1>👑 SanZa Chat Owner</h1><p>Private management access for SanZa Chat 2.0.</p>
+<form id="login" autocomplete="on">
+<label for="email">Owner email</label><input id="email" name="email" type="email" autocomplete="username" required maxlength="254">
+<label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required>
+<button id="submit" type="submit">Sign in securely</button>
+</form>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+<p class="note">Development interface only. This page is not linked to the public chat. Passwords must be verified by Supabase Auth through a server-side endpoint; this page never stores them.</p>
+</main><script>
+"use strict";
+const form=document.getElementById("login"),status=document.getElementById("status"),button=document.getElementById("submit");
+form.addEventListener("submit",async event=>{
+ event.preventDefault();button.disabled=true;status.textContent="Checking secure login…";
+ const email=form.elements.email.value.trim(),password=form.elements.password.value;
+ try{
+   const response=await fetch("/api/chat-v2-owner-login",{
+     method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",
+     cache:"no-store",body:JSON.stringify({email,password})
+   });
+   const result=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(result.error||"Owner sign-in is not available yet.");
+   form.elements.password.value="";
+   status.textContent="Signed in. Owner dashboard is not yet enabled.";
+ }catch(_){
+   status.textContent="Owner sign-in is not enabled in this development build.";
+ }finally{form.elements.password.value="";button.disabled=false}
+});
+</script></body></html>
