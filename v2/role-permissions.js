@@ -45,7 +45,7 @@ async function readRole({ supabaseUrl, serviceRoleKey, userId, fetchImpl = fetch
     const response = await fetchImpl(endpoint, {
       headers: {
         apikey: serviceRoleKey,
-        Authorization: "Bearer " + serviceRoleKey,
+        ...(serviceRoleKey.startsWith("sb_secret_") ? {} : { Authorization: "Bearer " + serviceRoleKey }),
         Accept: "application/json"
       }
     });
