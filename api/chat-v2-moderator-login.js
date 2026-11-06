@@ -23,8 +23,11 @@ module.exports=async function handler(req,res){
   if(!response.ok)return res.status(401).json({error:"Sign-in unsuccessful."});
   const auth=await response.json();
   if(!auth.user?.id||!auth.user.email_confirmed_at||auth.user.is_anonymous===true)return res.status(401).json({error:"Sign-in unsuccessful."});
-  const role=await readRole({supabaseUrl:base,serviceRoleKey:service,userId:auth.user.id});
-  if(role!==ROLES.MODERATOR)return res.status(403).json({error:"Moderator access required."});
+  const roleResponse=await fetch(base.replace(/\/$/,"")+"/rest/v1/chat_v2_roles?select=role&user_id=eq."+encodeURIComponent(auth.user.id)+"&limit=1",{headers:{apikey:service,...(service.startsWith("sb_secret_")?{}:{Authorization:"Bearer "+service}),Accept:"application/json"}});
+  if(!roleResponse.ok)return res.status(503).json({error:"Moderator role service unavailable.",lookupStatus:roleResponse.status});
+  const roleRows=await roleResponse.json();
+  const role=Array.isArray(roleRows)&&roleRows.length===1?roleRows[0].role:null;
+  if(role!==ROLES.MODERATOR)return res.status(403).json({error:"Authenticated account has no moderator role."});
   const {token,record}=issueSessionRecord(auth.user.id);
   await saveSession(record);
   res.setHeader("Set-Cookie",COOKIE+"="+token+"; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=1800");
