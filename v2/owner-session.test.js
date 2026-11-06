@@ -1,0 +1,20 @@
+// Isolated V2 owner-session unit tests. Run: node v2/owner-session.test.js
+const assert = require("node:assert/strict");
+const s = require("./owner-session");
+const userId = "c3de2327-4a69-400c-9f69-a28634a4f5bf";
+const now = Date.UTC(2026, 10, 6);
+const { token, record } = s.issueSessionRecord(userId, now);
+assert.match(token, /^[A-Za-z0-9_-]{43}$/);
+assert.equal(record.token_hash, s.hashToken(token));
+assert.ok(!JSON.stringify(record).includes(token));
+assert.equal(s.validateSessionRecord(token, record, now + 1000), true);
+assert.equal(s.validateSessionRecord(token, record, now + s.SESSION_TTL_MS), false);
+assert.equal(s.validateSessionRecord(s.newToken(), record, now + 1000), false);
+assert.equal(s.equalHashes(s.hashToken(token), s.hashToken(token)), true);
+assert.equal(s.equalHashes("invalid", s.hashToken(token)), false);
+const cookie = s.sessionCookie(token);
+assert.match(cookie, /HttpOnly; Secure; SameSite=Strict/);
+assert.equal(s.parseCookies(cookie)[s.COOKIE_NAME], token);
+assert.equal(s.parseCookies("other=x")[s.COOKIE_NAME], undefined);
+assert.match(s.clearSessionCookie(), /Max-Age=0/);
+console.log("SanZa Chat V2: owner-session unit tests passed");
