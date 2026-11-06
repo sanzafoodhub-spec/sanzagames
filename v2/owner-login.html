@@ -16,11 +16,20 @@ button:disabled{opacity:.6;cursor:not-allowed}.note{font-size:.87rem}.status{min
 <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required>
 <button id="submit" type="submit">Sign in securely</button>
 </form>
+<button id="forgot" type="button" style="background:transparent;color:#f7e6ae;border:1px solid #8e722d;margin-top:12px">Forgot password?</button>
 <p id="status" class="status" role="status" aria-live="polite"></p>
 <p class="note">Development interface only. This page is not linked to the public chat. Passwords must be verified by Supabase Auth through a server-side endpoint; this page never stores them.</p>
 </main><script>
 "use strict";
 const form=document.getElementById("login"),status=document.getElementById("status"),button=document.getElementById("submit");
+document.getElementById("forgot").addEventListener("click",async()=>{
+ const email=form.elements.email.value.trim();
+ if(!email || !form.elements.email.checkValidity()){status.textContent="Enter your Owner email first.";return;}
+ status.textContent="Requesting password reset…";
+ try{const response=await fetch("/api/chat-v2-owner-forgot-password",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({email})});
+ status.textContent=response.ok?"If this email is registered, a reset link will arrive shortly.":"Password recovery is not available yet.";
+ }catch(_){status.textContent="Password recovery is not available yet.";}
+});
 form.addEventListener("submit",async event=>{
  event.preventDefault();button.disabled=true;status.textContent="Checking secure login…";
  const email=form.elements.email.value.trim(),password=form.elements.password.value;
