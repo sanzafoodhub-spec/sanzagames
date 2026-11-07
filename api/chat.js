@@ -21,7 +21,14 @@ const BLOCKED_WORDS = [
 ];
 const BLOCKED_PHRASES = [
   "black monkey","black monker","go back to your country",
-  "white power","heil hitler","kill yourself","kys","dirty immigrant"
+  "white power","heil hitler","kill yourself","kys","dirty immigrant",
+  "go kill yourself","you should die","you should kill yourself","nobody wants you alive",
+  "go die","drop dead","i will kill you","im going to kill you",
+  "send nudes","show me nudes","send naked pics","show your private parts",
+  "i will rape you","rape you","sexual assault","child porn","child pornography",
+  "you are worthless","everyone hates you","nobody likes you","you dont belong here",
+  "go back where you came from","dirty foreigner","dirty muslim","dirty jew",
+  "shut up loser","ugly freak","stupid idiot"
 ];
 const LEET = { "0":"o","1":"i","!":"i","3":"e","4":"a","@":"a","5":"s","$":"s","7":"t","+":"t","8":"b" };
 function normalizeChatText(value) {
@@ -50,7 +57,11 @@ const NICKNAME_ABUSE = [
   "fuck","fuk","fck","shit","bitch","cunt","wanker","twat","asshole","arsehole",
   "motherfucker","dickhead","pussy","slut","whore","porn","nude","naked",
   "nigger","nigga","raghead","towelhead","chink","gook","spic","wetback","kike",
-  "faggot","retard","whitepower","heilhitler","killyourself"
+  "faggot","retard","whitepower","heilhitler","killyourself",
+  "kys","suicide","suicidal","selfharm","selfharmtips","cutyourself",
+  "bully","bullying","loser","uglyfreak","kill","murder","rape","rapist",
+  "nudes","sexting","sext","pedo","pedophile","groomer","racist","racism",
+  "hateall","die","deathwish","nobodylikesyou","worthless"
 ];
 const NICKNAME_SHORTCUTS = /^(?:kys|stfu|gtfo|wtf|fu|fku|fuk|fck|n1gga|n1gger)(?:[0-9_]*)$/i;
 function validateNickname(value) {
@@ -62,7 +73,7 @@ function validateNickname(value) {
   const compact=normalized.replace(/[^a-z]/g,"");
   const squashed=compact.replace(/([a-z])\1+/g,"$1");
   const chunks=normalized.split(/[^a-z]+/).filter(Boolean);
-  if(NICKNAME_SHORTCUTS.test(value) ||
+  if(NICKNAME_SHORTCUTS.test(value) || containsBlockedLanguage(value) ||
      NICKNAME_ABUSE.some(word=>chunks.includes(word) || compact.includes(word) ||
        (word.length>=4 && squashed.includes(word.replace(/([a-z])\1+/g,"$1")))))
     return "That nickname is not allowed in SanZa Chat. Choose a friendly one.";
