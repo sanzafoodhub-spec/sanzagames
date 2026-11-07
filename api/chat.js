@@ -49,6 +49,9 @@ function containsBlockedLanguage(value) {
     if(banned.length>=4 && /[^a-z]/.test(normal) && (compact.includes(banned) || compressed.includes(banned))) return true;
   }
   const joined=words.join(" ");
+  // Detect common misspellings of directed self-harm harassment (e.g. "kill yout self").
+  // Do not flag a standalone help-seeking phrase such as "I feel unsafe".
+  if (/\b(?:kill|k1ll|kll)\s+(?:your|yout|youre|ur|yr|yor)\s*self\b/i.test(value)) return true;
   return BLOCKED_PHRASES.some(phrase=>joined.includes(phrase)||compact.includes(phrase.replace(/ /g,"")));
 }
 
