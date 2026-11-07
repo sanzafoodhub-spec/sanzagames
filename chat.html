@@ -164,7 +164,32 @@ for(const m of items){if(blocked.includes(m.nickname.toLowerCase()))continue;con
 async function load(){if(!session||document.hidden)return;if(polling){reloadQueued=true;return;}polling=true;try{void heartbeat();const r=await call("list");const items=(r.messages||[]).filter(m=>new Date(m.created_at).getTime()>=viewStartedAt);if(typeof r.admin==="boolean"){isModerator=r.admin;$("adminPanel").hidden=!isModerator;}const ids=new Set(items.map(m=>String(m.id)));if(messageBaseline!==null&&items.some(m=>!messageBaseline.has(String(m.id))&&m.user_id!==me?.id&&!blocked.includes(String(m.nickname).toLowerCase())))playTone("message");messageBaseline=ids;show(items);showOnline(r.online)}catch(e){info(e.message)}finally{polling=false;if(reloadQueued){reloadQueued=false;void load()}}}
 async function reportMessage(m){const reason=prompt("Why are you reporting this message? (No personal information)");if(!reason?.trim())return;try{await call("report",{message_id:m.id,reason:reason.trim().slice(0,500)});info("Report sent to moderators. Thank you.")}catch(e){info(e.message)}}
 join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}if(!captchaToken){info("Complete the CAPTCHA check first.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick,captcha_token:captchaToken},false);session=r.session;me=r.user;onlineBaseline=null;messageBaseline=null;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");void startRealtime();await load()}catch(e){info(e.message);join.disabled=false;captchaToken="";if(window.turnstile&&captchaWidgetId!==null)window.turnstile.reset(captchaWidgetId)}finally{busy=false}});
-async function sendMessage(){if(!session||busy)return;const content=input.value.trim();if(!content)return;busy=true;send.disabled=true;try{const result=await call("send",{content,...(replyTo?{reply_to:replyTo.id}:{})});input.value="";setReply(null);if(result.message&&result.message.id){const m=result.message;const row=document.createElement("div");row.className="msg";const time=document.createElement("span");time.className="time";time.textContent=new Date(m.created_at||Date.now()).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const nick=document.createElement("span");nick.className="nick";nick.textContent=me.nickname;const body=document.createElement("span");body.textContent=m.content;row.append(time,nick,body);const empty=messages.querySelector(".msg.system");if(empty)empty.remove();if(!messages.querySelector('[data-message-id="'+m.id+'"]')){row.dataset.messageId=m.id;messages.append(row);messages.scrollTop=messages.scrollHeight;}renderKey="";}info("Message sent.");void load()}catch(e){info(e.message)}finally{busy=false;send.disabled=false}}
+async function sendMessage(){
+ if(!session||busy)return;
+ const content=input.value.trim();if(!content)return;
+ busy=true;send.disabled=true;
+ // Only the sender sees this temporary pending bubble. It is not a published message.
+ const pending=document.createElement("div");pending.className="msg";pending.dataset.pending="true";
+ pending.style.opacity="0.65";
+ const stamp=document.createElement("span");stamp.className="time";stamp.textContent="Sending… ";
+ const nick=document.createElement("span");nick.className="nick";nick.textContent=me.nickname;
+ const body=document.createElement("span");body.textContent=content;
+ pending.append(stamp,nick,body);messages.append(pending);messages.scrollTop=messages.scrollHeight;
+ input.value="";
+ try{
+  const result=await call("send",{content,...(replyTo?{reply_to:replyTo.id}:{})});
+  setReply(null);
+  if(result.message&&result.message.id){
+   const m=result.message;
+   pending.dataset.messageId=m.id;delete pending.dataset.pending;
+   pending.style.opacity="1";
+   stamp.textContent=new Date(m.created_at||Date.now()).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+   body.textContent=m.content;
+  }else{pending.remove();}
+  info("Message sent.");renderKey="";void load();
+ }catch(e){pending.remove();input.value=content;info(e.message)}
+ finally{busy=false;send.disabled=false}
+}
 send.addEventListener("click",sendMessage);input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage()}});
 document.querySelectorAll("[data-emoji]").forEach(button=>button.addEventListener("click",()=>{if(input.disabled){info("Join the room first.");return}input.value=(input.value+" "+button.dataset.emoji).trim().slice(0,500);input.focus()}));
 async function moderate(action,data,question){if(!isModerator||!confirm(question))return;try{const result=await call(action,data);info(result.message||"Action completed.");await load()}catch(e){info(e.message)}}
