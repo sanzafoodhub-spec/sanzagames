@@ -107,6 +107,18 @@ function ipFingerprint(req) {
   if (!secret || secret.length < 32 || !raw || raw.length > 64 || !/^[a-fA-F0-9:.]+$/.test(raw)) return null;
   return crypto.createHmac("sha256", secret).update(raw).digest("hex");
 }
+// Preview registration throttling: shared networks receive a short cooldown, not a blanket ban.
+// Requires the preview-only SQL migration in docs/chat-registration-throttle.sql.
+async function registrationThrottle(config, req) {
+  const hash = ipFingerprint(req);
+  if (!hash) return { error: "Registration protection unavailable." };
+  const check = await supa(config, "/rest/v1/rpc/chat_registration_throttle", {
+    method: "POST", body: { p_ip_hash: hash }
+  }, true);
+  if (!check.ok || !check.data || typeof check.data.allowed !== "boolean")
+    return { error: "Registration protection unavailable." };
+  return check.data.allowed ? null : { error: "Too many new nicknames from this connection. Please try again later.", retry_after: check.data.retry_after || 900 };
+}
 async function activeBan(config, req, userId) {
   const ipHash = ipFingerprint(req);
   if (!ipHash) return { error: "Temporary ban protection unavailable." };
@@ -271,6 +283,8 @@ module.exports = async function handler(req, res) {
       if (!await verifyTurnstile(config, body.captcha_token, req)) {
         return reply(res, 403, { error: "Please complete the CAPTCHA check before joining." });
       }
+      const throttle = await registrationThrottle(config,req);
+      if (throttle) return reply(res,throttle.retry_after ? 429 : 503,{error:throttle.error,retry_after:throttle.retry_after || null});
       const signup = await supa(config, "/auth/v1/signup", {
         method: "POST",
         body: { data: { nickname, age_group: "16plus" } }
