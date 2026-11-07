@@ -17,7 +17,8 @@ const BLOCKED_WORDS = [
   "raghead","towelhead","chink","gook","spic","wetback","kike","wog",
   "faggot","fag","dyke","tranny","homo","homosexual","gay","lesbian","ledbian",
   "retard","retarded","mongoloid","monkeyboy","blackmonkey","blackmonker",
-  "whitepower","heilhitler","nazis","nazi"
+  "whitepower","heilhitler","nazis","nazi",
+  "die","death","suicide","selfharm","kys"
 ];
 const BLOCKED_PHRASES = [
   "black monkey","black monker","go back to your country",
