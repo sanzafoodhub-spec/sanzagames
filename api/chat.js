@@ -1,3 +1,4 @@
+const crypto = require("node:crypto");
 // SanZa Chat preview API — server-side Supabase access only.
 // Required Vercel Preview env vars (scope to branch sanza-chat-preview):
 // SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, TURNSTILE_SECRET_KEY
@@ -96,6 +97,27 @@ function getConfig() {
   return { url, anon, service, turnstile };
 }
 
+// 48-hour temporary bans require the private chat_bans table and CHAT_BAN_HASH_SECRET.
+function ipFingerprint(req) {
+  const secret = process.env.CHAT_BAN_HASH_SECRET;
+  const raw = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  if (!secret || secret.length < 32 || !raw || raw.length > 64 || !/^[a-fA-F0-9:.]+$/.test(raw)) return null;
+  return crypto.createHmac("sha256", secret).update(raw).digest("hex");
+}
+async function activeBan(config, req, userId) {
+  const ipHash = ipFingerprint(req);
+  if (!ipHash) return { error: "Temporary ban protection unavailable." };
+  const now = encodeURIComponent(new Date().toISOString());
+  const filter = userId ? "or=(ip_hash.eq."+ipHash+",user_id.eq."+userId+")" : "ip_hash=eq."+ipHash;
+  const q = "/rest/v1/chat_bans?select=expires_at&"+filter+"&expires_at=gt."+now+"&order=expires_at.desc&limit=1";
+  const found = await supa(config,q,{},true);
+  if (!found.ok) return { error: "Temporary ban protection unavailable." };
+  const row = Array.isArray(found.data) ? found.data[0] : null;
+  return row ? { expires_at: row.expires_at } : null;
+}
+function banReply(res, ban) {
+  return reply(res, ban.error ? 503 : 403, {error:ban.error || "SanZa Chat access is temporarily suspended for 48 hours.", banned_until:ban.expires_at || null});
+}
 function readBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
   if (typeof req.body === "string") {
@@ -214,6 +236,8 @@ module.exports = async function handler(req, res) {
     // Anonymous registration is available only after anonymous sign-ins are enabled
     // in the dedicated preview Supabase project's Auth settings.
     if (action === "register") {
+      const ban = await activeBan(config,req,null);
+      if (ban) return banReply(res,ban);
       const nickname = typeof body.nickname === "string" ? body.nickname.trim() : "";
       const nicknameError = validateNickname(nickname);
       if (nicknameError) return reply(res, 400, { error: nicknameError });
@@ -285,6 +309,8 @@ module.exports = async function handler(req, res) {
 
     const user = await authenticate(config, req);
     if (!user) return reply(res, 401, { error: "Please sign in to SanZa Chat." });
+    const ban = await activeBan(config,req,user.id);
+    if (ban) return banReply(res,ban);
     const member = await membership(config, user.id);
     if (!member) return reply(res, 403, { error: "You are not an active member of this chat room." });
 
@@ -413,7 +439,7 @@ module.exports = async function handler(req, res) {
       return reply(res, 201, { message: "Report submitted to the moderators." });
     }
 
-    if (action === "admin_reports" || action === "hide_message" || action === "suspend_member") {
+    if (action === "admin_reports" || action === "hide_message" || action === "suspend_member" || action === "ban_member_48h") {
       if (!admin) return reply(res, 403, { error: "Admin access required." });
       if (action === "admin_reports") {
         const reports = await supa(config,
@@ -432,6 +458,20 @@ module.exports = async function handler(req, res) {
           }, true);
         if (!hidden.ok) return reply(res, 502, { error: "Couldn't remove that message." });
         return reply(res, 200, { message: "Message removed from the chat." });
+      }
+      if (action === "ban_member_48h") {
+        const targetId = typeof body.user_id === "string" ? body.user_id : "";
+        if (!/^[0-9a-f-]{36}$/i.test(targetId) || targetId === user.id || await isAdmin(config,targetId))
+          return reply(res,400,{error:"Invalid ban target."});
+        // User-based ban immediately takes effect. IP fingerprint is captured only if a
+        // trusted, server-side fingerprint is available for the target in a future session.
+        const expires = new Date(Date.now()+48*60*60*1000).toISOString();
+        const added = await supa(config,"/rest/v1/chat_bans",{
+          method:"POST",headers:{Prefer:"return=minimal"},
+          body:{user_id:targetId,ip_hash:null,expires_at:expires,reason:"Moderator 48-hour suspension"}
+        },true);
+        if (!added.ok) return reply(res,503,{error:"Could not save temporary ban."});
+        return reply(res,200,{message:"Member banned for 48 hours.",banned_until:expires});
       }
       if (action === "suspend_member") {
         const targetId = typeof body.user_id === "string" ? body.user_id : "";
