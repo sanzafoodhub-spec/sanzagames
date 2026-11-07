@@ -115,6 +115,26 @@ async function activeBan(config, req, userId) {
   const row = Array.isArray(found.data) ? found.data[0] : null;
   return row ? { expires_at: row.expires_at } : null;
 }
+// Count rejected abusive messages across serverless instances; fail closed if logging fails.
+async function recordViolation(config, userId, category) {
+  const logged = await supa(config,"/rest/v1/chat_violations",{
+    method:"POST",headers:{Prefer:"return=minimal"},
+    body:{user_id:userId,category,created_at:new Date().toISOString()}
+  },true);
+  if (!logged.ok) return {error:"Safety logging unavailable. Please try later."};
+  const cutoff=encodeURIComponent(new Date(Date.now()-24*60*60*1000).toISOString());
+  const result=await supa(config,"/rest/v1/chat_violations?select=id&user_id=eq."+encodeURIComponent(userId)+"&created_at=gte."+cutoff+"&limit=3",{},true);
+  if (!result.ok) return {error:"Safety check unavailable. Please try later."};
+  const count=Array.isArray(result.data)?result.data.length:0;
+  if (count < 3) return {warning:true};
+  const expires=new Date(Date.now()+48*60*60*1000).toISOString();
+  const ban=await supa(config,"/rest/v1/chat_bans",{
+    method:"POST",headers:{Prefer:"return=minimal"},
+    body:{user_id:userId,ip_hash:null,reason:"Automatic ban: 3 blocked messages in 24 hours",expires_at:expires}
+  },true);
+  if (!ban.ok) return {error:"Automatic safety restriction unavailable."};
+  return {expires_at:expires};
+}
 function banReply(res, ban) {
   return reply(res, ban.error ? 503 : 403, {error:ban.error || "SanZa Chat access is temporarily suspended for 48 hours.", banned_until:ban.expires_at || null});
 }
@@ -374,7 +394,16 @@ module.exports = async function handler(req, res) {
       if(timestamps.length&&Date.now()-new Date(timestamps[0].created_at).getTime()<MIN_SEND_INTERVAL_MS)
         return reply(res,429,{error:"Please wait a couple of seconds between messages."});
       const checked = cleanMessage(body.content);
-      if (!checked.ok) return reply(res, 400, { error: checked.error });
+      if (!checked.ok) {
+        // Only count abusive language, not accidental links, blank messages or length errors.
+        if (checked.error === "That language is not allowed in SanZa Chat.") {
+          const result=await recordViolation(config,user.id,"blocked_language");
+          if (result.error) return reply(res,503,{error:result.error});
+          if (result.expires_at) return reply(res,403,{error:"Automatic 48-hour ban after repeated blocked messages.",banned_until:result.expires_at});
+          return reply(res,400,{error:"Inappropriate message blocked. Repeated violations lead to a 48-hour ban."});
+        }
+        return reply(res,400,{error:checked.error});
+      }
       let finalText = checked.text;
       if (body.reply_to !== undefined && body.reply_to !== null) {
         const replyId = typeof body.reply_to === "string" ? body.reply_to : "";
