@@ -51,7 +51,7 @@ function containsBlockedLanguage(value) {
   const joined=words.join(" ");
   // Detect common misspellings of directed self-harm harassment (e.g. "kill yout self").
   // Do not flag a standalone help-seeking phrase such as "I feel unsafe".
-  if (/\b(?:kill|k1ll|kll)\s+(?:your|yout|youre|ur|yr|yor)\s*self\b/i.test(value)) return true;
+  if (/\b(?:kill|k1ll|kll)\s+(?:your|you|yout|youre|ur|yr|yor)\s*self\b/i.test(value)) return true;
   return BLOCKED_PHRASES.some(phrase=>joined.includes(phrase)||compact.includes(phrase.replace(/ /g,"")));
 }
 
