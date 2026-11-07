@@ -258,6 +258,10 @@ module.exports = async function handler(req, res) {
     if (action === "register") {
       const ban = await activeBan(config,req,null);
       if (ban) return banReply(res,ban);
+      const ageGroup = typeof body.age_group === "string" ? body.age_group : "";
+      if (ageGroup === "under13") return reply(res,403,{error:"SanZa Chat is for ages 13 and over."});
+      if (ageGroup === "13to15") return reply(res,403,{error:"Ages 13–15 cannot join until a verified parental permission process is available."});
+      if (ageGroup !== "16plus") return reply(res,400,{error:"Select your age group before joining."});
       const nickname = typeof body.nickname === "string" ? body.nickname.trim() : "";
       const nicknameError = validateNickname(nickname);
       if (nicknameError) return reply(res, 400, { error: nicknameError });
