@@ -202,7 +202,7 @@ async function authenticate(config, req) {
   if (!match) return null;
   const result = await supa(config, "/auth/v1/user", { token: match[1] });
   if (!result.ok || !result.data || !result.data.id) return null;
-  return { id: result.data.id, token: match[1] };
+  return { id: result.data.id, token: match[1], age_group: result.data.user_metadata && result.data.user_metadata.age_group };
 }
 
 async function membership(config, userId) {
@@ -270,7 +270,7 @@ module.exports = async function handler(req, res) {
       }
       const signup = await supa(config, "/auth/v1/signup", {
         method: "POST",
-        body: { data: { nickname } }
+        body: { data: { nickname, age_group: "16plus" } }
       });
       if (!signup.ok || !signup.data || !signup.data.access_token || !signup.data.user) {
         return reply(res, signup.status === 429 ? 429 : 503, {
@@ -280,7 +280,7 @@ module.exports = async function handler(req, res) {
       const userId = signup.data.user.id;
       const profile = await supa(config, "/auth/v1/admin/users/" + encodeURIComponent(userId), {
         method: "PUT",
-        body: { user_metadata: { nickname } }
+        body: { user_metadata: { nickname, age_group: "16plus" } }
       }, true);
       if (!profile.ok) {
         await supa(config, "/auth/v1/admin/users/" + encodeURIComponent(userId), { method: "DELETE" }, true);
@@ -333,6 +333,7 @@ module.exports = async function handler(req, res) {
 
     const user = await authenticate(config, req);
     if (!user) return reply(res, 401, { error: "Please sign in to SanZa Chat." });
+    if (user.age_group !== "16plus") return reply(res,403,{error:"This older chat session needs to be restarted. Leave this device and join again with the age selection."});
     const ban = await activeBan(config,req,user.id);
     if (ban) return banReply(res,ban);
     const member = await membership(config, user.id);
