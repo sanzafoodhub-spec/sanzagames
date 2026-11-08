@@ -37,3 +37,15 @@ Status: NOT APPROVED FOR PUBLIC LAUNCH. This document is an implementation check
 - Verify suppliers, processing locations, transfer safeguards, lawful bases, actual retention controls and rights-handling.
 - Review accurate public-facing privacy/rules pages, 16+ protections and moderator staffing.
 - Test production configuration and rollback; no production merge before approval.
+
+## Practical privacy inbox workflow (no SQL required to receive requests)
+- In the SanZa Food Hub email inbox, label incoming messages **SanZa Chat / Privacy**; record receipt date, nickname, request category, response due date, verification state, outcome, and any lawful reason for retaining specific records in a restricted-access log.
+- Acknowledge promptly using: "We received your SanZa Chat privacy request. Please do not send passwords or authentication codes. We may ask for limited information to verify the account before taking action. We normally respond within one month."
+- Never promise that a request is completed until the underlying Supabase records and associated report/audit references have been reviewed. Do not delete moderation evidence under active legal hold.
+- Where a request cannot be fulfilled safely with current tooling, log it and escalate to a qualified technical/privacy adviser; do not silently ignore it.
+- Do not store requests or identity evidence in public GitHub issues or repositories.
+
+## Verification status
+- Privacy request instructions added to preview notice. This is documentation/UI only, **not** a working self-service deletion feature.
+- Retention deletion remains OFF. Existing 30-day/90-day periods are proposals, not operating guarantees.
+- Public launch still requires a functioning retention/rights-fulfilment process, documented legal bases, processor/transfer review, age-safety assessment, and required identity disclosures.
