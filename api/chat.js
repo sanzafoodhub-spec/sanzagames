@@ -530,14 +530,31 @@ module.exports = async function handler(req, res) {
       return reply(res, 201, { message: "Report submitted to the moderators." });
     }
 
-    if (action === "admin_reports" || action === "resolve_report" || action === "hide_message" || action === "suspend_member" || action === "ban_member_48h") {
+    if (action === "admin_reports" || action === "resolve_report" || action === "set_report_legal_hold" || action === "hide_message" || action === "suspend_member" || action === "ban_member_48h") {
       if (!admin) return reply(res, 403, { error: "Admin access required." });
       if (action === "admin_reports") {
         const reports = await supa(config,
-          "/rest/v1/chat_reports?select=id,room_id,message_id,reporter_id,reason,created_at,status,resolved_at&room_id=eq." +
+          "/rest/v1/chat_reports?select=id,room_id,message_id,reporter_id,reason,created_at,status,resolved_at,legal_hold,legal_hold_reason&room_id=eq." +
           ROOM_ID + "&order=created_at.desc&limit=100", {}, true);
         if (!reports.ok) return reply(res, 502, { error: "Couldn't load reports." });
         return reply(res, 200, { reports: reports.data });
+      }
+      if (action === "set_report_legal_hold") {
+        const id = typeof body.report_id === "string" ? body.report_id : "";
+        const hold = body.legal_hold;
+        const reason = typeof body.reason === "string" ? body.reason.trim() : "";
+        if (!/^[0-9a-f-]{36}$/i.test(id) || typeof hold !== "boolean" || reason.length<5 || reason.length>500)
+          return reply(res,400,{error:"Report, action and reason (5–500 characters) required."});
+        const scoped = await supa(config,
+          "/rest/v1/chat_reports?select=id&id=eq."+encodeURIComponent(id)+"&room_id=eq."+ROOM_ID+"&limit=1",{},true);
+        if(!scoped.ok || !Array.isArray(scoped.data) || scoped.data.length!==1)
+          return reply(res,404,{error:"Report not found."});
+        const result = await supa(config,"/rest/v1/rpc/chat_set_report_legal_hold",{
+          method:"POST",headers:{Prefer:"return=representation"},
+          body:{p_report_id:id,p_admin_id:user.id,p_new_hold:hold,p_reason:reason}
+        },true);
+        if(!result.ok) return reply(res,503,{error:"Legal hold update failed. Check preview SQL migration."});
+        return reply(res,200,{message:hold?"Legal hold placed and audited.":"Legal hold released and audited."});
       }
       if (action === "resolve_report") {
         const id = typeof body.report_id === "string" ? body.report_id : "";
