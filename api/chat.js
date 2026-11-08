@@ -366,6 +366,42 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    // Preview-only admin email login. Admin rights are verified by Supabase UID,
+    // never by a nickname or an email supplied in the request.
+    if (action === "admin_email_login") {
+      const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+      const password = typeof body.password === "string" ? body.password : "";
+      if (email !== "sanzafoodhub@gmail.com" || !password || password.length > 1024)
+        return reply(res, 401, { error: "Invalid admin credentials." });
+      const signIn = await supa(config, "/auth/v1/token?grant_type=password", {
+        method: "POST", body: { email, password }
+      });
+      if (!signIn.ok || !signIn.data?.access_token || !signIn.data?.user?.id)
+        return reply(res, 401, { error: "Invalid admin credentials." });
+      const id = signIn.data.user.id;
+      if (id !== "68548953-f190-448e-87e4-3a51d84869b7" ||
+          signIn.data.user.email?.toLowerCase() !== email ||
+          !signIn.data.user.email_confirmed_at || !await isAdmin(config,id))
+        return reply(res, 403, { error: "This account is not authorised for admin access." });
+      const existing = await membership(config,id);
+      if (!existing) {
+        const joined = await supa(config, "/rest/v1/chat_members", {
+          method:"POST", headers:{Prefer:"return=minimal"},
+          body:{room_id:ROOM_ID,user_id:id,nickname:"SanZaOwner",is_active:true,joined_at:new Date().toISOString()}
+        },true);
+        if(!joined.ok) return reply(res,503,{error:"Admin chat membership could not be set up. Contact the operator."});
+      }
+      const profile = await supa(config, "/auth/v1/admin/users/"+encodeURIComponent(id), {
+        method:"PUT",body:{user_metadata:{nickname:existing?.nickname||"SanZaOwner",age_group:"16plus"}}
+      },true);
+      if(!profile.ok) return reply(res,503,{error:"Admin profile could not be confirmed."});
+      return reply(res,200,{
+        user:{id,nickname:existing?.nickname||"SanZaOwner"},
+        session:{access_token:signIn.data.access_token,refresh_token:signIn.data.refresh_token,
+          expires_at:signIn.data.expires_at,token_type:signIn.data.token_type}
+      });
+    }
+
     if (action === "refresh") {
       const refreshToken = typeof body.refresh_token === "string" ? body.refresh_token : "";
       if (!refreshToken || refreshToken.length > 4096) {
