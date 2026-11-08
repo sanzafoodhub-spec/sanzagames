@@ -119,6 +119,26 @@ async function registrationThrottle(config, req) {
     return { error: "Registration protection unavailable." };
   return check.data.allowed ? null : { error: "Too many new nicknames from this connection. Please try again later.", retry_after: check.data.retry_after || 900 };
 }
+function deviceFingerprint(body) {
+  const secret=process.env.CHAT_BAN_HASH_SECRET;
+  const id=body && typeof body.device_id==="string" ? body.device_id : "";
+  if(!secret || secret.length<32 || !/^[a-f0-9-]{36}$/i.test(id)) return null;
+  return crypto.createHmac("sha256",secret).update("device:"+id.toLowerCase()).digest("hex");
+}
+async function deviceBan(config,body) {
+  const hash=deviceFingerprint(body);
+  if(!hash) return {error:"Device safety check unavailable."};
+  const q="/rest/v1/chat_bans?select=expires_at&device_hash=eq."+hash+
+    "&expires_at=gt."+encodeURIComponent(new Date().toISOString())+"&limit=1";
+  const found=await supa(config,q,{},true);
+  if(!found.ok) return {error:"Device safety check unavailable."};
+  return found.data && found.data.length ? {expires_at:found.data[0].expires_at} : null;
+}
+async function deviceHashesForUser(config,userId) {
+  const found=await supa(config,"/rest/v1/chat_user_devices?select=device_hash&user_id=eq."+encodeURIComponent(userId),{},true);
+  if(!found.ok) return null;
+  return [...new Set((found.data||[]).map(x=>x.device_hash).filter(Boolean))];
+}
 async function activeBan(config, req, userId) {
   const ipHash = ipFingerprint(req);
   if (!ipHash) return { error: "Temporary ban protection unavailable." };
@@ -147,6 +167,17 @@ async function recordViolation(config, userId, category) {
     method:"POST",headers:{Prefer:"return=minimal"},
     body:{user_id:userId,ip_hash:null,reason:"Automatic ban: 3 blocked messages in 24 hours",expires_at:expires}
   },true);
+  if(ban.ok) {
+    const hashes=await deviceHashesForUser(config,userId);
+    if(hashes===null) return {error:"Device ban lookup unavailable."};
+    for(const hash of hashes) {
+      const linked=await supa(config,"/rest/v1/chat_bans",{
+        method:"POST",headers:{Prefer:"return=minimal"},
+        body:{user_id:userId,ip_hash:null,device_hash:hash,reason:"Automatic device restriction",expires_at:expires}
+      },true);
+      if(!linked.ok) return {error:"Device ban protection unavailable."};
+    }
+  }
   if (!ban.ok) return {error:"Automatic safety restriction unavailable."};
   return {expires_at:expires};
 }
@@ -271,6 +302,8 @@ module.exports = async function handler(req, res) {
     // Anonymous registration is available only after anonymous sign-ins are enabled
     // in the dedicated preview Supabase project's Auth settings.
     if (action === "register") {
+      const deviceBlock=await deviceBan(config,body);
+      if(deviceBlock) return banReply(res,deviceBlock);
       const ban = await activeBan(config,req,null);
       if (ban) return banReply(res,ban);
       const ageGroup = typeof body.age_group === "string" ? body.age_group : "";
@@ -315,6 +348,13 @@ module.exports = async function handler(req, res) {
         }
         return reply(res, 503, { error: "Couldn't join the chat room. Please try again." });
       }
+      const deviceHash=deviceFingerprint(body);
+      if(!deviceHash) return reply(res,503,{error:"Device safety protection unavailable."});
+      const savedDevice=await supa(config,"/rest/v1/chat_user_devices",{
+        method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},
+        body:{user_id:userId,device_hash:deviceHash}
+      },true);
+      if(!savedDevice.ok) return reply(res,503,{error:"Device safety protection unavailable."});
       return reply(res, 201, {
         user: { id: userId, nickname },
         session: {
@@ -517,11 +557,20 @@ module.exports = async function handler(req, res) {
         // User-based ban immediately takes effect. IP fingerprint is captured only if a
         // trusted, server-side fingerprint is available for the target in a future session.
         const expires = new Date(Date.now()+48*60*60*1000).toISOString();
+        const hashes=await deviceHashesForUser(config,targetId);
+        if(hashes===null) return reply(res,503,{error:"Device ban lookup unavailable."});
         const added = await supa(config,"/rest/v1/chat_bans",{
           method:"POST",headers:{Prefer:"return=minimal"},
           body:{user_id:targetId,ip_hash:null,expires_at:expires,reason:"Moderator 48-hour suspension"}
         },true);
         if (!added.ok) return reply(res,503,{error:"Could not save temporary ban."});
+        for(const hash of hashes) {
+          const linked=await supa(config,"/rest/v1/chat_bans",{
+            method:"POST",headers:{Prefer:"return=minimal"},
+            body:{user_id:targetId,ip_hash:null,device_hash:hash,expires_at:expires,reason:"Moderator device restriction"}
+          },true);
+          if(!linked.ok) return reply(res,503,{error:"Account banned, but device restriction couldn't be saved."});
+        }
         return reply(res,200,{message:"Member banned for 48 hours.",banned_until:expires});
       }
       if (action === "suspend_member") {
