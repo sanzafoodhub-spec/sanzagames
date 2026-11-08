@@ -248,7 +248,7 @@ async function authenticate(config, req) {
   if (!match) return null;
   const result = await supa(config, "/auth/v1/user", { token: match[1] });
   if (!result.ok || !result.data || !result.data.id) return null;
-  return { id: result.data.id, token: match[1], age_group: result.data.user_metadata && result.data.user_metadata.age_group };
+  let aal="aal1";try{const payload=JSON.parse(Buffer.from(match[1].split(".")[1],"base64url").toString());aal=payload.aal||"aal1"}catch(_){}return { id: result.data.id, token: match[1], aal, age_group: result.data.user_metadata && result.data.user_metadata.age_group };
 }
 
 async function membership(config, userId) {
@@ -402,6 +402,47 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    // TOTP setup and challenge verification are handled by Supabase Auth.
+    if (["owner_mfa_status","owner_mfa_enroll","owner_mfa_challenge","owner_mfa_verify"].includes(action)) {
+      const auth=await authenticate(config,req);
+      if(!auth||auth.id!=="68548953-f190-448e-87e4-3a51d84869b7"||!await isAdmin(config,auth.id))
+        return reply(res,403,{error:"Owner sign-in required."});
+      const identity=await supa(config,"/auth/v1/user",{token:auth.token});
+      if(!identity.ok)return reply(res,401,{error:"Sign in again."});
+      const factors=Array.isArray(identity.data?.factors)?identity.data.factors:[];
+      const verified=factors.find(f=>f.factor_type==="totp"&&f.status==="verified");
+      if(action==="owner_mfa_status")return reply(res,200,{
+        enrolled:!!verified,factor_id:verified?.id||null,verified_session:auth.aal==="aal2"
+      });
+      if(action==="owner_mfa_enroll"){
+        if(verified)return reply(res,409,{error:"Authenticator already enrolled."});
+        const enrolled=await supa(config,"/auth/v1/factors",{method:"POST",token:auth.token,
+          body:{factor_type:"totp",friendly_name:"SanZa Chat Owner"}});
+        if(!enrolled.ok)return reply(res,400,{error:"Could not start authenticator setup."});
+        return reply(res,200,{factor_id:enrolled.data?.id,qr_code:enrolled.data?.totp?.qr_code,
+          secret:enrolled.data?.totp?.secret});
+      }
+      const factor=typeof body.factor_id==="string"?body.factor_id:"";
+      if(!/^[a-f0-9-]{36}$/i.test(factor))return reply(res,400,{error:"Invalid authenticator."});
+      if(action==="owner_mfa_challenge"){
+        if(!factors.some(f=>f.id===factor&&f.factor_type==="totp"))
+          return reply(res,403,{error:"Unknown authenticator."});
+        const challenge=await supa(config,"/auth/v1/factors/"+encodeURIComponent(factor)+"/challenge",
+          {method:"POST",token:auth.token,body:{}});
+        if(!challenge.ok)return reply(res,400,{error:"Could not start verification."});
+        return reply(res,200,{challenge_id:challenge.data?.id});
+      }
+      const challenge=typeof body.challenge_id==="string"?body.challenge_id:"";
+      const otp=typeof body.code==="string"?body.code:"";
+      if(!challenge||!/^[0-9]{6}$/.test(otp))return reply(res,400,{error:"Enter your six-digit code."});
+      const result=await supa(config,"/auth/v1/factors/"+encodeURIComponent(factor)+"/verify",
+        {method:"POST",token:auth.token,body:{challenge_id:challenge,code:otp}});
+      if(!result.ok||!result.data?.access_token)return reply(res,401,{error:"Incorrect or expired authenticator code."});
+      return reply(res,200,{session:{access_token:result.data.access_token,
+        refresh_token:result.data.refresh_token,expires_at:result.data.expires_at,
+        token_type:result.data.token_type}});
+    }
+
     if (action === "refresh") {
       const refreshToken = typeof body.refresh_token === "string" ? body.refresh_token : "";
       if (!refreshToken || refreshToken.length > 4096) {
@@ -433,7 +474,8 @@ module.exports = async function handler(req, res) {
     if (!member) return reply(res, 403, { error: "You are not an active member of this chat room." });
 
     const admin = await isAdmin(config, user.id);
-    if (action === "whoami") return reply(res, 200, { admin });
+    const adminReady = admin && (user.id!=="68548953-f190-448e-87e4-3a51d84869b7" || user.aal==="aal2");
+    if (action === "whoami") return reply(res, 200, { admin:adminReady });
 
     // A heartbeat is only sent while the tab is visible. Online means seen within 75 seconds.
     if (action === "presence") {
@@ -474,7 +516,7 @@ module.exports = async function handler(req, res) {
       }
       const online = onlineResult.ok && Array.isArray(onlineResult.data)
         ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
-      return reply(res, 200, { admin, messages: messages.map(m => ({
+      return reply(res, 200, { admin:adminReady, messages: messages.map(m => ({
         id: m.id, user_id: m.user_id, nickname: names[m.user_id] || "Member",
         content: m.content, created_at: m.created_at
       })), online });
@@ -567,7 +609,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === "admin_reports" || action === "resolve_report" || action === "set_report_legal_hold" || action === "hide_message" || action === "suspend_member" || action === "ban_member_48h") {
-      if (!admin) return reply(res, 403, { error: "Admin access required." });
+      if (!adminReady) return reply(res, 403, { error: "Admin access required." });
       if (action === "admin_reports") {
         const reports = await supa(config,
           "/rest/v1/chat_reports?select=id,room_id,message_id,reporter_id,reason,created_at,status,resolved_at,legal_hold,legal_hold_reason&room_id=eq." +
