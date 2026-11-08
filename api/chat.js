@@ -235,10 +235,12 @@ async function verifyTurnstile(config, token, req) {
   const result = await response.json();
   const verifiedHost = typeof result.hostname === "string" ? result.hostname.toLowerCase() : "";
   const requestHost = String(req.headers.host || "").toLowerCase().split(":")[0];
-  const isPreview = host => host === "sanzagames-preview.vercel.app" ||
+  const isAllowedHost = host => host === "sanzagames.ie" ||
+    host === "www.sanzagames.ie" ||
+    host === "sanzagames-preview.vercel.app" ||
     host === "sanzagames-preview-sanza3.vercel.app" ||
     /^sanzagames-preview-[a-z0-9-]+-sanza3\.vercel\.app$/.test(host);
-  return result.success === true && isPreview(verifiedHost) &&
+  return result.success === true && isAllowedHost(verifiedHost) &&
     verifiedHost === requestHost;
 }
 
