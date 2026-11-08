@@ -48,3 +48,9 @@ Automated retention cleanup, extra admin dashboards, visual polish and new chat 
 - Privacy notice remains explicitly DRAFT. Registered trading name is not sufficient to infer the legal operator's identity or postal contact. Obtain those details directly from owner; verify retention process and age/child-safety assessment.
 - **HOLD** public deployment until normal-user report/ban tests, Turnstile fix, legal notice, privacy/retention process, and production origin/rollback verification are completed.
 - Production launch must use a separate reviewed release, confirm production domain origin/Turnstile allowlist, and retain ability to roll back to prior production commit. Do not merge preview automatically.
+
+## Sole trader / contact decision (8 November 2026)
+- Operator confirmed sole trader trading as SanZa Food Hub. Public email contact: sanzafoodhub@gmail.com.
+- Operator does not consent to publication of a personal/home address; do not insert or infer one.
+- Irish e-commerce information requirements may require geographic establishment address and full operator identity. Seek a lawful business-address arrangement or qualified advice before public release; email-only must not be marked compliant.
+- Continue preview testing without deploying to production.
