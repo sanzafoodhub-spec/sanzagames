@@ -5,7 +5,7 @@ Status: NOT APPROVED FOR PUBLIC LAUNCH. This document is an implementation check
 ## Controller and public contact
 - Individual sole trader trading as **SanZa Food Hub**. Confirm the exact legal name with the owner before publication.
 - Contact email: **sanzafoodhub@gmail.com**.
-- No personal/home address is approved for publication. Irish e-commerce rules generally require an accessible geographic establishment address. Obtain a lawful business establishment address or qualified Irish legal advice; do not invent or substitute an unverified PO box as the establishment address.
+- Operator-provided business correspondence address for public disclosure: **The Dance Factory, Century Business Park, Finglas, Dublin, D11 VP46, Ireland**. Verify it is an appropriate geographic establishment/contact address for the operator; do not publish any residential address.
 - Verify business-name registration number, if applicable, and required website disclosures.
 
 ## Purpose and legal basis register — requires owner approval
@@ -33,7 +33,7 @@ Status: NOT APPROVED FOR PUBLIC LAUNCH. This document is an implementation check
 - Determine whether a DPIA and further online-safety/DSA obligations apply; document outcome. Do not imply the age-16 rule alone resolves child-safety duties.
 
 ## Public release gates
-- Confirm legal identity and geographic address disclosure lawfully without publishing home details without consent.
+- Confirm full legal identity and verify the supplied business address meets applicable geographic establishment disclosure requirements. Do not publish home details without consent.
 - Verify suppliers, processing locations, transfer safeguards, lawful bases, actual retention controls and rights-handling.
 - Review accurate public-facing privacy/rules pages, 16+ protections and moderator staffing.
 - Test production configuration and rollback; no production merge before approval.
