@@ -37,3 +37,14 @@ Status: **NOT CLEARED FOR PUBLIC LAUNCH**. Do not merge this branch into main un
 Automated retention cleanup, extra admin dashboards, visual polish and new chat features. Keep cleanup OFF until concurrency and recovery tests pass.
 
 **Do not claim public-launch readiness on the basis of code inspection alone.**
+
+
+## 8 November 2026 launch audit — actions and evidence
+- Owner confirmed successful TOTP sign-in and denial of admin access without the code. This is a user-observed preview test, not an independent penetration test.
+- Preview Vercel deployment `dpl_BAZ4scZbb5HKHpvudAvVbnes5BhP` was READY; production release has **not** been performed.
+- Code inspection confirms server-side admin gate for owner UID requires an `aal2` JWT for moderator operations. Existing Curry admin is a separate account and has not been migrated to MFA.
+- Registration still requires Cloudflare Turnstile. User reported client error `110200`; the Turnstile widget's allowed-hostname settings and deployed hostname need checking in Cloudflare dashboard. Do **not** bypass CAPTCHA.
+- Read-only HTTP smoke tests attempted from isolated runtime but network resolution was unavailable; therefore unauthenticated, non-admin, banned-user, report-spam and production endpoint tests are **not passed**.
+- Privacy notice remains explicitly DRAFT. Registered trading name is not sufficient to infer the legal operator's identity or postal contact. Obtain those details directly from owner; verify retention process and age/child-safety assessment.
+- **HOLD** public deployment until normal-user report/ban tests, Turnstile fix, legal notice, privacy/retention process, and production origin/rollback verification are completed.
+- Production launch must use a separate reviewed release, confirm production domain origin/Turnstile allowlist, and retain ability to roll back to prior production commit. Do not merge preview automatically.
