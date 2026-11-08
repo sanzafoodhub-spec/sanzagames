@@ -54,3 +54,8 @@ Automated retention cleanup, extra admin dashboards, visual polish and new chat 
 - Operator does not consent to publication of a personal/home address; do not insert or infer one.
 - Irish e-commerce information requirements may require geographic establishment address and full operator identity. Seek a lawful business-address arrangement or qualified advice before public release; email-only must not be marked compliant.
 - Continue preview testing without deploying to production.
+
+## User-confirmed Chrome join test (8 November 2026)
+- Owner confirms Cloudflare Turnstile challenge completed in Chrome, nickname entered, and joined SanZa Chat successfully; double-checked.
+- Mark Chrome nickname-join smoke test passed by user report only. Earlier Turnstile 110200 on another browser remains a compatibility issue, not a Chrome launch blocker.
+- Report submission by a non-admin user, admin resolution, ban enforcement, and privacy/legal gates remain unverified.
