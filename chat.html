@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08090d">
+<meta name="description" content="SanZa Chat is a moderated, family-friendly public chat room. Use a nickname and follow the community rules.">
+<meta name="robots" content="index,follow">
+<title>SanZa Chat — Family-Friendly Community Chat</title>
+<link rel="icon" href="/sanza-logo.png">
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#10131b;--panel2:#151a23;--line:#2b3340;--gold:#ffd34d;--green:#a5ff80;--cyan:#57e9ff;--muted:#aeb7c8;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#30230a66,transparent 34%),radial-gradient(ellipse at 90% 15%,#142b3266,transparent 32%),var(--bg);color:#eef2f7;font:14px system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 0;border-bottom:1px solid var(--line)}.brand{font-weight:1000;letter-spacing:1px;text-decoration:none}.brand span{color:var(--gold)}.home{color:var(--gold);text-decoration:none;font-weight:800;font-size:12px;border:1px solid #554526;background:#1b180f;padding:10px 13px;border-radius:10px}
+.hero{text-align:center;padding:30px 0 20px}.kicker{display:inline-flex;gap:8px;align-items:center;color:var(--gold);border:1px solid #554526;background:#17140d;padding:8px 12px;border-radius:999px;font-size:10px;letter-spacing:1.5px;font-weight:900}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}h1{font-size:clamp(36px,7vw,62px);letter-spacing:-3px;line-height:1;margin:17px 0 10px}.hero p{color:var(--muted);line-height:1.65;max-width:690px;margin:auto}
+.notice{margin:18px auto 20px;max-width:850px;padding:13px 15px;border:1px solid #715d29;background:#211b0e;border-radius:13px;color:#ffe8a5;font-size:12px;line-height:1.65}.notice strong{color:var(--gold)}
+.chat-shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:12px;max-width:1000px;margin:0 auto 26px;border:1px solid #303846;border-radius:18px;overflow:hidden;background:#0b0e14;box-shadow:0 24px 70px #0007}
+.sidebar{padding:16px;background:#0d1118;border-right:1px solid var(--line)}.side-title{font:900 10px ui-monospace,monospace;letter-spacing:1.6px;color:#8793a6;margin:5px 0 12px}.room{width:100%;text-align:left;display:flex;align-items:center;gap:9px;padding:11px 10px;border:1px solid transparent;border-radius:9px;background:transparent;color:#c8d0dd;font:700 12px ui-monospace,monospace;cursor:pointer;margin-bottom:5px}.room.active{background:#172019;border-color:#36563a;color:var(--green)}.room:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.room .hash{color:var(--gold);font-size:15px}.side-foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);color:#8490a2;font-size:11px;line-height:1.6}
+.main{min-width:0;display:flex;flex-direction:column;min-height:550px}.room-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 17px;border-bottom:1px solid var(--line);background:#111720}.room-name{font:900 14px ui-monospace,monospace;color:var(--green)}.room-topic{color:#8490a2;font-size:11px;margin-top:4px}.demo-tag{white-space:nowrap;font-size:9px;letter-spacing:1px;color:#ffe8a5;border:1px solid #655324;padding:6px 8px;border-radius:7px;background:#211b0e}
+.identity{display:flex;gap:9px;align-items:end;padding:12px 16px;border-bottom:1px solid #202936;background:#0d1219}.field{flex:1;min-width:0}.field label{display:block;font:800 10px ui-monospace,monospace;color:#98a5b8;margin:0 0 6px}.field input{width:100%;background:#080b10;border:1px solid #303a48;border-radius:8px;color:#fff;padding:10px 11px;font:13px ui-monospace,monospace}.field input::placeholder{color:#657184}.identity small{font-size:10px;color:#8793a6;max-width:180px;line-height:1.45}
+.messages{padding:17px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:230px;max-height:360px;overflow:auto;background:repeating-linear-gradient(0deg,transparent,transparent 27px,#ffffff04 28px)}.msg{font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.time{color:#68788c;margin-right:8px}.nick{font-weight:900;color:var(--cyan);margin-right:7px}.nick.gold{color:var(--gold)}.msg.system{color:#9aa7b8}.msg.system strong{color:var(--green)}.msg.local{border-left:2px solid var(--gold);padding-left:9px}
+.composer{display:flex;gap:8px;padding:13px 15px;border-top:1px solid var(--line);background:#111720}.composer input{flex:1;min-width:0;background:#080b10;border:1px solid #303a48;border-radius:9px;color:#fff;padding:12px;font:13px ui-monospace,monospace}.composer button{border:0;border-radius:9px;padding:0 16px;background:var(--gold);color:#101014;font-weight:1000;cursor:pointer}.composer button:disabled{opacity:.35;cursor:not-allowed}
+.emoji-bar{display:flex;gap:8px;padding:9px 15px;background:#111720;flex-wrap:wrap}.emoji-bar button{background:#1b2430;color:#fff;border:1px solid #354052;border-radius:9px;padding:7px 11px;font-size:19px;cursor:pointer}.controls{display:flex;flex-wrap:wrap;gap:8px;padding:0 15px 14px;background:#111720}.soft{background:#151b25;border:1px solid #354052;color:#c5d0df;border-radius:8px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer}.soft:hover{border-color:var(--cyan)}.status{padding:0 16px 12px;color:#8190a3;font-size:10px;background:#111720;min-height:24px}
+.rules{max-width:1000px;margin:0 auto 35px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule-card{border:1px solid var(--line);border-radius:14px;background:#10141c;padding:17px}.rule-card h2{font-size:15px;margin:0 0 8px}.rule-card p,.rule-card li{color:var(--muted);font-size:12px;line-height:1.65}.rule-card ul{padding-left:18px;margin:7px 0 0}.footer{text-align:center;color:#8490a2;font-size:11px;padding:0 0 30px}.footer a{color:var(--gold)}
+@media(max-width:680px){.chat-shell{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line);padding:12px}.side-title{margin-bottom:8px}.rooms{display:flex;gap:5px;overflow:auto}.room{white-space:nowrap;width:auto;margin:0}.side-foot{display:none}.main{min-height:520px}.identity{align-items:stretch;flex-wrap:wrap}.identity small{max-width:none;width:100%}.rules{grid-template-columns:1fr}.top{padding:13px 0}.hero{padding:25px 0 14px}.notice{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="/"><span>SANZA</span> CHAT</a><a class="home" href="/">← BACK TO SANZA GAMES</a></header>
+<section class="hero"><div class="kicker"><span class="dot"></span> OLD-SCHOOL CHAT ROOM VIBE</div><h1>HOWAYA, <span style="color:var(--gold)">SANZATIONS?</span></h1><p>An old-school chat room for invited testers. Real messages, no private chats.</p></section>
+<div class="notice"><strong>PRIVATE BETA — REAL MESSAGES.</strong> Messages are stored and visible to other members of #sanza. Use made-up nicknames only. No personal details, links, DMs or uploads. Report harmful behaviour to the moderators. Never share personal or contact information.</div>
+<section class="rules" aria-label="How to use SanZa Chat" style="margin:14px 0 18px">
+<article class="rule-card" style="grid-column:1/-1"><h2>💬 HOW TO USE SANZA CHAT</h2>
+<ol style="line-height:1.9;padding-left:22px">
+<li>Choose a friendly nickname (3–18 letters, numbers or underscores). No real names or offensive words.</li>
+<li>Complete the CAPTCHA and tap <strong>JOIN #SANZA</strong>.</li>
+<li>Type your message and tap <strong>Send</strong> or press Enter. A faded “Sending…” message means our safety checks are still running.</li>
+<li>Once approved, your message is shared with everyone in #sanza. Replies and new messages update automatically.</li>
+<li>Use <strong>REPORT MESSAGE</strong> for abuse or <strong>BLOCK NICKNAME</strong> to hide someone on your device.</li>
+<li>Tap <strong>LEAVE ON THIS DEVICE</strong> when finished, especially on shared phones.</li>
+</ol><p><strong>Keep it friendly:</strong> no bullying, racism, swearing, threats, links, contact details or sharing personal information. There are no private messages or photo uploads. Reports are reviewed by moderators; filters may not catch everything.</p>
+</article></section>
+<section class="chat-shell" aria-label="SanZa Chat prototype">
+<aside class="sidebar"><div class="side-title">CHANNELS</div><div class="rooms">
+<button class="room active" data-room="sanza"><span class="hash">#</span> sanza</button>
+
+
+</div><div class="side-foot">● Private beta<br>#sanza only<br><br>No DMs · No uploads</div></aside>
+<div class="main">
+<div class="room-head"><div><div class="room-name" id="roomName">#sanza</div><div class="room-topic" id="roomTopic">The SanZa community lounge — private beta</div><div id="onlineCount" style="font-size:12px;color:#b6eac8;margin-top:7px" aria-live="polite">● Online now: —</div><div id="onlineNames" style="font-size:11px;color:#aebdcc;margin-top:3px;overflow-wrap:anywhere">Join to see who’s online</div></div><span class="demo-tag">PRIVATE BETA</span></div>
+<div class="notice"><strong>AGE RULE:</strong> SanZa Chat private beta is currently for ages 16 and over only. Under-16s cannot join. The age selection is self-declared, not independent age verification. Do not share your age or personal details in chat.</div><div class="identity"><div class="field"><label for="nickname">CHOOSE YOUR NICKNAME</label><input id="nickname" maxlength="18" autocomplete="off" placeholder="e.g. GarlicNaanFan"></div><small>3–18 letters, numbers or underscores. Nicknames are visible to others. Losing browser data may lose your nickname session.</small></div>
+<div id="eventFeed" aria-live="polite" style="padding:6px 16px;background:#111720;color:#a5ff80;font-size:11px"></div><div class="messages" id="messages" aria-live="polite"><div class="msg system">Join with a nickname to see the real conversation.</div></div>
+<div id="replyPreview" hidden style="padding:9px 15px;background:#1b2430;border-top:1px solid #354052;color:#ffe8a5;font-size:12px;display:none;align-items:center;gap:8px"><span id="replyText" style="flex:1;overflow-wrap:anywhere"></span><button class="soft" id="cancelReply" type="button">✕ CANCEL</button></div><div class="emoji-bar" aria-label="Quick reactions"><button type="button" data-emoji="😂">😂</button><button type="button" data-emoji="❤️">❤️</button><button type="button" data-emoji="🤣">🤣</button><button type="button" data-emoji="🔥">🔥</button><button type="button" data-emoji="👋">👋</button></div><div class="composer"><input id="messageInput" maxlength="500" placeholder="Type a message…" aria-label="Chat message" disabled><button id="sendButton" disabled>Send ↗</button></div>
+<div class="controls"><button class="soft" id="rulesButton">CHAT RULES</button><button class="soft" id="reportButton">REPORT MESSAGE</button><button class="soft" id="clearButton">LEAVE ON THIS DEVICE</button><button class="soft" id="blockButton">BLOCK NICKNAME</button><button class="soft" id="soundButton" type="button" aria-pressed="false">🔇 SOUND OFF</button><button class="soft" id="testSoundButton" type="button">🔊 TEST SOUNDS</button></div>
+<div id="adminPanel" hidden style="padding:12px;background:#211b0e;border:1px solid #715d29"><strong>👑 ADMIN CONTROL ROOM</strong> <button class="soft" id="adminReports">VIEW REPORTS</button><div id="adminResults"></div></div><div id="ownerMfaPanel" hidden style="padding:14px;background:#1c1a11;border:1px solid #715d29"><strong>🔐 OWNER TWO-FACTOR AUTHENTICATION</strong><p id="ownerMfaInstructions">Set up Google Authenticator to unlock admin tools.</p><button class="soft" id="ownerMfaSetup" type="button">SET UP GOOGLE AUTHENTICATOR</button><div id="ownerMfaSecret" hidden style="overflow-wrap:anywhere;padding:8px;color:#ffd34d"></div><label for="ownerMfaCode">6-digit Google Authenticator code</label><input id="ownerMfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" style="width:100%;padding:10px;margin:8px 0;background:#080b10;color:white;border:1px solid #715d29;border-radius:8px"><button class="soft" id="ownerMfaConfirm" type="button">VERIFY CODE</button><p style="font-size:11px">Never share your authenticator secret or codes.</p></div><div class="status" id="status" role="status">Enter a nickname and tap Join.</div>
+<div style="padding:0 16px 12px;background:#111720"><label for="ageGroup" style="display:block;margin:8px 0;color:#ffe8a5;font-weight:700">AGE GROUP (required)</label><select id="ageGroup" style="padding:10px;background:#10131b;color:white;border:1px solid #715d29;border-radius:8px;max-width:100%"><option value="">Select your age group</option><option value="under13">Under 13 — cannot join</option><option value="13to15">13–15 — parental verification pending</option><option value="16plus">16 or older</option></select><p style="font-size:11px;color:#aeb7c8">Age selection is self-declared and is not age verification. Parent permission for 13–15-year-olds is not yet available.</p><div id="turnstileBox" style="margin-bottom:10px;min-height:65px"></div><p id="turnstileHelp" hidden style="color:#ffe8a5;font-size:12px;line-height:1.5">On iPhone Safari, try turning off content blockers for this website using the page menu, then reload. If using a VPN or iCloud Private Relay, temporarily turn it off for this test. CAPTCHA remains required.</p><button class="soft" id="joinButton">JOIN #SANZA</button><details id="ownerLogin" style="margin-top:14px;border-top:1px solid #554526;padding-top:12px"><summary style="color:#ffd34d;cursor:pointer;font-weight:800">👑 Owner login (existing admin account)</summary><p style="font-size:11px;color:#aeb7c8">For the SanZa Food Hub owner only. Use your existing Supabase email account; do not create another nickname.</p><label for="ownerEmail">Admin email</label><input id="ownerEmail" type="email" autocomplete="username" value="Sanzafoodhub@gmail.com" style="width:100%;padding:10px;margin:5px 0;background:#080b10;color:white;border:1px solid #554526;border-radius:8px"><label for="ownerPassword">Password</label><input id="ownerPassword" type="password" autocomplete="current-password" style="width:100%;padding:10px;margin:5px 0;background:#080b10;color:white;border:1px solid #554526;border-radius:8px"><button class="soft" id="ownerLoginButton" type="button">SECURE ADMIN SIGN IN</button><p style="font-size:11px;color:#aeb7c8">Do not share your password. Your existing Curry session stays unchanged unless you sign in here.</p></details></div>
+</div></section>
+<section class="rules">
+<article class="rule-card"><h2>🛡️ Safety-first design</h2><ul><li>No private messages or file/image uploads.</li><li>Moderation, reporting and blocking must work before any public launch.</li><li>Child access and age-appropriate safeguards must be assessed before activation.</li><li>Never share personal or identifying information.</li></ul></article>
+<article class="rule-card"><h2>📩 Safety, privacy & complaints</h2><p>Contact the SanZa team at <a href="mailto:Sanzafoodhub@gmail.com?subject=SanZa%20Chat%20Safety%20or%20Privacy">Sanzafoodhub@gmail.com</a> for safety concerns, privacy requests, moderation appeals or complaints. Include the message time and nickname if relevant, but do not email sensitive personal details. For immediate danger, contact local emergency services; this inbox is not an emergency service. Use REPORT MESSAGE inside chat to flag harmful content.</p></article><article class="rule-card"><h2>⚖️ Before a real launch</h2><p>This private beta does not establish legal compliance. A public service needs a documented GDPR assessment, lawful basis and transparent notices, data minimisation and retention rules, security controls, a child-safety risk assessment, and review of any applicable DSA and Irish online-safety duties. No live chat will be enabled until those steps are completed and reviewed by a qualified Irish/EU adviser.</p><p><a href="/privacy.html">Read SanZa's existing privacy page ↗</a></p></article>
+</section>
+<section class="rules" aria-label="SanZa Chat legal and safety information"><article class="rule-card" style="grid-column:1/-1"><h2>📚 Privacy, rules & safety</h2><p><a href="/chat-privacy.html">Chat privacy notice</a> · <a href="/chat-terms.html">Chat rules and terms</a> · <a href="/chat-safety.html">Safety, reporting and complaints</a></p><p>These are private-beta drafts. Public launch requires review and tested safeguards.</p></article></section><footer class="footer">One SanZa. One Family. 🖤💛<br>Private beta · <a href="/">Return to SanZa Games</a></footer>
+</div>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const nickname=$("nickname"),input=$("messageInput"),send=$("sendButton"),messages=$("messages"),status=$("status"),join=$("joinButton");
+const STORE="sanza_chat_beta_session_v1",BLOCK="sanza_chat_beta_blocks_v1",DEVICE="sanza_chat_device_v1";
+let deviceId=localStorage.getItem(DEVICE);
+if(!deviceId || !/^[a-f0-9-]{36}$/i.test(deviceId)){
+  deviceId=crypto.randomUUID();localStorage.setItem(DEVICE,deviceId);
+}
+let session=null,me=null,busy=false,polling=false,renderKey="",captchaToken="",replyTo=null;
+let captchaAttempts=0,captchaWidgetId=null,lastPresence=0;
+let soundEnabled=false,audioCtx=null,onlineBaseline=null,messageBaseline=null,lastSoundAt=0;let isModerator=false;const viewStartedAt=Date.now();
+function playTone(kind){
+ if(!soundEnabled||document.hidden||!session||Date.now()-lastSoundAt<450)return;
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+  if(!audioCtx)audioCtx=new Ctx();if(audioCtx.state!=="running")return;
+  const t=audioCtx.currentTime,osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type="sine";osc.frequency.setValueAtTime(kind==="join"?880:620,t);
+  if(kind==="join")osc.frequency.setValueAtTime(1175,t+0.09);
+  gain.gain.setValueAtTime(0.0001,t);gain.gain.exponentialRampToValueAtTime(0.07,t+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t+(kind==="join"?0.27:0.15));
+  osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+(kind==="join"?0.28:0.16));
+  lastSoundAt=Date.now();
+ }catch(_){}
+}
+$("testSoundButton").addEventListener("click",async()=>{
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx){info("Sound is not supported on this browser.");return}
+  if(!audioCtx)audioCtx=new Ctx();
+  await audioCtx.resume();
+  const now=audioCtx.currentTime;
+  function beep(freq,start,duration){
+   const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+   osc.type="sine";osc.frequency.value=freq;
+   gain.gain.setValueAtTime(0.0001,start);
+   gain.gain.exponentialRampToValueAtTime(0.07,start+0.015);
+   gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+   osc.connect(gain);gain.connect(audioCtx.destination);
+   osc.start(start);osc.stop(start+duration+0.01);
+  }
+  beep(880,now,0.12);beep(1175,now+0.13,0.15);
+  beep(620,now+0.7,0.16);
+  info("Test playing: BING for new person, then POP for message. Your sound setting stays the same.");
+ }catch(_){info("Unable to play sound. Check phone volume and silent mode.")}
+});
+$("soundButton").addEventListener("click",async()=>{
+ soundEnabled=!soundEnabled;
+ if(soundEnabled){
+  try{const Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx){if(!audioCtx)audioCtx=new Ctx();await audioCtx.resume()}}catch(_){}
+  info("Sounds on: ding for new people, pop for messages.");
+ }else info("Chat sounds muted.");
+ $("soundButton").textContent=soundEnabled?"🔔 SOUND ON":"🔇 SOUND OFF";
+ $("soundButton").setAttribute("aria-pressed",String(soundEnabled));
+});
+
+function mountCaptcha(){
+  if(!window.turnstile){
+    if(++captchaAttempts<=35){setTimeout(mountCaptcha,400);return}
+    info("CAPTCHA could not load on this browser. Check Safari content blockers, VPN or iCloud Private Relay, then reload.");
+    $("turnstileHelp").hidden=false;return;
+  }
+  try{
+    captchaWidgetId=window.turnstile.render("#turnstileBox",{
+      sitekey:"0x4AAAAAAF1FRqHQRNliPr4y",
+      theme:"auto",size:"normal",appearance:"always",
+      callback:token=>{captchaToken=token;info("CAPTCHA verified. Enter your nickname and join.");$("turnstileHelp").hidden=true},
+      "expired-callback":()=>{captchaToken="";info("CAPTCHA expired. Please verify again.")},
+      "error-callback":code=>{captchaToken="";info("CAPTCHA failed ("+(code||"connection")+"). Try reload or disable Safari content blockers for this page.");$("turnstileHelp").hidden=false}
+    });
+  }catch(e){info("CAPTCHA couldn't start on this browser. Please reload.");$("turnstileHelp").hidden=false}
+}
+let blocked=[];
+try{blocked=JSON.parse(localStorage.getItem(BLOCK)||"[]");if(!Array.isArray(blocked))blocked=[]}catch(_){blocked=[]}
+function info(t){status.textContent=t}
+function setJoined(yes){nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes}
+function save(){if(session&&me)localStorage.setItem(STORE,JSON.stringify({session,me}))}
+function clear(){$("ownerMfaPanel").hidden=true;$("ownerMfaSecret").hidden=true;$("ownerMfaSecret").textContent="";ownerFactorId=null;stopRealtime();setReply(null);onlineBaseline=null;messageBaseline=null;isModerator=false;$("adminPanel").hidden=true;$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();$("eventFeed").replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
+function api(action,data={},auth=true){const headers={"Content-Type":"application/json"};if(auth&&session)headers.Authorization="Bearer "+session.access_token;return fetch("/api/chat",{method:"POST",headers,body:JSON.stringify({action,...data}),cache:"no-store"}).then(async r=>{let j={};try{j=await r.json()}catch(_){}if(!r.ok)throw new Error(j.error||"Chat request failed ("+r.status+").");return j})}
+async function refresh(){if(!session||!session.refresh_token)throw Error("Session expired.");const result=await api("refresh",{refresh_token:session.refresh_token},false);session=result.session;save();if(realtimeClient)void realtimeClient.realtime.setAuth(session.access_token)}
+async function call(action,data={}){try{return await api(action,data)}catch(e){if(/expired|sign in|401/i.test(e.message)&&session?.refresh_token){await refresh();return api(action,data)}throw e}}
+function showOnline(online){if(!Array.isArray(online)){$("onlineCount").textContent="● Online now: unavailable";$("onlineNames").textContent="Presence setup pending";return} $("onlineCount").textContent="● Online now: "+online.length;$("onlineNames").textContent=online.length?online.join(" · "):"No active users";const now=new Set(online.map(n=>String(n).toLowerCase()));if(onlineBaseline!==null&&[...now].some(n=>!onlineBaseline.has(n)&&n!==me?.nickname?.toLowerCase()))playTone("join");if(onlineBaseline!==null){for(const n of [...now].filter(n=>!onlineBaseline.has(n)&&n!==me?.nickname?.toLowerCase()).slice(0,4))systemEvent("🎉 "+n+" joined #sanza!");for(const n of [...onlineBaseline].filter(n=>!now.has(n)&&n!==me?.nickname?.toLowerCase()).slice(0,4))systemEvent("👋 "+n+" went offline.");}onlineBaseline=now;}
+let realtimeClient=null,realtimeChannel=null,realtimeRefreshTimer=null,realtimePending=false,realtimeConnected=false,reloadQueued=false;
+async function startRealtime(){
+ if(!session||realtimeChannel)return;
+ try{
+  const response=await fetch("/api/chat-realtime-config",{cache:"no-store"});
+  if(!response.ok)return;
+  const cfg=await response.json();
+  if(!cfg.enabled||!cfg.url||!cfg.anonKey||!window.supabase?.createClient)return;
+  realtimeClient=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:10}}});
+  await realtimeClient.realtime.setAuth(session.access_token);
+  realtimeChannel=realtimeClient.channel("sanza-chat-preview-realtime",{config:{private:false}})
+   .on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages",filter:"room_id=eq."+cfg.roomId},()=>{if(!realtimePending){realtimePending=true;setTimeout(()=>{realtimePending=false;void load()},150)}})
+   .on("postgres_changes",{event:"UPDATE",schema:"public",table:"chat_messages",filter:"room_id=eq."+cfg.roomId},()=>{void load()})
+   .subscribe((state)=>{realtimeConnected=state==="SUBSCRIBED";if(realtimeConnected)info("⚡ Realtime connected");else if(state==="CHANNEL_ERROR"||state==="TIMED_OUT")info("Realtime reconnecting — backup refresh active");});
+  realtimeRefreshTimer=setInterval(()=>{if(session&&realtimeClient)void realtimeClient.realtime.setAuth(session.access_token)},60000);
+ }catch(_){stopRealtime();}
+}
+function stopRealtime(){
+ if(realtimeRefreshTimer)clearInterval(realtimeRefreshTimer);
+ realtimeRefreshTimer=null;
+ if(realtimeClient&&realtimeChannel)void realtimeClient.removeChannel(realtimeChannel);
+ realtimeChannel=null;realtimeClient=null;realtimeConnected=false;
+}
+async function heartbeat(){if(!session||document.hidden||Date.now()-lastPresence<18000)return;lastPresence=Date.now();try{await call("presence")}catch(e){lastPresence=0;}}
+function systemEvent(message){const row=document.createElement("div");row.textContent=message;$("eventFeed").append(row);while($("eventFeed").children.length>8)$("eventFeed").firstChild.remove()}function setReply(m){replyTo=m&&m.content&&!m.content.startsWith("[Message ")?{id:m.id,nickname:m.nickname,content:m.content}:null;const panel=$("replyPreview");panel.hidden=!replyTo;panel.style.display=replyTo?"flex":"none";$("replyText").textContent=replyTo?"↪ Replying to "+replyTo.nickname+": "+replyTo.content.slice(0,85):"";if(replyTo)input.focus()}
+$("cancelReply").addEventListener("click",()=>setReply(null));
+function show(items){const key=JSON.stringify([items.map(m=>[m.id,m.content]),blocked]);if(key===renderKey)return;renderKey=key;messages.replaceChildren();if(!items.length){const row=document.createElement("div");row.className="msg system";row.textContent="Fresh chat screen! New messages will appear here. Earlier messages remain stored for moderation.";messages.append(row)}
+for(const m of items){if(blocked.includes(m.nickname.toLowerCase()))continue;const row=document.createElement("div");row.className="msg";const time=document.createElement("span");time.className="time";time.textContent=new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const nick=document.createElement("span");nick.className="nick";nick.textContent=(isModerator&&m.user_id===me?.id?"👑 ":"")+m.nickname;const body=document.createElement("span");body.textContent=m.content;row.append(time,nick,body);if(m.content!=="[Message deleted by sender]"&&m.content!=="[Message removed by moderator]"){const replyButton=document.createElement("button");replyButton.className="soft";replyButton.style.marginLeft="8px";replyButton.textContent="↪ REPLY";replyButton.addEventListener("click",()=>setReply(m));row.append(replyButton)}if(m.user_id===me?.id&&m.content!=="[Message deleted by sender]"&&m.content!=="[Message removed by moderator]"&&Date.now()-new Date(m.created_at).getTime()<=600000){const del=document.createElement("button");del.className="soft";del.style.marginLeft="8px";del.textContent="🗑️ DELETE FOR EVERYONE";del.addEventListener("click",async()=>{if(!confirm("Delete this message for everyone?"))return;try{const result=await call("delete_own_message",{message_id:m.id});info(result.message);renderKey="";await load()}catch(e){info(e.message)}});row.append(del)}if(m.user_id!==me?.id){const report=document.createElement("button");report.className="soft";report.style.marginLeft="8px";report.textContent="Report";report.addEventListener("click",()=>reportMessage(m));row.append(report);if(isModerator){const hide=document.createElement("button");hide.className="soft";hide.textContent="REMOVE";hide.addEventListener("click",()=>moderate("hide_message",{message_id:m.id},"Remove this message?"));row.append(hide);const suspend=document.createElement("button");suspend.className="soft";suspend.textContent="SUSPEND";suspend.addEventListener("click",()=>moderate("suspend_member",{user_id:m.user_id},"Suspend this member?"));row.append(suspend);const ban=document.createElement("button");ban.className="soft";ban.textContent="🔒 BAN 48 HOURS";ban.title="Temporarily block this account for two days";ban.addEventListener("click",()=>moderate("ban_member_48h",{user_id:m.user_id},"Ban "+m.nickname+" from SanZa Chat for 48 hours?"));row.append(ban)}}messages.append(row)}messages.scrollTop=messages.scrollHeight}
+async function load(){if(!session||document.hidden)return;if(polling){reloadQueued=true;return;}polling=true;try{void heartbeat();const r=await call("list");const items=(r.messages||[]).filter(m=>new Date(m.created_at).getTime()>=viewStartedAt);if(typeof r.admin==="boolean"){isModerator=r.admin;$("adminPanel").hidden=!isModerator;}const ids=new Set(items.map(m=>String(m.id)));if(messageBaseline!==null&&items.some(m=>!messageBaseline.has(String(m.id))&&m.user_id!==me?.id&&!blocked.includes(String(m.nickname).toLowerCase())))playTone("message");messageBaseline=ids;show(items);showOnline(r.online)}catch(e){info(e.message)}finally{polling=false;if(reloadQueued){reloadQueued=false;void load()}}}
+async function reportMessage(m){const reason=prompt("Why are you reporting this message? (No personal information)");if(!reason?.trim())return;try{await call("report",{message_id:m.id,reason:reason.trim().slice(0,500)});info("Report sent to moderators. Thank you.")}catch(e){info(e.message)}}
+let ownerFactorId=null;
+async function ownerMfaGate(){
+  if(me?.id!=="68548953-f190-448e-87e4-3a51d84869b7"){ $("ownerMfaPanel").hidden=true;return; }
+  const m=await call("owner_mfa_status");ownerFactorId=m.factor_id;
+  $("ownerMfaPanel").hidden=!!m.verified_session;
+  $("ownerMfaSetup").hidden=!!m.enrolled;
+  $("ownerMfaInstructions").textContent=m.enrolled?"Enter the six-digit code from Google Authenticator to unlock admin controls.":"Set up Google Authenticator first. Tap SET UP, then add the displayed setup key manually in Google Authenticator.";
+  if(!m.verified_session){$("adminPanel").hidden=true;isModerator=false;}
+}
+$("ownerMfaSetup").addEventListener("click",async()=>{try{
+ const m=await call("owner_mfa_enroll");ownerFactorId=m.factor_id;
+ $("ownerMfaSecret").hidden=false;
+ $("ownerMfaSecret").textContent="Google Authenticator → Add code (+) → Enter a setup key. Account: SanZa Chat Owner. Setup key: "+m.secret+" (time-based)";
+ $("ownerMfaSetup").hidden=true;info("Add the key in Google Authenticator, then enter its six-digit code below.");
+}catch(e){info(e.message)}});
+$("ownerMfaConfirm").addEventListener("click",async()=>{if(!/^[0-9]{6}$/.test($("ownerMfaCode").value.trim())){info("Enter the six-digit code.");return}try{
+ const c=await call("owner_mfa_challenge",{factor_id:ownerFactorId});
+ const v=await call("owner_mfa_verify",{factor_id:ownerFactorId,challenge_id:c.challenge_id,code:$("ownerMfaCode").value.trim()});
+ $("ownerMfaCode").value="";if(!v.session?.access_token)throw Error("Verification did not return a session.");
+ session=v.session;save();$("ownerMfaSecret").textContent="";$("ownerMfaSecret").hidden=true;
+ await ownerMfaGate();await load();info("Two-factor verification successful. Admin controls unlocked.");
+}catch(e){info(e.message)}});
+$("ownerLoginButton").addEventListener("click",async()=>{if(busy)return;const email=$("ownerEmail").value.trim(),password=$("ownerPassword").value;if(!password){info("Enter your admin password.");return}busy=true;$("ownerLoginButton").disabled=true;info("Checking owner credentials…");try{const r=await api("admin_email_login",{email,password},false);$("ownerPassword").value="";session=r.session;me=r.user;onlineBaseline=null;messageBaseline=null;save();setJoined(true);info("Signed in as "+me.nickname+". Admin access will be verified.");void startRealtime();await ownerMfaGate();await load()}catch(e){$("ownerPassword").value="";info(e.message)}finally{busy=false;$("ownerLoginButton").disabled=false}});
+join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}if(!$("ageGroup").value){info("Select your age group first.");return}if($("ageGroup").value!=="16plus"){info($("ageGroup").value==="under13"?"SanZa Chat is for ages 13 and over.":"Ages 13–15 need verified parental permission. Joining is not available yet.");return}if(!captchaToken){info("Complete the CAPTCHA check first.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick,age_group:$("ageGroup").value,captcha_token:captchaToken,device_id:deviceId},false);session=r.session;me=r.user;onlineBaseline=null;messageBaseline=null;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");void startRealtime();await load()}catch(e){info(e.message);join.disabled=false;captchaToken="";if(window.turnstile&&captchaWidgetId!==null)window.turnstile.reset(captchaWidgetId)}finally{busy=false}});
+async function sendMessage(){
+ if(!session||busy)return;
+ const content=input.value.trim();if(!content)return;
+ busy=true;send.disabled=true;
+ // Only the sender sees this temporary pending bubble. It is not a published message.
+ const pending=document.createElement("div");pending.className="msg";pending.dataset.pending="true";
+ pending.style.opacity="0.65";
+ const stamp=document.createElement("span");stamp.className="time";stamp.textContent="Sending… ";
+ const nick=document.createElement("span");nick.className="nick";nick.textContent=me.nickname;
+ const body=document.createElement("span");body.textContent=content;
+ pending.append(stamp,nick,body);messages.append(pending);messages.scrollTop=messages.scrollHeight;
+ input.value="";
+ try{
+  const result=await call("send",{content,...(replyTo?{reply_to:replyTo.id}:{})});
+  setReply(null);
+  if(result.message&&result.message.id){
+   const m=result.message;
+   pending.dataset.messageId=m.id;delete pending.dataset.pending;
+   pending.style.opacity="1";
+   stamp.textContent=new Date(m.created_at||Date.now()).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+   body.textContent=m.content;
+  }else{pending.remove();}
+  info("Message sent.");renderKey="";void load();
+ }catch(e){pending.remove();input.value=content;info(e.message)}
+ finally{busy=false;send.disabled=false}
+}
+send.addEventListener("click",sendMessage);input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage()}});
+document.querySelectorAll("[data-emoji]").forEach(button=>button.addEventListener("click",()=>{if(input.disabled){info("Join the room first.");return}input.value=(input.value+" "+button.dataset.emoji).trim().slice(0,500);input.focus()}));
+async function moderate(action,data,question){if(!isModerator||!confirm(question))return;try{const result=await call(action,data);info(result.message||"Action completed.");await load()}catch(e){info(e.message)}}
+$("adminReports").addEventListener("click",async()=>{if(!isModerator)return;const target=$("adminResults");target.replaceChildren();try{const result=await call("admin_reports");const reports=result.reports||[];if(!reports.length){target.textContent="No reports yet.";return}for(const report of reports){const row=document.createElement("div");row.style.padding="10px";row.style.borderBottom="1px solid #715d29";const label=document.createElement("span");label.textContent=report.reason+" ("+new Date(report.created_at).toLocaleString()+") ";const remove=document.createElement("button");remove.className="soft";remove.textContent="REMOVE REPORTED MESSAGE";remove.addEventListener("click",()=>moderate("hide_message",{message_id:report.message_id},"Remove this reported message?"));row.append(label,remove);const holdBtn=document.createElement("button");holdBtn.className="soft";holdBtn.textContent=report.legal_hold?"🔓 RELEASE LEGAL HOLD":"🔒 PLACE LEGAL HOLD";holdBtn.addEventListener("click",async()=>{const next=!report.legal_hold;const reason=prompt(next?"Reason to preserve this report and its message (5–500 characters):":"Reason for releasing the legal hold (5–500 characters):");if(reason===null)return;const trimmed=reason.trim();if(trimmed.length<5||trimmed.length>500){info("Enter a reason between 5 and 500 characters.");return}if(!confirm(next?"Place legal hold on this report?":"Release legal hold? Only do this after reviewing ongoing evidence needs."))return;try{await call("set_report_legal_hold",{report_id:report.id,legal_hold:next,reason:trimmed});info(next?"Legal hold placed.":"Legal hold released.");$("adminReports").click()}catch(e){info(e.message)}});row.append(holdBtn);if(report.legal_hold){const held=document.createElement("span");held.textContent=" 🔒 ON HOLD";held.style.color="#ffd34d";row.append(held)}if(report.status==="resolved"){const done=document.createElement("span");done.textContent=" ✓ RESOLVED";done.style.color="#a5ff80";row.append(done)}else{const resolve=document.createElement("button");resolve.className="soft";resolve.textContent="✓ RESOLVE REPORT";resolve.addEventListener("click",async()=>{if(!confirm("Mark this report resolved? This does not delete the message."))return;try{await call("resolve_report",{report_id:report.id});info("Report resolved.");$("adminReports").click()}catch(e){info(e.message)}});row.append(resolve)}target.append(row)}}catch(e){info(e.message)}});
+$("rulesButton").addEventListener("click",()=>info("Be kind. No abuse, slurs, sexual content, bullying, threats, links, contact details or spam. Report anything worrying."));
+$("reportButton").addEventListener("click",()=>info("Tap Report beside a message to submit it to moderators."));
+$("blockButton").addEventListener("click",()=>{const nick=prompt("Nickname to hide on this device:");if(!nick)return;const n=nick.trim().toLowerCase();if(n===me?.nickname?.toLowerCase())return;blocked=[...new Set([...blocked,n])];localStorage.setItem(BLOCK,JSON.stringify(blocked));renderKey="";load();info("Messages from "+nick+" will be hidden on this device.")});
+$("clearButton").addEventListener("click",()=>{if(confirm("Leave this chat on this device? Anonymous sessions cannot be recovered after clearing."))clear()});
+$("roomTopic").textContent="Real messages for invited beta testers only";
+$("roomName").textContent="#sanza";
+try{const old=JSON.parse(localStorage.getItem(STORE)||"null");if(old?.session?.access_token&&old?.me?.id){session=old.session;me=old.me;nickname.value=me.nickname;setJoined(true);info("Welcome back, "+me.nickname+".");void ownerMfaGate().then(()=>load()).catch(e=>info(e.message))}}catch(_){localStorage.removeItem(STORE)}
+mountCaptcha();window.addEventListener("load",()=>{if(session)void startRealtime()});setInterval(load,2000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){lastPresence=0;load()}});
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js" defer></script>
+<script src="/sanza-quicknav.js" defer></script>
+</body>
+</html>
