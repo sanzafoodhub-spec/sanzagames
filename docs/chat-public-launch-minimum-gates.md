@@ -64,3 +64,9 @@ Automated retention cleanup, extra admin dashboards, visual polish and new chat 
 - User submitted a report from normal member interface and confirmed receiving the report in owner moderation interface. Report delivery smoke test passed by user observation.
 - Confirmation wording was not shown, so do not claim exact success toast.
 - Admin action on report, ban enforcement, bypass tests, and legal/privacy gate remain open.
+
+## Vercel read-only configuration audit (8 November 2026)
+- Project `sanzagames-preview` ID `prj_5fv5PIzku141MCSE4UWiL7Y1i4SW`; latest deployment `dpl_4hzhzkjvZ2KxUT6d683mpASkzqZS` reports READY.
+- The same project has verified `sanzagames.ie` and `www.sanzagames.ie` domains; deployment/branch targeting must be checked before any release. Do not assume project named preview is isolated from production.
+- Branch-scoped preview variables include `TURNSTILE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, and `SANZA_REALTIME_ENABLED`. Values were not requested or disclosed. Presence alone does not verify correctness or absence of other exposures.
+- No production release or domain modification performed.
