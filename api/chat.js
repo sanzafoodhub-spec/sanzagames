@@ -530,14 +530,27 @@ module.exports = async function handler(req, res) {
       return reply(res, 201, { message: "Report submitted to the moderators." });
     }
 
-    if (action === "admin_reports" || action === "hide_message" || action === "suspend_member" || action === "ban_member_48h") {
+    if (action === "admin_reports" || action === "resolve_report" || action === "hide_message" || action === "suspend_member" || action === "ban_member_48h") {
       if (!admin) return reply(res, 403, { error: "Admin access required." });
       if (action === "admin_reports") {
         const reports = await supa(config,
-          "/rest/v1/chat_reports?select=id,room_id,message_id,reporter_id,reason,created_at&room_id=eq." +
+          "/rest/v1/chat_reports?select=id,room_id,message_id,reporter_id,reason,created_at,status,resolved_at&room_id=eq." +
           ROOM_ID + "&order=created_at.desc&limit=100", {}, true);
         if (!reports.ok) return reply(res, 502, { error: "Couldn't load reports." });
         return reply(res, 200, { reports: reports.data });
+      }
+      if (action === "resolve_report") {
+        const id = typeof body.report_id === "string" ? body.report_id : "";
+        if (!/^[0-9a-f-]{36}$/i.test(id)) return reply(res,400,{error:"Invalid report."});
+        const updated = await supa(config,
+          "/rest/v1/chat_reports?id=eq."+encodeURIComponent(id)+"&room_id=eq."+ROOM_ID+"&status=eq.pending",{
+            method:"PATCH",headers:{Prefer:"return=representation"},
+            body:{status:"resolved",resolved_at:new Date().toISOString(),resolved_by:user.id}
+          },true);
+        if(!updated.ok) return reply(res,503,{error:"Could not resolve report."});
+        if(!Array.isArray(updated.data)||updated.data.length!==1)
+          return reply(res,409,{error:"Report already resolved or not found."});
+        return reply(res,200,{message:"Report marked resolved."});
       }
       if (action === "hide_message") {
         const id = typeof body.message_id === "string" ? body.message_id : "";
