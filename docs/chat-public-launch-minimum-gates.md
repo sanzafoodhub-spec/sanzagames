@@ -59,3 +59,8 @@ Automated retention cleanup, extra admin dashboards, visual polish and new chat 
 - Owner confirms Cloudflare Turnstile challenge completed in Chrome, nickname entered, and joined SanZa Chat successfully; double-checked.
 - Mark Chrome nickname-join smoke test passed by user report only. Earlier Turnstile 110200 on another browser remains a compatibility issue, not a Chrome launch blocker.
 - Report submission by a non-admin user, admin resolution, ban enforcement, and privacy/legal gates remain unverified.
+
+## User-confirmed report delivery (8 November 2026)
+- User submitted a report from normal member interface and confirmed receiving the report in owner moderation interface. Report delivery smoke test passed by user observation.
+- Confirmation wording was not shown, so do not claim exact success toast.
+- Admin action on report, ban enforcement, bypass tests, and legal/privacy gate remain open.
