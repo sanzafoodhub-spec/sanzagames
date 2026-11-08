@@ -70,3 +70,10 @@ Automated retention cleanup, extra admin dashboards, visual polish and new chat 
 - The same project has verified `sanzagames.ie` and `www.sanzagames.ie` domains; deployment/branch targeting must be checked before any release. Do not assume project named preview is isolated from production.
 - Branch-scoped preview variables include `TURNSTILE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, and `SANZA_REALTIME_ENABLED`. Values were not requested or disclosed. Presence alone does not verify correctness or absence of other exposures.
 - No production release or domain modification performed.
+
+## Current release decision and next technical gate (8 November 2026)
+- Owner confirms CAPTCHA and nickname join in Chrome, report delivered to admin, and previously tested ban/moderation flow. These are owner-reported tests, not independent adversarial security tests.
+- Public-facing identity preference: show **SanZa Food Hub**, not sole trader's personal name. Do not add legal personal name without consent. Legal disclosure sufficiency remains unresolved; do not mark compliant.
+- Business correspondence address approved for preview: The Dance Factory, Century Business Park, Finglas, Dublin, D11 VP46, Ireland; email sanzafoodhub@gmail.com.
+- **NEXT:** test database deletion/retention with a safe dry-run and referential integrity check, then agree on a reliable manual deletion procedure or automation. Cleanup stays OFF until verified.
+- No production deployment authorised or made.
