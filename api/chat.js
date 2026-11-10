@@ -197,7 +197,9 @@ function allowedOrigin(req) {
   if (!origin) return true;
   let host = "";
   try { host = new URL(origin).hostname.toLowerCase(); } catch (_) { return false; }
-  return host === "sanzagames-preview.vercel.app" ||
+  return host === "sanzagames.ie" ||
+    host === "www.sanzagames.ie" ||
+    host === "sanzagames-preview.vercel.app" ||
     host === "sanzagames-preview-sanza3.vercel.app" ||
     (host.startsWith("sanzagames-preview-") && host.endsWith(".vercel.app"));
 }
