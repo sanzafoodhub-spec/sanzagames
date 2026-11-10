@@ -91,6 +91,31 @@ function reply(res, status, data) {
   return res.status(status).json(data);
 }
 
+// Optional server-side Brevo moderation notification; no message content is emailed.
+async function notifyChatReport(reportId) {
+  const key = process.env.BREVO_CHAT_API_KEY;
+  const sender = process.env.CHAT_ALERT_SENDER;
+  const recipient = process.env.CHAT_ALERT_RECIPIENT;
+  if (!key || !sender || !recipient) return false;
+  try {
+    const result = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: { "api-key": key, "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        sender: { email: sender, name: "SanZa Chat Alerts" },
+        to: [{ email: recipient }],
+        subject: "SanZa Chat: new report needs review",
+        textContent: "Open the SanZa Chat owner panel to review a new report. Reference: " + reportId
+      })
+    });
+    if (!result.ok) console.error("Chat alert email failed", result.status);
+    return result.ok;
+  } catch (_) {
+    console.error("Chat alert email unavailable");
+    return false;
+  }
+}
+
 function getConfig() {
   const url = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
   const anon = process.env.SUPABASE_ANON_KEY || "";
@@ -605,10 +630,12 @@ module.exports = async function handler(req, res) {
       }
       const report = await supa(config, "/rest/v1/chat_reports", {
         method: "POST",
-        headers: { Prefer: "return=minimal" },
+        headers: { Prefer: "return=representation" },
         body: { room_id: ROOM_ID, message_id: messageId, reporter_id: user.id, reason, created_at: new Date().toISOString() }
       }, true);
       if (!report.ok) return reply(res, 502, { error: "Couldn't submit your report." });
+      const newReportId = Array.isArray(report.data) && report.data[0] && report.data[0].id;
+      if (newReportId) await notifyChatReport(newReportId);
       return reply(res, 201, { message: "Report submitted to the moderators." });
     }
 
