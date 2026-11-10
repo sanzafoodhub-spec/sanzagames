@@ -91,25 +91,43 @@ function reply(res, status, data) {
   return res.status(status).json(data);
 }
 
-// Optional server-side Brevo moderation notification; no message content is emailed.
+// Server-side email notification. Configure Resend for chat alerts; Brevo remains
+// available only when Resend is not configured. No chat message text is emailed.
 async function notifyChatReport(reportId) {
-  const key = process.env.BREVO_CHAT_API_KEY;
-  const sender = process.env.CHAT_ALERT_SENDER;
   const recipient = process.env.CHAT_ALERT_RECIPIENT;
-  if (!key || !sender || !recipient) return false;
+  const sender = process.env.CHAT_ALERT_SENDER;
+  if (!recipient || !sender) return false;
+  const content = "A new SanZa Chat report needs review. Open the owner moderation panel. Report reference: " + reportId;
   try {
-    const result = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: { "api-key": key, "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        sender: { email: sender, name: "SanZa Chat Alerts" },
-        to: [{ email: recipient }],
-        subject: "SanZa Chat: new report needs review",
-        textContent: "Open the SanZa Chat owner panel to review a new report. Reference: " + reportId
-      })
-    });
-    if (!result.ok) console.error("Chat alert email failed", result.status);
-    return result.ok;
+    if (process.env.RESEND_CHAT_API_KEY) {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: "Bearer " + process.env.RESEND_CHAT_API_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "SanZa Chat Alerts <" + sender + ">",
+          to: [recipient],
+          subject: "SanZa Chat: new report needs review",
+          text: content
+        })
+      });
+      if (!response.ok) console.error("Chat Resend alert failed", response.status);
+      return response.ok;
+    }
+    if (process.env.BREVO_CHAT_API_KEY) {
+      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: { "api-key": process.env.BREVO_CHAT_API_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender: { email: sender, name: "SanZa Chat Alerts" },
+          to: [{ email: recipient }],
+          subject: "SanZa Chat: new report needs review",
+          textContent: content
+        })
+      });
+      if (!response.ok) console.error("Chat Brevo alert failed", response.status);
+      return response.ok;
+    }
+    return false;
   } catch (_) {
     console.error("Chat alert email unavailable");
     return false;
