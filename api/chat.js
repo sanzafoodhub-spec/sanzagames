@@ -595,7 +595,7 @@ module.exports = async function handler(req, res) {
       const online = onlineResult.ok && Array.isArray(onlineResult.data)
         ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
       const emergency=await emergencyState(config);
-      return reply(res, 200, { admin:adminReady, emergency, messages: messages.map(m => ({
+      return reply(res, 200, { admin:adminReady, emergencyOwner:adminReady && user.id === "68548953-f190-448e-87e4-3a51d84869b7", emergency, messages: messages.map(m => ({
         id: m.id, user_id: m.user_id, nickname: names[m.user_id] || "Member",
         content: m.content, created_at: m.created_at
       })), online });
@@ -695,7 +695,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === "emergency_pause") {
-      if (!adminReady) return reply(res,403,{error:"Owner or moderator access required."});
+      if (!adminReady || user.id !== "68548953-f190-448e-87e4-3a51d84869b7") return reply(res,403,{error:"Verified owner access required."});
       if (!EMERGENCY_ENABLED) return reply(res,503,{error:"Emergency controls need preview database setup."});
       if (typeof body.paused !== "boolean") return reply(res,400,{error:"Choose pause or resume."});
       const changed=await supa(config,"/rest/v1/chat_emergency_state?room_id=eq."+ROOM_ID,{
