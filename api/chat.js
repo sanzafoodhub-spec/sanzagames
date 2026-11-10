@@ -330,6 +330,37 @@ function cleanMessage(value) {
   return { ok: true, text };
 }
 
+
+// Preview emergency controls. Enable only after docs/chat-emergency-pause.sql is
+// installed and CHAT_EMERGENCY_CONTROLS_ENABLED=true on this preview branch.
+// A missing/broken state store fails closed to prevent unsafe posting.
+const EMERGENCY_ENABLED = process.env.CHAT_EMERGENCY_CONTROLS_ENABLED === "true";
+async function emergencyState(config) {
+  if (!EMERGENCY_ENABLED) return { paused:false, enabled:false };
+  const result = await supa(config,
+    "/rest/v1/chat_emergency_state?select=paused_until,manual_pause&room_id=eq."+ROOM_ID+"&limit=1",{},true);
+  if (!result.ok || !Array.isArray(result.data) || result.data.length!==1)
+    return {paused:true, unavailable:true};
+  const row=result.data[0];
+  return {paused:row.manual_pause===true || (row.paused_until && Date.parse(row.paused_until)>Date.now()),
+    manual:row.manual_pause===true, until:row.paused_until||null, enabled:true};
+}
+async function triggerEmergencyIfNeeded(config) {
+  if (!EMERGENCY_ENABLED) return;
+  // 8 reports from distinct users in 10 minutes triggers a 30-minute pause.
+  // This can be gamed by coordinated reporters; moderators can resume manually.
+  const cutoff=encodeURIComponent(new Date(Date.now()-10*60000).toISOString());
+  const reports=await supa(config,
+    "/rest/v1/chat_reports?select=reporter_id&room_id=eq."+ROOM_ID+
+    "&created_at=gte."+cutoff+"&limit=250",{},true);
+  if (!reports.ok || !Array.isArray(reports.data)) return;
+  if (new Set(reports.data.map(x=>x.reporter_id).filter(Boolean)).size<8) return;
+  const until=new Date(Date.now()+30*60000).toISOString();
+  await supa(config,"/rest/v1/rpc/chat_emergency_auto_pause",{
+    method:"POST",body:{p_room_id:ROOM_ID,p_until:until}
+  },true);
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("Vary", "Origin");
@@ -563,13 +594,16 @@ module.exports = async function handler(req, res) {
       }
       const online = onlineResult.ok && Array.isArray(onlineResult.data)
         ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
-      return reply(res, 200, { admin:adminReady, messages: messages.map(m => ({
+      const emergency=await emergencyState(config);
+      return reply(res, 200, { admin:adminReady, emergency, messages: messages.map(m => ({
         id: m.id, user_id: m.user_id, nickname: names[m.user_id] || "Member",
         content: m.content, created_at: m.created_at
       })), online });
     }
 
     if (action === "send") {
+      const safety=await emergencyState(config);
+      if (safety.paused) return reply(res,503,{error:"SanZa Chat is temporarily read-only for safety. Please try later.",chat_paused:true});
       const cutoff = new Date(Date.now()-60000).toISOString();
       const recent = await supa(config,
         "/rest/v1/chat_messages?select=created_at&room_id=eq."+ROOM_ID+
@@ -653,10 +687,25 @@ module.exports = async function handler(req, res) {
       }, true);
       if (!report.ok) return reply(res, 502, { error: "Couldn't submit your report." });
       const newReportId = Array.isArray(report.data) && report.data[0] && report.data[0].id;
-      if (newReportId) await notifyChatReport(newReportId);
+      if (newReportId) {
+        await notifyChatReport(newReportId);
+        await triggerEmergencyIfNeeded(config);
+      }
       return reply(res, 201, { message: "Report submitted to the moderators." });
     }
 
+    if (action === "emergency_pause") {
+      if (!adminReady) return reply(res,403,{error:"Owner or moderator access required."});
+      if (!EMERGENCY_ENABLED) return reply(res,503,{error:"Emergency controls need preview database setup."});
+      if (typeof body.paused !== "boolean") return reply(res,400,{error:"Choose pause or resume."});
+      const changed=await supa(config,"/rest/v1/chat_emergency_state?room_id=eq."+ROOM_ID,{
+        method:"PATCH",headers:{Prefer:"return=representation"},
+        body:{manual_pause:body.paused,paused_until:null,updated_at:new Date().toISOString()}
+      },true);
+      if (!changed.ok || !Array.isArray(changed.data) || changed.data.length!==1)
+        return reply(res,503,{error:"Emergency state update failed."});
+      return reply(res,200,{message:body.paused?"Chat paused.":"Chat resumed.",emergency:await emergencyState(config)});
+    }
     if (action === "admin_reports" || action === "resolve_report" || action === "set_report_legal_hold" || action === "hide_message" || action === "suspend_member" || action === "ban_member_48h") {
       if (!adminReady) return reply(res, 403, { error: "Admin access required." });
       if (action === "admin_reports") {
