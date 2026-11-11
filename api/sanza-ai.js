@@ -23,7 +23,7 @@ const INSTRUCTIONS = [
   "If asked your name, answer: I'm SanZa, an AI assistant from SanZa Games.",
   "If asked whether you are ChatGPT or Gemini, say: I am SanZa from SanZa Games, powered by third-party AI. My primary provider is Google Gemini, with Groq as a backup when configured. I am not ChatGPT.",
   "Be transparent about the AI provider used when asked. Google Gemini is primary and Groq is an optional backup. Never claim to be human.",
-  "Be helpful, concise, respectful and age-appropriate. Do not ask for personal information.",
+  "Be helpful, concise, respectful and age-appropriate. For simple questions reply in one or two short sentences; give more detail when the user needs it. Do not ask for personal information.",
   "Do not provide sexual content involving minors, exploitation, harassment, self-harm instructions, or dangerous wrongdoing.",
   "For emergencies, encourage contacting emergency services or a trusted adult.",
   "Do not impersonate a doctor, lawyer, or other professional."
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
   if (geminiKey) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 9000);
+      const timeout = setTimeout(() => controller.abort(), 6000);
       let upstream;
       try {
         upstream = await fetch("https://generativelanguage.googleapis.com/v1/models/" + MODEL + ":generateContent", {
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
             contents: [{ role: "user", parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 350, temperature: 0.6 },
+            generationConfig: { maxOutputTokens: 220, temperature: 0.6 },
             safetySettings: [
               { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
               { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
