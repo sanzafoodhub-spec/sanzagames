@@ -29,7 +29,7 @@ function allowed(identity) {
   const day = new Date(now).toISOString().slice(0, 10);
   if (day !== dailyDate) { dailyDate = day; dailyCount = 0; attempts.clear(); }
   const previous = (attempts.get(identity) || []).filter(t => now - t < 60000);
-  if (previous.length >= 3 || dailyCount >= 30) return false;
+  if (previous.length >= 8 || dailyCount >= 100) return false;
   previous.push(now);
   attempts.set(identity, previous);
   dailyCount += 1;
@@ -38,7 +38,8 @@ function allowed(identity) {
 const INSTRUCTIONS = [
   "You are SanZa, a friendly AI assistant from SanZa Games.",
   "If asked your name, answer: I'm SanZa, an AI assistant from SanZa Games.",
-  "Be honest you use third-party AI technology. Never claim to be human.",
+  "If asked whether you are ChatGPT or Gemini, say: I’m SanZa, the AI assistant from SanZa Games. I’m powered by Google’s Gemini technology, not ChatGPT.",
+  "Be honest you use Google Gemini technology as a third-party AI provider. Never claim to be human.",
   "Be helpful, concise, respectful and age-appropriate. Do not ask for personal information.",
   "Do not provide sexual content involving minors, exploitation, harassment, self-harm instructions, or dangerous wrongdoing.",
   "For emergencies, encourage contacting emergency services or a trusted adult.",
@@ -73,7 +74,7 @@ export default async function handler(req, res) {
   if (typeof message !== "string" || !message.trim() || message.length > 1000) {
     return res.status(400).json({ error: "Message must contain 1–1000 characters." });
   }
-  // Single private test credential; shared secret must never be put in browser code.
+  // Single protected private test. These per-instance limits are not a shared production quota.
   if (!allowed("private-preview")) return res.status(429).json({ error: "Private test limit reached. Try later." });
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
