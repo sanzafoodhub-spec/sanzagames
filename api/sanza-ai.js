@@ -1,6 +1,22 @@
 // SanZa AI private Stage 1 backend. Disabled until explicitly enabled for protected testing.
 // Never expose GEMINI_API_KEY to browsers. No paid API fallback.
-const MODEL = "gemini-2.5-flash";
+// Discover the available free-tier Flash model rather than assuming a fixed model ID.
+// This does not guarantee free-tier eligibility; project billing must remain disabled.
+const PREFERRED_MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
+async function chooseModel(key, signal) {
+  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=100", {
+    headers: { "x-goog-api-key": key }, signal
+  });
+  if (!response.ok) {
+    console.error("SanZa AI model discovery HTTP status:", response.status);
+    return null;
+  }
+  const payload = await response.json();
+  const available = new Set((payload.models || [])
+    .filter(m => (m.supportedGenerationMethods || []).includes("generateContent"))
+    .map(m => m.name?.replace(/^models\\//, "")));
+  return PREFERRED_MODELS.find(name => available.has(name)) || null;
+}
 // Conservative best-effort protection for private testing only.
 // Serverless instances do NOT share memory; this is NOT production rate limiting.
 const attempts = new Map();
@@ -60,8 +76,10 @@ export default async function handler(req, res) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
   try {
+    const model = await chooseModel(key, controller.signal);
+    if (!model) return res.status(503).json({ error: "No compatible Gemini Flash model was found for this key." });
     const upstream = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
         method: "POST",
         signal: controller.signal,
