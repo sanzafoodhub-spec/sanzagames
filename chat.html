@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08090d">
+<meta name="description" content="SanZa Chat is a moderated, family-friendly public chat room. Use a nickname and follow the community rules.">
+<meta name="robots" content="index,follow">
+<title>SanZa Chat — Family-Friendly Community Chat</title>
+<link rel="icon" href="/sanza-logo.png">
+<style>
+:root{color-scheme:dark;--bg:#08090d;--panel:#10131b;--panel2:#151a23;--line:#2b3340;--gold:#ffd34d;--green:#a5ff80;--cyan:#57e9ff;--muted:#aeb7c8;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#30230a66,transparent 34%),radial-gradient(ellipse at 90% 15%,#142b3266,transparent 32%),var(--bg);color:#eef2f7;font:14px system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+a{color:inherit}.wrap{width:min(1120px,94%);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 0;border-bottom:1px solid var(--line)}.brand{font-weight:1000;letter-spacing:1px;text-decoration:none}.brand span{color:var(--gold)}.home{color:var(--gold);text-decoration:none;font-weight:800;font-size:12px;border:1px solid #554526;background:#1b180f;padding:10px 13px;border-radius:10px}
+.hero{text-align:center;padding:30px 0 20px}.kicker{display:inline-flex;gap:8px;align-items:center;color:var(--gold);border:1px solid #554526;background:#17140d;padding:8px 12px;border-radius:999px;font-size:10px;letter-spacing:1.5px;font-weight:900}.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}h1{font-size:clamp(36px,7vw,62px);letter-spacing:-3px;line-height:1;margin:17px 0 10px}.hero p{color:var(--muted);line-height:1.65;max-width:690px;margin:auto}
+.notice{margin:18px auto 20px;max-width:850px;padding:13px 15px;border:1px solid #715d29;background:#211b0e;border-radius:13px;color:#ffe8a5;font-size:12px;line-height:1.65}.notice strong{color:var(--gold)}
+.chat-shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:12px;max-width:1000px;margin:0 auto 26px;border:1px solid #303846;border-radius:18px;overflow:hidden;background:#0b0e14;box-shadow:0 24px 70px #0007}
+.sidebar{padding:16px;background:#0d1118;border-right:1px solid var(--line)}.side-title{font:900 10px ui-monospace,monospace;letter-spacing:1.6px;color:#8793a6;margin:5px 0 12px}.room{width:100%;text-align:left;display:flex;align-items:center;gap:9px;padding:11px 10px;border:1px solid transparent;border-radius:9px;background:transparent;color:#c8d0dd;font:700 12px ui-monospace,monospace;cursor:pointer;margin-bottom:5px}.room.active{background:#172019;border-color:#36563a;color:var(--green)}.room:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.room .hash{color:var(--gold);font-size:15px}.side-foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);color:#8490a2;font-size:11px;line-height:1.6}
+.main{min-width:0;display:flex;flex-direction:column;min-height:550px}.room-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 17px;border-bottom:1px solid var(--line);background:#111720}.room-name{font:900 14px ui-monospace,monospace;color:var(--green)}.room-topic{color:#8490a2;font-size:11px;margin-top:4px}.demo-tag{white-space:nowrap;font-size:9px;letter-spacing:1px;color:#ffe8a5;border:1px solid #655324;padding:6px 8px;border-radius:7px;background:#211b0e}
+.identity{display:flex;gap:9px;align-items:end;padding:12px 16px;border-bottom:1px solid #202936;background:#0d1219}.field{flex:1;min-width:0}.field label{display:block;font:800 10px ui-monospace,monospace;color:#98a5b8;margin:0 0 6px}.field input{width:100%;background:#080b10;border:1px solid #303a48;border-radius:8px;color:#fff;padding:10px 11px;font:13px ui-monospace,monospace}.field input::placeholder{color:#657184}.identity small{font-size:10px;color:#8793a6;max-width:180px;line-height:1.45}
+.messages{padding:17px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:230px;max-height:360px;overflow:auto;background:repeating-linear-gradient(0deg,transparent,transparent 27px,#ffffff04 28px)}.msg{font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.time{color:#68788c;margin-right:8px}.nick{font-weight:900;color:var(--cyan);margin-right:7px}.nick.gold{color:var(--gold)}.msg.system{color:#9aa7b8}.msg.system strong{color:var(--green)}.msg.local{border-left:2px solid var(--gold);padding-left:9px}
+.composer{display:flex;gap:8px;padding:13px 15px;border-top:1px solid var(--line);background:#111720}.composer input{flex:1;min-width:0;background:#080b10;border:1px solid #303a48;border-radius:9px;color:#fff;padding:12px;font:13px ui-monospace,monospace}.composer button{border:0;border-radius:9px;padding:0 16px;background:var(--gold);color:#101014;font-weight:1000;cursor:pointer}.composer button:disabled{opacity:.35;cursor:not-allowed}
+.emoji-bar{display:flex;gap:8px;padding:9px 15px;background:#111720;flex-wrap:wrap}.emoji-bar button{background:#1b2430;color:#fff;border:1px solid #354052;border-radius:9px;padding:7px 11px;font-size:19px;cursor:pointer}.controls{display:flex;flex-wrap:wrap;gap:8px;padding:0 15px 14px;background:#111720}.soft{background:#151b25;border:1px solid #354052;color:#c5d0df;border-radius:8px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer}.soft:hover{border-color:var(--cyan)}.status{padding:0 16px 12px;color:#8190a3;font-size:10px;background:#111720;min-height:24px}
+.rules{max-width:1000px;margin:0 auto 35px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule-card{border:1px solid var(--line);border-radius:14px;background:#10141c;padding:17px}.rule-card h2{font-size:15px;margin:0 0 8px}.rule-card p,.rule-card li{color:var(--muted);font-size:12px;line-height:1.65}.rule-card ul{padding-left:18px;margin:7px 0 0}.footer{text-align:center;color:#8490a2;font-size:11px;padding:0 0 30px}.footer a{color:var(--gold)}
+@media(max-width:680px){.chat-shell{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line);padding:12px}.side-title{margin-bottom:8px}.rooms{display:flex;gap:5px;overflow:auto}.room{white-space:nowrap;width:auto;margin:0}.side-foot{display:none}.main{min-height:520px}.identity{align-items:stretch;flex-wrap:wrap}.identity small{max-width:none;width:100%}.rules{grid-template-columns:1fr}.top{padding:13px 0}.hero{padding:25px 0 14px}.notice{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.quick-guide{max-width:1000px;margin:12px auto 18px;border:1px solid #514524;border-radius:13px;background:#141719;overflow:hidden}.quick-guide summary{padding:14px 17px;cursor:pointer;color:#ffe17b;font-weight:850;list-style:none;display:flex;justify-content:space-between;gap:10px}.quick-guide summary::-webkit-details-marker{display:none}.quick-guide[open] summary{border-bottom:1px solid #393628}.guide-content{padding:12px 17px;color:#c9d1df;line-height:1.7}.guide-content p{margin:5px 0 10px}.chat-shell .main>div:has(>div[role="note"]){order:-2}.chat-shell .identity{order:-3}.chat-shell .room-head{order:-4}.chat-shell .main>div:has(>div[role="note"]) #joinButton{font-size:18px;min-height:54px}.chat-shell .main>div:has(>div[role="note"]) #joinButton:hover{filter:brightness(1.1)}@media(max-width:680px){.hero h1{font-size:clamp(30px,9vw,46px)}.hero{padding:20px 0 8px}.notice{margin:10px auto 12px}.chat-shell{margin-bottom:18px}.quick-guide{margin:10px auto}}
+.identity{background:#151b24;padding:17px}.field label{color:#ffe17b;font-size:12px;letter-spacing:.4px}.field input{font:16px system-ui,sans-serif;padding:14px;border-radius:12px;border-color:#74612e}.identity small{font-size:12px;line-height:1.55}.room-head{background:#151b24}.room-name{font-size:18px}.composer input{font:16px system-ui,sans-serif}.composer button{min-width:76px;font-size:14px}.controls .soft{font-size:11px;padding:10px 12px}.rules a{display:inline-block;padding:5px 0}.chat-shell .main>div:has(>div[role="note"]){background:#151b24!important}.chat-shell #ageGroup{width:100%;max-width:420px!important;min-height:46px;font-size:15px}.chat-shell #turnstileBox{margin-top:14px}.chat-shell #joinButton{cursor:pointer}.chat-shell #joinButton:focus-visible{outline:3px solid #fff}.hero p{font-size:15px}.quick-guide summary{font-size:14px}@media(max-width:680px){.identity{padding:14px}.controls{gap:7px}.controls .soft{flex:1 1 auto}.composer button{padding:0 12px}.chat-shell .main>div:has(>div[role="note"]){padding:0 14px 14px!important}}
+
+/* SanZa Chat 2.0 visual refresh — presentation only; existing safety and API controls preserved */
+:root{--bg:#080a10;--panel:#121722;--panel2:#1b2230;--line:#303848;--gold:#f7c94c;--green:#86e3ad;--cyan:#9fdcf8;--muted:#b4bfce}
+body{background:radial-gradient(ellipse at 50% -20%,#674c1d4d,transparent 54%),radial-gradient(ellipse at 100% 70%,#1b30454d,transparent 42%),#080a10;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
+.wrap{width:min(1180px,94%)}
+.top{padding:18px 0}.brand{font-size:19px;letter-spacing:.6px}.home{border-radius:999px;padding:11px 16px;background:#1e1a13}
+.hero{padding:27px 0 17px}.hero h1{font-size:clamp(32px,5vw,53px);letter-spacing:-1.8px}.hero p{max-width:610px}
+.notice{max-width:1000px;border-radius:16px;background:#231d13b8;border-color:#62502d}
+.chat-shell{max-width:1060px;grid-template-columns:205px minmax(0,1fr);border-radius:24px;border:1px solid #3c414c;box-shadow:0 30px 90px #0009,0 0 0 1px #e6b84613;background:#0d111a}
+.sidebar{background:linear-gradient(160deg,#171d29,#0e121b);padding:22px 15px}.side-title{font-family:inherit;font-size:10px;font-weight:800;color:#b6c0cd}.room{font:700 13px system-ui,sans-serif;border-radius:13px;padding:13px}.room.active{background:#40341c;border-color:#81632d;color:#ffe6a0}.room .hash{font-size:19px}
+.main{min-height:580px}.room-head{background:#171e2a;padding:18px 21px}.room-name{font:800 20px system-ui,sans-serif;color:#f9d56e}.room-topic{font-size:12px}.demo-tag{font-size:10px;border-radius:999px;padding:8px 12px}
+.identity{padding:16px 19px;background:#141a24}.field label{font:800 11px system-ui,sans-serif;color:#f9d56e}.field input{background:#0e131d;border:1px solid #455063;border-radius:13px;font:15px system-ui,sans-serif;padding:13px 15px}
+.messages{min-height:310px;max-height:490px;padding:22px;gap:11px;background:radial-gradient(circle at 85% 0%,#23304450,transparent 50%),#0d121b;scrollbar-color:#495264 transparent}
+.msg{font:13px/1.6 system-ui,sans-serif;background:#1c2633;border:1px solid #354253;border-radius:16px 16px 16px 5px;padding:11px 14px;max-width:min(94%,660px);width:fit-content;box-shadow:0 5px 15px #0002}.msg.local{border:1px solid #725a2b;border-left:3px solid var(--gold);background:#2a251b;border-radius:16px 16px 5px 16px;align-self:flex-end}.msg.system{border:1px dashed #364253;background:#151c27;color:#b3c0d0;align-self:center;text-align:center;font-size:12px}.nick{font-weight:850;color:#9bdef6}.nick.gold{color:#f7c94c}.time{font-size:10px;color:#a3b0c2}
+.composer{padding:14px 18px;background:#171e2a;border-top:1px solid #333e4d;align-items:stretch}.composer input{background:#0c121b;border:1px solid #465166;border-radius:15px;padding:14px 17px;font:15px system-ui,sans-serif}.composer input:focus{outline:2px solid #e5b94c;outline-offset:1px}.composer button{border-radius:14px;background:linear-gradient(135deg,#ffe18a,#f0b936);min-width:96px;font:850 14px system-ui,sans-serif;box-shadow:0 4px 14px #e1ae2e25}
+.emoji-bar{background:#171e2a;padding:10px 18px 2px}.emoji-bar button{background:#273140;border-color:#455061;border-radius:13px;padding:8px 12px;transition:transform .15s ease}.emoji-bar button:hover{transform:translateY(-2px)}
+.controls{background:#171e2a;padding:9px 18px 15px}.soft{border-radius:12px;background:#232c3a;border-color:#414d60;color:#e2e8f1;font:750 11px system-ui,sans-serif;padding:10px 12px}.soft:hover{background:#303c4d;border-color:#f0c456}.status{background:#171e2a;padding:0 18px 13px;font-size:11px}
+.quick-guide{max-width:1060px;border-radius:16px;background:#171d27}.rules{max-width:1060px}.rule-card{border-radius:18px;background:#151b25}
+#adminPanel{border-radius:13px;margin:12px!important}#eventFeed{background:#121924!important}
+@media(max-width:680px){.wrap{width:95%}.top{gap:7px}.brand{font-size:16px}.home{font-size:10px;padding:9px 11px}.hero{padding:18px 0 10px}.hero h1{font-size:clamp(30px,8vw,40px);letter-spacing:-1px}.chat-shell{grid-template-columns:1fr;border-radius:18px}.sidebar{padding:10px 12px}.side-title,.side-foot{display:none}.rooms{display:flex}.room{padding:9px 13px}.main{min-height:510px}.room-head{padding:13px 14px}.room-name{font-size:18px}.identity{padding:13px}.messages{min-height:260px;max-height:52vh;padding:13px;gap:9px}.msg{max-width:96%;font-size:13px;padding:10px 12px}.composer{padding:10px;gap:7px}.composer input{padding:12px;font-size:16px}.composer button{min-width:72px;font-size:13px}.emoji-bar{padding:9px 10px 3px;gap:5px}.emoji-bar button{padding:6px 9px;font-size:17px}.controls{padding:9px 10px 12px}.controls .soft{font-size:10px;padding:9px}.notice{font-size:11px}.rules{gap:9px}}
+
+
+/* 2026 social-app inspired redesign: original SanZa styling, no feature changes */
+:root{--bg:#090a0f;--panel:#12141c;--panel2:#1c1e29;--line:#30313e;--gold:#ffcf52;--green:#8ef0bd;--cyan:#b4d9ff;--muted:#b8bac9}
+body{background:radial-gradient(circle at 45% -18%,#66411f50,transparent 39%),#090a0f;color:#f7f6fc;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{width:min(1180px,96%)}.top{border-color:#ffffff16}.brand{font-weight:950;letter-spacing:-.4px}.home{background:#ffffff0d;border:1px solid #ffffff22;color:#f9db88}
+.hero{padding:21px 0 13px}.hero h1{font-weight:950;letter-spacing:-2.5px;margin:13px 0 7px}.hero p{color:#b9b8c8}.kicker{background:#ffc94c12;border-color:#e6b84950}
+.notice{background:#1b1820;border:1px solid #b18b4545;color:#f3dca6;max-width:1080px}
+.chat-shell{max-width:1080px;grid-template-columns:188px minmax(0,1fr);background:#0f1018;border:1px solid #ffffff25;border-radius:26px;box-shadow:0 28px 100px #000b}
+.sidebar{background:linear-gradient(180deg,#171722,#101119);padding:22px 13px;border-color:#ffffff15}.side-title{font-family:inherit;font-weight:900;letter-spacing:1.4px}.room{font-family:inherit;font-size:14px;font-weight:850;border-radius:15px}.room.active{background:linear-gradient(100deg,#ffce4d2e,#ffce4d0b);color:#ffe18e;border-color:#ffce4d55}.side-foot{border-color:#ffffff19}
+.main{min-height:610px}.room-head{padding:17px 21px;background:#151621;border-color:#ffffff1c}.room-name{font-family:inherit;color:#fff;font-size:19px;font-weight:950}.room-topic{font-size:12px;color:#a6a8bb}.demo-tag{background:#f7c84d1a;border-color:#f7c84d55;border-radius:999px;color:#ffe9ab}
+.identity{background:#151621;border-color:#ffffff18}.field label{font-family:inherit;font-weight:900}.field input{background:#0d0f18;border:1px solid #4b4a5c;border-radius:15px;font-family:inherit}.field input:focus{border-color:#ffd25d}
+.messages{background:radial-gradient(circle at 100% 0%,#473d6540,transparent 48%),#10111b;gap:13px;max-height:530px;min-height:325px;padding:23px 22px;scrollbar-color:#514d64 transparent}
+.msg{font-family:inherit;font-size:13px;line-height:1.55;max-width:min(90%,620px);width:fit-content;padding:11px 15px;border:1px solid #ffffff1a;border-radius:19px 19px 19px 6px;background:#262734;box-shadow:0 5px 15px #0003}.msg.local{background:linear-gradient(120deg,#58421c,#3a2d21);border:1px solid #b28b3f;border-radius:19px 19px 6px 19px;border-left:1px solid #b28b3f;align-self:flex-end}.msg.system{align-self:center;border:1px solid #ffffff18;border-radius:999px;background:#ffffff0b;font-size:11px;color:#b9bac9;text-align:center;max-width:100%}.nick{color:#c3d7ff;font-weight:900}.nick.gold{color:#ffe18a}.time{font-size:10px;color:#a2a4b6}
+.emoji-bar{background:#171824;padding:12px 17px 3px;border-top:1px solid #ffffff12}.emoji-bar button{border-radius:14px;background:#282938;border:1px solid #ffffff20;padding:8px 12px;transition:transform .15s,background .15s}.emoji-bar button:hover{transform:scale(1.09);background:#383748}
+.composer{background:#171824;border-color:#ffffff12;padding:13px 17px}.composer input{background:#252633;border:1px solid #ffffff27;border-radius:999px;padding:15px 19px;font:15px system-ui,sans-serif}.composer input:focus{outline:2px solid #ffd35c;outline-offset:1px}.composer button{border-radius:999px;min-width:95px;background:linear-gradient(135deg,#ffe58e,#ffc43e);font:900 14px system-ui,sans-serif;box-shadow:0 5px 22px #ffc23d30}
+.controls{background:#171824;padding:9px 17px 15px}.soft{background:#262734;border:1px solid #ffffff26;border-radius:999px;color:#e7e6f0;font:800 11px system-ui,sans-serif;padding:10px 14px}.soft:hover{border-color:#ffcf52;background:#35313b}.status{background:#171824}
+.quick-guide{max-width:1080px;border-color:#ffffff27;background:#181924;border-radius:18px}.rules{max-width:1080px}.rule-card{border-radius:20px;background:#171824;border-color:#ffffff1d}
+#adminPanel{border-radius:15px;margin:10px!important}#eventFeed{background:#141620!important}
+@media(max-width:680px){.wrap{width:100%;padding:0 10px}.top{padding:12px 3px}.brand{font-size:17px}.home{font-size:10px;padding:9px 11px}.hero{padding:18px 6px 8px}.hero h1{font-size:clamp(30px,8.5vw,42px);letter-spacing:-1.5px}.hero p{font-size:13px}.notice{margin:9px 3px 12px;padding:10px 12px}.quick-guide{margin:9px 3px 13px}.chat-shell{grid-template-columns:1fr;border-radius:21px;margin:0 0 16px}.sidebar{padding:8px 12px;border-bottom:1px solid #ffffff1a}.side-title,.side-foot{display:none}.rooms{display:flex}.room{padding:9px 14px;font-size:13px}.main{min-height:510px}.room-head{padding:13px 15px}.room-name{font-size:18px}.identity{padding:13px}.messages{min-height:290px;max-height:52dvh;padding:13px;gap:10px}.msg{max-width:96%;padding:10px 12px;font-size:13px}.emoji-bar{gap:5px;padding:10px 10px 2px}.emoji-bar button{padding:7px 10px;font-size:17px}.composer{gap:7px;padding:10px}.composer input{font-size:16px;padding:13px 14px}.composer button{min-width:73px;padding:0 12px}.controls{padding:8px 10px 12px}.controls .soft{font-size:10px;padding:9px 11px}.rules{padding:0 3px}}
+@media(prefers-reduced-motion:reduce){.emoji-bar button{transition:none}}
+
+
+/* Immersive room mode and unobtrusive per-message actions */
+.msg .message-action{font:700 10px/1.2 system-ui,sans-serif!important;letter-spacing:0!important;padding:5px 8px!important;margin-left:5px!important;border-radius:999px!important;background:#ffffff0b!important;border:1px solid #ffffff24!important;color:#c8c9d4!important;vertical-align:middle;white-space:nowrap}
+.msg .message-action:hover{background:#ffffff20!important;color:#fff!important}
+#screenModeButton{border-color:#e9be5d88;background:#ffd45b19;color:#ffe09a}
+body.chat-immersive{overflow:hidden}
+body.chat-immersive .wrap{width:100%;max-width:none;padding:0}
+body.chat-immersive .top,body.chat-immersive .hero,body.chat-immersive .notice,body.chat-immersive .quick-guide,body.chat-immersive .rules,body.chat-immersive .footer{display:none}
+body.chat-immersive .chat-shell{position:fixed;inset:0;z-index:1000;width:100%;height:100dvh;max-width:none;margin:0;border:0;border-radius:0;grid-template-columns:175px minmax(0,1fr)}
+body.chat-immersive .main{height:100dvh;min-height:0;overflow:hidden}
+body.chat-immersive .messages{flex:1;min-height:0;max-height:none;overflow-y:auto}
+body.chat-immersive .identity,body.chat-immersive .main>div:has(>div[role="note"]){display:none}
+body.chat-immersive .controls{flex-shrink:0;max-height:88px;overflow-y:auto}
+body.chat-immersive .composer,body.chat-immersive .emoji-bar,body.chat-immersive .status,body.chat-immersive .room-head{flex-shrink:0}
+body.chat-immersive .status{min-height:0;padding-bottom:5px}
+body.chat-immersive #adminPanel,body.chat-immersive #ownerMfaPanel{max-height:32vh;overflow-y:auto}
+@media(max-width:680px){body.chat-immersive .chat-shell{grid-template-columns:1fr}body.chat-immersive .sidebar{display:none}body.chat-immersive .room-head{padding:11px 13px}body.chat-immersive .messages{padding:13px}body.chat-immersive .controls{max-height:83px;padding:7px 9px 10px}body.chat-immersive .controls .soft{flex:0 0 auto;font-size:10px;padding:7px 9px}body.chat-immersive .emoji-bar{padding:6px 9px 2px}body.chat-immersive .composer{padding:8px 9px}body.chat-immersive .msg .message-action{font-size:9px!important;padding:4px 6px!important}}
+
+.sticker-tray{display:flex;align-items:center;gap:7px;padding:8px 17px 4px;background:#171824;flex-wrap:wrap}.sticker-title{font-size:11px;color:#fbd781;font-weight:800;margin-right:3px}.sticker{cursor:pointer;font-size:24px;line-height:1;background:#ffffff0d;border:1px solid #ffffff24;border-radius:15px;padding:8px 11px;transition:transform .15s ease}.sticker:hover{transform:scale(1.08);border-color:#ffd34d}.sticker:focus-visible{outline:2px solid #ffd34d;outline-offset:2px}.sticker-message{display:block;font-size:38px;line-height:1.35;margin-top:4px}.sticker-bubble{background:#ffffff08!important;border-color:#ffffff18!important}body.chat-immersive .sticker-tray{flex-shrink:0}@media(max-width:680px){.sticker-tray{padding:6px 9px 3px;gap:5px}.sticker-title{font-size:10px}.sticker{font-size:20px;padding:6px 8px}.sticker-message{font-size:34px}}
+</style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="/"><span>SANZA</span> CHAT</a><a class="home" href="/">← BACK TO SANZA GAMES</a></header>
+<section class="hero"><div class="kicker"><span class="dot"></span> ONE SANZA · ONE FAMILY</div><h1>HOWAYA, <span style="color:var(--gold)">SANZATIONS?</span></h1><p>Pick a nickname, join the room and say hello! Friendly public chat for ages 16+.</p></section>
+<div class="notice"><strong>A FRIENDLY REMINDER.</strong> Everyone in the room can read your messages. Keep your personal information private. No private messages or uploads.</div>
+<details class="quick-guide"><summary>💬 New here? How to use SanZa Chat <span aria-hidden="true">⌄</span></summary><div class="guide-content"><p><strong>Three easy steps:</strong> Choose a nickname, select 16+, complete CAPTCHA and tap the gold JOIN button. Then type your message and press Send.</p><p>Keep it friendly: no bullying, racism, swearing, threats, contact details or links. Use REPORT MESSAGE if needed. No private chats or uploads.</p></div></details>
+<section class="chat-shell" aria-label="SanZa Chat prototype">
+<aside class="sidebar"><div class="side-title">CHANNELS</div><div class="rooms">
+<button class="room active" data-room="sanza"><span class="hash">#</span> sanza</button>
+
+
+</div><div class="side-foot">#sanza · 16+ only<br>No DMs · No uploads</div></aside>
+<div class="main">
+<div class="room-head"><div><div class="room-name" id="roomName">#sanza</div><div class="room-topic" id="roomTopic">The SanZa community lounge · 16+</div><div id="onlineCount" style="font-size:12px;color:#b6eac8;margin-top:7px" aria-live="polite">● Online now: —</div><div id="onlineNames" style="font-size:11px;color:#aebdcc;margin-top:3px;overflow-wrap:anywhere">Join to see who’s online</div></div><span class="demo-tag">16+ ONLY</span></div>
+<div class="identity"><div class="field"><label for="nickname">1. YOUR CHAT NICKNAME</label><input id="nickname" maxlength="18" autocomplete="off" placeholder="e.g. HappyBrownie"></div><small>Pick a fun name! Use 3–18 letters, numbers or underscores.</small></div>
+<div id="eventFeed" aria-live="polite" style="padding:6px 16px;background:#111720;color:#a5ff80;font-size:11px"></div><div class="messages" id="messages" aria-live="polite"><div class="msg system">Join with a nickname to see the real conversation.</div></div>
+<div id="replyPreview" hidden style="padding:9px 15px;background:#1b2430;border-top:1px solid #354052;color:#ffe8a5;font-size:12px;display:none;align-items:center;gap:8px"><span id="replyText" style="flex:1;overflow-wrap:anywhere"></span><button class="soft" id="cancelReply" type="button">✕ CANCEL</button></div><div class="sticker-tray" aria-label="SanZa stickers"><span class="sticker-title">✨ SanZa stickers</span><button type="button" class="sticker" data-sticker="🍪😎" aria-label="Cool cookie sticker">🍪😎</button><button type="button" class="sticker" data-sticker="🔥👑" aria-label="Fire crown sticker">🔥👑</button><button type="button" class="sticker" data-sticker="😂💛" aria-label="Laughing heart sticker">😂💛</button><button type="button" class="sticker" data-sticker="🙌🎉" aria-label="Celebration sticker">🙌🎉</button></div><div class="emoji-bar" aria-label="Quick reactions"><button type="button" data-emoji="😂">😂</button><button type="button" data-emoji="❤️">❤️</button><button type="button" data-emoji="🤣">🤣</button><button type="button" data-emoji="🔥">🔥</button><button type="button" data-emoji="👋">👋</button></div><div class="composer"><input id="messageInput" maxlength="500" placeholder="Type a message…" aria-label="Chat message" disabled><button id="sendButton" disabled>Send ↗</button></div>
+<div class="controls"><button class="soft" id="screenModeButton" type="button" hidden aria-pressed="true">↙ Small screen</button><button class="soft" id="rulesButton">📜 RULES</button><button class="soft" id="reportButton">🚩 REPORT</button><button class="soft" id="clearButton">🚪 LEAVE CHAT</button><button class="soft" id="blockButton">🚫 BLOCK USER</button><button class="soft" id="soundButton" type="button" aria-pressed="false">🔇 SOUND OFF</button><button class="soft" id="testSoundButton" type="button">🔊 TEST SOUND</button></div>
+<div id="adminPanel" hidden style="padding:12px;background:#211b0e;border:1px solid #715d29"><strong>👑 ADMIN CONTROL ROOM</strong> <button class="soft" id="adminReports">VIEW REPORTS</button> <button class="soft" id="emergencyPause" type="button" hidden>⏸ PAUSE CHAT</button> <span id="emergencyAdminStatus" style="font-size:11px">Emergency controls pending setup</span><div id="adminResults"></div></div><div id="ownerMfaPanel" hidden style="padding:14px;background:#1c1a11;border:1px solid #715d29"><strong>🔐 OWNER TWO-FACTOR AUTHENTICATION</strong><p id="ownerMfaInstructions">Set up Google Authenticator to unlock admin tools.</p><button class="soft" id="ownerMfaSetup" type="button">SET UP GOOGLE AUTHENTICATOR</button><div id="ownerMfaSecret" hidden style="overflow-wrap:anywhere;padding:8px;color:#ffd34d"></div><label for="ownerMfaCode">6-digit Google Authenticator code</label><input id="ownerMfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" style="width:100%;padding:10px;margin:8px 0;background:#080b10;color:white;border:1px solid #715d29;border-radius:8px"><button class="soft" id="ownerMfaConfirm" type="button">VERIFY CODE</button><p style="font-size:11px">Never share your authenticator secret or codes.</p></div><div class="status" id="status" role="status">Choose your nickname, confirm your age and tap Join.</div>
+<div style="padding:0 16px 12px;background:#111720"><div role="note" style="margin:12px 0;padding:14px;border:2px solid #ffd34d;border-radius:12px;background:#30240b;color:#fff0b0;font-size:13px;line-height:1.65"><strong style="display:block;font-size:17px;color:#ffe37b">🔞 SANZA CHAT — STRICTLY 16+</strong>You must be at least 16 years old to join. By joining, you confirm you are 16 or older and agree to our <a href="/chat-terms.html" style="color:#ffe37b">Rules &amp; Terms</a> and <a href="/chat-privacy.html" style="color:#ffe37b">Privacy Policy</a>. Providing a false age is prohibited. Users reasonably suspected of being under 16 may be restricted or removed.</div><label for="ageGroup" style="display:block;margin:8px 0;color:#ffe8a5;font-weight:700">2. CONFIRM YOUR AGE</label><select id="ageGroup" style="padding:10px;background:#10131b;color:white;border:1px solid #715d29;border-radius:8px;max-width:100%"><option value="">Select your age group</option><option value="under13">Under 13 — cannot join</option><option value="13to15">13–15 — cannot join</option><option value="16plus">16 or older</option></select><p style="font-size:11px;color:#aeb7c8">You must be 16 or older. Age selection is self-declared, not age verification.</p><div id="turnstileBox" style="margin-bottom:10px;min-height:65px"></div><p id="turnstileHelp" hidden style="color:#ffe8a5;font-size:12px;line-height:1.5">On iPhone Safari, try turning off content blockers for this website using the page menu, then reload. If using a VPN or iCloud Private Relay, temporarily turn it off for this test. CAPTCHA remains required.</p><button class="soft" id="joinButton" style="display:block;width:100%;padding:16px 20px;margin-top:12px;background:linear-gradient(135deg,#ffe37b,#ffc52d);color:#17110a;border:2px solid #fff1ae;border-radius:14px;font-size:17px;font-weight:950;letter-spacing:1px;box-shadow:0 0 22px #ffd34d66;transition:filter .2s,transform .2s">💬 JOIN THE CHAT</button></div>
+</div></section>
+<details class="quick-guide" style="margin-top:10px"><summary>🛡️ Community safety and help <span aria-hidden="true">⌄</span></summary><div class="rules" style="margin:12px 0 0"><article class="rule-card"><h2>🛡️ Safety-first design</h2><ul><li>No private messages or file/image uploads.</li><li>Moderation, reporting and blocking must work before any public launch.</li><li>Child access and age-appropriate safeguards must be assessed before activation.</li><li>Never share personal or identifying information.</li></ul></article>
+<article class="rule-card"><h2>📩 Safety, privacy & complaints</h2><p>Contact the SanZa team at <a href="mailto:Sanzafoodhub@gmail.com?subject=SanZa%20Chat%20Safety%20or%20Privacy">Sanzafoodhub@gmail.com</a> for safety concerns, privacy requests, moderation appeals or complaints. Include the message time and nickname if relevant, but do not email sensitive personal details. For immediate danger, contact local emergency services; this inbox is not an emergency service. Use REPORT MESSAGE inside chat to flag harmful content.</p></article></div></details>
+<section class="rules" aria-label="SanZa Chat legal and safety information"><article class="rule-card" style="grid-column:1/-1"><h2>📚 SanZa Chat rules, privacy & safety</h2><p style="font-size:14px;line-height:2.3"><a href="/chat-privacy.html" style="color:#ffe17b;font-weight:800">🔒 Privacy Policy</a> · <a href="/chat-terms.html" style="color:#ffe17b;font-weight:800">📜 Rules & Terms</a> · <a href="/chat-safety.html" style="color:#ffe17b;font-weight:800">🛡️ Safety & Reporting</a></p><p>Read these notices before joining. SanZa Chat is for ages 16+ only. Never share personal details.</p></article></section><div class="owner-bottom" style="max-width:1000px;margin:28px auto 22px;padding:14px 18px;border-top:1px solid #313743;color:#9aa5b5"><p style="font-size:11px;margin:0 0 8px">SanZa team access</p><details id="ownerLogin" style="margin-top:14px;border-top:1px solid #554526;padding-top:12px"><summary style="color:#ffd34d;cursor:pointer;font-weight:800">👑 Owner / Moderator Login</summary><p style="font-size:11px;color:#aeb7c8">For the SanZa Food Hub owner only. Use your existing Supabase email account; do not create another nickname.</p><label for="ownerEmail">Admin email</label><input id="ownerEmail" type="email" autocomplete="username" value="Sanzafoodhub@gmail.com" style="width:100%;padding:10px;margin:5px 0;background:#080b10;color:white;border:1px solid #554526;border-radius:8px"><label for="ownerPassword">Password</label><input id="ownerPassword" type="password" autocomplete="current-password" style="width:100%;padding:10px;margin:5px 0;background:#080b10;color:white;border:1px solid #554526;border-radius:8px"><button class="soft" id="ownerLoginButton" type="button">SECURE ADMIN SIGN IN</button><p style="font-size:11px;color:#aeb7c8">Do not share your password. Your chat session stays unchanged unless you sign in here.</p></details></div>
+<footer class="footer">One SanZa. One Family. 🖤💛<br>Chat preview · <a href="/">Return to SanZa Games</a></footer>
+</div>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const nickname=$("nickname"),input=$("messageInput"),send=$("sendButton"),messages=$("messages"),status=$("status"),join=$("joinButton");
+const STORE="sanza_chat_beta_session_v1",BLOCK="sanza_chat_beta_blocks_v1",DEVICE="sanza_chat_device_v1";
+let deviceId=localStorage.getItem(DEVICE);
+if(!deviceId || !/^[a-f0-9-]{36}$/i.test(deviceId)){
+  deviceId=crypto.randomUUID();localStorage.setItem(DEVICE,deviceId);
+}
+let session=null,me=null,busy=false,polling=false,renderKey="",captchaToken="",replyTo=null;
+let captchaAttempts=0,captchaWidgetId=null,lastPresence=0;
+let soundEnabled=false,audioCtx=null,onlineBaseline=null,messageBaseline=null,lastSoundAt=0;let isModerator=false;const viewStartedAt=Date.now();
+function playTone(kind){
+ if(!soundEnabled||document.hidden||!session||Date.now()-lastSoundAt<450)return;
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+  if(!audioCtx)audioCtx=new Ctx();if(audioCtx.state!=="running")return;
+  const t=audioCtx.currentTime,osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type="sine";osc.frequency.setValueAtTime(kind==="join"?880:620,t);
+  if(kind==="join")osc.frequency.setValueAtTime(1175,t+0.09);
+  gain.gain.setValueAtTime(0.0001,t);gain.gain.exponentialRampToValueAtTime(0.07,t+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t+(kind==="join"?0.27:0.15));
+  osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+(kind==="join"?0.28:0.16));
+  lastSoundAt=Date.now();
+ }catch(_){}
+}
+$("testSoundButton").addEventListener("click",async()=>{
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx){info("Sound is not supported on this browser.");return}
+  if(!audioCtx)audioCtx=new Ctx();
+  await audioCtx.resume();
+  const now=audioCtx.currentTime;
+  function beep(freq,start,duration){
+   const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+   osc.type="sine";osc.frequency.value=freq;
+   gain.gain.setValueAtTime(0.0001,start);
+   gain.gain.exponentialRampToValueAtTime(0.07,start+0.015);
+   gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+   osc.connect(gain);gain.connect(audioCtx.destination);
+   osc.start(start);osc.stop(start+duration+0.01);
+  }
+  beep(880,now,0.12);beep(1175,now+0.13,0.15);
+  beep(620,now+0.7,0.16);
+  info("Test playing: BING for new person, then POP for message. Your sound setting stays the same.");
+ }catch(_){info("Unable to play sound. Check phone volume and silent mode.")}
+});
+$("soundButton").addEventListener("click",async()=>{
+ soundEnabled=!soundEnabled;
+ if(soundEnabled){
+  try{const Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx){if(!audioCtx)audioCtx=new Ctx();await audioCtx.resume()}}catch(_){}
+  info("Sounds on: ding for new people, pop for messages.");
+ }else info("Chat sounds muted.");
+ $("soundButton").textContent=soundEnabled?"🔔 SOUND ON":"🔇 SOUND OFF";
+ $("soundButton").setAttribute("aria-pressed",String(soundEnabled));
+});
+
+function mountCaptcha(){
+  if(!window.turnstile){
+    if(++captchaAttempts<=35){setTimeout(mountCaptcha,400);return}
+    info("CAPTCHA could not load on this browser. Check Safari content blockers, VPN or iCloud Private Relay, then reload.");
+    $("turnstileHelp").hidden=false;return;
+  }
+  try{
+    captchaWidgetId=window.turnstile.render("#turnstileBox",{
+      sitekey:"0x4AAAAAAF1FRqHQRNliPr4y",
+      theme:"auto",size:"normal",appearance:"always",
+      callback:token=>{captchaToken=token;info("CAPTCHA verified. Enter your nickname and join.");$("turnstileHelp").hidden=true},
+      "expired-callback":()=>{captchaToken="";info("CAPTCHA expired. Please verify again.")},
+      "error-callback":code=>{captchaToken="";info("CAPTCHA failed ("+(code||"connection")+"). Try reload or disable Safari content blockers for this page.");$("turnstileHelp").hidden=false}
+    });
+  }catch(e){info("CAPTCHA couldn't start on this browser. Please reload.");$("turnstileHelp").hidden=false}
+}
+let blocked=[];
+try{blocked=JSON.parse(localStorage.getItem(BLOCK)||"[]");if(!Array.isArray(blocked))blocked=[]}catch(_){blocked=[]}
+function info(t){status.textContent=t}
+function setJoined(yes){nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes;setScreenMode(true);$("screenModeButton").hidden=false}
+function setScreenMode(expanded){document.body.classList.toggle("chat-immersive",expanded);$("screenModeButton").textContent=expanded?"↙ Small screen":"⛶ Full screen";$("screenModeButton").setAttribute("aria-pressed",String(expanded));}
+$("screenModeButton").addEventListener("click",()=>setScreenMode(!document.body.classList.contains("chat-immersive")));
+function save(){if(session&&me)localStorage.setItem(STORE,JSON.stringify({session,me}))}
+function clear(){setScreenMode(false);$("screenModeButton").hidden=true;$("ownerMfaPanel").hidden=true;$("ownerMfaSecret").hidden=true;$("ownerMfaSecret").textContent="";ownerFactorId=null;stopRealtime();setReply(null);onlineBaseline=null;messageBaseline=null;isModerator=false;$("adminPanel").hidden=true;$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();$("eventFeed").replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
+function api(action,data={},auth=true){const headers={"Content-Type":"application/json"};if(auth&&session)headers.Authorization="Bearer "+session.access_token;return fetch("/api/chat",{method:"POST",headers,body:JSON.stringify({action,...data}),cache:"no-store"}).then(async r=>{let j={};try{j=await r.json()}catch(_){}if(!r.ok)throw new Error(j.error||"Chat request failed ("+r.status+").");return j})}
+async function refresh(){if(!session||!session.refresh_token)throw Error("Session expired.");const result=await api("refresh",{refresh_token:session.refresh_token},false);session=result.session;save();if(realtimeClient)void realtimeClient.realtime.setAuth(session.access_token)}
+async function call(action,data={}){try{return await api(action,data)}catch(e){if(/expired|sign in|401/i.test(e.message)&&session?.refresh_token){await refresh();return api(action,data)}throw e}}
+function showOnline(online){if(!Array.isArray(online)){$("onlineCount").textContent="● Online now: unavailable";$("onlineNames").textContent="Presence setup pending";return} $("onlineCount").textContent="● Online now: "+online.length;$("onlineNames").textContent=online.length?online.join(" · "):"No active users";const now=new Set(online.map(n=>String(n).toLowerCase()));if(onlineBaseline!==null&&[...now].some(n=>!onlineBaseline.has(n)&&n!==me?.nickname?.toLowerCase()))playTone("join");if(onlineBaseline!==null){for(const n of [...now].filter(n=>!onlineBaseline.has(n)&&n!==me?.nickname?.toLowerCase()).slice(0,4))systemEvent("🎉 "+n+" joined #sanza!");for(const n of [...onlineBaseline].filter(n=>!now.has(n)&&n!==me?.nickname?.toLowerCase()).slice(0,4))systemEvent("👋 "+n+" went offline.");}onlineBaseline=now;}
+let realtimeClient=null,realtimeChannel=null,realtimeRefreshTimer=null,realtimePending=false,realtimeConnected=false,reloadQueued=false;
+async function startRealtime(){
+ if(!session||realtimeChannel)return;
+ try{
+  const response=await fetch("/api/chat-realtime-config",{cache:"no-store"});
+  if(!response.ok)return;
+  const cfg=await response.json();
+  if(!cfg.enabled||!cfg.url||!cfg.anonKey||!window.supabase?.createClient)return;
+  realtimeClient=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:10}}});
+  await realtimeClient.realtime.setAuth(session.access_token);
+  realtimeChannel=realtimeClient.channel("sanza-chat-preview-realtime",{config:{private:false}})
+   .on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages",filter:"room_id=eq."+cfg.roomId},()=>{if(!realtimePending){realtimePending=true;setTimeout(()=>{realtimePending=false;void load()},150)}})
+   .on("postgres_changes",{event:"UPDATE",schema:"public",table:"chat_messages",filter:"room_id=eq."+cfg.roomId},()=>{void load()})
+   .subscribe((state)=>{realtimeConnected=state==="SUBSCRIBED";if(realtimeConnected)info("⚡ Realtime connected");else if(state==="CHANNEL_ERROR"||state==="TIMED_OUT")info("Realtime reconnecting — backup refresh active");});
+  realtimeRefreshTimer=setInterval(()=>{if(session&&realtimeClient)void realtimeClient.realtime.setAuth(session.access_token)},60000);
+ }catch(_){stopRealtime();}
+}
+function stopRealtime(){
+ if(realtimeRefreshTimer)clearInterval(realtimeRefreshTimer);
+ realtimeRefreshTimer=null;
+ if(realtimeClient&&realtimeChannel)void realtimeClient.removeChannel(realtimeChannel);
+ realtimeChannel=null;realtimeClient=null;realtimeConnected=false;
+}
+async function heartbeat(){if(!session||document.hidden||Date.now()-lastPresence<18000)return;lastPresence=Date.now();try{await call("presence")}catch(e){lastPresence=0;}}
+function systemEvent(message){const row=document.createElement("div");row.textContent=message;$("eventFeed").append(row);while($("eventFeed").children.length>8)$("eventFeed").firstChild.remove()}function setReply(m){replyTo=m&&m.content&&!m.content.startsWith("[Message ")?{id:m.id,nickname:m.nickname,content:m.content}:null;const panel=$("replyPreview");panel.hidden=!replyTo;panel.style.display=replyTo?"flex":"none";$("replyText").textContent=replyTo?"↪ Replying to "+replyTo.nickname+": "+replyTo.content.slice(0,85):"";if(replyTo)input.focus()}
+$("cancelReply").addEventListener("click",()=>setReply(null));
+function show(items){const key=JSON.stringify([items.map(m=>[m.id,m.content]),blocked]);if(key===renderKey)return;renderKey=key;messages.replaceChildren();if(!items.length){const row=document.createElement("div");row.className="msg system";row.textContent="Fresh chat screen! New messages will appear here. Earlier messages remain stored for moderation.";messages.append(row)}
+for(const m of items){if(blocked.includes(m.nickname.toLowerCase()))continue;const row=document.createElement("div");row.className="msg";const time=document.createElement("span");time.className="time";time.textContent=new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const nick=document.createElement("span");nick.className="nick";nick.textContent=(isModerator&&m.user_id===me?.id?"👑 ":"")+m.nickname;const body=document.createElement("span");body.textContent=m.content;if(["🍪😎","🔥👑","😂💛","🙌🎉"].includes(m.content.trim())){body.className="sticker-message";row.classList.add("sticker-bubble")}row.append(time,nick,body);if(m.content!=="[Message deleted by sender]"&&m.content!=="[Message removed by moderator]"){const replyButton=document.createElement("button");replyButton.className="soft";replyButton.style.marginLeft="8px";replyButton.textContent="↩ Reply";replyButton.classList.add("message-action");replyButton.addEventListener("click",()=>setReply(m));row.append(replyButton)}if(m.user_id===me?.id&&m.content!=="[Message deleted by sender]"&&m.content!=="[Message removed by moderator]"&&Date.now()-new Date(m.created_at).getTime()<=600000){const del=document.createElement("button");del.className="soft";del.style.marginLeft="8px";del.textContent="🗑 Delete for everyone";del.classList.add("message-action");del.addEventListener("click",async()=>{if(!confirm("Delete this message for everyone?"))return;try{const result=await call("delete_own_message",{message_id:m.id});info(result.message);renderKey="";await load()}catch(e){info(e.message)}});row.append(del)}if(m.user_id!==me?.id){const report=document.createElement("button");report.className="soft";report.style.marginLeft="8px";report.textContent="Report";report.addEventListener("click",()=>reportMessage(m));row.append(report);if(isModerator){const hide=document.createElement("button");hide.className="soft";hide.textContent="REMOVE";hide.addEventListener("click",()=>moderate("hide_message",{message_id:m.id},"Remove this message?"));row.append(hide);const suspend=document.createElement("button");suspend.className="soft";suspend.textContent="SUSPEND";suspend.addEventListener("click",()=>moderate("suspend_member",{user_id:m.user_id},"Suspend this member?"));row.append(suspend);const ban=document.createElement("button");ban.className="soft";ban.textContent="🔒 BAN 48 HOURS";ban.title="Temporarily block this account for two days";ban.addEventListener("click",()=>moderate("ban_member_48h",{user_id:m.user_id},"Ban "+m.nickname+" from SanZa Chat for 48 hours?"));row.append(ban)}}messages.append(row)}messages.scrollTop=messages.scrollHeight}
+async function load(){if(!session||document.hidden)return;if(polling){reloadQueued=true;return;}polling=true;try{void heartbeat();const r=await call("list");$("emergencyPause").hidden=!(r.emergencyOwner===true && r.emergency?.enabled);if(r.emergency?.enabled){$("emergencyAdminStatus").textContent=r.emergency.paused?"🔴 CHAT PAUSED":"🟢 CHAT OPEN";$("emergencyPause").textContent=r.emergency.paused?"▶ RESUME CHAT":"⏸ PAUSE CHAT";}else{$("emergencyAdminStatus").textContent="Emergency controls pending setup";}if(r.emergency?.paused){input.disabled=true;send.disabled=true;info("Chat temporarily read-only for safety. Reports remain available.");}else if(session){input.disabled=false;send.disabled=false;}const items=(r.messages||[]).filter(m=>new Date(m.created_at).getTime()>=viewStartedAt);if(typeof r.admin==="boolean"){isModerator=r.admin;$("adminPanel").hidden=!isModerator;}const ids=new Set(items.map(m=>String(m.id)));if(messageBaseline!==null&&items.some(m=>!messageBaseline.has(String(m.id))&&m.user_id!==me?.id&&!blocked.includes(String(m.nickname).toLowerCase())))playTone("message");messageBaseline=ids;show(items);showOnline(r.online)}catch(e){info(e.message)}finally{polling=false;if(reloadQueued){reloadQueued=false;void load()}}}
+async function reportMessage(m){const reason=prompt("Why are you reporting this message? (No personal information)");if(!reason?.trim())return;try{await call("report",{message_id:m.id,reason:reason.trim().slice(0,500)});info("Report sent to moderators. Thank you.")}catch(e){info(e.message)}}
+let ownerFactorId=null;
+async function ownerMfaGate(){
+  if(me?.id!=="68548953-f190-448e-87e4-3a51d84869b7"){ $("ownerMfaPanel").hidden=true;return; }
+  const m=await call("owner_mfa_status");ownerFactorId=m.factor_id;
+  $("ownerMfaPanel").hidden=!!m.verified_session;
+  $("ownerMfaSetup").hidden=!!m.enrolled;
+  $("ownerMfaInstructions").textContent=m.enrolled?"Enter the six-digit code from Google Authenticator to unlock admin controls.":"Set up Google Authenticator first. Tap SET UP, then add the displayed setup key manually in Google Authenticator.";
+  if(!m.verified_session){$("adminPanel").hidden=true;isModerator=false;}
+}
+$("ownerMfaSetup").addEventListener("click",async()=>{try{
+ const m=await call("owner_mfa_enroll");ownerFactorId=m.factor_id;
+ $("ownerMfaSecret").hidden=false;
+ $("ownerMfaSecret").textContent="Google Authenticator → Add code (+) → Enter a setup key. Account: SanZa Chat Owner. Setup key: "+m.secret+" (time-based)";
+ $("ownerMfaSetup").hidden=true;info("Add the key in Google Authenticator, then enter its six-digit code below.");
+}catch(e){info(e.message)}});
+$("ownerMfaConfirm").addEventListener("click",async()=>{if(!/^[0-9]{6}$/.test($("ownerMfaCode").value.trim())){info("Enter the six-digit code.");return}try{
+ const c=await call("owner_mfa_challenge",{factor_id:ownerFactorId});
+ const v=await call("owner_mfa_verify",{factor_id:ownerFactorId,challenge_id:c.challenge_id,code:$("ownerMfaCode").value.trim()});
+ $("ownerMfaCode").value="";if(!v.session?.access_token)throw Error("Verification did not return a session.");
+ session=v.session;save();$("ownerMfaSecret").textContent="";$("ownerMfaSecret").hidden=true;
+ await ownerMfaGate();await load();info("Two-factor verification successful. Admin controls unlocked.");
+}catch(e){info(e.message)}});
+$("ownerLoginButton").addEventListener("click",async()=>{if(busy)return;const email=$("ownerEmail").value.trim(),password=$("ownerPassword").value;if(!password){info("Enter your admin password.");return}busy=true;$("ownerLoginButton").disabled=true;info("Checking owner credentials…");try{const r=await api("admin_email_login",{email,password},false);$("ownerPassword").value="";session=r.session;me=r.user;onlineBaseline=null;messageBaseline=null;save();setJoined(true);info("Signed in as "+me.nickname+". Admin access will be verified.");void startRealtime();await ownerMfaGate();await load()}catch(e){$("ownerPassword").value="";info(e.message)}finally{busy=false;$("ownerLoginButton").disabled=false}});
+join.addEventListener("click",async()=>{if(busy)return;const nick=nickname.value.trim();if(!/^[A-Za-z0-9_]{3,18}$/.test(nick)){info("Nickname: 3–18 letters, numbers or underscores.");return}if(!$("ageGroup").value){info("Select your age group first.");return}if($("ageGroup").value!=="16plus"){info($("ageGroup").value==="under13"?"SanZa Chat is for ages 13 and over.":"Ages 13–15 need verified parental permission. Joining is not available yet.");return}if(!captchaToken){info("Complete the CAPTCHA check first.");return}busy=true;join.disabled=true;info("Joining #sanza…");try{const r=await api("register",{nickname:nick,age_group:$("ageGroup").value,captcha_token:captchaToken,device_id:deviceId},false);session=r.session;me=r.user;onlineBaseline=null;messageBaseline=null;save();setJoined(true);info("Connected as "+me.nickname+". Messages are visible to other beta testers.");void startRealtime();await load()}catch(e){info(e.message);join.disabled=false;captchaToken="";if(window.turnstile&&captchaWidgetId!==null)window.turnstile.reset(captchaWidgetId)}finally{busy=false}});
+async function sendMessage(){
+ if(!session||busy)return;
+ const content=input.value.trim();if(!content)return;
+ busy=true;send.disabled=true;
+ // Only the sender sees this temporary pending bubble. It is not a published message.
+ const pending=document.createElement("div");pending.className="msg";pending.dataset.pending="true";
+ pending.style.opacity="0.65";
+ const stamp=document.createElement("span");stamp.className="time";stamp.textContent="Sending… ";
+ const nick=document.createElement("span");nick.className="nick";nick.textContent=me.nickname;
+ const body=document.createElement("span");body.textContent=content;if(["🍪😎","🔥👑","😂💛","🙌🎉"].includes(content)){body.className="sticker-message";pending.classList.add("sticker-bubble")}
+ pending.append(stamp,nick,body);messages.append(pending);messages.scrollTop=messages.scrollHeight;
+ input.value="";
+ try{
+  const result=await call("send",{content,...(replyTo?{reply_to:replyTo.id}:{})});
+  setReply(null);
+  if(result.message&&result.message.id){
+   const m=result.message;
+   pending.dataset.messageId=m.id;delete pending.dataset.pending;
+   pending.style.opacity="1";
+   stamp.textContent=new Date(m.created_at||Date.now()).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+   body.textContent=m.content;
+  }else{pending.remove();}
+  info("Message sent.");renderKey="";void load();
+ }catch(e){pending.remove();input.value=content;info(e.message)}
+ finally{busy=false;send.disabled=false}
+}
+send.addEventListener("click",sendMessage);input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage()}});
+document.querySelectorAll("[data-sticker]").forEach(button=>button.addEventListener("click",()=>{if(input.disabled){info("Join the room first.");return}input.value=(input.value+" "+button.dataset.sticker).trim().slice(0,500);input.focus()}));
+document.querySelectorAll("[data-emoji]").forEach(button=>button.addEventListener("click",()=>{if(input.disabled){info("Join the room first.");return}input.value=(input.value+" "+button.dataset.emoji).trim().slice(0,500);input.focus()}));
+async function moderate(action,data,question){if(!isModerator||!confirm(question))return;try{const result=await call(action,data);info(result.message||"Action completed.");await load()}catch(e){info(e.message)}}
+$("emergencyPause").addEventListener("click",async()=>{if(!isModerator)return;const paused=$("emergencyPause").textContent.includes("PAUSE");if(!confirm(paused?"Pause all new chat messages?":"Resume public chat messages?"))return;try{const result=await call("emergency_pause",{paused});info(result.message);await load()}catch(e){info(e.message)}});
+$("adminReports").addEventListener("click",async()=>{if(!isModerator)return;const target=$("adminResults");target.replaceChildren();try{const result=await call("admin_reports");const reports=result.reports||[];if(!reports.length){target.textContent="No reports yet.";return}for(const report of reports){const row=document.createElement("div");row.style.padding="10px";row.style.borderBottom="1px solid #715d29";const label=document.createElement("span");label.textContent=report.reason+" ("+new Date(report.created_at).toLocaleString()+") ";const remove=document.createElement("button");remove.className="soft";remove.textContent="REMOVE REPORTED MESSAGE";remove.addEventListener("click",()=>moderate("hide_message",{message_id:report.message_id},"Remove this reported message?"));row.append(label,remove);const holdBtn=document.createElement("button");holdBtn.className="soft";holdBtn.textContent=report.legal_hold?"🔓 RELEASE LEGAL HOLD":"🔒 PLACE LEGAL HOLD";holdBtn.addEventListener("click",async()=>{const next=!report.legal_hold;const reason=prompt(next?"Reason to preserve this report and its message (5–500 characters):":"Reason for releasing the legal hold (5–500 characters):");if(reason===null)return;const trimmed=reason.trim();if(trimmed.length<5||trimmed.length>500){info("Enter a reason between 5 and 500 characters.");return}if(!confirm(next?"Place legal hold on this report?":"Release legal hold? Only do this after reviewing ongoing evidence needs."))return;try{await call("set_report_legal_hold",{report_id:report.id,legal_hold:next,reason:trimmed});info(next?"Legal hold placed.":"Legal hold released.");$("adminReports").click()}catch(e){info(e.message)}});row.append(holdBtn);if(report.legal_hold){const held=document.createElement("span");held.textContent=" 🔒 ON HOLD";held.style.color="#ffd34d";row.append(held)}if(report.status==="resolved"){const done=document.createElement("span");done.textContent=" ✓ RESOLVED";done.style.color="#a5ff80";row.append(done)}else{const resolve=document.createElement("button");resolve.className="soft";resolve.textContent="✓ RESOLVE REPORT";resolve.addEventListener("click",async()=>{if(!confirm("Mark this report resolved? This does not delete the message."))return;try{await call("resolve_report",{report_id:report.id});info("Report resolved.");$("adminReports").click()}catch(e){info(e.message)}});row.append(resolve)}target.append(row)}}catch(e){info(e.message)}});
+$("rulesButton").addEventListener("click",()=>info("Be kind. No abuse, slurs, sexual content, bullying, threats, links, contact details or spam. Report anything worrying."));
+$("reportButton").addEventListener("click",()=>info("Tap Report beside a message to submit it to moderators."));
+$("blockButton").addEventListener("click",()=>{const nick=prompt("Nickname to hide on this device:");if(!nick)return;const n=nick.trim().toLowerCase();if(n===me?.nickname?.toLowerCase())return;blocked=[...new Set([...blocked,n])];localStorage.setItem(BLOCK,JSON.stringify(blocked));renderKey="";load();info("Messages from "+nick+" will be hidden on this device.")});
+$("clearButton").addEventListener("click",()=>{if(confirm("Leave this chat on this device? Anonymous sessions cannot be recovered after clearing."))clear()});
+$("roomTopic").textContent="Real messages for invited beta testers only";
+$("roomName").textContent="#sanza";
+try{const old=JSON.parse(localStorage.getItem(STORE)||"null");if(old?.session?.access_token&&old?.me?.id){session=old.session;me=old.me;nickname.value=me.nickname;setJoined(true);info("Welcome back, "+me.nickname+".");void ownerMfaGate().then(()=>load()).catch(e=>info(e.message))}}catch(_){localStorage.removeItem(STORE)}
+mountCaptcha();window.addEventListener("load",()=>{if(session)void startRealtime()});setInterval(load,2000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){lastPresence=0;load()}});
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js" defer></script>
+<script src="/sanza-quicknav.js" defer></script>
+</body>
+</html>
