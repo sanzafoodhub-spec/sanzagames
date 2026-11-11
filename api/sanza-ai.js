@@ -2,7 +2,7 @@
 // Never expose GEMINI_API_KEY to browsers. No paid API fallback.
 // Discover the available free-tier Flash model rather than assuming a fixed model ID.
 // This does not guarantee free-tier eligibility; project billing must remain disabled.
-const PREFERRED_MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
+const PREFERRED_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash"];
 async function chooseModel(key, signal) {
   const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=100", {
     headers: { "x-goog-api-key": key }, signal
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     const model = await chooseModel(key, controller.signal);
     if (!model) return res.status(503).json({ error: "No compatible Gemini Flash model was found for this key." });
     const upstream = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+      `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent`,
       {
         method: "POST",
         signal: controller.signal,
@@ -104,7 +104,7 @@ export default async function handler(req, res) {
       // Log only the upstream status; never log the API key, request body, or provider response.
       // Provider errors are inspected only for status and sanitized model metadata.
       // Never log keys, user prompts, or raw provider response bodies.
-      console.error("SanZa AI Gemini upstream:", JSON.stringify({ status: upstream.status, model, apiVersion: "v1beta" }));
+      console.error("SanZa AI Gemini upstream:", JSON.stringify({ status: upstream.status, model, apiVersion: "v1" }));
       if (upstream.status === 401 || upstream.status === 403) {
         return res.status(502).json({ error: "SanZa's AI key or free-tier access needs checking." });
       }
