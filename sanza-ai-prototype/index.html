@@ -36,11 +36,11 @@ footer{padding:0 22px 14px;background:#1b1b20;color:#99989d;font-size:11px;line-
  // Render a small safe subset of Markdown. All text is escaped; no model HTML is injected.
  function renderAnswer(el,value){
    const escape=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-   const inline=t=>escape(t).replace(/\\*\\*(.+?)\\*\\*/g,"<strong>$1</strong>").replace(/\x60([^\x60]+)\x60/g,"<code>$1</code>");
-   const lines=value.split(/\\r?\\n/),parts=[];let list=null;
+   const inline=t=>escape(t).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\x60([^\x60]+)\x60/g,"<code>$1</code>");
+   const lines=value.split(/\r?\n/),parts=[];let list=null;
    const close=()=>{if(list){parts.push("</"+list+">");list=null;}};
    for(const line of lines){
-     const item=line.match(/^\\s*(?:([-*])|(\\d+)\\.)\\s+(.+)$/);
+     const item=line.match(/^\s*(?:([-*])|(\d+)\.)\s+(.+)$/);
      if(item){const kind=item[2]?"ol":"ul";if(list!==kind){close();parts.push("<"+kind+">");list=kind;}parts.push("<li>"+inline(item[3])+"</li>");}
      else{close();if(line.trim())parts.push("<p>"+inline(line)+"</p>");}
    }
