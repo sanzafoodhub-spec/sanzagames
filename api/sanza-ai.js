@@ -14,7 +14,7 @@ async function chooseModel(key, signal) {
   const payload = await response.json();
   const available = new Set((payload.models || [])
     .filter(m => (m.supportedGenerationMethods || []).includes("generateContent"))
-    .map(m => m.name?.replace(/^models\\//, "")));
+    .map(m => String(m.name || "").split("/").pop()));
   return PREFERRED_MODELS.find(name => available.has(name)) || null;
 }
 // Conservative best-effort protection for private testing only.
