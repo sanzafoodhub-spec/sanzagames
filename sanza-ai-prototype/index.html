@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SanZa AI — Private Prototype</title>
-<style>:root{font-family:system-ui,sans-serif;color:#f8e8bb;background:#101014}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px}.app{width:min(720px,100%);border:1px solid #94752f;border-radius:20px;background:#19191d;overflow:hidden}header{padding:22px;background:#252119;border-bottom:1px solid #715d31}h1{margin:0;color:#f5c75a}small{color:#bdb8a9}.messages{min-height:300px;max-height:55vh;overflow:auto;padding:20px}.bubble{max-width:90%;padding:12px 16px;margin:12px 0;border-radius:14px;background:#303036;white-space:pre-wrap}.user{background:#56441f;margin-left:auto}.provider{display:block;margin-top:8px;font-size:11px;color:#f5c75a;font-weight:600}.composer{display:flex;gap:8px;padding:16px;border-top:1px solid #4a4132}input{flex:1;min-width:0;border:1px solid #75633c;background:#101014;color:white;border-radius:10px;padding:14px}button{border:0;border-radius:10px;background:#f5c75a;color:#181818;font-weight:700;padding:12px 18px}button:disabled{opacity:.5}footer{padding:0 18px 16px;color:#bdb8a9;font-size:12px}</style></head>
-<body><main class="app"><header><h1>✦ SanZa AI</h1><small>One SanZa. One Family. • Private text-only prototype</small></header><section id="messages" class="messages" aria-live="polite"><div class="bubble">Hey! I'm SanZa, your AI assistant from SanZa Games. ❤️ This is a design preview; live AI replies remain locked until private testing is authorised.</div></section><form class="composer" id="form"><input id="message" maxlength="1000" aria-label="Message" placeholder="Ask SanZa something…" autocomplete="off"><button id="send" type="submit">Send</button></form><footer>AI-powered assistant • Not yet available to the public • Do not enter personal information.</footer></main>
+<style>:root{font-family:system-ui,sans-serif;color:#f8e8bb;background:#101014}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px}.app{width:min(720px,100%);border:1px solid #94752f;border-radius:20px;background:#19191d;overflow:hidden}header{padding:22px;background:#252119;border-bottom:1px solid #715d31}h1{margin:0;color:#f5c75a}small{color:#bdb8a9}.messages{min-height:300px;max-height:55vh;overflow:auto;padding:20px}.bubble{max-width:90%;padding:12px 16px;margin:12px 0;border-radius:14px;background:#303036;white-space:pre-wrap}.user{background:#56441f;margin-left:auto}.provider{display:block;margin-top:8px;font-size:11px;color:#f5c75a;font-weight:600}.newchat{margin-top:10px;padding:7px 12px;background:transparent;color:#f5c75a;border:1px solid #94752f;font-size:12px}.composer{display:flex;gap:8px;padding:16px;border-top:1px solid #4a4132}input{flex:1;min-width:0;border:1px solid #75633c;background:#101014;color:white;border-radius:10px;padding:14px}button{border:0;border-radius:10px;background:#f5c75a;color:#181818;font-weight:700;padding:12px 18px}button:disabled{opacity:.5}footer{padding:0 18px 16px;color:#bdb8a9;font-size:12px}</style></head>
+<body><main class="app"><header><h1>✦ SanZa AI</h1><small>One SanZa. One Family. • Private text-only prototype</small><div><button type="button" class="newchat" id="newchat">New Chat · Clear memory</button></div></header><section id="messages" class="messages" aria-live="polite"><div class="bubble">Hey! I'm SanZa, your AI assistant from SanZa Games. ❤️ This is a private AI test. I can remember messages in this open chat.</div></section><form class="composer" id="form"><input id="message" maxlength="1000" aria-label="Message" placeholder="Ask SanZa something…" autocomplete="off"><button id="send" type="submit">Send</button></form><footer>Session memory only • Reloading or New Chat clears memory • Not public • Do not enter personal information.</footer></main>
 
 <script>
 (() => {
  const form=document.getElementById("form"), input=document.getElementById("message"), button=document.getElementById("send"), log=document.getElementById("messages");
  let busy=false;
+ let history=[]; // Memory lives only in this open page, never localStorage.
  function bubble(value, user=false) {
    const el=document.createElement("div");
    el.className="bubble"+(user?" user":"");
@@ -15,6 +16,12 @@
    log.scrollTop=log.scrollHeight;
    return el;
  }
+ document.getElementById("newchat").addEventListener("click",()=>{
+   if(busy)return;
+   history=[];
+   log.textContent="";
+   bubble("New chat started. Previous conversation cleared. ❤️");
+ });
  form.addEventListener("submit",async e=>{
    e.preventDefault();
    const message=input.value.trim();
@@ -25,9 +32,13 @@
    const controller=new AbortController();
    const timeout=setTimeout(()=>controller.abort(),15000);
    try {
-     const response=await fetch("/api/sanza-ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message}),signal:controller.signal,credentials:"same-origin"});
+     const response=await fetch("/api/sanza-ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,history}),signal:controller.signal,credentials:"same-origin"});
      const data=await response.json().catch(()=>({}));
      pending.textContent=response.ok?(typeof data.reply==="string"?data.reply:"SanZa couldn't read the response."):(data.error||"SanZa is currently unavailable.");
+     if(response.ok && typeof data.reply==="string" && data.reply.trim()) {
+       history.push({role:"user",content:message},{role:"assistant",content:data.reply.slice(0,1500)});
+       history=history.slice(-12);
+     }
      if(response.ok && (data.provider==="gemini" || data.provider==="groq")) {
        const label=document.createElement("span");
        label.className="provider";
