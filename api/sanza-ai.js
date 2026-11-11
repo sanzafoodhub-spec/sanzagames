@@ -29,7 +29,7 @@ function allowed(identity) {
   const day = new Date(now).toISOString().slice(0, 10);
   if (day !== dailyDate) { dailyDate = day; dailyCount = 0; attempts.clear(); }
   const previous = (attempts.get(identity) || []).filter(t => now - t < 60000);
-  if (previous.length >= 8 || dailyCount >= 100) return false;
+  if (previous.length >= 100 || dailyCount >= 300) return false;
   previous.push(now);
   attempts.set(identity, previous);
   dailyCount += 1;
