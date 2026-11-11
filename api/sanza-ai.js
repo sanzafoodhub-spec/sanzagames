@@ -5,12 +5,14 @@ const MODEL = "gemini-3.5-flash-lite";
 // Conservative best-effort protection for private testing only.
 // Serverless instances do NOT share memory; this is NOT production rate limiting.
 const attempts = new Map();
+// TEMPORARY private failover test: 3 Gemini attempts per rolling minute per server instance.
+let geminiAttempts = [];
 let dailyCount = 0;
 let dailyDate = "";
 function allowed(identity) {
   const now = Date.now();
   const day = new Date(now).toISOString().slice(0, 10);
-  if (day !== dailyDate) { dailyDate = day; dailyCount = 0; attempts.clear(); }
+  if (day !== dailyDate) { dailyDate = day; dailyCount = 0; attempts.clear(); geminiAttempts = []; }
   const previous = (attempts.get(identity) || []).filter(t => now - t < 60000);
   if (previous.length >= 100 || dailyCount >= 300) return false;
   previous.push(now);
@@ -61,8 +63,12 @@ export default async function handler(req, res) {
   // Best-effort per-instance guard, NOT an enforceable global quota.
   if (!allowed("private-preview")) return res.status(429).json({ error: "Private test limit reached. Try later." });
   const prompt = message.trim();
-  let fallbackAllowed = !geminiKey;
-  if (geminiKey) {
+  const now = Date.now();
+  geminiAttempts = geminiAttempts.filter(t => now - t < 60000);
+  const testLimitReached = geminiAttempts.length >= 3;
+  let fallbackAllowed = !geminiKey || testLimitReached;
+  if (geminiKey && !testLimitReached) {
+    geminiAttempts.push(now);
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 9000);
