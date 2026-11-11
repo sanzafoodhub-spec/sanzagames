@@ -2,7 +2,7 @@
 // Never expose GEMINI_API_KEY to browsers. No paid API fallback.
 // Discover the available free-tier Flash model rather than assuming a fixed model ID.
 // This does not guarantee free-tier eligibility; project billing must remain disabled.
-const PREFERRED_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash"];
+const PREFERRED_MODELS = ["gemini-3.5-flash-lite"];
 async function chooseModel(key, signal) {
   const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=100", {
     headers: { "x-goog-api-key": key }, signal
