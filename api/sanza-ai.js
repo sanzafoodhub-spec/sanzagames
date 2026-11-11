@@ -33,10 +33,10 @@ export default async function handler(req, res) {
   if (process.env.SANZA_AI_PRIVATE_TEST !== "enabled") {
     return res.status(503).json({ error: "SanZa AI is not yet available." });
   }
-  // A separate server-side token is required even on preview. Do not put this token in frontend code.
-  const token = process.env.SANZA_AI_TEST_TOKEN;
-  if (!token || token.length < 24 || req.headers["x-sanza-test-token"] !== token) {
-    return res.status(403).json({ error: "Private test access only." });
+  // Project-wide Vercel Authentication must remain enabled for ALL deployments.
+  // This is a private preview proof of concept, not an authorization mechanism for public use.
+  if (process.env.VERCEL_ENV !== "preview") {
+    return res.status(403).json({ error: "Private preview only." });
   }
   // Do not accept cross-origin browser requests.
   const origin = req.headers.origin;
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Message must contain 1–1000 characters." });
   }
   // Single private test credential; shared secret must never be put in browser code.
-  if (!allowed(token)) return res.status(429).json({ error: "Private test limit reached. Try later." });
+  if (!allowed("private-preview")) return res.status(429).json({ error: "Private test limit reached. Try later." });
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
   try {
