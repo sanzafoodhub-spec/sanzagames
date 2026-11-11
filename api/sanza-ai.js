@@ -80,7 +80,20 @@ export default async function handler(req, res) {
       }
     );
     if (upstream.status === 429) return res.status(429).json({ error: "SanZa has reached its free usage limit. Please try later." });
-    if (!upstream.ok) return res.status(502).json({ error: "SanZa is temporarily unavailable." });
+    if (!upstream.ok) {
+      // Log only the upstream status; never log the API key, request body, or provider response.
+      console.error("SanZa AI Gemini upstream HTTP status:", upstream.status);
+      if (upstream.status === 401 || upstream.status === 403) {
+        return res.status(502).json({ error: "SanZa's AI key or free-tier access needs checking." });
+      }
+      if (upstream.status === 404) {
+        return res.status(502).json({ error: "SanZa's AI model isn't available for this key. We're checking compatibility." });
+      }
+      if (upstream.status === 400) {
+        return res.status(502).json({ error: "SanZa's AI request needs an update." });
+      }
+      return res.status(502).json({ error: "SanZa's AI provider is temporarily unavailable." });
+    }
     const data = await upstream.json();
     const reply = data.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("").trim();
     if (!reply) return res.status(422).json({ error: "SanZa can't answer that request." });
