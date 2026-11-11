@@ -1,6 +1,22 @@
 // SanZa AI private Stage 1 backend. Disabled until explicitly enabled for protected testing.
 // Never expose GEMINI_API_KEY to browsers. No paid API fallback.
 const MODEL = "gemini-2.5-flash";
+// Conservative best-effort protection for private testing only.
+// Serverless instances do NOT share memory; this is NOT production rate limiting.
+const attempts = new Map();
+let dailyCount = 0;
+let dailyDate = "";
+function allowed(identity) {
+  const now = Date.now();
+  const day = new Date(now).toISOString().slice(0, 10);
+  if (day !== dailyDate) { dailyDate = day; dailyCount = 0; attempts.clear(); }
+  const previous = (attempts.get(identity) || []).filter(t => now - t < 60000);
+  if (previous.length >= 3 || dailyCount >= 30) return false;
+  previous.push(now);
+  attempts.set(identity, previous);
+  dailyCount += 1;
+  return true;
+}
 const INSTRUCTIONS = [
   "You are SanZa, a friendly AI assistant from SanZa Games.",
   "If asked your name, answer: I'm SanZa, an AI assistant from SanZa Games.",
@@ -22,12 +38,25 @@ export default async function handler(req, res) {
   if (!token || token.length < 24 || req.headers["x-sanza-test-token"] !== token) {
     return res.status(403).json({ error: "Private test access only." });
   }
+  // Do not accept cross-origin browser requests.
+  const origin = req.headers.origin;
+  const host = req.headers.host;
+  if (origin) {
+    try { if (new URL(origin).host !== host) return res.status(403).json({ error: "Origin denied." }); }
+    catch { return res.status(403).json({ error: "Origin denied." }); }
+  }
+  const contentType = req.headers["content-type"] || "";
+  if (!contentType.toLowerCase().startsWith("application/json")) {
+    return res.status(415).json({ error: "JSON required." });
+  }
   const key = process.env.GEMINI_API_KEY;
   if (!key) return res.status(503).json({ error: "AI provider not configured." });
   const message = req.body?.message;
   if (typeof message !== "string" || !message.trim() || message.length > 1000) {
     return res.status(400).json({ error: "Message must contain 1–1000 characters." });
   }
+  // Single private test credential; shared secret must never be put in browser code.
+  if (!allowed(token)) return res.status(429).json({ error: "Private test limit reached. Try later." });
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
   try {
