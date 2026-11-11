@@ -43,7 +43,17 @@ export default async function handler(req, res) {
   if (typeof message !== "string" || !message.trim() || message.length > 1000) {
     return res.status(400).json({ error: "Message must contain 1–1000 characters." });
   }
+  // Client-supplied session context is untrusted and never overrides system instructions.
+  // Keep only a small bounded conversation; no server-side storage.
+  const rawHistory = req.body?.history ?? [];
+  if (!Array.isArray(rawHistory) || rawHistory.length > 12 ||
+      rawHistory.some(turn => !turn || !["user", "assistant"].includes(turn.role) ||
+        typeof turn.content !== "string" || !turn.content.trim() || turn.content.length > 1500)) {
+    return res.status(400).json({ error: "Invalid conversation history." });
+  }
+  const history = rawHistory.map(turn => ({ role: turn.role, content: turn.content.trim() }));
   const prompt = message.trim();
+  const turns = [...history, { role: "user", content: prompt }];
   let fallbackAllowed = !groqKey;
   if (groqKey) {
     try {
@@ -56,7 +66,7 @@ export default async function handler(req, res) {
           headers: { "Content-Type": "application/json", Authorization: "Bearer " + groqKey },
           body: JSON.stringify({
             model: "openai/gpt-oss-20b",
-            messages: [{ role: "system", content: INSTRUCTIONS }, { role: "user", content: prompt }],
+            messages: [{ role: "system", content: INSTRUCTIONS }, ...turns],
             max_completion_tokens: 350,
             temperature: 0.6
           })
@@ -87,7 +97,7 @@ export default async function handler(req, res) {
           headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey },
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            contents: turns.map(turn => ({ role: turn.role === "assistant" ? "model" : "user", parts: [{ text: turn.content }] })),
             generationConfig: { maxOutputTokens: 220, temperature: 0.6 },
             safetySettings: [
               { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
