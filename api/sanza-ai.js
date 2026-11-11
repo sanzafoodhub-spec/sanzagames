@@ -15,7 +15,9 @@ async function chooseModel(key, signal) {
   const available = new Set((payload.models || [])
     .filter(m => (m.supportedGenerationMethods || []).includes("generateContent"))
     .map(m => String(m.name || "").split("/").pop()));
-  return PREFERRED_MODELS.find(name => available.has(name)) || null;
+  const selected = PREFERRED_MODELS.find(name => available.has(name)) || null;
+  console.info("SanZa AI model discovery:", JSON.stringify({ selected, compatibleFlashModels: [...available].filter(n => /flash/.test(n)).slice(0, 15) }));
+  return selected;
 }
 // Conservative best-effort protection for private testing only.
 // Serverless instances do NOT share memory; this is NOT production rate limiting.
@@ -100,7 +102,9 @@ export default async function handler(req, res) {
     if (upstream.status === 429) return res.status(429).json({ error: "SanZa has reached its free usage limit. Please try later." });
     if (!upstream.ok) {
       // Log only the upstream status; never log the API key, request body, or provider response.
-      console.error("SanZa AI Gemini upstream HTTP status:", upstream.status);
+      // Provider errors are inspected only for status and sanitized model metadata.
+      // Never log keys, user prompts, or raw provider response bodies.
+      console.error("SanZa AI Gemini upstream:", JSON.stringify({ status: upstream.status, model, apiVersion: "v1beta" }));
       if (upstream.status === 401 || upstream.status === 403) {
         return res.status(502).json({ error: "SanZa's AI key or free-tier access needs checking." });
       }
