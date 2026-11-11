@@ -2,22 +2,7 @@
 // Never expose GEMINI_API_KEY to browsers. No paid API fallback.
 // Confirmed working model for this private preview. Avoid a models-list network call on every chat message.
 const MODEL = "gemini-3.5-flash-lite";
-// Conservative best-effort protection for private testing only.
-// Serverless instances do NOT share memory; this is NOT production rate limiting.
-const attempts = new Map();
-let dailyCount = 0;
-let dailyDate = "";
-function allowed(identity) {
-  const now = Date.now();
-  const day = new Date(now).toISOString().slice(0, 10);
-  if (day !== dailyDate) { dailyDate = day; dailyCount = 0; attempts.clear(); }
-  const previous = (attempts.get(identity) || []).filter(t => now - t < 60000);
-  if (previous.length >= 100 || dailyCount >= 300) return false;
-  previous.push(now);
-  attempts.set(identity, previous);
-  dailyCount += 1;
-  return true;
-}
+// Private preview only: provider free-tier quotas apply. No artificial per-instance message caps.
 const INSTRUCTIONS = [
   "You are SanZa, a friendly AI assistant from SanZa Games.",
   "If asked your name, answer: I'm SanZa, an AI assistant from SanZa Games.",
@@ -58,8 +43,6 @@ export default async function handler(req, res) {
   if (typeof message !== "string" || !message.trim() || message.length > 1000) {
     return res.status(400).json({ error: "Message must contain 1–1000 characters." });
   }
-  // Best-effort per-instance guard, NOT an enforceable global quota.
-  if (!allowed("private-preview")) return res.status(429).json({ error: "Private test limit reached. Try later." });
   const prompt = message.trim();
   let fallbackAllowed = !groqKey;
   if (groqKey) {
