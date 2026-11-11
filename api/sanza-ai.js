@@ -21,8 +21,8 @@ function allowed(identity) {
 const INSTRUCTIONS = [
   "You are SanZa, a friendly AI assistant from SanZa Games.",
   "If asked your name, answer: I'm SanZa, an AI assistant from SanZa Games.",
-  "If asked whether you are ChatGPT or Gemini, say: I’m SanZa, the AI assistant from SanZa Games. I’m powered by Google’s Gemini technology, not ChatGPT.",
-  "Be honest you use Google Gemini technology as a third-party AI provider. Never claim to be human.",
+  "If asked whether you are ChatGPT or Gemini, say: I am SanZa from SanZa Games, powered by third-party AI. My primary provider is Google Gemini, with Groq as a backup when configured. I am not ChatGPT.",
+  "Be transparent about the AI provider used when asked. Google Gemini is primary and Groq is an optional backup. Never claim to be human.",
   "Be helpful, concise, respectful and age-appropriate. Do not ask for personal information.",
   "Do not provide sexual content involving minors, exploitation, harassment, self-harm instructions, or dangerous wrongdoing.",
   "For emergencies, encourage contacting emergency services or a trusted adult.",
@@ -51,72 +51,83 @@ export default async function handler(req, res) {
   if (!contentType.toLowerCase().startsWith("application/json")) {
     return res.status(415).json({ error: "JSON required." });
   }
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.status(503).json({ error: "AI provider not configured." });
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
+  if (!geminiKey && !groqKey) return res.status(503).json({ error: "AI provider not configured." });
   const message = req.body?.message;
   if (typeof message !== "string" || !message.trim() || message.length > 1000) {
     return res.status(400).json({ error: "Message must contain 1–1000 characters." });
   }
-  // Single protected private test. These per-instance limits are not a shared production quota.
+  // Best-effort per-instance guard, NOT an enforceable global quota.
   if (!allowed("private-preview")) return res.status(429).json({ error: "Private test limit reached. Try later." });
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 12000);
-  try {
-    const model = MODEL;
-    const upstream = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent`,
-      {
-        method: "POST",
-        signal: controller.signal,
-        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
-          contents: [{ role: "user", parts: [{ text: message.trim() }] }],
-          generationConfig: { maxOutputTokens: 350, temperature: 0.6 },
-          safetySettings: [
-            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
-          ]
-        })
-      }
-    );
-    if (upstream.status === 429) return res.status(429).json({ error: "SanZa has reached its free usage limit. Please try later." });
-    if (!upstream.ok) {
-      // Log only the upstream status; never log the API key, request body, or provider response.
-      // Provider errors are inspected only for status and sanitized model metadata.
-      // Never log keys, user prompts, or raw provider response bodies.
-      let providerCode = null;
-      let providerStatus = null;
-      let providerMessage = null;
+  const prompt = message.trim();
+  let fallbackAllowed = !geminiKey;
+  if (geminiKey) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 9000);
+      let upstream;
       try {
-        const errorData = await upstream.json();
-        providerCode = errorData?.error?.code ?? null;
-        providerStatus = errorData?.error?.status ?? null;
-        // Restrict to a generic explanation; never log raw request/response bodies or secrets.
-        const msg = String(errorData?.error?.message || "");
-        providerMessage = msg.replace(/AIza[\\w-]+/g, "[redacted-key]").slice(0, 300);
-      } catch {}
-      console.error("SanZa AI Gemini upstream:", JSON.stringify({ httpStatus: upstream.status, model, apiVersion: "v1", providerCode, providerStatus, providerMessage }));
-      if (upstream.status === 401 || upstream.status === 403) {
-        return res.status(502).json({ error: "SanZa's AI key or free-tier access needs checking." });
+        upstream = await fetch("https://generativelanguage.googleapis.com/v1/models/" + MODEL + ":generateContent", {
+          method: "POST", signal: controller.signal,
+          headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: INSTRUCTIONS }] },
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 350, temperature: 0.6 },
+            safetySettings: [
+              { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+              { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+              { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+              { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
+            ]
+          })
+        });
+      } finally { clearTimeout(timeout); }
+      if (upstream.ok) {
+        const data = await upstream.json();
+        const reply = data.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("").trim();
+        if (reply) return res.status(200).json({ reply: reply.slice(0, 3000), provider: "gemini" });
+        // No fallback on empty or filtered content: avoid bypassing provider safety decisions.
+        return res.status(422).json({ error: "SanZa can't answer that request." });
       }
-      if (upstream.status === 404) {
-        return res.status(502).json({ error: "SanZa's AI model isn't available for this key. We're checking compatibility." });
-      }
-      if (upstream.status === 400) {
-        return res.status(502).json({ error: "SanZa's AI request needs an update." });
-      }
-      return res.status(502).json({ error: "SanZa's AI provider is temporarily unavailable." });
+      console.error("SanZa AI Gemini request failed:", upstream.status);
+      // Only retry provider outages, quotas, or model retirement; never bypass safety/policy errors.
+      fallbackAllowed = [404, 408, 429, 500, 502, 503, 504].includes(upstream.status);
+      if (!fallbackAllowed) return res.status(502).json({ error: "SanZa cannot answer that request right now." });
+    } catch (error) {
+      console.error("SanZa AI Gemini connection failed:", error?.name || "network");
+      fallbackAllowed = true;
     }
-    const data = await upstream.json();
-    const reply = data.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("").trim();
-    if (!reply) return res.status(422).json({ error: "SanZa can't answer that request." });
-    return res.status(200).json({ reply: reply.slice(0, 3000) });
-  } catch {
-    return res.status(504).json({ error: "SanZa couldn't connect. Please try later." });
-  } finally {
-    clearTimeout(timeout);
   }
+  if (fallbackAllowed && groqKey) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8500);
+      let upstream;
+      try {
+        upstream = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST", signal: controller.signal,
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + groqKey },
+          body: JSON.stringify({
+            model: "openai/gpt-oss-20b",
+            messages: [{ role: "system", content: INSTRUCTIONS }, { role: "user", content: prompt }],
+            max_completion_tokens: 350,
+            temperature: 0.6
+          })
+        });
+      } finally { clearTimeout(timeout); }
+      if (upstream.ok) {
+        const data = await upstream.json();
+        const reply = data.choices?.[0]?.message?.content?.trim();
+        if (reply) return res.status(200).json({ reply: reply.slice(0, 3000), provider: "groq" });
+        return res.status(422).json({ error: "SanZa couldn't produce an answer." });
+      }
+      console.error("SanZa AI Groq request failed:", upstream.status);
+      if (upstream.status === 429) return res.status(429).json({ error: "Both AI providers have reached their free limits. Try later." });
+    } catch (error) {
+      console.error("SanZa AI Groq connection failed:", error?.name || "network");
+    }
+  }
+  return res.status(503).json({ error: groqKey ? "SanZa's AI providers are temporarily unavailable." : "Gemini is unavailable. Free backup is not connected yet." });
 }
