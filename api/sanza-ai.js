@@ -104,7 +104,18 @@ export default async function handler(req, res) {
       // Log only the upstream status; never log the API key, request body, or provider response.
       // Provider errors are inspected only for status and sanitized model metadata.
       // Never log keys, user prompts, or raw provider response bodies.
-      console.error("SanZa AI Gemini upstream:", JSON.stringify({ status: upstream.status, model, apiVersion: "v1" }));
+      let providerCode = null;
+      let providerStatus = null;
+      let providerMessage = null;
+      try {
+        const errorData = await upstream.json();
+        providerCode = errorData?.error?.code ?? null;
+        providerStatus = errorData?.error?.status ?? null;
+        // Restrict to a generic explanation; never log raw request/response bodies or secrets.
+        const msg = String(errorData?.error?.message || "");
+        providerMessage = msg.replace(/AIza[\\w-]+/g, "[redacted-key]").slice(0, 300);
+      } catch {}
+      console.error("SanZa AI Gemini upstream:", JSON.stringify({ httpStatus: upstream.status, model, apiVersion: "v1", providerCode, providerStatus, providerMessage }));
       if (upstream.status === 401 || upstream.status === 403) {
         return res.status(502).json({ error: "SanZa's AI key or free-tier access needs checking." });
       }
