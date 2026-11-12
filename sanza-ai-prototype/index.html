@@ -17,7 +17,7 @@ h1{margin:0;color:#f5d57c;font-size:22px;letter-spacing:-.6px}small{color:#aaa9a
 .composer{display:flex;align-items:center;gap:10px;padding:17px 22px;border-top:1px solid #34302a;background:#1b1b20}
 input{flex:1;min-width:0;border:1px solid #454249;background:#101116;color:#fff;border-radius:14px;padding:15px 16px;font:inherit;outline:none}input:focus{border-color:#e3bd67;box-shadow:0 0 0 3px #e3bd6722}
 button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#17140d;font-weight:750;padding:13px 19px;font:inherit}button:hover:not(:disabled){filter:brightness(1.08)}button:disabled{opacity:.5;cursor:wait}
-.mic{width:46px;min-width:46px;height:46px;padding:0;display:grid;place-items:center;background:#30281a;color:#ffe09a;border:1px solid #85642e;font-size:21px}.mic.listening{background:#f5cf73;color:#16110b;box-shadow:0 0 0 4px #f5cf7333}.mic:disabled{opacity:.45}.voice-note{display:block;color:#c9bd9d;margin-top:3px}footer{padding:0 22px 14px;background:#1b1b20;color:#99989d;font-size:11px;line-height:1.5}
+.mic{width:46px;min-width:46px;height:46px;padding:0;display:grid;place-items:center;background:#30281a;color:#ffe09a;border:1px solid #85642e;font-size:21px}.mic.listening{background:#d93045;color:#fff;box-shadow:0 0 0 4px #d9304533;animation:micPulse 1.4s ease-in-out infinite}@keyframes micPulse{50%{box-shadow:0 0 0 8px #d9304511}}.mic:disabled{opacity:.45}.voice-note{display:block;color:#c9bd9d;margin-top:3px}footer{padding:0 22px 14px;background:#1b1b20;color:#99989d;font-size:11px;line-height:1.5}
 @media(max-width:600px){body{padding:0}.app{height:100dvh;min-height:0;border:0;border-radius:0}header{padding:14px 15px}.mark{width:38px;height:38px}h1{font-size:19px}small{font-size:10px}.newchat{padding:9px;font-size:12px}.messages{padding:20px 12px}.bubble{max-width:calc(100vw - 68px);font-size:14px;padding:12px 14px}.composer{padding:12px}input{padding:13px}button{padding:12px}footer{padding:0 12px 12px}}
 @media(prefers-reduced-motion:reduce){.messages{scroll-behavior:auto}}
 </style></head>
@@ -28,14 +28,58 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
  const form=document.getElementById("form"), input=document.getElementById("message"), button=document.getElementById("send"), log=document.getElementById("messages");
  const mic=document.getElementById("mic"), voiceNote=document.getElementById("voice-note");
  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
- let recognition=null, listening=false;
+ let recognition=null, listening=false, stopping=false, audioContext=null;
+ function beep(on){
+   try{
+     const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+     if(!AudioContextClass)return;
+     audioContext=audioContext||new AudioContextClass();
+     if(audioContext.state==="suspended")audioContext.resume().catch(()=>{});
+     const osc=audioContext.createOscillator(),gain=audioContext.createGain(),now=audioContext.currentTime;
+     osc.type="sine";osc.frequency.setValueAtTime(on?740:520,now);
+     gain.gain.setValueAtTime(0.0001,now);gain.gain.exponentialRampToValueAtTime(0.12,now+0.015);
+     gain.gain.exponentialRampToValueAtTime(0.0001,now+0.13);
+     osc.connect(gain);gain.connect(audioContext.destination);osc.start(now);osc.stop(now+0.14);
+   }catch{}
+ }
+ function setListening(active){
+   listening=active;mic.classList.toggle("listening",active);
+   mic.textContent=active?"■":"🎙";
+   mic.setAttribute("aria-label",active?"Stop listening":"Speak a question");
+   mic.setAttribute("aria-pressed",String(active));
+ }
  if(!SpeechRecognition){mic.disabled=true;mic.title="Voice questions are not supported in this browser";voiceNote.textContent="Voice questions unavailable in this browser. Please type instead.";}
  else {
-   recognition=new SpeechRecognition();recognition.lang=navigator.language||"en-IE";recognition.interimResults=false;recognition.maxAlternatives=1;recognition.continuous=false;
-   recognition.onresult=e=>{const transcript=e.results?.[0]?.[0]?.transcript||"";if(transcript){input.value=transcript.slice(0,1000);input.focus();voiceNote.textContent="Review your spoken question, then tap Send. Audio may be processed by your browser provider.";}};
-   recognition.onerror=e=>{voiceNote.textContent=e.error==="not-allowed"?"Microphone permission denied. You can type your question.":"Could not hear that. Try again or type your question.";};
-   recognition.onend=()=>{listening=false;mic.classList.remove("listening");mic.setAttribute("aria-label","Speak a question");};
-   mic.addEventListener("click",()=>{if(busy)return;if(listening){recognition.stop();return;}try{recognition.start();listening=true;mic.classList.add("listening");mic.setAttribute("aria-label","Stop listening");voiceNote.textContent="Listening… tap the mic again to stop. Audio may be processed by your browser provider.";}catch{voiceNote.textContent="Microphone unavailable. Please type your question.";}});
+   recognition=new SpeechRecognition();recognition.lang=navigator.language||"en-IE";recognition.interimResults=true;recognition.maxAlternatives=1;recognition.continuous=true;
+   recognition.onresult=e=>{
+     const transcript=Array.from(e.results).map(r=>r[0]?.transcript||"").join(" ").trim();
+     if(transcript){input.value=transcript.slice(0,1000);voiceNote.textContent="Question captured. Tap the mic to stop, review your words, then Send.";}
+   };
+   recognition.onerror=e=>{
+     if(e.error==="no-speech"&&listening){voiceNote.textContent="Still listening… speak clearly or tap to stop.";return;}
+     voiceNote.textContent=e.error==="not-allowed"?"Microphone permission denied. Check browser permissions.":"Microphone stopped. Try again or type your question.";
+     setListening(false);
+   };
+   recognition.onend=()=>{
+     const wasListening=listening;
+     setListening(false);stopping=false;
+     if(wasListening)voiceNote.textContent="Microphone stopped. Review your question, then tap Send.";
+   };
+   mic.addEventListener("click",()=>{
+     if(busy)return;
+     if(listening){
+       if(stopping)return;
+       stopping=true;beep(false);setListening(false);
+       voiceNote.textContent="Microphone off. Review your question, then tap Send.";
+       try{recognition.stop();}catch{stopping=false;}
+       return;
+     }
+     if(stopping)return;
+     try{
+       recognition.start();setListening(true);beep(true);
+       voiceNote.textContent="Listening… tap once more to stop. Audio may be processed by your browser provider.";
+     }catch{setListening(false);voiceNote.textContent="Microphone unavailable. Please try again or type your question.";}
+   });
  }
  let busy=false;
  let history=[]; // Memory lives only in this open page, never localStorage.
