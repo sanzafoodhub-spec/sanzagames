@@ -12,12 +12,12 @@ async function publicQuota(req) {
   const ip = String(req.headers["x-real-ip"] || forwarded || "").slice(0, 80);
   if (!ip) return { allowed: false, reason: "Unable to verify request quota." };
   const ipHash = createHash("sha256").update(ip).digest("hex").slice(0, 32);
-  const window = Math.floor(Date.now() / 3600000);
-  const perIp = "sanza-ai:ip:" + window + ":" + ipHash;
-  const global = "sanza-ai:global:" + window;
-  // Atomic check-and-increment: a request must be under BOTH caps to proceed.
-  // Conservative default: 20 requests/IP/hour, 300 requests globally/hour.
-  const script = "local a=tonumber(redis.call('GET',KEYS[1]) or '0'); local b=tonumber(redis.call('GET',KEYS[2]) or '0'); if a>=tonumber(ARGV[1]) or b>=tonumber(ARGV[2]) then return 0 end; redis.call('INCR',KEYS[1]); redis.call('EXPIRE',KEYS[1],7200); redis.call('INCR',KEYS[2]); redis.call('EXPIRE',KEYS[2],7200); return 1";
+  const day = new Date().toISOString().slice(0, 10);
+  const perIp = "sanza-ai:daily-ip:" + day + ":" + ipHash;
+  const global = "sanza-ai:daily-global:" + day;
+  // Atomic daily check: 50 requests per IP, 1000 total across public SanZa AI.
+  // IP is an approximation of a visitor: shared networks share the allowance.
+  const script = "local a=tonumber(redis.call('GET',KEYS[1]) or '0'); local b=tonumber(redis.call('GET',KEYS[2]) or '0'); if a>=tonumber(ARGV[1]) or b>=tonumber(ARGV[2]) then return 0 end; redis.call('INCR',KEYS[1]); redis.call('EXPIRE',KEYS[1],172800); redis.call('INCR',KEYS[2]); redis.call('EXPIRE',KEYS[2],172800); return 1";
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 2500);
@@ -25,12 +25,12 @@ async function publicQuota(req) {
       const response = await fetch(url.replace(/\/$/, ""), {
         method: "POST",
         headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
-        body: JSON.stringify(["EVAL", script, 2, perIp, global, 20, 300]),
+        body: JSON.stringify(["EVAL", script, 2, perIp, global, 50, 1000]),
         signal: controller.signal
       });
       if (!response.ok) return { allowed: false, reason: "Capacity protection is temporarily unavailable." };
       const data = await response.json();
-      return { allowed: data.result === 1, reason: "SanZa AI has reached its free hourly limit. Please try again later." };
+      return { allowed: data.result === 1, reason: "SanZa AI has reached its free daily limit. Please try again tomorrow (UTC)." };
     } finally { clearTimeout(timeout); }
   } catch {
     return { allowed: false, reason: "Capacity protection is temporarily unavailable." };
@@ -117,7 +117,7 @@ export default async function handler(req, res) {
   if (publicEnabled) {
     const quota = await publicQuota(req);
     if (!quota.allowed) {
-      res.setHeader("Retry-After", "3600");
+      res.setHeader("Retry-After", "86400");
       return res.status(quota.reason.includes("not configured") ? 503 : 429).json({ error: quota.reason });
     }
   }
