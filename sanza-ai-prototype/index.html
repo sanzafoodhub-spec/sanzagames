@@ -37,7 +37,10 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
  const mic=document.getElementById("mic"), voiceNote=document.getElementById("voice-note");
  mic.disabled=true;
  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
- let recognition=null, listening=false, stopping=false, audioContext=null;
+ let recognition=null, listening=false, stopping=false, audioContext=null, silenceTimer=null, recognitionFailed=false;
+ function clearSilenceTimer(){if(silenceTimer!==null){clearTimeout(silenceTimer);silenceTimer=null;}}
+ function sendVoiceQuestion(){clearSilenceTimer();if(!recognitionFailed&&activated&&!busy&&input.value.trim()){voiceNote.textContent="Sending your voice question…";form.requestSubmit();}}
+ function scheduleVoiceSend(){clearSilenceTimer();if(!input.value.trim())return;silenceTimer=setTimeout(()=>{silenceTimer=null;if(listening&&!stopping){stopping=true;try{recognition.stop();}catch{sendVoiceQuestion();}}else sendVoiceQuestion();},1500);}
  function beep(on){
    try{
      const AudioContextClass=window.AudioContext||window.webkitAudioContext;
@@ -60,14 +63,15 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
  if(!SpeechRecognition){mic.disabled=true;mic.title="Voice questions are not supported in this browser";voiceNote.textContent="Browser speech recognition unavailable. Tap the message field and use the Samsung or Gboard keyboard microphone to dictate instead.";}
  else {
    recognition=new SpeechRecognition();recognition.lang="en-GB";recognition.interimResults=true;recognition.maxAlternatives=1;recognition.continuous=false;
-   recognition.onstart=()=>{setListening(true);voiceNote.textContent="Microphone active. Speak your question now.";};
+   recognition.onstart=()=>{recognitionFailed=false;clearSilenceTimer();setListening(true);voiceNote.textContent="Microphone active. Speak your question now.";};
    recognition.onaudiostart=()=>{voiceNote.textContent="Microphone connected. Speak now.";};
    recognition.onspeechstart=()=>{voiceNote.textContent="Hearing your voice…";};
    recognition.onresult=e=>{
      const transcript=Array.from(e.results).map(r=>r[0]?.transcript||"").join(" ").trim();
-     if(transcript){input.value=transcript.slice(0,1000);voiceNote.textContent="Question captured. Tap the mic to stop, review your words, then Send.";}
+     if(transcript){input.value=transcript.slice(0,1000);voiceNote.textContent="Question captured. Sending after 1.5 seconds of silence…";scheduleVoiceSend();}
    };
    recognition.onerror=e=>{
+     recognitionFailed=true;clearSilenceTimer();
      const explanations={"not-allowed":"Microphone blocked. In Chrome, tap the padlock → Permissions → Microphone → Allow, then retry.","service-not-allowed":"Speech recognition service blocked. Try Chrome directly, not an in-app browser.","audio-capture":"No microphone available. Check Samsung microphone access and Chrome permissions.","network":"Speech recognition network error. Check internet and try again.","no-speech":"No speech detected. Speak after the microphone activates.","language-not-supported":"Speech language unavailable. Try Chrome voice typing.","aborted":"Microphone stopped."};
      voiceNote.textContent=explanations[e.error]||("Speech recognition error: "+e.error+". Try Chrome or keyboard voice typing.");
      setListening(false);stopping=false;
@@ -75,6 +79,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
    recognition.onend=()=>{
      const wasListening=listening;
      setListening(false);stopping=false;
+     if(!recognitionFailed&&input.value.trim()){scheduleVoiceSend();return;}
      if(wasListening&&!input.value.trim())voiceNote.textContent="Recognition ended without words. Try again, or tap the keyboard microphone to dictate.";
    };
    mic.addEventListener("click",()=>{
@@ -82,7 +87,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
      if(listening){
        if(stopping)return;
        stopping=true;beep(false);setListening(false);
-       voiceNote.textContent="Microphone off. Review your question, then tap Send.";
+       voiceNote.textContent="Microphone off. Sending your question automatically…";
        try{recognition.stop();}catch{stopping=false;}
        return;
      }
@@ -164,7 +169,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
  }
  document.getElementById("newchat").addEventListener("click",()=>{
    if(busy)return;
-   if(listening)recognition.stop();
+   clearSilenceTimer();recognitionFailed=true;if(listening)recognition.stop();
    stopSpeech();history=[];
    log.textContent="";
    bubble("New chat started. Previous conversation cleared. ❤️");
