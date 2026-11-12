@@ -1,0 +1,20 @@
+name: SanZa AI audit branch tests
+on:
+  push:
+    branches:
+      - audit/sanza-ai-safety-tests
+  workflow_dispatch:
+jobs:
+  safety-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check backend syntax
+        run: node --check api/sanza-ai.js
+      - name: Run static and regression tests
+        run: node --test sanza-ai-prototype/safety.test.mjs sanza-ai-prototype/security-regression.test.mjs
