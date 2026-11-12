@@ -193,7 +193,7 @@ export default async function handler(req, res) {
   if (fallbackAllowed && geminiKey && !openRouterDiagnostic) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 6000);
+      const timeout = setTimeout(() => controller.abort(), 18000);
       let upstream;
       try {
         upstream = await fetch("https://generativelanguage.googleapis.com/v1/models/" + MODEL + ":generateContent", {
