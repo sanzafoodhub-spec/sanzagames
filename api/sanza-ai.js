@@ -48,6 +48,9 @@ function safeReply(reply) {
 const SAFE_BLOCK_MESSAGE = "I can't share that content. Let's keep SanZa safe and friendly for everyone. ❤️";
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Permissions-Policy", "camera=(), geolocation=(), payment=()");
   res.setHeader("X-Content-Type-Options", "nosniff");
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
   if (process.env.SANZA_AI_PRIVATE_TEST !== "enabled") {
@@ -65,6 +68,9 @@ export default async function handler(req, res) {
     try { if (new URL(origin).host !== host) return res.status(403).json({ error: "Origin denied." }); }
     catch { return res.status(403).json({ error: "Origin denied." }); }
   }
+  // Reject oversized requests before processing the user-controlled conversation.
+  const declaredLength = Number(req.headers["content-length"] || 0);
+  if (declaredLength > 18000) return res.status(413).json({ error: "Request too large." });
   const contentType = req.headers["content-type"] || "";
   if (!contentType.toLowerCase().startsWith("application/json")) {
     return res.status(415).json({ error: "JSON required." });
