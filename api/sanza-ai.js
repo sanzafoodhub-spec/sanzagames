@@ -223,8 +223,8 @@ export default async function handler(req, res) {
   }
   if (tryOpenRouter && openRouterKey) {
     const model = process.env.OPENROUTER_FREE_MODEL;
-    // Explicitly require a free model; never fall back to a paid model.
-    if (!model || !/^[a-z0-9._/-]+:free$/i.test(model)) {
+    // Permit only the free router or explicit :free model IDs; never select paid models.
+    if (!model || !(model === "openrouter/free" || /^[a-z0-9._/-]+:free$/i.test(model))) {
       return res.status(503).json({ error: "Free backup model not configured." });
     }
     try {
