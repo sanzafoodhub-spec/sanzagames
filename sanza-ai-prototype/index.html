@@ -59,13 +59,13 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
  }
  if(!SpeechRecognition){mic.disabled=true;mic.title="Voice questions are not supported in this browser";voiceNote.textContent="Voice questions unavailable in this browser. Please type instead.";}
  else {
-   recognition=new SpeechRecognition();recognition.lang=navigator.language||"en-IE";recognition.interimResults=true;recognition.maxAlternatives=1;recognition.continuous=true;
+   recognition=new SpeechRecognition();recognition.lang=navigator.language||"en-IE";recognition.interimResults=true;recognition.maxAlternatives=1;recognition.continuous=false;
    recognition.onresult=e=>{
      const transcript=Array.from(e.results).map(r=>r[0]?.transcript||"").join(" ").trim();
      if(transcript){input.value=transcript.slice(0,1000);voiceNote.textContent="Question captured. Tap the mic to stop, review your words, then Send.";}
    };
    recognition.onerror=e=>{
-     if(e.error==="no-speech"&&listening){voiceNote.textContent="Still listening… speak clearly or tap to stop.";return;}
+     if(e.error==="no-speech"&&listening){voiceNote.textContent="No speech detected. Tap the microphone and try again.";return;}
      voiceNote.textContent=e.error==="not-allowed"?"Microphone permission denied. Check browser permissions.":"Microphone stopped. Try again or type your question.";
      setListening(false);
    };
@@ -95,7 +95,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
  const voiceButton=document.getElementById("voice-mode"),voiceChoice=document.getElementById("voice-choice");
  const speechAvailable="speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
  let voiceEnabled=false,selectedVoiceURI="";
- const maleHint=/\\b(male|man|ravi|prabhat|hemant|aditya|karthik|arjun)\\b/i;
+ const maleHint=/\b(male|man|ravi|prabhat|hemant|aditya|karthik|arjun)\b/i;
  function voicesAvailable(){return speechAvailable?window.speechSynthesis.getVoices():[];}
  function indianVoice(v){return /^en[-_]IN$/i.test(v.lang);}
  function chooseDefaultVoice(voices){
@@ -110,7 +110,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
    const recommended=chooseDefaultVoice(voices);
    add("","Choose voice");
    voices.forEach(v=>add(v.voiceURI,(indianVoice(v)?"🇮🇳 ":"")+v.name+" ("+v.lang+")"));
-   selectedVoiceURI=voices.some(v=>v.voiceURI===previous)?previous:(recommended?.voiceURI||"");
+   selectedVoiceURI=voices.some(v=>v.voiceURI===previous)?previous:(recommended?.voiceURI||voices.find(v=>v.default)?.voiceURI||voices[0].voiceURI);
    voiceChoice.value=selectedVoiceURI;
    voiceChoice.disabled=false;
    voiceButton.title=recommended?"Enable spoken replies; select your preferred voice":"No Indian-English voice found on this device. Select a voice manually.";
@@ -120,9 +120,12 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
    if(!voiceEnabled||!speechAvailable||!activated)return;
    stopSpeech();
    const voices=voicesAvailable(),chosen=voices.find(v=>v.voiceURI===selectedVoiceURI);
-   if(!chosen){voiceButton.title="Choose an available voice before enabling speech";return;}
+   if(!chosen){voiceNote.textContent="No voice is available. Choose a voice from the list or check Android text-to-speech settings.";return;}
    const utterance=new SpeechSynthesisUtterance(text.replace(/[*`#]/g,"").slice(0,1500));
    utterance.voice=chosen;utterance.lang=chosen.lang;utterance.rate=0.95;utterance.pitch=0.95;
+   utterance.onerror=e=>{voiceNote.textContent="Speech playback failed ("+(e.error||"unknown")+"). Try another voice or Chrome text-to-speech settings.";};
+   utterance.onstart=()=>{voiceNote.textContent="SanZa is speaking…";};
+   utterance.onend=()=>{voiceNote.textContent="Spoken reply finished.";};
    window.speechSynthesis.speak(utterance);
  }
  if(!speechAvailable){voiceButton.disabled=true;voiceChoice.disabled=true;voiceButton.title="Speech playback is unavailable in this browser";}
@@ -134,7 +137,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
    voiceEnabled=!voiceEnabled;
    voiceButton.setAttribute("aria-pressed",String(voiceEnabled));
    voiceButton.textContent=voiceEnabled?"🔊 Voice on":"🔇 Voice off";
-   if(!voiceEnabled)stopSpeech();
+   if(!voiceEnabled){stopSpeech();voiceNote.textContent="Spoken replies switched off.";}else{voiceNote.textContent="Voice on. Testing your selected voice…";speakSafeAnswer("Howaya! SanZa voice is ready.");}
  });
  let busy=false;
  let history=[]; // Memory lives only in this open page, never localStorage.
