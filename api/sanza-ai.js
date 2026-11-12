@@ -53,13 +53,13 @@ export default async function handler(req, res) {
   res.setHeader("Permissions-Policy", "camera=(), geolocation=(), payment=()");
   res.setHeader("X-Content-Type-Options", "nosniff");
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-  if (process.env.SANZA_AI_PRIVATE_TEST !== "enabled") {
+  // Separate explicit switches: private testing or public release.
+  // Neither mode is enabled by default. Public launch must be opted into on the intended project.
+  const isPreview = process.env.VERCEL_ENV === "preview";
+  const privateEnabled = isPreview && process.env.SANZA_AI_PRIVATE_TEST === "enabled";
+  const publicEnabled = process.env.VERCEL_ENV === "production" && process.env.SANZA_AI_PUBLIC_ENABLED === "enabled";
+  if (!privateEnabled && !publicEnabled) {
     return res.status(503).json({ error: "SanZa AI is not yet available." });
-  }
-  // Project-wide Vercel Authentication must remain enabled for ALL deployments.
-  // This is a private preview proof of concept, not an authorization mechanism for public use.
-  if (process.env.VERCEL_ENV !== "preview") {
-    return res.status(403).json({ error: "Private preview only." });
   }
   // Do not accept cross-origin browser requests.
   const origin = req.headers.origin;
