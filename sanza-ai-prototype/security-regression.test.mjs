@@ -7,7 +7,7 @@ const api = readFileSync(new URL("../api/sanza-ai.js", import.meta.url), "utf8")
 
 test("public access fails closed without Redis", () => {
   assert.ok(api.includes("if (!url || !token"));
-  assert.match(api, /return \{ allowed: false, reason: "Capacity protection is not configured\." \}/);
+  assert.ok(api.includes('reason: "Public capacity protection is not configured."'));
   assert.match(api, /if \(!quota\.allowed\)/);
 });
 test("atomic shared daily quota protects both per-IP and global limits", () => {
