@@ -1,3 +1,42 @@
+import { createHash } from "node:crypto";
+
+// Shared, fail-closed limiter for public access. Redis counters are shared across
+// all serverless instances; the provider keys never reach the browser.
+async function publicQuota(req) {
+  const url = process.env.SANZA_AI_REDIS_REST_URL;
+  const token = process.env.SANZA_AI_REDIS_REST_TOKEN;
+  if (!url || !token || !/^https:\/\//.test(url)) return { allowed: false, reason: "Public capacity protection is not configured." };
+  // Vercel sets this header at its trusted edge. Never trust a client-provided
+  // x-forwarded-for chain or arbitrary identity header as an authentication claim.
+  const forwarded = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  const ip = String(req.headers["x-real-ip"] || forwarded || "").slice(0, 80);
+  if (!ip) return { allowed: false, reason: "Unable to verify request quota." };
+  const ipHash = createHash("sha256").update(ip).digest("hex").slice(0, 32);
+  const window = Math.floor(Date.now() / 3600000);
+  const perIp = "sanza-ai:ip:" + window + ":" + ipHash;
+  const global = "sanza-ai:global:" + window;
+  // Atomic check-and-increment: a request must be under BOTH caps to proceed.
+  // Conservative default: 8 requests/IP/hour, 150 requests globally/hour.
+  const script = "local a=tonumber(redis.call('GET',KEYS[1]) or '0'); local b=tonumber(redis.call('GET',KEYS[2]) or '0'); if a>=tonumber(ARGV[1]) or b>=tonumber(ARGV[2]) then return 0 end; redis.call('INCR',KEYS[1]); redis.call('EXPIRE',KEYS[1],7200); redis.call('INCR',KEYS[2]); redis.call('EXPIRE',KEYS[2],7200); return 1";
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2500);
+    try {
+      const response = await fetch(url.replace(/\/$/, ""), {
+        method: "POST",
+        headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+        body: JSON.stringify(["EVAL", script, 2, perIp, global, 8, 150]),
+        signal: controller.signal
+      });
+      if (!response.ok) return { allowed: false, reason: "Capacity protection is temporarily unavailable." };
+      const data = await response.json();
+      return { allowed: data.result === 1, reason: "SanZa AI has reached its free hourly limit. Please try again later." };
+    } finally { clearTimeout(timeout); }
+  } catch {
+    return { allowed: false, reason: "Capacity protection is temporarily unavailable." };
+  }
+}
+
 // SanZa AI private Stage 1 backend. Disabled until explicitly enabled for protected testing.
 // Never expose GEMINI_API_KEY to browsers. No paid API fallback.
 // Confirmed working model for this private preview. Avoid a models-list network call on every chat message.
@@ -74,6 +113,13 @@ export default async function handler(req, res) {
   const contentType = req.headers["content-type"] || "";
   if (!contentType.toLowerCase().startsWith("application/json")) {
     return res.status(415).json({ error: "JSON required." });
+  }
+  if (publicEnabled) {
+    const quota = await publicQuota(req);
+    if (!quota.allowed) {
+      res.setHeader("Retry-After", "3600");
+      return res.status(quota.reason.includes("not configured") ? 503 : 429).json({ error: quota.reason });
+    }
   }
   const geminiKey = process.env.GEMINI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
