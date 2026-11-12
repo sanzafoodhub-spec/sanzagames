@@ -57,22 +57,25 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
    mic.setAttribute("aria-label",active?"Stop listening":"Speak a question");
    mic.setAttribute("aria-pressed",String(active));
  }
- if(!SpeechRecognition){mic.disabled=true;mic.title="Voice questions are not supported in this browser";voiceNote.textContent="Voice questions unavailable in this browser. Please type instead.";}
+ if(!SpeechRecognition){mic.disabled=true;mic.title="Voice questions are not supported in this browser";voiceNote.textContent="Browser speech recognition unavailable. Tap the message field and use the Samsung or Gboard keyboard microphone to dictate instead.";}
  else {
-   recognition=new SpeechRecognition();recognition.lang=navigator.language||"en-IE";recognition.interimResults=true;recognition.maxAlternatives=1;recognition.continuous=false;
+   recognition=new SpeechRecognition();recognition.lang="en-GB";recognition.interimResults=true;recognition.maxAlternatives=1;recognition.continuous=false;
+   recognition.onstart=()=>{setListening(true);voiceNote.textContent="Microphone active. Speak your question now.";};
+   recognition.onaudiostart=()=>{voiceNote.textContent="Microphone connected. Speak now.";};
+   recognition.onspeechstart=()=>{voiceNote.textContent="Hearing your voice…";};
    recognition.onresult=e=>{
      const transcript=Array.from(e.results).map(r=>r[0]?.transcript||"").join(" ").trim();
      if(transcript){input.value=transcript.slice(0,1000);voiceNote.textContent="Question captured. Tap the mic to stop, review your words, then Send.";}
    };
    recognition.onerror=e=>{
-     if(e.error==="no-speech"&&listening){voiceNote.textContent="No speech detected. Tap the microphone and try again.";return;}
-     voiceNote.textContent=e.error==="not-allowed"?"Microphone permission denied. Check browser permissions.":"Microphone stopped. Try again or type your question.";
-     setListening(false);
+     const explanations={"not-allowed":"Microphone blocked. In Chrome, tap the padlock → Permissions → Microphone → Allow, then retry.","service-not-allowed":"Speech recognition service blocked. Try Chrome directly, not an in-app browser.","audio-capture":"No microphone available. Check Samsung microphone access and Chrome permissions.","network":"Speech recognition network error. Check internet and try again.","no-speech":"No speech detected. Speak after the microphone activates.","language-not-supported":"Speech language unavailable. Try Chrome voice typing.","aborted":"Microphone stopped."};
+     voiceNote.textContent=explanations[e.error]||("Speech recognition error: "+e.error+". Try Chrome or keyboard voice typing.");
+     setListening(false);stopping=false;
    };
    recognition.onend=()=>{
      const wasListening=listening;
      setListening(false);stopping=false;
-     if(wasListening)voiceNote.textContent="Microphone stopped. Review your question, then tap Send.";
+     if(wasListening&&!input.value.trim())voiceNote.textContent="Recognition ended without words. Try again, or tap the keyboard microphone to dictate.";
    };
    mic.addEventListener("click",()=>{
      if(busy)return;
@@ -85,8 +88,8 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
      }
      if(stopping)return;
      try{
-       recognition.start();setListening(true);beep(true);
-       voiceNote.textContent="Listening… tap once more to stop. Audio may be processed by your browser provider.";
+       recognition.start();beep(true);
+       voiceNote.textContent="Starting microphone… allow access if prompted.";
      }catch{setListening(false);voiceNote.textContent="Microphone unavailable. Please try again or type your question.";}
    });
  }
