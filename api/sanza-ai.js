@@ -149,9 +149,11 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply: "Nice try, YupBro! 😄 My secret recipe stays secret. Want a riddle instead?" });
   }
 
-  const turns = [...history, { role: "user", content: prompt }];
-  let fallbackAllowed = !groqKey;
-  if (groqKey) {
+  // Preview-only diagnostic. Never available in production; no credentials exposed.
+  const openRouterDiagnostic = privateEnabled && prompt.toLowerCase() === "/test-openrouter";
+  const turns = [...history, { role: "user", content: openRouterDiagnostic ? "Say hello from SanZa AI in one short, friendly sentence." : prompt }];
+  let fallbackAllowed = openRouterDiagnostic || !groqKey;
+  if (groqKey && !openRouterDiagnostic) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8500);
@@ -182,8 +184,8 @@ export default async function handler(req, res) {
       fallbackAllowed = true;
     }
   }
-  let tryOpenRouter = fallbackAllowed && !geminiKey;
-  if (fallbackAllowed && geminiKey) {
+  let tryOpenRouter = openRouterDiagnostic || (fallbackAllowed && !geminiKey);
+  if (fallbackAllowed && geminiKey && !openRouterDiagnostic) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 6000);
