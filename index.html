@@ -404,16 +404,9 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   </div>
 </header>
 <div class="wrap">
-<section aria-label="SanZa Chat coming soon" style="max-width:900px;margin:16px auto 30px;padding:23px 20px;border:1px solid #ad862d;border-radius:19px;background:linear-gradient(125deg,#1b160c,#11131b 65%,#211a0b);text-align:center;box-shadow:0 10px 35px #0005">
-  <div style="display:inline-block;padding:6px 13px;border:1px solid #92752d;border-radius:30px;color:#ffd34d;font-size:11px;font-weight:900;letter-spacing:1.5px">💬 COMING SOON</div>
-  <h2 style="margin:12px 0 6px;color:#ffd34d;font-size:clamp(24px,5vw,38px);letter-spacing:1px">SANZA CHAT</h2>
-  <p style="margin:5px 0 10px;font-size:clamp(15px,3vw,20px);font-weight:900">HOWAYA, SANZATIONS! 🤣</p>
-  <p style="margin:0 auto 13px;max-width:550px;color:#d5d0c3;font-size:14px;line-height:1.65">Old-school public chat is coming to SanZa Games. A place to say howaya and enjoy the craic!</p>
-  <p style="margin:0;color:#ffe29a;font-size:12px;font-weight:800">Nickname only · No private messages · Family-friendly</p>
-  <p style="margin:12px 0 0;color:#f4d477;font-size:12px;font-weight:800">One SanZa. One Family. 🖤💛</p>
-</section>
 
-<nav class="home-shortcuts wrap" aria-label="Explore SanZa">
+<nav class="home-shortcuts wrap" id="sanza-shortcuts" aria-label="Explore SanZa">
+  <a class="shortcut shortcut-ai" href="/sanza-ai-prototype/" aria-label="SanZa AI private preview, age 16 and over"><span aria-hidden="true">🤖</span><span><strong>SanZa AI ✨</strong><small>Chat, learn &amp; laugh · 16+ · Private preview</small></span><b aria-hidden="true">↗</b></a>
   <div class="shortcut shortcut-chat-soon" role="group" aria-label="SanZa Chat coming soon, not yet available"><span aria-hidden="true">💬</span><span><strong>SanZa Chat 🔒</strong><small>Coming Soon · Not open yet</small></span><b aria-hidden="true">🔒</b></div>
   <a class="shortcut shortcut-chaos" href="funny-zone.html"><span aria-hidden="true">😂</span><span><strong>Funny Zone</strong><small>Jokes, riddles &amp; mini-games</small></span><b aria-hidden="true">↗</b></a>
   <a class="shortcut shortcut-games" href="#games"><span aria-hidden="true">🎮</span><span><strong>Play games</strong><small>Jump into the arcade</small></span><b aria-hidden="true">↘</b></a>
@@ -1035,14 +1028,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     gate.hidden=true;
     document.body.classList.remove('welcome-active');
     document.dispatchEvent(new Event('sanza:leave-yupbro'));
-    if(stage)stage.scrollIntoView({block:'start',behavior:'smooth'});
-    window.scrollTo({top:0,behavior:'smooth'});
+    document.getElementById('sanza-shortcuts')?.scrollIntoView({block:'start',behavior:'smooth'});
   }
   function returnToWelcome(e){if(e)e.preventDefault();if(!gate)return;gate.hidden=false;document.body.classList.add('welcome-active');document.dispatchEvent(new Event('sanza:return-yupbro'));window.scrollTo({top:0,behavior:'smooth'});}
-  if(window.location.hash==='#sanza-explore')openSanZa();
+  if(window.location.hash==='#sanza-explore'||window.location.hash==='#sanza-shortcuts')openSanZa();
   if(enter)enter.addEventListener('click',openSanZa);
   if(home)home.addEventListener('click',returnToWelcome);
-  if(explore)explore.addEventListener('click',function(e){e.preventDefault();openSanZa();document.getElementById('sanza-explore')?.scrollIntoView({block:'start',behavior:'smooth'});});
+  if(explore)explore.addEventListener('click',function(e){e.preventDefault();openSanZa();document.getElementById('sanza-shortcuts')?.scrollIntoView({block:'start',behavior:'smooth'});});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&gate&&!gate.hidden)openSanZa();});
 })();
 </script>

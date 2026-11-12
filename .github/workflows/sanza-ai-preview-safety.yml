@@ -1,0 +1,20 @@
+name: SanZa AI private safety checks
+on:
+  push:
+    branches:
+      - feature/sanza-ai-stage1
+  workflow_dispatch:
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax check
+        run: node --check api/sanza-ai.js
+      - name: Preview safety assertions
+        run: node --test sanza-ai-prototype/safety.test.mjs
