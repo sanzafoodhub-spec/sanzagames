@@ -16,7 +16,7 @@ async function publicQuota(req) {
   const perIp = "sanza-ai:ip:" + window + ":" + ipHash;
   const global = "sanza-ai:global:" + window;
   // Atomic check-and-increment: a request must be under BOTH caps to proceed.
-  // Conservative default: 8 requests/IP/hour, 150 requests globally/hour.
+  // Conservative default: 20 requests/IP/hour, 300 requests globally/hour.
   const script = "local a=tonumber(redis.call('GET',KEYS[1]) or '0'); local b=tonumber(redis.call('GET',KEYS[2]) or '0'); if a>=tonumber(ARGV[1]) or b>=tonumber(ARGV[2]) then return 0 end; redis.call('INCR',KEYS[1]); redis.call('EXPIRE',KEYS[1],7200); redis.call('INCR',KEYS[2]); redis.call('EXPIRE',KEYS[2],7200); return 1";
   try {
     const controller = new AbortController();
@@ -25,7 +25,7 @@ async function publicQuota(req) {
       const response = await fetch(url.replace(/\/$/, ""), {
         method: "POST",
         headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
-        body: JSON.stringify(["EVAL", script, 2, perIp, global, 8, 150]),
+        body: JSON.stringify(["EVAL", script, 2, perIp, global, 20, 300]),
         signal: controller.signal
       });
       if (!response.ok) return { allowed: false, reason: "Capacity protection is temporarily unavailable." };
