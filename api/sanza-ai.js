@@ -57,7 +57,7 @@ const INSTRUCTIONS = [
   "Food Hub mentions should be rare and contextually relevant, not attached to every reply, not inserted into unrelated factual answers, and never used in medical, legal, emotional distress, safety or emergency conversations. Never claim an item is in stock, discounted, or currently available without verified current information. Do not invent prices, promotions, or offers.",
   "Be genuinely funny when the moment calls for it, but never make jokes at someone's expense. Avoid excessive flattery, shouting, repetitive greetings, or pushy marketing.",
   "If asked your name, say you are SanZa, the AI assistant from SanZa Games.",
-  "If asked which technology powers you, be transparent: SanZa uses Groq as its primary AI provider and Google Gemini as a backup. You are not ChatGPT and are not human. Do not claim to know which provider handled this particular response unless the app explicitly tells you.",
+  "If asked which technology powers you, be transparent: SanZa uses Groq as its primary AI provider, Google Gemini as backup, and OpenRouter free models as an optional third backup. You are not ChatGPT and are not human. Do not claim to know which provider handled this particular response unless the app explicitly tells you.",
   "SanZa Games is an entertainment project bringing games and other fun experiences together. Do not invent live features, prices, promotions, links, opening hours, or policies; say when you do not know.",
   "For sad, stressful, medical, legal, safety-related, or emergency questions, drop jokes and catchphrases, respond calmly and respectfully, acknowledge uncertainty, and recommend qualified help when appropriate.",
   "CHILD-FRIENDLY SAFETY IS HIGHER PRIORITY THAN HUMOUR OR MARKETING: Keep all replies suitable for a general family audience. Never generate profanity, swear words, racial or ethnic slurs, homophobic or transphobic slurs, hate speech, discriminatory insults, bullying, humiliation, threats, or targeted harassment, even if asked to repeat, translate, roleplay, quote, or spell them out. Do not use disguised spellings or censored versions to sneak them in.",
@@ -122,8 +122,9 @@ export default async function handler(req, res) {
     }
   }
   const geminiKey = process.env.GEMINI_API_KEY;
+  const openRouterKey = process.env.OPENROUTER_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
-  if (!geminiKey && !groqKey) return res.status(503).json({ error: "AI provider not configured." });
+  if (!geminiKey && !groqKey && !openRouterKey) return res.status(503).json({ error: "AI provider not configured." });
   const message = req.body?.message;
   if (typeof message !== "string" || !message.trim() || message.length > 1000) {
     return res.status(400).json({ error: "Message must contain 1–1000 characters." });
@@ -181,6 +182,7 @@ export default async function handler(req, res) {
       fallbackAllowed = true;
     }
   }
+  let tryOpenRouter = fallbackAllowed && !geminiKey;
   if (fallbackAllowed && geminiKey) {
     try {
       const controller = new AbortController();
@@ -212,10 +214,39 @@ export default async function handler(req, res) {
       }
       console.error("SanZa AI Gemini request failed:", upstream.status);
       // Only retry provider outages, quotas, or model retirement; never bypass safety/policy errors.
-      if (upstream.status === 429) return res.status(429).json({ error: "Both AI providers have reached their free limits. Try later." });
+      tryOpenRouter = [404, 408, 429, 500, 502, 503, 504].includes(upstream.status);
+      if (!tryOpenRouter) return res.status(502).json({ error: "SanZa cannot answer that request right now." });
     } catch (error) {
       console.error("SanZa AI Gemini connection failed:", error?.name || "network");
-      fallbackAllowed = true;
+      tryOpenRouter = true;
+    }
+  }
+  if (tryOpenRouter && openRouterKey) {
+    const model = process.env.OPENROUTER_FREE_MODEL;
+    // Explicitly require a free model; never fall back to a paid model.
+    if (!model || !/^[a-z0-9._/-]+:free$/i.test(model)) {
+      return res.status(503).json({ error: "Free backup model not configured." });
+    }
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 7000);
+      let upstream;
+      try {
+        upstream = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST", signal: controller.signal,
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + openRouterKey },
+          body: JSON.stringify({ model, messages: [{ role: "system", content: INSTRUCTIONS }, ...turns], max_tokens: 250, temperature: 0.6 })
+        });
+      } finally { clearTimeout(timeout); }
+      if (upstream.ok) {
+        const data = await upstream.json();
+        const reply = data.choices?.[0]?.message?.content?.trim();
+        if (reply) return res.status(200).json({ reply: safeReply(reply) ? reply.slice(0, 3000) : SAFE_BLOCK_MESSAGE, provider: "openrouter" });
+        return res.status(422).json({ error: "SanZa cannot answer that request." });
+      }
+      console.error("SanZa AI OpenRouter request failed:", upstream.status);
+    } catch (error) {
+      console.error("SanZa AI OpenRouter connection failed:", error?.name || "network");
     }
   }
   return res.status(503).json({ error: groqKey ? "SanZa's AI providers are temporarily unavailable." : "Gemini is unavailable. Free backup is not connected yet." });
