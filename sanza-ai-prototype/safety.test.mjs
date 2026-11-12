@@ -4,9 +4,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 const api=readFileSync(new URL("../api/sanza-ai.js",import.meta.url),"utf8");
 const ui=readFileSync(new URL("./index.html",import.meta.url),"utf8");
-test("preview-only and disabled-by-default backend",()=>{
+test("explicit preview and public switches, disabled by default",()=>{
  assert.match(api,/SANZA_AI_PRIVATE_TEST/);
- assert.match(api,/VERCEL_ENV !== "preview"/);
+ assert.match(api,/VERCEL_ENV === "preview"/);
+ assert.match(api,/VERCEL_ENV === "production"/);
+ assert.match(api,/SANZA_AI_PUBLIC_ENABLED === "enabled"/);
+ assert.match(api,/if \(!privateEnabled && !publicEnabled\)/);
+ assert.match(api,/publicQuota\(req\)/);
  assert.match(api,/GEMINI_API_KEY/);
  assert.match(api,/GROQ_API_KEY/);
 });
@@ -28,5 +32,7 @@ test("mic toggle and transparency",()=>{
  assert.match(ui,/beep\(true\)/);
  assert.match(ui,/beep\(false\)/);
  assert.match(ui,/Privacy, age &amp; safety information/);
- assert.match(ui,/not approved for use by children/);
+ assert.match(ui,/Under 16\? SanZa AI is not available yet/);
+ assert.match(ui,/id="age-16"/);
+ assert.match(ui,/id="activate-ai"/);
 });
