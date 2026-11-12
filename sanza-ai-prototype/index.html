@@ -177,7 +177,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
    bubble(message,true);input.value="";
    const pending=bubble("SanZa is checking availability…");
    const controller=new AbortController();
-   const timeout=setTimeout(()=>controller.abort(),15000);
+   const timeout=setTimeout(()=>controller.abort(),25000);
    try {
      const response=await fetch("/api/sanza-ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,history}),signal:controller.signal,credentials:"same-origin"});
      const data=await response.json().catch(()=>({}));
