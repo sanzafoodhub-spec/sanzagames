@@ -39,8 +39,8 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
  let recognition=null, listening=false, stopping=false, audioContext=null, silenceTimer=null, recognitionFailed=false;
  function clearSilenceTimer(){if(silenceTimer!==null){clearTimeout(silenceTimer);silenceTimer=null;}}
- function sendVoiceQuestion(){clearSilenceTimer();if(!recognitionFailed&&activated&&!busy&&input.value.trim()){voiceNote.textContent="Sending your voice question…";form.requestSubmit();}}
- function scheduleVoiceSend(){clearSilenceTimer();if(!input.value.trim())return;silenceTimer=setTimeout(()=>{silenceTimer=null;if(listening&&!stopping){stopping=true;try{recognition.stop();}catch{sendVoiceQuestion();}}else sendVoiceQuestion();},1500);}
+ function sendVoiceQuestion(){clearSilenceTimer();if(!recognitionFailed&&activated&&!busy&&input.value.trim()){voiceNote.textContent="Sending your voice question…";button.click();}}
+ function scheduleVoiceSend(){clearSilenceTimer();if(!input.value.trim())return;silenceTimer=setTimeout(()=>{silenceTimer=null;if(listening&&!stopping){stopping=true;try{recognition.stop();}catch{sendVoiceQuestion();setListening(false);stopping=false;}}else sendVoiceQuestion();},1500);}
  function beep(on){
    try{
      const AudioContextClass=window.AudioContext||window.webkitAudioContext;
@@ -79,7 +79,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
    recognition.onend=()=>{
      const wasListening=listening;
      setListening(false);stopping=false;
-     if(!recognitionFailed&&input.value.trim()){scheduleVoiceSend();return;}
+     if(!recognitionFailed&&input.value.trim()){sendVoiceQuestion();return;}
      if(wasListening&&!input.value.trim())voiceNote.textContent="Recognition ended without words. Try again, or tap the keyboard microphone to dictate.";
    };
    mic.addEventListener("click",()=>{
@@ -88,7 +88,7 @@ button{cursor:pointer;border:0;border-radius:12px;background:#f5cf73;color:#1714
        if(stopping)return;
        stopping=true;beep(false);setListening(false);
        voiceNote.textContent="Microphone off. Sending your question automatically…";
-       try{recognition.stop();}catch{stopping=false;}
+       try{recognition.stop();}catch{stopping=false;sendVoiceQuestion();}
        return;
      }
      if(stopping)return;
