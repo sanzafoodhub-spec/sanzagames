@@ -658,7 +658,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const mat=(color,rough=.55,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
   const accentLight=new THREE.PointLight(0xffd66e,5,7);accentLight.position.set(0,4,3);scene.add(accentLight);
   const floorMaterial=new THREE.MeshStandardMaterial({color:0x172333,roughness:.38,metalness:.28});
-  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.25,64),floorMaterial);floor.rotation.x=-Math.PI/2;floor.position.y=-.465;scene.add(floor);
+  const premiumFloor=new THREE.Mesh(new THREE.CircleGeometry(2.25,64),floorMaterial);premiumFloor.rotation.x=-Math.PI/2;premiumFloor.position.y=-.465;scene.add(premiumFloor);
   const floorRing=new THREE.Mesh(new THREE.TorusGeometry(1.75,.018,8,72),new THREE.MeshBasicMaterial({color:0xffd34d,transparent:true,opacity:.65}));floorRing.rotation.x=Math.PI/2;floorRing.position.y=-.455;scene.add(floorRing);
   const backdrop=new THREE.Mesh(new THREE.PlaneGeometry(16,11),new THREE.MeshBasicMaterial({color:0x101a2c,depthWrite:false}));backdrop.position.set(0,1,-4);scene.add(backdrop);
   const sparkleMat=new THREE.MeshBasicMaterial({color:0xffe6a2,transparent:true,opacity:.55,depthWrite:false});
