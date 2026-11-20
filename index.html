@@ -443,6 +443,34 @@ body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-quicknav,body:has(.welcome
 body:has(#welcome-gate.yupbro-b:not([hidden])) .sanza-global-quicknav{display:none!important}
 body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-floating-menu,.floating-quicknav,.sanza-quicknav-fab){display:none!important}
 @media(max-width:540px){.yupbro-b .welcome-character-slot .yupbro-speech{bottom:45px!important;max-width:78%!important}.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(420px,60dvh,590px)!important;min-height:420px!important}}
+
+/* YupBro 3.3: single-screen portrait mobile layout, no page scrolling.
+   The WebGL stage takes remaining viewport height instead of a fixed 440px. */
+@media (max-width:800px) and (orientation:portrait){
+ body:has(#welcome-gate:not([hidden])){overflow:hidden!important}
+ #welcome-gate.yupbro-b{height:100dvh!important;max-height:100dvh!important;inset:0!important;overflow:hidden!important;display:flex!important;align-items:stretch!important;justify-content:center!important;padding:5px 7px calc(5px + env(safe-area-inset-bottom,0px))!important;box-sizing:border-box!important}
+ #welcome-gate.yupbro-b .welcome-inner{height:100%!important;max-height:100%!important;width:100%!important;min-height:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:4px!important;padding:7px 9px!important;overflow:hidden!important;border-radius:16px!important}
+ #welcome-gate.yupbro-b .welcome-kicker{font-size:10px!important;line-height:1.1!important;letter-spacing:.06em!important;padding:5px 10px!important;margin:0 auto!important;min-height:0!important}
+ #welcome-gate.yupbro-b .welcome-title{font-size:clamp(17px,4.4vw,25px)!important;line-height:1.08!important;margin:1px 0!important;flex-shrink:0!important}
+ #welcome-gate.yupbro-b .welcome-subtitle{font-size:11px!important;line-height:1.2!important;margin:0 auto 2px!important;flex-shrink:0!important}
+ #welcome-gate.yupbro-b .welcome-character-slot{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;width:100%!important;margin:0 auto!important;gap:3px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:auto!important;min-height:0!important;flex:1 1 0!important;width:100%!important;border-radius:16px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls{flex:0 0 auto!important;margin:3px 0 0!important;gap:5px!important;min-height:0!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{min-height:32px!important;padding:5px 3px!important;font-size:10px!important;line-height:1.1!important;border-radius:10px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>div:not(.mascot-canvas-wrap):not(.yupbro-reaction-controls){margin:1px auto!important;font-size:10px!important;line-height:1.1!important;flex:0 0 auto!important}
+ #welcome-gate.yupbro-b .yupbro-b-actions{flex:0 0 auto!important;width:100%!important;margin:2px auto!important;gap:5px!important}
+ #welcome-gate.yupbro-b .yupbro-b-actions button{min-height:35px!important;padding:5px 3px!important;font-size:10px!important;line-height:1.15!important;border-radius:10px!important}
+ #welcome-gate.yupbro-b .welcome-enter{flex:0 0 auto!important;min-height:35px!important;padding:7px 12px!important;font-size:11px!important;margin:2px auto!important}
+ #welcome-gate.yupbro-b .welcome-foot{display:none!important}
+}
+@media (max-width:800px) and (orientation:portrait) and (max-height:740px){
+ #welcome-gate.yupbro-b .welcome-subtitle{display:none!important}
+ #welcome-gate.yupbro-b .welcome-kicker{font-size:9px!important;padding:3px 8px!important}
+ #welcome-gate.yupbro-b .welcome-title{font-size:17px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{min-height:29px!important}
+ #welcome-gate.yupbro-b .yupbro-b-actions button{min-height:30px!important}
+ #welcome-gate.yupbro-b .welcome-enter{min-height:30px!important}
+}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
