@@ -394,6 +394,21 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
 .yupbro-b.yupbro-b-full .welcome-character-slot .mascot-canvas-wrap{height:min(70dvh,720px)}
 .yupbro-b.yupbro-b-full .welcome-subtitle,.yupbro-b.yupbro-b-full .welcome-foot{display:none}
 @media(max-width:560px){.yupbro-b .welcome-inner{padding:12px}.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(390px,59dvh,570px)}.yupbro-b .welcome-subtitle{font-size:12px}.yupbro-b .welcome-character-slot .yupbro-reaction-controls button{padding:8px!important}}
+
+/* Design B polish: keep controls outside the 3D stage, prevent overlays */
+.yupbro-b .welcome-inner{background:#fff!important;color:#172331!important;border-color:#e4e8ef!important}
+.yupbro-b .welcome-title{font-size:clamp(24px,5vw,34px)!important}
+.yupbro-b .welcome-subtitle{font-size:14px!important;line-height:1.4!important;max-width:460px!important}
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(390px,58dvh,600px)!important;min-height:390px!important;border:1px solid #e4e8ef!important}
+.yupbro-b .welcome-character-slot .yupbro-fullscreen-btn{display:none!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls{bottom:12px!important;left:50%!important;width:max-content!important;max-width:calc(100% - 18px)!important;transform:translateX(-50%)!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls button{border-radius:12px!important;box-shadow:none!important}
+.yupbro-b .yupbro-b-actions{margin:12px auto 4px!important}
+.yupbro-b .yupbro-b-actions button{font-size:12px;min-height:43px}
+body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-hungry-float{display:none!important}
+body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-quicknav,body:has(.welcome-gate.yupbro-b:not([hidden])) [id*="quicknav"]{display:none!important}
+.yupbro-b .welcome-foot{margin:7px auto!important}
+.yupbro-b .welcome-character-slot .yupbro-speech{max-width:85%;font-size:12px}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
@@ -403,9 +418,9 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   <div class="welcome-inner">
     <div class="welcome-kicker">✨ ONE SANZA · ONE FAMILY ✨</div>
     <h1 class="welcome-title" id="welcome-title">HOWAYA, YA<br><span>ABSOLUTE LEGEND?! 😂</span></h1>
-    <p class="welcome-subtitle">Yup Bro’s here, bro! 😎 SanZa is more than games — it’s our little corner of the world for family, laughter, learning and good food. Meet the characters, take on a challenge, discover SanZa Grinds and Food Hub, and join the family. Wherever you come from, there’s room for one more Sanzation. Tap Yup Bro to wake up the craic, then come explore!</p>
+    <p class="welcome-subtitle">Tap YupBro, make him dance, or send him flying on his scooty! 😂</p>
     <div class="welcome-character-slot" id="welcome-character-slot" aria-label="Interactive 3D Yup Bro character"></div>
-    <div class="yupbro-b-actions"><button type="button" id="yupbro-b-more" aria-expanded="false">✨ More reactions</button><button type="button" id="yupbro-b-full">⛶ Full screen</button></div>
+    <div class="yupbro-b-actions"><button type="button" id="yupbro-b-more" aria-expanded="false">✨ More reactions</button><button type="button" id="yupbro-b-mic">🎤 Mic status</button><button type="button" id="yupbro-b-full">⛶ Full screen</button></div>
     <button class="welcome-enter" id="welcome-enter" type="button">🚀 EXPLORE SANZA</button>
     <p class="welcome-foot">👆 Tap the 3D Yup Bro to hear him crack a joke · Games · Videos · Grinds · Food · Family ❤️</p>
   </div>
@@ -729,7 +744,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const yupbroVoiceFiles=['7yup.m4a','Banging.m4a','Bestie.m4a','Charlie.m4a','Chicken curry.m4a','Colacoco.m4a','Fanta.m4a','Sanzalicious.m4a','Sanzations.m4a','Voice 261026_134443.m4a','What do u want.m4a','What isvwrong.m4a','Yup bro.m4a'];
   const yupbroVoiceClips=yupbroVoiceFiles.map(src=>{const audio=new Audio(encodeURI(src));audio.preload='auto';return audio});
   let nextVoiceClip=0;
-  function voiceClipUnavailable(){setMouthTalking(false);if(micHint)micHint.textContent='Bro, my voice clip did not load. Refresh and try again! 😂';}
+  function voiceClipUnavailable(){setMouthTalking(false);if(micHint)micHint.textContent='🔈 Sound could not play. Tap YupBro to try again.';}
   function talk(line,pitch=1.12,rate=1.02){
    if(pageInactive)return;
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
@@ -740,14 +755,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     const finish=()=>setMouthTalking(false);
     clip.onended=finish;clip.onerror=finish;
     const playback=clip.play();
-    if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();voiceClipUnavailable();});
+    if(playback&&typeof playback.catch==='function')playback.catch(err=>{finish();if(err&&err.name==='NotAllowedError'){if(micHint)micHint.textContent='🔈 Tap YupBro to enable sound.';}else voiceClipUnavailable();});
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
   // Talking Tom-style Yup Bro: auto-request mic permission, listen continuously, repeat speech, and react to pokes.
   let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false,pageInactive=false;
   const micHint=document.createElement('div');
   micHint.textContent='Yup Bro is ready, bro! Allow the mic once, then just talk or poke him. 😂';
-  micHint.style.cssText='text-align:center;font-size:11px;color:#ddd;margin:6px auto 12px';
+  micHint.style.cssText='text-align:center;font-size:12px;color:#5d6b7c;margin:8px auto';
   const mascotShell=wrap.parentElement;
   if(mascotShell)mascotShell.appendChild(micHint);
   const tapControl=document.getElementById('yupbro-tap');
@@ -1195,6 +1210,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     window.dispatchEvent(new Event('resize'));
   }
   btn.addEventListener('click',toggle);
+  document.getElementById('yupbro-b-full')?.addEventListener('click',()=>{setTimeout(()=>{const active=isExpanded();const control=document.getElementById('yupbro-b-full');if(control)control.textContent=active?'↙ Small screen':'⛶ Full screen';},150);});
   document.addEventListener('fullscreenchange',function(){
     if(document.fullscreenElement===stage){btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');}
     else if(!stage.classList.contains('yupbro-faux-fullscreen')){btn.textContent='⛶ FULL SCREEN YUP BRO';btn.setAttribute('aria-label','Open Yup Bro in full screen');window.dispatchEvent(new Event('resize'));}
@@ -1208,7 +1224,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 <script>
 /* Design B controls are isolated to the welcome screen. */
 (()=>{const gate=document.getElementById('welcome-gate');const full=document.getElementById('yupbro-b-full');const more=document.getElementById('yupbro-b-more');if(!gate||!full||!more)return;
-full.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-full');full.textContent=active?'↙ Small screen':'⛶ Full screen';});
+full.addEventListener('click',()=>{const legacy=document.getElementById('yupbro-fullscreen-toggle');if(legacy)legacy.click();else {const active=gate.classList.toggle('yupbro-b-full');full.textContent=active?'↙ Small screen':'⛶ Full screen';}});
+document.getElementById('yupbro-b-mic')?.addEventListener('click',()=>{const hint=gate.querySelector('.welcome-character-slot')?.nextElementSibling; if(hint&&hint.textContent)alert(hint.textContent);else alert('YupBro requests microphone access when available. Check browser microphone permission if needed.');});
 more.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-more');more.setAttribute('aria-expanded',String(active));more.textContent=active?'✕ Fewer reactions':'✨ More reactions';});
 })();
 </script>
