@@ -426,6 +426,13 @@ body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-quicknav,body:has(.welcome
 .yupbro-b .welcome-character-slot .yupbro-speech{font-size:12px!important}
 @media(max-width:540px){.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(370px,56dvh,540px)!important;min-height:370px!important}.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{font-size:11px!important;padding:9px 5px!important}.yupbro-b .welcome-inner{padding:12px!important}}
 @media(prefers-reduced-motion:reduce){.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{transition:none!important}}
+
+/* YupBro 3.1 graphics polish: richer stage frame, readable character and clean controls */
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{background:radial-gradient(ellipse at 50% 42%,#263b54 0%,#111b2b 53%,#080d17 100%)!important;border:2px solid #e5bd52!important;box-shadow:0 12px 32px #16243b30,0 0 0 4px #fff6dc!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{box-shadow:0 3px 0 #e7ca7b!important;transition:transform .12s ease,background .12s ease!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:hover{background:#ffeab3!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:focus-visible{outline:3px solid #c89400!important;outline-offset:2px!important}
+@media(prefers-reduced-motion:reduce){.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{transition:none!important}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
@@ -637,7 +644,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   renderer.setSize(wrap.clientWidth,wrap.clientHeight,false);
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.2;
+  renderer.toneMappingExposure=1.16;
+  renderer.setClearColor(0x090d19,1);
   scene=new THREE.Scene();
   camera=new THREE.PerspectiveCamera(34,wrap.clientWidth/wrap.clientHeight,.1,100);
   camera.position.set(0,2.2,5.85);
@@ -646,7 +654,17 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const key=new THREE.DirectionalLight(0xffd477,3.2);key.position.set(4,7,5);scene.add(key);
   const rim=new THREE.PointLight(0x42dfff,18,12);rim.position.set(-4,3,2);scene.add(rim);
   const pink=new THREE.PointLight(0xff5ab8,10,10);pink.position.set(4,1,-2);scene.add(pink);
+  // Premium mobile-friendly materials and stage graphics; no paid assets or heavy post-processing.
   const mat=(color,rough=.55,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+  const accentLight=new THREE.PointLight(0xffd66e,5,7);accentLight.position.set(0,4,3);scene.add(accentLight);
+  const floorMaterial=new THREE.MeshStandardMaterial({color:0x172333,roughness:.38,metalness:.28});
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(2.25,64),floorMaterial);floor.rotation.x=-Math.PI/2;floor.position.y=-.465;scene.add(floor);
+  const floorRing=new THREE.Mesh(new THREE.TorusGeometry(1.75,.018,8,72),new THREE.MeshBasicMaterial({color:0xffd34d,transparent:true,opacity:.65}));floorRing.rotation.x=Math.PI/2;floorRing.position.y=-.455;scene.add(floorRing);
+  const backdrop=new THREE.Mesh(new THREE.PlaneGeometry(16,11),new THREE.MeshBasicMaterial({color:0x101a2c,depthWrite:false}));backdrop.position.set(0,1,-4);scene.add(backdrop);
+  const sparkleMat=new THREE.MeshBasicMaterial({color:0xffe6a2,transparent:true,opacity:.55,depthWrite:false});
+  const sparkleGeo=new THREE.SphereGeometry(.018,6,6);
+  const sparkles=new THREE.Group();scene.add(sparkles);
+  for(let i=0;i<24;i++){const p=new THREE.Mesh(sparkleGeo,sparkleMat);const angle=i*2.399963;const radius=1.1+(i%7)*.19;p.position.set(Math.cos(angle)*radius,.25+(i%9)*.32,-1.1-(i%4)*.25);p.userData.phase=i*.8;sparkles.add(p);}
   const gold=mat('#ffd34d',.35,.3),black=mat('#171923',.6),shirt=mat('#11131a',.65),red=mat('#c52c31',.4),hairmat=mat('#e34c29',.7),skin=mat('#bd815d',.75),white=mat('#f6f3e9',.3),rubber=mat('#17191d',.8),cyan=mat('#57e9ff',.3,.25);
   const sphere=(parent,m,pos,scale)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),m);o.position.set(...pos);o.scale.set(...scale);parent.add(o);return o};
   const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
@@ -691,6 +709,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Head and ears: intentionally stylised, friendly, expressive and not a copy of any existing mascot.
   head=new THREE.Group();head.position.set(0,1.77,.015);body.add(head);
   sphere(head,skin,[0,0,0],[.39,.43,.34]);
+  // Subtle highlights to make the face read clearly at mobile size.
+  sphere(head,mat('#e9a886',.9),[-.235,-.09,.29],[.07,.027,.015]);
+  sphere(head,mat('#e9a886',.9),[.235,-.09,.29],[.07,.027,.015]);
   sphere(head,skin,[-.37,-.055,.015],[.095,.145,.10]);sphere(head,skin,[.37,-.055,.015],[.095,.145,.10]);
   // Small gold ear studs and refined hoodie stitching add a more finished, premium SanZa look.
   sphere(head,goldTrim,[-.405,-.085,.095],[.026,.026,.018]);sphere(head,goldTrim,[.405,-.085,.095],[.026,.026,.018]);
@@ -1088,7 +1109,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/520);const ease=1-Math.pow(1-fallProgress,3);fallPivot.rotation.z=fallDirection*1.48*ease;fallPivot.position.x=fallDirection*.23*ease;mascot.position.y=.25-.08*ease+Math.sin(elapsed*.025)*.018;if(now>=recoverAt){const upProgress=Math.min(1,(now-recoverAt)/520);const upEase=1-Math.pow(1-upProgress,3);fallPivot.rotation.z=fallDirection*1.48*(1-upEase);fallPivot.position.x=fallDirection*.23*(1-upEase);mascot.position.y=.25-.08*(1-upEase);if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}}else{fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
-   camera.position.x=Math.sin(t*.32)*.18;camera.position.z=showSantaHat?6.35:5.85;camera.lookAt(0,showSantaHat?1.44:1.25,0);
+   camera.position.x=Math.sin(t*.32)*.13;camera.position.z=showSantaHat?6.35:5.85;camera.lookAt(0,showSantaHat?1.44:1.25,0);
+   floorRing.material.opacity=.45+.18*Math.sin(t*1.4);
+   sparkles.children.forEach(p=>{p.position.y+=Math.sin(t*.9+p.userData.phase)*.0003;});
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
    renderer.render(scene,camera);
   }
