@@ -687,13 +687,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // No scooter pose: standing mascot with layered streetwear, detailed face and sneakers.
   wheelA=new THREE.Group();wheelB=new THREE.Group(); // retained as harmless animation handles for compatibility
   const body=new THREE.Group();fallPivot.add(body);body.position.set(0,-.72,0);
-  const hoodie=mat('#171923',.62),hoodieShade=mat('#252936',.58),pants=mat('#20232d',.72),sole=mat('#d9dbe0',.48),orange=mat('#f15a2a',.66),goldTrim=mat('#ffd34d',.32,.18),blush=mat('#d99579',.7),dark=mat('#20161a',.62);
-  // Oversized hoodie and hood, with layered seams and a SanZa chest badge.
+  const hoodie=mat('#152a43',.48),hoodieShade=mat('#203b58',.53),pants=mat('#172b43',.57),sole=mat('#d9dbe0',.48),orange=mat('#f15a2a',.66),goldTrim=mat('#ffd34d',.32,.18),blush=mat('#d99579',.7),dark=mat('#20161a',.62);
+  // SanZa navy-and-gold tracksuit jacket, matching joggers and signature chest badge.
   sphere(body,hoodie,[0,1.02,0],[.43,.53,.31]);
   sphere(body,hoodieShade,[0,1.31,-.08],[.32,.29,.25]);
   cylinder(body,skin,[0,1.43,.01],.12,.13,.2);
-  // Hoodie's front pocket, drawstrings and signature badge.
-  box(body,hoodieShade,[0,.82,.285],[.39,.19,.055]);
+  // Tracksuit jacket zip, sporty chest piping and signature badge.
+  box(body,hoodieShade,[0,.82,.285],[.39,.16,.055]);
+  rod(body,goldTrim,[0,1.36,.305],[0,.74,.32],.009);
+  sphere(body,goldTrim,[0,1.02,.328],[.024,.038,.014]);
   // Fine gold piping on the hoodie pocket and cuffs catches the stage lighting.
   rod(body,goldTrim,[-.19,.91,.318],[-.19,.75,.318],.008);rod(body,goldTrim,[.19,.91,.318],[.19,.75,.318],.008);
   rod(body,goldTrim,[-.09,1.29,.29],[-.11,1.04,.30],.012);
@@ -706,12 +708,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   leg1.position.set(-.2,.66,0);leg2.position.set(.2,.66,0);
   rod(leg1,pants,[0,0,0],[-.025,-.39,0],.145);
   rod(leg1,pants,[-.025,-.39,0],[-.055,-.68,.02],.125);
+  rod(leg1,goldTrim,[-.145,-.04,.07],[-.18,-.61,.07],.013);
   cylinder(leg1,hoodieShade,[-.055,-.63,.02],.13,.13,.075);
   sphere(leg1,sole,[-.01,-.73,.12],[.22,.105,.32]);
   sphere(leg1,white,[-.01,-.68,.17],[.20,.075,.23]);
   box(leg1,goldTrim,[-.01,-.65,.28],[.13,.025,.025]);
   rod(leg2,pants,[0,0,0],[.025,-.39,0],.145);
   rod(leg2,pants,[.025,-.39,0],[.055,-.68,.02],.125);
+  rod(leg2,goldTrim,[.145,-.04,.07],[.18,-.61,.07],.013);
   cylinder(leg2,hoodieShade,[.055,-.63,.02],.13,.13,.075);
   sphere(leg2,sole,[.09,-.73,.12],[.22,.105,.32]);
   sphere(leg2,white,[.09,-.68,.17],[.20,.075,.23]);
@@ -779,10 +783,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   arms[0].position.set(-.37,1.27,0);arms[1].position.set(.37,1.27,0);body.add(arms[0],arms[1]);
   rod(arms[0],hoodie, [0,0,0],[-.12,-.26,.02],.135);
   rod(arms[0],hoodie,[-.12,-.26,.02],[-.08,-.48,.08],.12);
+  rod(arms[0],goldTrim,[-.12,-.055,.09],[-.20,-.39,.12],.016);
   cylinder(arms[0],goldTrim,[-.08,-.47,.08],.12,.12,.055);
   sphere(arms[0],skin,[-.08,-.57,.1],[.105,.11,.11]);
   rod(arms[1],hoodie,[0,0,0],[.12,-.26,.02],.135);
   rod(arms[1],hoodie,[.12,-.26,.02],[.08,-.48,.08],.12);
+  rod(arms[1],goldTrim,[.12,-.055,.09],[.20,-.39,.12],.016);
   cylinder(arms[1],goldTrim,[.08,-.47,.08],.12,.12,.055);
   sphere(arms[1],skin,[.08,-.57,.1],[.105,.11,.11]);
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
