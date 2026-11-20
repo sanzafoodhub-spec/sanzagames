@@ -368,17 +368,44 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   @keyframes sanzaHungryGlow{0%,100%{box-shadow:0 7px 24px #0009,0 0 0 1px #ffd34d22}50%{box-shadow:0 8px 27px #0009,0 0 0 5px #ffd34d44}}
   @media(max-width:420px){.sanza-hungry-float{min-height:46px;padding:10px 13px;font-size:12px;gap:6px}}
   @media(prefers-reduced-motion:reduce){.sanza-hungry-float.sanza-hungry-nudge{animation:none}}
+
+/* YupBro Design B — preview-only clean companion interface */
+.welcome-gate.yupbro-b{background:#f5f7fa;color:#192331;padding:12px}
+.yupbro-b .welcome-inner{width:min(750px,100%);background:#fff;color:#192331;border:1px solid #e5e9f0;border-radius:24px;box-shadow:0 12px 45px #26354b12;padding:clamp(14px,3vw,26px);overflow:visible}
+.yupbro-b .welcome-inner:before{display:none}
+.yupbro-b .welcome-kicker{color:#987100;font-weight:900}
+.yupbro-b .welcome-title{color:#172331;font-size:clamp(25px,5vw,39px);line-height:1.12;margin:8px 0}
+.yupbro-b .welcome-title span{color:#bd8400}
+.yupbro-b .welcome-subtitle{color:#536174;max-width:500px;margin:8px auto;font-size:13px;line-height:1.5}
+.yupbro-b .welcome-character-slot{width:min(610px,100%);margin:8px auto;position:relative}
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(370px,57vh,550px);min-height:370px;border:1px solid #e6ebf0;border-radius:20px;overflow:hidden}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls{background:#fffffff0!important;border:1px solid #e1e6ec!important;box-shadow:0 5px 20px #00000014;bottom:8px!important;border-radius:16px!important;padding:8px!important;max-width:96%!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls button{background:#fff!important;color:#202c39!important;border:1px solid #e1e6ec!important;font-size:12px!important;padding:9px 11px!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls button:nth-child(1),.yupbro-b .welcome-character-slot .yupbro-reaction-controls button:nth-child(4){display:none}
+.yupbro-b .welcome-character-slot .yupbro-dance-btn{display:none}
+.yupbro-b .welcome-foot{color:#667386;font-size:12px}
+.yupbro-b .welcome-enter{background:#ffd34d;color:#151515;box-shadow:none;margin-top:10px}
+.yupbro-b .yupbro-b-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px auto}
+.yupbro-b .yupbro-b-actions button{background:#fff;color:#253245;border:1px solid #dfe5ec;border-radius:13px;padding:10px 13px;font-weight:800;cursor:pointer}
+.yupbro-b .yupbro-b-actions button:focus-visible{outline:3px solid #d9a100}
+.yupbro-b.yupbro-b-full{padding:0}
+.yupbro-b.yupbro-b-full .welcome-inner{width:100%;min-height:100dvh;border:0;border-radius:0;box-shadow:none;display:flex;flex-direction:column;justify-content:center}
+.yupbro-b.yupbro-b-full .welcome-character-slot{width:min(760px,100%)}
+.yupbro-b.yupbro-b-full .welcome-character-slot .mascot-canvas-wrap{height:min(70dvh,720px)}
+.yupbro-b.yupbro-b-full .welcome-subtitle,.yupbro-b.yupbro-b-full .welcome-foot{display:none}
+@media(max-width:560px){.yupbro-b .welcome-inner{padding:12px}.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(390px,59dvh,570px)}.yupbro-b .welcome-subtitle{font-size:12px}.yupbro-b .welcome-character-slot .yupbro-reaction-controls button{padding:8px!important}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
 <body class="welcome-active">
 
-<div class="welcome-gate" id="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+<div class="welcome-gate yupbro-b" id="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
   <div class="welcome-inner">
     <div class="welcome-kicker">✨ ONE SANZA · ONE FAMILY ✨</div>
     <h1 class="welcome-title" id="welcome-title">HOWAYA, YA<br><span>ABSOLUTE LEGEND?! 😂</span></h1>
     <p class="welcome-subtitle">Yup Bro’s here, bro! 😎 SanZa is more than games — it’s our little corner of the world for family, laughter, learning and good food. Meet the characters, take on a challenge, discover SanZa Grinds and Food Hub, and join the family. Wherever you come from, there’s room for one more Sanzation. Tap Yup Bro to wake up the craic, then come explore!</p>
     <div class="welcome-character-slot" id="welcome-character-slot" aria-label="Interactive 3D Yup Bro character"></div>
+    <div class="yupbro-b-actions"><button type="button" id="yupbro-b-more" aria-expanded="false">✨ More reactions</button><button type="button" id="yupbro-b-full">⛶ Full screen</button></div>
     <button class="welcome-enter" id="welcome-enter" type="button">🚀 EXPLORE SANZA</button>
     <p class="welcome-foot">👆 Tap the 3D Yup Bro to hear him crack a joke · Games · Videos · Grinds · Food · Family ❤️</p>
   </div>
@@ -1177,5 +1204,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 </script>
 
 <script src="/sanza-magic.js" defer></script>
+
+<script>
+/* Design B controls are isolated to the welcome screen. */
+(()=>{const gate=document.getElementById('welcome-gate');const full=document.getElementById('yupbro-b-full');const more=document.getElementById('yupbro-b-more');if(!gate||!full||!more)return;
+full.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-full');full.textContent=active?'↙ Small screen':'⛶ Full screen';});
+more.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-more');more.setAttribute('aria-expanded',String(active));more.textContent=active?'✕ Fewer reactions':'✨ More reactions';});
+})();
+</script>
+<style>.yupbro-b.yupbro-b-more .welcome-character-slot .yupbro-reaction-controls button:nth-child(1),.yupbro-b.yupbro-b-more .welcome-character-slot .yupbro-reaction-controls button:nth-child(4){display:inline-block}</style>
 </body>
 </html>
