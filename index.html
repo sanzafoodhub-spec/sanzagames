@@ -684,16 +684,22 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   for(let i=0;i<7;i++)sphere(head,hairmat,[-.32+i*.105,.36+(i%3)*.055,.045],[.13,.145,.15]);
   sphere(head,hairmat,[.19,.47,-.01],[.18,.15,.18]);
   // Seasonal 3D Santa hat, displayed through 27 December 2026 (Ireland time).
-  const dublinDay=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  if(dublinDay>='2026-11-20'&&dublinDay<='2026-12-27'){
-   const santaRed=mat('#d92b36',.82),santaWhite=mat('#fff9ee',.95);
+  // Oversized, forward-facing Christmas hat: clear on small mobile screens.
+  // Ireland local date; seasonal decoration automatically ends after Dec 27.
+  const irishDateParts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const irishPart=t=>irishDateParts.find(p=>p.type===t)?.value||'';
+  const irishDay=irishPart('year')+'-'+irishPart('month')+'-'+irishPart('day');
+  const showSantaHat=irishDay>='2026-11-20'&&irishDay<='2026-12-27';
+  if(showSantaHat){
+   const santaRed=new THREE.MeshStandardMaterial({color:0xf31931,roughness:.55,metalness:0,emissive:0x480009,emissiveIntensity:.12});
+   const santaWhite=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.85,emissive:0x555555,emissiveIntensity:.12});
    const santaHat=new THREE.Group();head.add(santaHat);
-   // Keep the eyes and eyebrows clear; the brim sits above the front hairline.
-   const brim=sphere(santaHat,santaWhite,[0,.51,-.025],[.42,.095,.355]);
-   const crown=new THREE.Mesh(new THREE.ConeGeometry(.34,.56,28),santaRed);
-   crown.position.set(-.04,.81,-.055);crown.rotation.z=.24;santaHat.add(crown);
-   const fold=sphere(santaHat,santaRed,[-.20,1.035,-.06],[.17,.12,.16]);
-   const pom=sphere(santaHat,santaWhite,[-.34,1.10,-.06],[.13,.13,.13]);
+   // White fluffy band above eyebrows; bright red tilted tall cone and oversized pompom.
+   sphere(santaHat,santaWhite,[0,.49,.09],[.47,.105,.37]);
+   const crown=new THREE.Mesh(new THREE.ConeGeometry(.43,.72,32),santaRed);
+   crown.position.set(-.075,.86,.035);crown.rotation.z=.35;santaHat.add(crown);
+   sphere(santaHat,santaRed,[-.25,1.12,.07],[.18,.16,.19]);
+   sphere(santaHat,santaWhite,[-.42,1.18,.13],[.17,.17,.17]);
   }
   // Eyes, pupils, highlights and expressive ginger brows.
   const eyeWhites=[sphere(head,white,[-.14,.035,.303],[.112,.125,.058]),sphere(head,white,[.14,.035,.303],[.112,.125,.058])];
@@ -1060,7 +1066,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/520);const ease=1-Math.pow(1-fallProgress,3);fallPivot.rotation.z=fallDirection*1.48*ease;fallPivot.position.x=fallDirection*.23*ease;mascot.position.y=.25-.08*ease+Math.sin(elapsed*.025)*.018;if(now>=recoverAt){const upProgress=Math.min(1,(now-recoverAt)/520);const upEase=1-Math.pow(1-upProgress,3);fallPivot.rotation.z=fallDirection*1.48*(1-upEase);fallPivot.position.x=fallDirection*.23*(1-upEase);mascot.position.y=.25-.08*(1-upEase);if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}}else{fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
-   camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
+   camera.position.x=Math.sin(t*.32)*.18;camera.position.z=showSantaHat?6.35:5.85;camera.lookAt(0,showSantaHat?1.44:1.25,0);
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
    renderer.render(scene,camera);
   }
