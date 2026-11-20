@@ -433,6 +433,16 @@ body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-quicknav,body:has(.welcome
 .yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:hover{background:#ffeab3!important}
 .yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:focus-visible{outline:3px solid #c89400!important;outline-offset:2px!important}
 @media(prefers-reduced-motion:reduce){.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{transition:none!important}}
+
+/* YupBro 3.2: unobstructed head, compact floating chrome and brighter mobile buttons */
+.yupbro-b .welcome-character-slot .yupbro-speech{top:auto!important;bottom:50px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:90%!important;width:max-content!important;text-align:center!important;font-size:11px!important;line-height:1.3!important;padding:8px 12px!important;pointer-events:none!important}
+.yupbro-b .welcome-character-slot .yupbro-status{bottom:10px!important;left:12px!important;font-size:10px!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button,.yupbro-b .yupbro-b-actions button{background:#fff6d9!important;color:#262018!important;border:2px solid #e7b63d!important;box-shadow:0 3px 0 #b58b31!important;text-shadow:none!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:hover,.yupbro-b .yupbro-b-actions button:hover{background:#ffe6a1!important}
+.yupbro-b .yupbro-b-actions button:active,.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:active{background:#ffd34d!important;transform:translateY(2px)!important;box-shadow:0 1px 0 #b58b31!important}
+body:has(#welcome-gate.yupbro-b:not([hidden])) .sanza-global-quicknav{display:none!important}
+body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-floating-menu,.floating-quicknav,.sanza-quicknav-fab){display:none!important}
+@media(max-width:540px){.yupbro-b .welcome-character-slot .yupbro-speech{bottom:45px!important;max-width:78%!important}.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(420px,60dvh,590px)!important;min-height:420px!important}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
@@ -444,7 +454,7 @@ body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-quicknav,body:has(.welcome
     <h1 class="welcome-title" id="welcome-title">HOWAYA, YA<br><span>ABSOLUTE LEGEND?! 😂</span></h1>
     <p class="welcome-subtitle">Tap YupBro, make him dance, or send him flying on his scooty! 😂</p>
     <div class="welcome-character-slot" id="welcome-character-slot" aria-label="Interactive 3D Yup Bro character"></div>
-    <div class="yupbro-b-actions"><button type="button" id="yupbro-b-more" aria-expanded="false">✨ More reactions</button><button type="button" id="yupbro-b-mic">🎤 Mic status</button><button type="button" id="yupbro-b-full">⛶ Full screen</button></div>
+    <div class="yupbro-b-actions"><button type="button" id="yupbro-b-more" aria-expanded="false">✨ More reactions</button><button type="button" id="yupbro-b-mic">🎤 Mic on/off</button><button type="button" id="yupbro-b-full">⛶ Full screen</button></div>
     <button class="welcome-enter" id="welcome-enter" type="button">🚀 EXPLORE SANZA</button>
     <p class="welcome-foot">👆 Tap the 3D Yup Bro to hear him crack a joke · Games · Videos · Grinds · Food · Family ❤️</p>
   </div>
@@ -733,11 +743,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const santaWhite=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.85,emissive:0x555555,emissiveIntensity:.12});
    const santaHat=new THREE.Group();head.add(santaHat);
    // White fluffy band above eyebrows; bright red tilted tall cone and oversized pompom.
-   sphere(santaHat,santaWhite,[0,.49,.09],[.47,.105,.37]);
-   const crown=new THREE.Mesh(new THREE.ConeGeometry(.43,.72,32),santaRed);
-   crown.position.set(-.075,.86,.035);crown.rotation.z=.35;santaHat.add(crown);
-   sphere(santaHat,santaRed,[-.25,1.12,.07],[.18,.16,.19]);
-   sphere(santaHat,santaWhite,[-.42,1.18,.13],[.17,.17,.17]);
+   sphere(santaHat,santaWhite,[0,.49,.075],[.43,.095,.345]);
+   const crown=new THREE.Mesh(new THREE.ConeGeometry(.39,.59,32),santaRed);
+   crown.position.set(-.055,.79,.025);crown.rotation.z=.28;santaHat.add(crown);
+   sphere(santaHat,santaRed,[-.22,1.04,.06],[.17,.13,.17]);
+   sphere(santaHat,santaWhite,[-.35,1.09,.11],[.14,.14,.14]);
   }
   // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
   const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
@@ -1109,7 +1119,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/520);const ease=1-Math.pow(1-fallProgress,3);fallPivot.rotation.z=fallDirection*1.48*ease;fallPivot.position.x=fallDirection*.23*ease;mascot.position.y=.25-.08*ease+Math.sin(elapsed*.025)*.018;if(now>=recoverAt){const upProgress=Math.min(1,(now-recoverAt)/520);const upEase=1-Math.pow(1-upProgress,3);fallPivot.rotation.z=fallDirection*1.48*(1-upEase);fallPivot.position.x=fallDirection*.23*(1-upEase);mascot.position.y=.25-.08*(1-upEase);if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}}else{fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
-   camera.position.x=Math.sin(t*.32)*.13;camera.position.z=showSantaHat?6.35:5.85;camera.lookAt(0,showSantaHat?1.44:1.25,0);
+   camera.position.x=Math.sin(t*.32)*.13;camera.position.z=showSantaHat?5.9:5.55;camera.lookAt(0,showSantaHat?1.39:1.25,0);
    floorRing.material.opacity=.45+.18*Math.sin(t*1.4);
    sparkles.children.forEach(p=>{p.position.y+=Math.sin(t*.9+p.userData.phase)*.0003;});
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
