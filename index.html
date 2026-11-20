@@ -410,6 +410,22 @@ body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-hungry-float{display:none!
 body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-quicknav,body:has(.welcome-gate.yupbro-b:not([hidden])) [id*="quicknav"]{display:none!important}
 .yupbro-b .welcome-foot{margin:7px auto!important}
 .yupbro-b .welcome-character-slot .yupbro-speech{max-width:85%;font-size:12px}
+
+/* YupBro 3.0: mobile-first stage, real controls and clearer interaction */
+.yupbro-b .welcome-inner{background:#fff!important;border:1px solid #e7eaf0!important;box-shadow:0 14px 40px #192c4617!important}
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{border-radius:24px!important;border:2px solid #f0d47b!important;box-shadow:0 10px 24px #0d203320!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls{display:none!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls{position:static!important;display:flex!important;transform:none!important;width:100%!important;max-width:none!important;margin:10px auto 0!important;gap:8px!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{flex:1 1 95px!important;background:#fff8e5!important;color:#2b2730!important;border:1px solid #e9c968!important;border-radius:14px!important;min-height:45px!important;font-weight:900!important;box-shadow:0 2px 7px #26334a0c!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:active{background:#ffd34d!important;transform:scale(.97)}
+.yupbro-b .yupbro-b-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px!important;margin:10px auto!important}
+.yupbro-b .yupbro-b-actions button{background:#fff!important;border:1px solid #e6c56c!important;color:#302b20!important;border-radius:13px!important;font-size:12px!important;padding:9px 6px!important;min-width:0!important}
+.yupbro-b .yupbro-b-actions button[aria-pressed=true]{background:#e3f8e7!important;border-color:#8abf94!important}
+.yupbro-b .welcome-foot{font-size:11px!important}
+.yupbro-b .welcome-character-slot .yupbro-status{opacity:.65}
+.yupbro-b .welcome-character-slot .yupbro-speech{font-size:12px!important}
+@media(max-width:540px){.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(370px,56dvh,540px)!important;min-height:370px!important}.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{font-size:11px!important;padding:9px 5px!important}.yupbro-b .welcome-inner{padding:12px!important}}
+@media(prefers-reduced-motion:reduce){.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{transition:none!important}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
@@ -617,7 +633,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
  let renderer,scene,camera,mascot,fallPivot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
  try{
   renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.4));
   renderer.setSize(wrap.clientWidth,wrap.clientHeight,false);
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -626,6 +642,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   camera=new THREE.PerspectiveCamera(34,wrap.clientWidth/wrap.clientHeight,.1,100);
   camera.position.set(0,2.2,5.85);
   scene.add(new THREE.HemisphereLight(0xbfeeff,0x261322,2.2));
+  const fill=new THREE.DirectionalLight(0xffffff,1.1);fill.position.set(-3,4,6);scene.add(fill);
   const key=new THREE.DirectionalLight(0xffd477,3.2);key.position.set(4,7,5);scene.add(key);
   const rim=new THREE.PointLight(0x42dfff,18,12);rim.position.set(-4,3,2);scene.add(rim);
   const pink=new THREE.PointLight(0xff5ab8,10,10);pink.position.set(4,1,-2);scene.add(pink);
@@ -701,6 +718,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    sphere(santaHat,santaRed,[-.25,1.12,.07],[.18,.16,.19]);
    sphere(santaHat,santaWhite,[-.42,1.18,.13],[.17,.17,.17]);
   }
+  // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
+  const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
+  const stageShadow=new THREE.Mesh(new THREE.CircleGeometry(.83,40),shadowMat);stageShadow.rotation.x=-Math.PI/2;stageShadow.position.set(0,-.43,-.04);scene.add(stageShadow);
   // Eyes, pupils, highlights and expressive ginger brows.
   const eyeWhites=[sphere(head,white,[-.14,.035,.303],[.112,.125,.058]),sphere(head,white,[.14,.035,.303],[.112,.125,.058])];
   const pupils=[sphere(head,dark,[-.12,.025,.353],[.049,.068,.026]),sphere(head,dark,[.16,.025,.353],[.049,.068,.026])];
@@ -826,7 +846,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   let giggleContext=null;
   function playGiggle(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;giggleContext=giggleContext||new AC();if(giggleContext.state==='suspended')giggleContext.resume();const ctx=giggleContext,base=ctx.currentTime;[0,.19,.38,.62,.82].forEach((offset,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(430+(i%2)*110,base+offset);osc.frequency.exponentialRampToValueAtTime(760+(i%2)*90,base+offset+.075);osc.frequency.exponentialRampToValueAtTime(390,base+offset+.15);gain.gain.setValueAtTime(.0001,base+offset);gain.gain.exponentialRampToValueAtTime(.12,base+offset+.025);gain.gain.exponentialRampToValueAtTime(.0001,base+offset+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(base+offset);osc.stop(base+offset+.17);});}catch(e){}}
   reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(mode==='dance'){if(danceUntil){stopDance();reactionMode='laugh';reactionUntil=0;return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;startDanceMusic();danceBtn.classList.add('dancing');wrap.classList.add('yupbro-music-dancing');reactionMode='dance';reactionUntil=0;if(speech)speech.textContent='BOLLYWOOD SUPERSTAR! WATCH ME GO, BRO! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}return;}if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+(mode==='scooty'?4600:3600);if(mode==='laugh')playGiggle();if(speech)speech.textContent=({laugh:'HAHAHAHA! AHAHA! MY BELLY HURTS! 🤣',scooty:'BRRRRR! WHEEEEE! YUP BROOOO! OUTTA MY WAYYYYY! 🛵💨',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH… SAVE ME A BROWNIE! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
-  wrap.appendChild(reactionPanel);
+  (mascotShell||wrap).appendChild(reactionPanel);
   canvas.addEventListener('pointerdown',()=>{
     if(fallen)return;
     const now=performance.now();
@@ -862,7 +882,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   window.addEventListener('pagehide',()=>{resumeMicAfterBackForward=stopMicForPageExit();},{capture:true});
   window.addEventListener('pageshow',e=>{if(e.persisted){pageInactive=false;if(resumeMicAfterBackForward){resumeMicAfterBackForward=false;startAlwaysListening();}}},{capture:true});
   document.addEventListener('sanza:leave-yupbro',stopMicForPageExit);
-  document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;startAlwaysListening();});
+  document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;if(!micManuallyOff)startAlwaysListening();});
+  let micManuallyOff=false;
+  document.addEventListener('sanza:yupbro-mic-toggle',()=>{const button=document.getElementById('yupbro-b-mic');if(micStream||voiceBusy){micManuallyOff=true;stopMicForPageExit();pageInactive=false;if(button){button.textContent='🎤 Mic off';button.setAttribute('aria-pressed','false');}micHint.textContent='🔴 Microphone off — tap Mic off to listen again.';}else{micManuallyOff=false;pageInactive=false;if(button){button.textContent='🎤 Listening…';button.setAttribute('aria-pressed','true');}startAlwaysListening();}});
   function playRecordedPhrase(){
    if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
    try{
@@ -1244,7 +1266,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 /* Design B controls are isolated to the welcome screen. */
 (()=>{const gate=document.getElementById('welcome-gate');const full=document.getElementById('yupbro-b-full');const more=document.getElementById('yupbro-b-more');if(!gate||!full||!more)return;
 full.addEventListener('click',()=>{const legacy=document.getElementById('yupbro-fullscreen-toggle');if(legacy)legacy.click();else {const active=gate.classList.toggle('yupbro-b-full');full.textContent=active?'↙ Small screen':'⛶ Full screen';}});
-document.getElementById('yupbro-b-mic')?.addEventListener('click',()=>{const hint=gate.querySelector('.welcome-character-slot')?.nextElementSibling; if(hint&&hint.textContent)alert(hint.textContent);else alert('YupBro requests microphone access when available. Check browser microphone permission if needed.');});
+document.getElementById('yupbro-b-mic')?.addEventListener('click',()=>document.dispatchEvent(new Event('sanza:yupbro-mic-toggle')));
 more.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-more');more.setAttribute('aria-expanded',String(active));more.textContent=active?'✕ Fewer reactions':'✨ More reactions';});
 })();
 </script>
