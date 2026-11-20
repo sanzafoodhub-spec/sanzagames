@@ -109,6 +109,46 @@ body.chat-immersive .composer input{min-width:0}
 body.chat-immersive .room-head-actions .demo-tag{display:none}
 body.chat-immersive #screenModeButton{background:#eef2f7;color:#1a293d;border:1px solid #cbd5e1}
 @media(max-width:680px){body.chat-immersive .room-head{padding:9px 11px}body.chat-immersive .room-topic,body.chat-immersive #onlineNames{display:none}body.chat-immersive #screenModeButton{font-size:12px;padding:8px}body.chat-immersive .composer{padding:8px 10px max(8px,env(safe-area-inset-bottom))}}
+
+/* SanZa Design B: compact join screen, readable chat, no redundant panels */
+body:not(.chat-immersive){background:#f3f6fa;color:#172335;color-scheme:light}
+body:not(.chat-immersive) .wrap{max-width:760px}
+body:not(.chat-immersive) .top{background:#fff;border-bottom:1px solid #e1e7ef;padding:10px 14px}
+body:not(.chat-immersive) .hero{padding:12px 12px 8px;text-align:left}
+body:not(.chat-immersive) .hero h1{font-size:22px;line-height:1.15;margin:0;color:#15243a}
+body:not(.chat-immersive) .hero p{font-size:12px;margin:5px 0;color:#586779}
+body:not(.chat-immersive) .notice,body:not(.chat-immersive) .quick-guide,body:not(.chat-immersive) .rules,body:not(.chat-immersive) .footer,body:not(.chat-immersive) .sidebar,body:not(.chat-immersive) .owner-bottom{display:none}
+body:not(.chat-immersive) .chat-shell{display:block;max-width:600px;margin:8px auto 20px;border:1px solid #e0e7ef;border-radius:16px;background:#fff;box-shadow:0 8px 25px #15243a12}
+body:not(.chat-immersive) .main{background:#fff;color:#172335}
+body:not(.chat-immersive) .room-head{background:#fff;padding:13px 16px;border-bottom:1px solid #e5eaf1}
+body:not(.chat-immersive) .room-name{color:#15243a;font-size:18px}
+body:not(.chat-immersive) .room-topic,body:not(.chat-immersive) #onlineNames{color:#627185}
+body:not(.chat-immersive) .identity{background:#fff;padding:14px 16px 7px}
+body:not(.chat-immersive) .identity .field label,body:not(.chat-immersive) .join-panel label{color:#34445a!important}
+body:not(.chat-immersive) .identity input,body:not(.chat-immersive) .join-panel select{background:#f8fafc!important;color:#15243a!important;border:1px solid #cbd5e1!important;width:100%;max-width:none!important;padding:12px!important}
+body:not(.chat-immersive) .identity small,body:not(.chat-immersive) .join-panel p{color:#627185!important}
+body:not(.chat-immersive) .join-panel{padding:4px 16px 16px!important;background:#fff!important}
+body:not(.chat-immersive) .join-panel [role="note"]{padding:9px 11px!important;margin:5px 0 12px!important;background:#fff8e5!important;border:1px solid #f2d586!important;color:#4a3a15!important;font-size:11px!important;line-height:1.5!important}
+body:not(.chat-immersive) .join-panel [role="note"] strong{font-size:12px!important;color:#73530b!important}
+body:not(.chat-immersive) .join-panel [role="note"] a{color:#5b430a!important}
+body:not(.chat-immersive) #turnstileBox{margin:9px 0 6px!important}
+body:not(.chat-immersive) #joinButton{margin-top:9px!important;background:#f8cb4e!important;color:#241a05!important;box-shadow:none!important}
+body:not(.chat-immersive) #eventFeed{display:none}
+body:not(.chat-immersive) .messages{background:#f6f8fb;min-height:110px;max-height:260px;color:#172335}
+body:not(.chat-immersive) .composer{background:#fff;padding:10px 12px}
+body:not(.chat-immersive) .chat-tools{margin:4px 12px 10px}
+body:not(.chat-immersive) .status{padding:7px 14px;font-size:11px}
+body:not(.chat-immersive) .fun-tray{margin:4px 12px}
+body:not(.chat-immersive) .room-head-actions .demo-tag{display:none}
+body:not(.chat-immersive) #screenModeButton{background:#eef3f9;color:#20344d;border:1px solid #d4deeb}
+body:not(.chat-immersive) .join-panel #turnstileHelp{font-size:11px!important}
+body:not(.chat-immersive) .join-panel [role="note"]{max-width:100%}
+body:not(.chat-immersive) .room-head #onlineCount{color:#257c4d!important}
+body:not(.chat-immersive) .main>.messages,body:not(.chat-immersive) .main>.composer{display:none}
+body:not(.chat-immersive).chat-joined .main>.messages,body:not(.chat-immersive).chat-joined .main>.composer{display:flex}
+body.chat-joined .identity,body.chat-joined .join-panel{display:none!important}
+body.chat-immersive .join-panel{display:none!important}
+@media(max-width:680px){body:not(.chat-immersive) .wrap{width:100%;padding:0 8px}body:not(.chat-immersive) .top{border-radius:0}body:not(.chat-immersive) .hero{padding:10px 7px 4px}body:not(.chat-immersive) .chat-shell{margin:5px auto 14px;border-radius:14px}body:not(.chat-immersive) .room-head{padding:11px 13px}}
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
@@ -138,6 +178,15 @@ body.chat-immersive #screenModeButton{background:#eef2f7;color:#1a293d;border:1p
 <section class="rules" aria-label="SanZa Chat legal and safety information"><article class="rule-card" style="grid-column:1/-1"><h2>📚 SanZa Chat rules, privacy & safety</h2><p style="font-size:14px;line-height:2.3"><a href="/chat-privacy.html" style="color:#ffe17b;font-weight:800">🔒 Privacy Policy</a> · <a href="/chat-terms.html" style="color:#ffe17b;font-weight:800">📜 Rules & Terms</a> · <a href="/chat-safety.html" style="color:#ffe17b;font-weight:800">🛡️ Safety & Reporting</a></p><p>Read these notices before joining. SanZa Chat is for ages 16+ only. Never share personal details.</p></article></section><div class="owner-bottom" style="max-width:1000px;margin:28px auto 22px;padding:14px 18px;border-top:1px solid #313743;color:#9aa5b5"><p style="font-size:11px;margin:0 0 8px">SanZa team access</p><details id="ownerLogin" style="margin-top:14px;border-top:1px solid #554526;padding-top:12px"><summary style="color:#ffd34d;cursor:pointer;font-weight:800">👑 Owner / Moderator Login</summary><p style="font-size:11px;color:#aeb7c8">For the SanZa Food Hub owner only. Use your existing Supabase email account; do not create another nickname.</p><label for="ownerEmail">Admin email</label><input id="ownerEmail" type="email" autocomplete="username" value="Sanzafoodhub@gmail.com" style="width:100%;padding:10px;margin:5px 0;background:#080b10;color:white;border:1px solid #554526;border-radius:8px"><label for="ownerPassword">Password</label><input id="ownerPassword" type="password" autocomplete="current-password" style="width:100%;padding:10px;margin:5px 0;background:#080b10;color:white;border:1px solid #554526;border-radius:8px"><button class="soft" id="ownerLoginButton" type="button">SECURE ADMIN SIGN IN</button><p style="font-size:11px;color:#aeb7c8">Do not share your password. Your chat session stays unchanged unless you sign in here.</p></details></div>
 <footer class="footer">One SanZa. One Family. 🖤💛<br>Chat preview · <a href="/">Return to SanZa Games</a></footer>
 </div>
+<script>
+/* Keep the existing age gate and CAPTCHA intact, but place them directly after nickname. */
+(function(){
+ const age=document.getElementById("ageGroup");
+ const identity=document.querySelector(".identity");
+ const panel=age?.closest("div[style]");
+ if(identity&&panel){panel.classList.add("join-panel");identity.insertAdjacentElement("afterend",panel);}
+})();
+</script>
 <script>
 (function(){
 "use strict";
@@ -219,11 +268,11 @@ function mountCaptcha(){
 let blocked=[];
 try{blocked=JSON.parse(localStorage.getItem(BLOCK)||"[]");if(!Array.isArray(blocked))blocked=[]}catch(_){blocked=[]}
 function info(t){status.textContent=t}
-function setJoined(yes){nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes;$("voiceTextButton").disabled=!yes||!speechSupported;setScreenMode(true);$("screenModeButton").hidden=false}
+function setJoined(yes){document.body.classList.toggle("chat-joined",yes);nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes;$("voiceTextButton").disabled=!yes||!speechSupported;setScreenMode(true);$("screenModeButton").hidden=false}
 function setScreenMode(expanded){document.body.classList.toggle("chat-immersive",expanded);$("screenModeButton").textContent=expanded?"↙ Small screen":"⛶ Full screen";$("screenModeButton").setAttribute("aria-pressed",String(expanded));}
 $("screenModeButton").addEventListener("click",()=>setScreenMode(!document.body.classList.contains("chat-immersive")));
 function save(){if(session&&me)localStorage.setItem(STORE,JSON.stringify({session,me}))}
-function clear(){stopDictation();$("voiceTextButton").disabled=true;setScreenMode(false);$("screenModeButton").hidden=true;$("ownerMfaPanel").hidden=true;$("ownerMfaSecret").hidden=true;$("ownerMfaSecret").textContent="";ownerFactorId=null;stopRealtime();setReply(null);onlineBaseline=null;messageBaseline=null;isModerator=false;$("adminPanel").hidden=true;$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();$("eventFeed").replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
+function clear(){document.body.classList.remove("chat-joined");stopDictation();$("voiceTextButton").disabled=true;setScreenMode(false);$("screenModeButton").hidden=true;$("ownerMfaPanel").hidden=true;$("ownerMfaSecret").hidden=true;$("ownerMfaSecret").textContent="";ownerFactorId=null;stopRealtime();setReply(null);onlineBaseline=null;messageBaseline=null;isModerator=false;$("adminPanel").hidden=true;$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();$("eventFeed").replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
 function api(action,data={},auth=true){const headers={"Content-Type":"application/json"};if(auth&&session)headers.Authorization="Bearer "+session.access_token;return fetch("/api/chat",{method:"POST",headers,body:JSON.stringify({action,...data}),cache:"no-store"}).then(async r=>{let j={};try{j=await r.json()}catch(_){}if(!r.ok)throw new Error(j.error||"Chat request failed ("+r.status+").");return j})}
 async function refresh(){if(!session||!session.refresh_token)throw Error("Session expired.");const result=await api("refresh",{refresh_token:session.refresh_token},false);session=result.session;save();if(realtimeClient)void realtimeClient.realtime.setAuth(session.access_token)}
 async function call(action,data={}){try{return await api(action,data)}catch(e){if(/expired|sign in|401/i.test(e.message)&&session?.refresh_token){await refresh();return api(action,data)}throw e}}
