@@ -683,6 +683,18 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   sphere(head,orange,[-.13,.39,.11],[.23,.19,.22]);
   for(let i=0;i<7;i++)sphere(head,hairmat,[-.32+i*.105,.36+(i%3)*.055,.045],[.13,.145,.15]);
   sphere(head,hairmat,[.19,.47,-.01],[.18,.15,.18]);
+  // Seasonal 3D Santa hat, displayed through 27 December 2026 (Ireland time).
+  const dublinDay=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  if(dublinDay>='2026-11-20'&&dublinDay<='2026-12-27'){
+   const santaRed=mat('#d92b36',.82),santaWhite=mat('#fff9ee',.95);
+   const santaHat=new THREE.Group();head.add(santaHat);
+   // Keep the eyes and eyebrows clear; the brim sits above the front hairline.
+   const brim=sphere(santaHat,santaWhite,[0,.51,-.025],[.42,.095,.355]);
+   const crown=new THREE.Mesh(new THREE.ConeGeometry(.34,.56,28),santaRed);
+   crown.position.set(-.04,.81,-.055);crown.rotation.z=.24;santaHat.add(crown);
+   const fold=sphere(santaHat,santaRed,[-.20,1.035,-.06],[.17,.12,.16]);
+   const pom=sphere(santaHat,santaWhite,[-.34,1.10,-.06],[.13,.13,.13]);
+  }
   // Eyes, pupils, highlights and expressive ginger brows.
   const eyeWhites=[sphere(head,white,[-.14,.035,.303],[.112,.125,.058]),sphere(head,white,[.14,.035,.303],[.112,.125,.058])];
   const pupils=[sphere(head,dark,[-.12,.025,.353],[.049,.068,.026]),sphere(head,dark,[.16,.025,.353],[.049,.068,.026])];
