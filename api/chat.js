@@ -608,6 +608,25 @@ module.exports = async function handler(req, res) {
        :await supa(config,"/rest/v1/chat_message_reactions?on_conflict=message_id,user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{message_id:id,user_id:user.id,emoji}},true);
       return result.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Unable to save reaction."});
     }
+    // Preview-only enhancements: service-role storage, authenticated requests, no private messaging.
+    if(action==="typing"){
+      const active=body.active===true;
+      const result=await supa(config,"/rest/v1/chat_typing?on_conflict=room_id,user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{room_id:ROOM_ID,user_id:user.id,nickname:member.nickname,expires_at:new Date(Date.now()+(active?5500:-1000)).toISOString()}},true);
+      return result.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Typing indicator requires preview database setup."});
+    }
+    if(action==="pin_message"||action==="unpin_message"){
+      if(!adminReady)return reply(res,403,{error:"Moderator access required."});
+      if(action==="unpin_message"){
+        const r=await supa(config,"/rest/v1/chat_pinned_messages?room_id=eq."+ROOM_ID,{method:"DELETE"},true);
+        return r.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Pinned announcements database not ready."});
+      }
+      const id=String(body.message_id||"");if(!/^[0-9a-f-]{36}$/i.test(id))return reply(res,400,{error:"Invalid message."});
+      const found=await supa(config,"/rest/v1/chat_messages?select=id,content,user_id&room_id=eq."+ROOM_ID+"&id=eq."+encodeURIComponent(id)+"&limit=1",{},true);
+      const msg=Array.isArray(found.data)?found.data[0]:null;
+      if(!found.ok||!msg||/^\\[Message (deleted|removed) by /.test(msg.content||""))return reply(res,404,{error:"Message unavailable."});
+      const r=await supa(config,"/rest/v1/chat_pinned_messages?on_conflict=room_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{room_id:ROOM_ID,message_id:id,content:msg.content.slice(0,500),nickname:member.nickname,pinned_at:new Date().toISOString()}},true);
+      return r.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Pinned announcements database not ready."});
+    }
     if (action === "whoami") return reply(res, 200, { admin:adminReady });
 
     // A heartbeat is only sent while the tab is visible. Online means seen within 75 seconds.
@@ -653,13 +672,19 @@ module.exports = async function handler(req, res) {
       if(reactionsResult.ok&&Array.isArray(reactionsResult.data))for(const item of reactionsResult.data){
         (reactionsByMessage[item.message_id]??=[]).push({emoji:item.emoji,mine:item.user_id===user.id});
       }
+      const [typingResult,pinnedResult]=await Promise.all([
+        supa(config,"/rest/v1/chat_typing?select=user_id,nickname&room_id=eq."+ROOM_ID+"&expires_at=gt."+encodeURIComponent(new Date().toISOString())+"&user_id=neq."+encodeURIComponent(user.id)+"&limit=5",{},true),
+        supa(config,"/rest/v1/chat_pinned_messages?select=message_id,content,nickname,pinned_at&room_id=eq."+ROOM_ID+"&limit=1",{},true)
+      ]);
+      const typing=typingResult.ok&&Array.isArray(typingResult.data)?typingResult.data.map(t=>t.nickname).filter(Boolean):[];
+      const pinned=pinnedResult.ok&&Array.isArray(pinnedResult.data)?pinnedResult.data[0]||null:null;
       const online = onlineResult.ok && Array.isArray(onlineResult.data)
         ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
       const emergency=await emergencyState(config);
       return reply(res, 200, { admin:adminReady, emergencyOwner:adminReady && user.id === "68548953-f190-448e-87e4-3a51d84869b7", emergency, messages: messages.map(m => ({
         id: m.id, user_id: m.user_id, nickname: names[m.user_id] || "Member",
         content: m.content, created_at: m.created_at, reactions:reactionsByMessage[m.id]||[]
-      })), online });
+      })), online, typing, pinned });
     }
 
     if (action === "send") {
