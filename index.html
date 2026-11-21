@@ -444,6 +444,8 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) .sanza-global-quicknav{display:no
 body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-floating-menu,.floating-quicknav,.sanza-quicknav-fab){display:none!important}
 @media(max-width:540px){.yupbro-b .welcome-character-slot .yupbro-speech{bottom:45px!important;max-width:78%!important}.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(420px,60dvh,590px)!important;min-height:420px!important}}
 
+/* Hidden must override the mobile flex layout when Explore SanZa is pressed. */
+#welcome-gate[hidden]{display:none!important}
 /* YupBro 3.3: single-screen portrait mobile layout, no page scrolling.
    The WebGL stage takes remaining viewport height instead of a fixed 440px. */
 @media (max-width:800px) and (orientation:portrait){
