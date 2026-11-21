@@ -543,6 +543,14 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 #sanza-explore .explore-fold:not([open])>section{display:none!important}
 #sanza-explore .explore-fold>.mascot-canvas-wrap{display:none!important}
 @media(max-width:700px){#sanza-explore .explore-fold{margin:7px auto;border-radius:12px}#sanza-explore .explore-fold>summary{padding:12px;font-size:14px;min-height:44px}}
+
+/* Explore 4.2: shorten game cards and avoid floating food button covering controls. */
+#sanza-explore #games .game{gap:4px!important;padding:10px!important}
+#sanza-explore #games .game p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px!important;line-height:1.3!important;flex:0 0 auto!important}
+#sanza-explore #games .game .label{font-size:9px!important}
+#sanza-explore #games .game .game-top{margin-bottom:0!important}
+#sanza-explore #games .game .btn{margin-top:auto!important}
+@media(max-width:700px){#sanza-explore #games .game{min-height:0!important}body:not(.welcome-active) .sanza-hungry-float{bottom:calc(65px + env(safe-area-inset-bottom,0px))!important;right:8px!important;transform:scale(.82)!important;transform-origin:bottom right!important}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
@@ -941,7 +949,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   let nextVoiceClip=0;
   function voiceClipUnavailable(){setMouthTalking(false);if(micHint)micHint.textContent='🔈 Sound could not play. Tap YupBro to try again.';}
   function talk(line,pitch=1.12,rate=1.02){
-   if(pageInactive)return;
+   if(pageInactive || document.getElementById('welcome-gate')?.hidden)return;
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
    try{
     yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0});
@@ -1040,8 +1048,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   document.addEventListener('sanza:leave-yupbro',stopMicForPageExit);
   document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;/* mic remains off until the user taps its button */});
   let micManuallyOff=false;
-  document.addEventListener('sanza:yupbro-mic-toggle',()=>{const button=document.getElementById('yupbro-b-mic');if(micStream||voiceBusy){micManuallyOff=true;stopMicForPageExit();pageInactive=false;if(button){button.textContent='🎤 Mic off';button.setAttribute('aria-pressed','false');}micHint.textContent='🔴 Microphone off — tap Mic off to listen again.';}else{micManuallyOff=false;pageInactive=false;if(button){button.textContent='🎤 Listening…';button.setAttribute('aria-pressed','true');}startAlwaysListening();}});
+  document.addEventListener('sanza:yupbro-mic-toggle',()=>{if(document.getElementById('welcome-gate')?.hidden)return;const button=document.getElementById('yupbro-b-mic');if(micStream||voiceBusy){micManuallyOff=true;stopMicForPageExit();pageInactive=false;if(button){button.textContent='🎤 Mic off';button.setAttribute('aria-pressed','false');}micHint.textContent='🔴 Microphone off — tap Mic off to listen again.';}else{micManuallyOff=false;pageInactive=false;if(button){button.textContent='🎤 Listening…';button.setAttribute('aria-pressed','true');}startAlwaysListening();}});
   function playRecordedPhrase(){
+   if(pageInactive || document.getElementById('welcome-gate')?.hidden)return;
    if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
    try{
     if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
@@ -1059,6 +1068,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    }catch(e){setMouthTalking(false);}
   }
   function playPokeClip(){
+   if(pageInactive || document.getElementById('welcome-gate')?.hidden)return;
    if(pageInactive)return;
    try{
     if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
@@ -1186,8 +1196,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
   canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
-  // Request permission on page entry. Browsers may require one tap before granting it.
-  startAlwaysListening();
+  // Privacy: never activate the microphone automatically on page load.
   function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
