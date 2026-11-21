@@ -593,6 +593,21 @@ module.exports = async function handler(req, res) {
       }
       return reply(res,400,{error:"Unknown push action."});
     }
+    if (action === "react") {
+      const id=typeof body.message_id==="string"?body.message_id:"";
+      const emoji=typeof body.emoji==="string"?body.emoji:"";
+      if(!/^[0-9a-f-]{36}$/i.test(id)||!["😂","❤️","🔥","👍"].includes(emoji))return reply(res,400,{error:"Invalid reaction."});
+      const found=await supa(config,"/rest/v1/chat_messages?select=id,content&room_id=eq."+ROOM_ID+"&id=eq."+encodeURIComponent(id)+"&limit=1",{},true);
+      const msg=Array.isArray(found.data)?found.data[0]:null;
+      if(!found.ok||!msg||/^\\[Message (deleted|removed) by /.test(msg.content||""))return reply(res,404,{error:"Message unavailable."});
+      const existing=await supa(config,"/rest/v1/chat_message_reactions?select=emoji&message_id=eq."+encodeURIComponent(id)+"&user_id=eq."+encodeURIComponent(user.id)+"&limit=1",{},true);
+      if(!existing.ok)return reply(res,503,{error:"Reactions database is not configured yet."});
+      const current=Array.isArray(existing.data)?existing.data[0]:null;
+      const result=current?.emoji===emoji
+       ?await supa(config,"/rest/v1/chat_message_reactions?message_id=eq."+encodeURIComponent(id)+"&user_id=eq."+encodeURIComponent(user.id),{method:"DELETE"},true)
+       :await supa(config,"/rest/v1/chat_message_reactions?on_conflict=message_id,user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{message_id:id,user_id:user.id,emoji}},true);
+      return result.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Unable to save reaction."});
+    }
     if (action === "whoami") return reply(res, 200, { admin:adminReady });
 
     // A heartbeat is only sent while the tab is visible. Online means seen within 75 seconds.
@@ -632,12 +647,18 @@ module.exports = async function handler(req, res) {
           for (const item of membersResult.data) names[item.user_id] = item.nickname || "Member";
         }
       }
+      // Optional preview reactions: missing migration must not break normal chat.
+      const reactionsResult=await supa(config,"/rest/v1/chat_message_reactions?select=message_id,user_id,emoji&message_id=in.("+messages.map(m=>encodeURIComponent(m.id)).join(",")+")&limit=200",{},true);
+      const reactionsByMessage={};
+      if(reactionsResult.ok&&Array.isArray(reactionsResult.data))for(const item of reactionsResult.data){
+        (reactionsByMessage[item.message_id]??=[]).push({emoji:item.emoji,mine:item.user_id===user.id});
+      }
       const online = onlineResult.ok && Array.isArray(onlineResult.data)
         ? onlineResult.data.map(m => m.nickname).filter(Boolean) : null;
       const emergency=await emergencyState(config);
       return reply(res, 200, { admin:adminReady, emergencyOwner:adminReady && user.id === "68548953-f190-448e-87e4-3a51d84869b7", emergency, messages: messages.map(m => ({
         id: m.id, user_id: m.user_id, nickname: names[m.user_id] || "Member",
-        content: m.content, created_at: m.created_at
+        content: m.content, created_at: m.created_at, reactions:reactionsByMessage[m.id]||[]
       })), online });
     }
 
