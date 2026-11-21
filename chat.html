@@ -213,24 +213,6 @@ body:not(.chat-immersive) .identity{border:0!important}
 body:not(.chat-immersive) .join-panel p{font-size:11px!important}
 body:not(.chat-immersive) .join-panel label{margin:6px 0!important}
 @media(max-width:680px){body:not(.chat-immersive) .top{padding:10px 4px!important}body:not(.chat-immersive) .room-head{padding:10px 13px!important}body:not(.chat-immersive) .join-panel [role="note"]{font-size:10px!important}}
-
-/* Join must remain usable before the user enters the room. */
-body.chat-immersive:not(.chat-joined) .identity,body.chat-immersive:not(.chat-joined) .join-panel{display:block!important;background:#fff!important;color:#17263a!important;padding:14px 16px!important}
-body.chat-immersive:not(.chat-joined) .join-panel select,body.chat-immersive:not(.chat-joined) .identity input{background:#f8fafc!important;color:#17263a!important;border:1px solid #cbd5e1!important}
-body.chat-immersive:not(.chat-joined) .join-panel label,body.chat-immersive:not(.chat-joined) .identity label{color:#17263a!important}
-body.chat-immersive:not(.chat-joined) .join-panel [role="note"]{background:#f8fafc!important;color:#304158!important}
-body.chat-immersive:not(.chat-joined) .messages,body.chat-immersive:not(.chat-joined) .composer{display:none!important}
-body.chat-immersive.chat-joined .messages,body.chat-immersive.chat-joined .composer{display:flex!important}
-body.chat-immersive .chat-tools,body.chat-immersive .fun-tray,body.chat-immersive #adminPanel,body.chat-immersive #ownerMfaPanel,body.chat-immersive .status,body.chat-immersive .owner-bottom{display:revert!important}
-body.chat-immersive .chat-tools:not([open])>.controls,body.chat-immersive .fun-tray:not([open])>.sticker-tray{display:none!important}
-/* Always-on immersive chat layout, including nickname and 16+ join gate. */
-html,body{min-height:100%;margin:0}
-body.chat-immersive .chat-shell{width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important}
-body.chat-immersive .wrap{width:100%!important;max-width:none!important;padding:0!important}
-body.chat-immersive .main{min-height:100dvh!important}
-body.chat-immersive #screenModeButton{display:none!important}
-body.chat-immersive .messages{flex:1!important;max-height:none!important;min-height:0!important}
-@media(max-width:680px){body.chat-immersive .chat-shell{min-height:100dvh!important;border:0!important}body.chat-immersive .main{min-height:100dvh!important}body.chat-immersive .room-head{padding:12px 14px!important}}
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
@@ -350,13 +332,11 @@ function mountCaptcha(){
 let blocked=[];
 try{blocked=JSON.parse(localStorage.getItem(BLOCK)||"[]");if(!Array.isArray(blocked))blocked=[]}catch(_){blocked=[]}
 function info(t){status.textContent=t}
-function setJoined(yes){document.body.classList.toggle("chat-joined",yes);nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes;$("voiceTextButton").disabled=!yes||!speechSupported;setScreenMode(true);$("screenModeButton").hidden=true}
-function setScreenMode(expanded){document.body.classList.toggle("chat-immersive",expanded);$("screenModeButton").textContent=expanded?"⛶ Full screen":"⛶ Full screen";$("screenModeButton").setAttribute("aria-pressed",String(expanded));}
-// SanZa Chat always opens in immersive page layout, including the join screen.
-setScreenMode(true);
-$("screenModeButton").hidden=true;
+function setJoined(yes){document.body.classList.toggle("chat-joined",yes);nickname.disabled=yes;join.disabled=yes;join.hidden=yes;input.disabled=!yes;send.disabled=!yes;$("voiceTextButton").disabled=!yes||!speechSupported;setScreenMode(false);$("screenModeButton").hidden=false}
+function setScreenMode(expanded){document.body.classList.toggle("chat-immersive",expanded);$("screenModeButton").textContent=expanded?"↙ Small screen":"⛶ Full screen";$("screenModeButton").setAttribute("aria-pressed",String(expanded));}
+$("screenModeButton").addEventListener("click",()=>setScreenMode(!document.body.classList.contains("chat-immersive")));
 function save(){if(session&&me)localStorage.setItem(STORE,JSON.stringify({session,me}))}
-function clear(){document.body.classList.remove("chat-joined");stopDictation();$("voiceTextButton").disabled=true;setScreenMode(true);$("screenModeButton").hidden=true;$("ownerMfaPanel").hidden=true;$("ownerMfaSecret").hidden=true;$("ownerMfaSecret").textContent="";ownerFactorId=null;stopRealtime();setReply(null);onlineBaseline=null;messageBaseline=null;isModerator=false;$("adminPanel").hidden=true;$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();$("eventFeed").replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
+function clear(){document.body.classList.remove("chat-joined");stopDictation();$("voiceTextButton").disabled=true;setScreenMode(false);$("screenModeButton").hidden=true;$("ownerMfaPanel").hidden=true;$("ownerMfaSecret").hidden=true;$("ownerMfaSecret").textContent="";ownerFactorId=null;stopRealtime();setReply(null);onlineBaseline=null;messageBaseline=null;isModerator=false;$("adminPanel").hidden=true;$("onlineCount").textContent="● Online now: —";$("onlineNames").textContent="Join to see who’s online";session=null;me=null;localStorage.removeItem(STORE);nickname.disabled=false;join.disabled=false;join.hidden=false;input.disabled=true;send.disabled=true;messages.replaceChildren();$("eventFeed").replaceChildren();info("Session cleared on this device. You can choose a new nickname.");renderKey=""}
 function api(action,data={},auth=true){const headers={"Content-Type":"application/json"};if(auth&&session)headers.Authorization="Bearer "+session.access_token;return fetch("/api/chat",{method:"POST",headers,body:JSON.stringify({action,...data}),cache:"no-store"}).then(async r=>{let j={};try{j=await r.json()}catch(_){}if(!r.ok)throw new Error(j.error||"Chat request failed ("+r.status+").");return j})}
 async function refresh(){if(!session||!session.refresh_token)throw Error("Session expired.");const result=await api("refresh",{refresh_token:session.refresh_token},false);session=result.session;save();if(realtimeClient)void realtimeClient.realtime.setAuth(session.access_token)}
 async function call(action,data={}){try{return await api(action,data)}catch(e){if(/expired|sign in|401/i.test(e.message)&&session?.refresh_token){await refresh();return api(action,data)}throw e}}
