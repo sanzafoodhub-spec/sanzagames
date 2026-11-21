@@ -446,11 +446,13 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 
 /* Hidden must override the mobile flex layout when Explore SanZa is pressed. */
 #welcome-gate[hidden]{display:none!important}
+/* Always hide the welcome gate after Explore is clicked, including in portrait mode. */
+#welcome-gate.yupbro-b[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
 /* YupBro 3.3: single-screen portrait mobile layout, no page scrolling.
    The WebGL stage takes remaining viewport height instead of a fixed 440px. */
 @media (max-width:800px) and (orientation:portrait){
  body:has(#welcome-gate:not([hidden])){overflow:hidden!important}
- #welcome-gate.yupbro-b{height:100dvh!important;max-height:100dvh!important;inset:0!important;overflow:hidden!important;display:flex!important;align-items:stretch!important;justify-content:center!important;padding:5px 7px calc(5px + env(safe-area-inset-bottom,0px))!important;box-sizing:border-box!important}
+ #welcome-gate.yupbro-b:not([hidden]){height:100dvh!important;max-height:100dvh!important;inset:0!important;overflow:hidden!important;display:flex!important;align-items:stretch!important;justify-content:center!important;padding:5px 7px calc(5px + env(safe-area-inset-bottom,0px))!important;box-sizing:border-box!important}
  #welcome-gate.yupbro-b .welcome-inner{height:100%!important;max-height:100%!important;width:100%!important;min-height:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:4px!important;padding:7px 9px!important;overflow:hidden!important;border-radius:16px!important}
  #welcome-gate.yupbro-b .welcome-kicker{font-size:10px!important;line-height:1.1!important;letter-spacing:.06em!important;padding:5px 10px!important;margin:0 auto!important;min-height:0!important}
  #welcome-gate.yupbro-b .welcome-title{font-size:clamp(17px,4.4vw,25px)!important;line-height:1.08!important;margin:1px 0!important;flex-shrink:0!important}
