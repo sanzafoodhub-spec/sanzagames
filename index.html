@@ -530,6 +530,19 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
  #everything-sanza .newsletter-embed{height:540px!important}
 }
 @media(max-width:360px){#sanza-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))!important}#games .games{grid-template-columns:1fr!important}}
+
+/* Explore 4.1: short expandable page; content stays in the DOM for accessibility and links. */
+#sanza-explore .explore-fold{margin:9px auto;border:1px solid #735823;border-radius:16px;background:#11141a;overflow:hidden;max-width:1200px}
+#sanza-explore .explore-fold>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:16px 17px;color:#ffdb75;font-size:clamp(15px,2.5vw,19px);font-weight:900;list-style:none;min-height:50px}
+#sanza-explore .explore-fold>summary::-webkit-details-marker{display:none}
+#sanza-explore .explore-fold>summary:focus-visible{outline:3px solid #38d8f5;outline-offset:-3px}
+#sanza-explore .explore-fold>summary:after{content:'＋';font-size:22px;margin-left:6px}
+#sanza-explore .explore-fold[open]>summary:after{content:'−'}
+#sanza-explore .explore-fold .fold-hint{margin-left:auto;font-size:10px;font-weight:500;color:#c5b98f}
+#sanza-explore .explore-fold>section{margin:0!important;border:0!important;box-shadow:none!important}
+#sanza-explore .explore-fold:not([open])>section{display:none!important}
+#sanza-explore .explore-fold>.mascot-canvas-wrap{display:none!important}
+@media(max-width:700px){#sanza-explore .explore-fold{margin:7px auto;border-radius:12px}#sanza-explore .explore-fold>summary{padding:12px;font-size:14px;min-height:44px}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
@@ -583,6 +596,7 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 </nav>
 <div class="explore-compact-promo" aria-label="SanZa highlights"><a href="https://mypamperme.com/" target="_blank" rel="noopener noreferrer">🎂 <strong>Birthday Parties</strong><span>Explore party bookings ↗</span></a><a href="#everything-sanza">✉️ <strong>SanZa Newsletter</strong><span>Updates &amp; offers ↓</span></a></div>
 <main id="sanza-explore">
+<details class="explore-fold" ><summary>👋 Welcome & quick start <span class="fold-hint">Tap to expand</span></summary>
 <section class="hero reveal">
   <div class="kicker"><span class="pulse"></span> WELCOME TO THE SANZA FAMILY</div>
   <h1>HOWAYA, YA<br><span class="hero-title">ABSOLUTE LEGEND?! 😂</span></h1>
@@ -593,6 +607,8 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 
 
 
+</details>
+<details class="explore-fold" open><summary>🎮 Play SanZa Games <span class="fold-hint">Tap to hide</span></summary>
 <section class="section" id="games">
   <div class="section-head"><div><div class="eyebrow">THE ARCADE</div><h2>Choose your next adventure</h2></div><p>Original SanZa characters, quick challenges and plenty of chaos. Tap a game to start; some adventures open on their own game website.</p></div>
   <div class="games">
@@ -607,6 +623,8 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 </section>
 <div class="mascot-canvas-wrap"><canvas id="yupbro-3d-canvas" aria-label="Animated 3D cartoon scooter rider"></canvas><div class="yupbro-speech" id="yupbro-speech" aria-live="polite">Tap Yupbro for a laugh!</div><div class="yupbro-status"><span id="yupbro-mood" data-mood="chill">CHILL MODE 😌</span><span id="yupbro-taps">YUPBRO TAPS: 0</span></div><button class="yupbro-tap" id="yupbro-tap" type="button">👋 TAP YUPBRO</button><span class="mascot-hint">LIVE 3D · TAP TO INTERACT</span></div>
 
+</details>
+<details class="explore-fold" ><summary>📚 SanZa Grinds & learning <span class="fold-hint">Tap to expand</span></summary>
 <section class="section education-section" id="education">
   <div class="education-shell">
     <div class="education-copy">
@@ -625,6 +643,8 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
     </div>
   </div>
 </section>
+</details>
+<details class="explore-fold" ><summary>🍔 Food, parties & more <span class="fold-hint">Tap to expand</span></summary>
 <section class="section" id="sanza-hub">
   <div class="section-head"><div><div class="eyebrow">ONE FAMILY · ONE SANZA</div><h2>There's more to the hub</h2></div><p>Gaming is just one part of the SanZa universe. Explore food, learning support and celebrations through the links below.</p></div>
   <div class="hub-grid">
@@ -633,6 +653,8 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
     <article class="hub-card party-card"><div class="emoji">🎀</div><h3>Celebrate in style</h3><p>Planning a girls' birthday party in Dublin? Explore the birthday-party booking option and make her day special.</p><a class="btn" href="https://mypamperme.com/" target="_blank" rel="noopener noreferrer">🎂 PARTY DETAILS ↗</a></article>
   </div>
 </section>
+</details>
+<details class="explore-fold" ><summary>📖 About SanZa & game tips <span class="fold-hint">Tap to expand</span></summary>
 <section class="info-panel" id="about-sanza-games">
   <div class="eyebrow">MEET THE SANZA UNIVERSE</div><h2>More than just a game 🎮</h2>
   <p>SanZa Games is a family entertainment project inspired by the SanZa community in Dublin. Explore browser-based games, meet memorable characters and discover different challenges across the SanZa universe. SanZa Run is about timing and collecting; Yupbro Scooty brings a scooter adventure; SanZa Smash adds cartoon-style smashing and cookie-themed chaos; Cat in the Hat brings a dodge-and-attack challenge; and Funny Keys is all about playful sounds.</p>
@@ -645,8 +667,12 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
   </div>
   <p>Want more beginner information? <a href="game-guide.html" style="color:var(--gold);font-weight:800">Read the full SanZa Games guide →</a></p>
 </section>
+</details>
+<details class="explore-fold" ><summary>🎬 Watch SanZa Videos <span class="fold-hint">Tap to expand</span></summary>
 <section class="video-banner"><div><div class="eyebrow">WATCH · DISCOVER · LAUGH</div><h2>🎬 SanZa Videos</h2><p>Find funny clips and explore videos from the SanZa universe.</p></div><a class="btn" href="videos.html">WATCH VIDEOS ▶</a></section>
 
+</details>
+<details class="explore-fold" ><summary>✉️ SanZa Newsletter <span class="fold-hint">Tap to expand</span></summary>
 <section class="newsletter" id="everything-sanza" aria-labelledby="newsletter-title">
   <div class="eyebrow">THE SANZA GOOD-STUFF CLUB ✨</div>
   <h2 id="newsletter-title">Everything SanZa. <span class="gold">Straight to your inbox.</span></h2>
@@ -655,6 +681,7 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
   <small>Sign up for SanZa Games updates, new games, food news and offers. You can unsubscribe at any time. See our <a href="privacy.html" style="color:var(--gold);text-decoration:underline">Privacy Policy</a>.</small>
 </section>
 
+</details>
 <section class="social">
   <h2>Stay connected, <span class="gold">Sanzations!</span></h2><p>Follow SanZa for games, food, fun and new offers.</p>
   <div class="social-links">
@@ -929,7 +956,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Talking Tom-style Yup Bro: auto-request mic permission, listen continuously, repeat speech, and react to pokes.
   let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false,pageInactive=false;
   const micHint=document.createElement('div');
-  micHint.textContent='Yup Bro is ready, bro! Allow the mic once, then just talk or poke him. 😂';
+  micHint.textContent='🔴 Mic off by default. Tap Mic off to enable it on the YupBro screen.';
   micHint.style.cssText='text-align:center;font-size:12px;color:#5d6b7c;margin:8px auto';
   const mascotShell=wrap.parentElement;
   if(mascotShell)mascotShell.appendChild(micHint);
@@ -1009,9 +1036,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   let resumeMicAfterBackForward=false;
   window.addEventListener('pagehide',()=>{resumeMicAfterBackForward=stopMicForPageExit();},{capture:true});
-  window.addEventListener('pageshow',e=>{if(e.persisted){pageInactive=false;if(resumeMicAfterBackForward){resumeMicAfterBackForward=false;startAlwaysListening();}}},{capture:true});
+  window.addEventListener('pageshow',e=>{if(e.persisted){pageInactive=false;resumeMicAfterBackForward=false;}},{capture:true});
   document.addEventListener('sanza:leave-yupbro',stopMicForPageExit);
-  document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;if(!micManuallyOff)startAlwaysListening();});
+  document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;/* mic remains off until the user taps its button */});
   let micManuallyOff=false;
   document.addEventListener('sanza:yupbro-mic-toggle',()=>{const button=document.getElementById('yupbro-b-mic');if(micStream||voiceBusy){micManuallyOff=true;stopMicForPageExit();pageInactive=false;if(button){button.textContent='🎤 Mic off';button.setAttribute('aria-pressed','false');}micHint.textContent='🔴 Microphone off — tap Mic off to listen again.';}else{micManuallyOff=false;pageInactive=false;if(button){button.textContent='🎤 Listening…';button.setAttribute('aria-pressed','true');}startAlwaysListening();}});
   function playRecordedPhrase(){
@@ -1402,5 +1429,10 @@ more.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-
 })();
 </script>
 <style>.yupbro-b.yupbro-b-more .welcome-character-slot .yupbro-reaction-controls button:nth-child(1),.yupbro-b.yupbro-b-more .welcome-character-slot .yupbro-reaction-controls button:nth-child(4){display:inline-block}</style>
+
+<script>
+// Open the relevant expandable panel when a shortcut or deep link targets it.
+(function(){function reveal(hash){if(!hash||hash.length<2)return;let el;try{el=document.getElementById(decodeURIComponent(hash.slice(1)))}catch(e){return}if(!el)return;let parent=el.closest('details.explore-fold');if(parent)parent.open=true;}document.addEventListener('click',function(e){const a=e.target.closest('a[href^="#"]');if(a)reveal(a.getAttribute('href'));});window.addEventListener('hashchange',()=>reveal(location.hash));reveal(location.hash);})();
+</script>
 </body>
 </html>
