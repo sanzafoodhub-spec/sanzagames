@@ -599,7 +599,7 @@ module.exports = async function handler(req, res) {
       if(!/^[0-9a-f-]{36}$/i.test(id)||!["😂","❤️","🔥","👍"].includes(emoji))return reply(res,400,{error:"Invalid reaction."});
       const found=await supa(config,"/rest/v1/chat_messages?select=id,content&room_id=eq."+ROOM_ID+"&id=eq."+encodeURIComponent(id)+"&limit=1",{},true);
       const msg=Array.isArray(found.data)?found.data[0]:null;
-      if(!found.ok||!msg||/^\\[Message (deleted|removed) by /.test(msg.content||""))return reply(res,404,{error:"Message unavailable."});
+      if(!found.ok||!msg||/^\[Message (deleted|removed) by /.test(msg.content||""))return reply(res,404,{error:"Message unavailable."});
       const existing=await supa(config,"/rest/v1/chat_message_reactions?select=emoji&message_id=eq."+encodeURIComponent(id)+"&user_id=eq."+encodeURIComponent(user.id)+"&limit=1",{},true);
       if(!existing.ok)return reply(res,503,{error:"Reactions database is not configured yet."});
       const current=Array.isArray(existing.data)?existing.data[0]:null;
@@ -611,7 +611,7 @@ module.exports = async function handler(req, res) {
     // Preview-only enhancements: service-role storage, authenticated requests, no private messaging.
     if(action==="typing"){
       const active=body.active===true;
-      const result=await supa(config,"/rest/v1/chat_typing?on_conflict=room_id,user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{room_id:ROOM_ID,user_id:user.id,nickname:member.nickname,expires_at:new Date(Date.now()+(active?5500:-1000)).toISOString()}},true);
+      const result=await supa(config,"/rest/v1/chat_typing?on_conflict=room_id,user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{room_id:ROOM_ID,user_id:user.id,nickname:user.nickname||"Member",expires_at:new Date(Date.now()+(active?5500:-1000)).toISOString()}},true);
       return result.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Typing indicator requires preview database setup."});
     }
     if(action==="pin_message"||action==="unpin_message"){
@@ -623,8 +623,8 @@ module.exports = async function handler(req, res) {
       const id=String(body.message_id||"");if(!/^[0-9a-f-]{36}$/i.test(id))return reply(res,400,{error:"Invalid message."});
       const found=await supa(config,"/rest/v1/chat_messages?select=id,content,user_id&room_id=eq."+ROOM_ID+"&id=eq."+encodeURIComponent(id)+"&limit=1",{},true);
       const msg=Array.isArray(found.data)?found.data[0]:null;
-      if(!found.ok||!msg||/^\\[Message (deleted|removed) by /.test(msg.content||""))return reply(res,404,{error:"Message unavailable."});
-      const r=await supa(config,"/rest/v1/chat_pinned_messages?on_conflict=room_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{room_id:ROOM_ID,message_id:id,content:msg.content.slice(0,500),nickname:member.nickname,pinned_at:new Date().toISOString()}},true);
+      if(!found.ok||!msg||/^\[Message (deleted|removed) by /.test(msg.content||""))return reply(res,404,{error:"Message unavailable."});
+      const r=await supa(config,"/rest/v1/chat_pinned_messages?on_conflict=room_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{room_id:ROOM_ID,message_id:id,content:msg.content.slice(0,500),nickname:user.nickname||"Member",pinned_at:new Date().toISOString()}},true);
       return r.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Pinned announcements database not ready."});
     }
     if (action === "whoami") return reply(res, 200, { admin:adminReady });
@@ -667,7 +667,7 @@ module.exports = async function handler(req, res) {
         }
       }
       // Optional preview reactions: missing migration must not break normal chat.
-      const reactionsResult=await supa(config,"/rest/v1/chat_message_reactions?select=message_id,user_id,emoji&message_id=in.("+messages.map(m=>encodeURIComponent(m.id)).join(",")+")&limit=200",{},true);
+      const reactionsResult=messages.length?await supa(config,"/rest/v1/chat_message_reactions?select=message_id,user_id,emoji&message_id=in.("+messages.map(m=>encodeURIComponent(m.id)).join(",")+")&limit=200",{},true):{ok:true,data:[]};
       const reactionsByMessage={};
       if(reactionsResult.ok&&Array.isArray(reactionsResult.data))for(const item of reactionsResult.data){
         (reactionsByMessage[item.message_id]??=[]).push({emoji:item.emoji,mine:item.user_id===user.id});
