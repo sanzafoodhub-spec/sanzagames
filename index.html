@@ -551,6 +551,32 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 #sanza-explore #games .game .game-top{margin-bottom:0!important}
 #sanza-explore #games .game .btn{margin-top:auto!important}
 @media(max-width:700px){#sanza-explore #games .game{min-height:0!important}body:not(.welcome-active) .sanza-hungry-float{bottom:calc(65px + env(safe-area-inset-bottom,0px))!important;right:8px!important;transform:scale(.82)!important;transform-origin:bottom right!important}}
+
+/* Explore final mobile polish: accordion clarity, compact arcade, unobstructed content */
+#sanza-explore .explore-fold{scroll-margin-top:85px;transition:border-color .18s ease,background-color .18s ease}
+#sanza-explore .explore-fold[open]{border-color:#cba448;background:#14171c}
+#sanza-explore .explore-fold>summary{user-select:none;touch-action:manipulation;transition:background-color .18s ease,color .18s ease}
+#sanza-explore .explore-fold>summary:hover{background:#272111}
+#sanza-explore .explore-fold>summary:after{content:'⌄';display:inline-block;font-size:23px;line-height:1;transition:transform .2s ease}
+#sanza-explore .explore-fold[open]>summary:after{content:'⌄';transform:rotate(180deg)}
+#sanza-explore .explore-fold .fold-hint{white-space:nowrap}
+#sanza-explore .explore-fold .section-head{gap:8px!important}
+#sanza-explore #games .game{min-width:0;transition:border-color .2s ease,transform .2s ease}
+#sanza-explore #games .game .btn{min-height:38px;display:flex;align-items:center;justify-content:center;white-space:normal}
+#sanza-explore #games .game:focus-within{outline:2px solid #fbd56b;outline-offset:2px}
+#sanza-explore .explore-fold .newsletter-embed{max-width:100%}
+@media(max-width:700px){
+ #sanza-explore .explore-fold .fold-hint{font-size:9px!important}
+ #sanza-explore #games .game .game-number{font-size:9px!important}
+ #sanza-explore #games .game .game-icon{font-size:23px!important}
+ #sanza-explore #games .game .game-top{min-height:27px!important}
+ #sanza-explore #games .game .btn{min-height:38px!important}
+ #sanza-explore #games .coming{padding:12px!important}
+ #sanza-explore #games .coming p{font-size:11px!important}
+ body:not(.welcome-active) .sanza-hungry-float{max-width:115px!important;right:6px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px))!important;opacity:.9!important}
+ #sanza-explore{padding-bottom:95px!important}
+}
+@media(prefers-reduced-motion:reduce){#sanza-explore .explore-fold,#sanza-explore .explore-fold>summary,#sanza-explore .explore-fold>summary:after{transition:none!important}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
 </head>
@@ -619,7 +645,7 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 <details class="explore-fold" open><summary>🎮 Play SanZa Games <span class="fold-hint">Tap to hide</span></summary>
 <section class="section" id="games">
   <div class="section-head"><div><div class="eyebrow">THE ARCADE</div><h2>Choose your next adventure</h2></div><p>Original SanZa characters, quick challenges and plenty of chaos. Tap a game to start; some adventures open on their own game website.</p></div>
-  <div class="games">
+  <div class="games" aria-label="SanZa arcade games">
     <article class="game"><div class="game-top"><div class="game-icon">🏃</div><span class="game-number">GAME 01</span></div><span class="label">RUN · DODGE · COLLECT</span><h3>SANZA RUN</h3><p>Dash through the streets, dodge obstacles and collect drops and brownies. Keep moving and chase your best run!</p><a class="btn" href="https://sanza-drop-challenge.floot.app/" target="_blank" rel="noopener noreferrer">▶ PLAY SANZA RUN ↗</a></article>
     <article class="game"><div class="game-top"><div class="game-icon">🛴</div><span class="game-number">GAME 02</span></div><span class="label">RIDE · DELIVER · COLLECT</span><h3>YUPBRO SCOOTY</h3><p>Jump on the scooter and cruise through a Dublin-inspired adventure. Avoid obstacles, grab brownies and keep Yupbro rolling!</p><a class="btn" href="https://yupbro-scooty.floot.app/" target="_blank" rel="noopener noreferrer">🛴 PLAY YUPBRO SCOOTY ↗</a></article>
     <article class="game"><div class="game-top"><div class="game-icon">🍫</div><span class="game-number">GAME 06</span></div><span class="label">DODGE · JUMP · COLLECT</span><h3>YUPBRO’S BROWNIE RUN</h3><p>Ride your own mini-game from Finglas to Ballymun! Dodge road chaos, collect 50 brownies and keep your three lives safe.</p><a class="btn" href="yupbro-mini-game.html">🍫 PLAY BROWNIE RUN</a></article>
