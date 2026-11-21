@@ -268,19 +268,53 @@ let rememberHistory=localStorage.getItem(HISTORY_PREF)==="yes";
 const OWNER_ID="68548953-f190-448e-87e4-3a51d84869b7";
 const OWNER_PUSH_PREF="sanza_owner_push_preference_v1";
 let ownerPushWanted=localStorage.getItem(OWNER_PUSH_PREF)==="on";
+let ownerPushSubscription=null,ownerPushBusy=false;
+function pushSupported(){return "serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window&&window.isSecureContext;}
+function vapidBytes(base64){const raw=atob(base64.replace(/-/g,"+").replace(/_/g,"/").padEnd(Math.ceil(base64.length/4)*4,"="));return Uint8Array.from(raw,c=>c.charCodeAt(0));}
 function updateOwnerPushControls(){
  const owner=me?.id===OWNER_ID&&isModerator;
  $("ownerPushControls").hidden=!owner;
- const button=$("ownerPushToggle");button.textContent=ownerPushWanted?"🔔 Notifications ON (preview)":"🔕 Notifications OFF";button.setAttribute("aria-pressed",String(ownerPushWanted));
- $("ownerPushStatus").textContent=ownerPushWanted?"Preference saved on this device. Push delivery is NOT connected yet; no alerts will be sent.":"Notifications are off on this device. Push delivery is not connected yet.";
+ const button=$("ownerPushToggle");button.textContent=ownerPushWanted?"🔔 Notifications ON":"🔕 Notifications OFF";button.setAttribute("aria-pressed",String(ownerPushWanted));button.disabled=ownerPushBusy;
+ if(!pushSupported())$("ownerPushStatus").textContent="This browser does not support secure push notifications.";
+ else $("ownerPushStatus").textContent=ownerPushWanted?"Enabled on this device. Alerts are suppressed while chat is active.":"Notifications are off on this device.";
 }
-$("ownerPushToggle").addEventListener("click",()=>{
- if(me?.id!==OWNER_ID||!isModerator)return;
- ownerPushWanted=!ownerPushWanted;
- localStorage.setItem(OWNER_PUSH_PREF,ownerPushWanted?"on":"off");
- updateOwnerPushControls();
+async function ownerPushPresence(active){
+ if(!ownerPushWanted||!ownerPushSubscription||!session||me?.id!==OWNER_ID||!isModerator)return;
+ try{await api("owner_push_presence",{endpoint:ownerPushSubscription.endpoint,active});}catch(e){}
+}
+$("ownerPushToggle").addEventListener("click",async()=>{
+ if(me?.id!==OWNER_ID||!isModerator||ownerPushBusy)return;
+ if(!pushSupported()){info("Push notifications are not supported in this browser.");return;}
+ ownerPushBusy=true;updateOwnerPushControls();
+ try{
+  if(!ownerPushWanted){
+   const key=await api("owner_push_key");
+   const permission=await Notification.requestPermission();
+   if(permission!=="granted")throw Error("Allow SanZa Chat notifications in your browser settings first.");
+   const registration=await navigator.serviceWorker.register("/sanza-chat-owner-push-sw.js",{scope:"/"});
+   const existing=await registration.pushManager.getSubscription();
+   const sub=existing||await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:vapidBytes(key.publicKey)});
+   const json=sub.toJSON();await api("owner_push_on",{endpoint:sub.endpoint,keys:json.keys});
+   ownerPushSubscription=sub;ownerPushWanted=true;localStorage.setItem(OWNER_PUSH_PREF,"on");
+   await ownerPushPresence(!document.hidden);info("Samsung push notifications enabled for this browser.");
+  }else{
+   const registration=await navigator.serviceWorker.getRegistration("/");
+   const sub=ownerPushSubscription||await registration?.pushManager.getSubscription();
+   if(sub){await api("owner_push_off",{endpoint:sub.endpoint});await sub.unsubscribe();}
+   ownerPushSubscription=null;ownerPushWanted=false;localStorage.setItem(OWNER_PUSH_PREF,"off");info("Push notifications turned off.");
+  }
+ }catch(e){info(e.message||"Unable to change push notifications.");$("ownerPushStatus").textContent=e.message||"Push setup failed."}
+ finally{ownerPushBusy=false;updateOwnerPushControls();}
 });
-
+async function restoreOwnerPush(){
+ if(!ownerPushWanted||!pushSupported()||me?.id!==OWNER_ID||!isModerator)return;
+ try{const reg=await navigator.serviceWorker.getRegistration("/");ownerPushSubscription=await reg?.pushManager.getSubscription()||null;
+ if(ownerPushSubscription)await ownerPushPresence(!document.hidden);
+ else {$("ownerPushStatus").textContent="Tap Notifications ON again to finish device registration.";ownerPushWanted=false;localStorage.setItem(OWNER_PUSH_PREF,"off");}}
+ catch(e){}
+}
+document.addEventListener("visibilitychange",()=>{void ownerPushPresence(!document.hidden)});
+setInterval(()=>{if(!document.hidden)void ownerPushPresence(true)},20000);
 function updateHistoryButton(){const b=$("rememberHistoryButton");b.textContent=rememberHistory?"🕘 HISTORY ON":"🕘 HISTORY OFF";b.setAttribute("aria-pressed",String(rememberHistory));}
 $("rememberHistoryButton").addEventListener("click",()=>{rememberHistory=!rememberHistory;localStorage.setItem(HISTORY_PREF,rememberHistory?"yes":"no");updateHistoryButton();renderKey="";messageBaseline=null;void load();});
 updateHistoryButton();
@@ -385,7 +419,7 @@ function systemEvent(message){const row=document.createElement("div");row.textCo
 $("cancelReply").addEventListener("click",()=>setReply(null));
 function show(items){const key=JSON.stringify([items.map(m=>[m.id,m.content]),blocked]);if(key===renderKey)return;renderKey=key;messages.replaceChildren();if(!items.length){const row=document.createElement("div");row.className="msg system";row.textContent="Fresh chat screen! New messages will appear here. Earlier messages remain stored for moderation.";messages.append(row)}
 for(const m of items){if(blocked.includes(m.nickname.toLowerCase()))continue;const row=document.createElement("div");row.className="msg";const time=document.createElement("span");time.className="time";time.textContent=new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const nick=document.createElement("span");nick.className="nick";nick.textContent=(isModerator&&m.user_id===me?.id?"👑 ":"")+m.nickname;const body=document.createElement("span");body.textContent=m.content;if(["🍪😎","🔥👑","😂💛","🙌🎉"].includes(m.content.trim())){body.className="sticker-message";row.classList.add("sticker-bubble")}row.append(time,nick,body);if(m.content!=="[Message deleted by sender]"&&m.content!=="[Message removed by moderator]"){const replyButton=document.createElement("button");replyButton.className="soft";replyButton.style.marginLeft="8px";replyButton.textContent="↩ Reply";replyButton.classList.add("message-action");replyButton.addEventListener("click",()=>setReply(m));row.append(replyButton)}if(m.user_id===me?.id&&m.content!=="[Message deleted by sender]"&&m.content!=="[Message removed by moderator]"&&Date.now()-new Date(m.created_at).getTime()<=600000){const del=document.createElement("button");del.className="soft";del.style.marginLeft="8px";del.textContent="🗑 Delete for everyone";del.classList.add("message-action");del.addEventListener("click",async()=>{if(!confirm("Delete this message for everyone?"))return;try{const result=await call("delete_own_message",{message_id:m.id});info(result.message);renderKey="";await load()}catch(e){info(e.message)}});row.append(del)}if(m.user_id!==me?.id){const report=document.createElement("button");report.className="soft";report.style.marginLeft="8px";report.textContent="Report";report.addEventListener("click",()=>reportMessage(m));row.append(report);if(isModerator){const hide=document.createElement("button");hide.className="soft";hide.textContent="REMOVE";hide.addEventListener("click",()=>moderate("hide_message",{message_id:m.id},"Remove this message?"));row.append(hide);const suspend=document.createElement("button");suspend.className="soft";suspend.textContent="SUSPEND";suspend.addEventListener("click",()=>moderate("suspend_member",{user_id:m.user_id},"Suspend this member?"));row.append(suspend);const ban=document.createElement("button");ban.className="soft";ban.textContent="🔒 BAN 48 HOURS";ban.title="Temporarily block this account for two days";ban.addEventListener("click",()=>moderate("ban_member_48h",{user_id:m.user_id},"Ban "+m.nickname+" from SanZa Chat for 48 hours?"));row.append(ban)}}messages.append(row)}messages.scrollTop=messages.scrollHeight}
-async function load(){if(!session||document.hidden)return;if(polling){reloadQueued=true;return;}polling=true;try{void heartbeat();const r=await call("list");$("emergencyPause").hidden=!(r.emergencyOwner===true && r.emergency?.enabled);if(r.emergency?.enabled){$("emergencyAdminStatus").textContent=r.emergency.paused?"🔴 CHAT PAUSED":"🟢 CHAT OPEN";$("emergencyPause").textContent=r.emergency.paused?"▶ RESUME CHAT":"⏸ PAUSE CHAT";}else{$("emergencyAdminStatus").textContent="Emergency controls pending setup";}if(r.emergency?.paused){input.disabled=true;send.disabled=true;info("Chat temporarily read-only for safety. Reports remain available.");}else if(session){input.disabled=false;send.disabled=false;}const items=(r.messages||[]).filter(m=>rememberHistory||new Date(m.created_at).getTime()>=viewStartedAt);if(typeof r.admin==="boolean"){isModerator=r.admin;$("adminPanel").hidden=!isModerator;updateOwnerPushControls();}const ids=new Set(items.map(m=>String(m.id)));if(messageBaseline!==null&&items.some(m=>!messageBaseline.has(String(m.id))&&m.user_id!==me?.id&&!blocked.includes(String(m.nickname).toLowerCase())))playTone("message");messageBaseline=ids;show(items);showOnline(r.online)}catch(e){info(e.message)}finally{polling=false;if(reloadQueued){reloadQueued=false;void load()}}}
+async function load(){if(!session||document.hidden)return;if(polling){reloadQueued=true;return;}polling=true;try{void heartbeat();const r=await call("list");$("emergencyPause").hidden=!(r.emergencyOwner===true && r.emergency?.enabled);if(r.emergency?.enabled){$("emergencyAdminStatus").textContent=r.emergency.paused?"🔴 CHAT PAUSED":"🟢 CHAT OPEN";$("emergencyPause").textContent=r.emergency.paused?"▶ RESUME CHAT":"⏸ PAUSE CHAT";}else{$("emergencyAdminStatus").textContent="Emergency controls pending setup";}if(r.emergency?.paused){input.disabled=true;send.disabled=true;info("Chat temporarily read-only for safety. Reports remain available.");}else if(session){input.disabled=false;send.disabled=false;}const items=(r.messages||[]).filter(m=>rememberHistory||new Date(m.created_at).getTime()>=viewStartedAt);if(typeof r.admin==="boolean"){const wasAdmin=isModerator;isModerator=r.admin;$("adminPanel").hidden=!isModerator;updateOwnerPushControls();if(isModerator&&!wasAdmin)void restoreOwnerPush();}const ids=new Set(items.map(m=>String(m.id)));if(messageBaseline!==null&&items.some(m=>!messageBaseline.has(String(m.id))&&m.user_id!==me?.id&&!blocked.includes(String(m.nickname).toLowerCase())))playTone("message");messageBaseline=ids;show(items);showOnline(r.online)}catch(e){info(e.message)}finally{polling=false;if(reloadQueued){reloadQueued=false;void load()}}}
 async function reportMessage(m){const reason=prompt("Why are you reporting this message? (No personal information)");if(!reason?.trim())return;try{await call("report",{message_id:m.id,reason:reason.trim().slice(0,500)});info("Report sent to moderators. Thank you.")}catch(e){info(e.message)}}
 let ownerFactorId=null;
 async function ownerMfaGate(){
