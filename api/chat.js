@@ -4,6 +4,24 @@ const crypto = require("node:crypto");
 // SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, TURNSTILE_SECRET_KEY
 // Never expose the service-role key to browser code.
 
+const OWNER_PUSH_ID = "68548953-f190-448e-87e4-3a51d84869b7";
+const PUSH_ACTIVE_MS = 45000;
+function pushConfigured(){return !!(process.env.VAPID_PUBLIC_KEY&&process.env.VAPID_PRIVATE_KEY&&process.env.VAPID_SUBJECT);}
+function getPush(){const webpush=require("web-push");webpush.setVapidDetails(process.env.VAPID_SUBJECT,process.env.VAPID_PUBLIC_KEY,process.env.VAPID_PRIVATE_KEY);return webpush;}
+async function pushOwnerOnMessage(config,message,userId){
+ if(!pushConfigured()||userId===OWNER_PUSH_ID||!message?.id)return;
+ try{
+  const rows=await supa(config,"/rest/v1/chat_owner_push?select=endpoint,p256dh,auth,enabled,last_active_at&owner_id=eq."+OWNER_PUSH_ID+"&enabled=eq.true&limit=5",{},true);
+  if(!rows.ok||!Array.isArray(rows.data))return;
+  // If the owner is actively viewing chat on any registered device, do not push.
+  if(rows.data.some(r=>r.last_active_at&&Date.now()-new Date(r.last_active_at).getTime()<PUSH_ACTIVE_MS))return;
+  const webpush=getPush();const payload=JSON.stringify({kind:"sanza-owner-chat",id:String(message.id)});
+  await Promise.allSettled(rows.data.map(async r=>{
+   try{await webpush.sendNotification({endpoint:r.endpoint,keys:{p256dh:r.p256dh,auth:r.auth}},payload,{TTL:60,urgency:"normal"});}
+   catch(e){if(e.statusCode===404||e.statusCode===410)await supa(config,"/rest/v1/chat_owner_push?endpoint=eq."+encodeURIComponent(r.endpoint),{method:"DELETE"},true);}
+  }));
+ }catch(e){console.error("Owner push unavailable:",e.message)}
+}
 const ROOM_ID = "0d17bbf7-8bf1-4766-a9a0-c6658e086e8c";
 const MAX_MESSAGE_LENGTH = 500;
 const MIN_SEND_INTERVAL_MS = 2500;
@@ -553,6 +571,28 @@ module.exports = async function handler(req, res) {
 
     const admin = await isAdmin(config, user.id);
     const adminReady = admin && (user.id!=="68548953-f190-448e-87e4-3a51d84869b7" || user.aal==="aal2");
+    if (action.startsWith("owner_push_")) {
+      if(user.id!==OWNER_PUSH_ID||!adminReady)return reply(res,403,{error:"Verified owner access required."});
+      if(!pushConfigured())return reply(res,503,{error:"Push keys not configured on this preview."});
+      if(action==="owner_push_key")return reply(res,200,{publicKey:process.env.VAPID_PUBLIC_KEY});
+      const endpoint=String(body.endpoint||"");
+      if(!/^https:\/\//.test(endpoint)||endpoint.length>2048)return reply(res,400,{error:"Invalid push subscription endpoint."});
+      if(action==="owner_push_off"){
+        const deleted=await supa(config,"/rest/v1/chat_owner_push?owner_id=eq."+OWNER_PUSH_ID+"&endpoint=eq."+encodeURIComponent(endpoint),{method:"DELETE"},true);
+        return deleted.ok?reply(res,200,{enabled:false}):reply(res,503,{error:"Push database not ready."});
+      }
+      if(action==="owner_push_on"){
+        const keys=body.keys||{};
+        if(typeof keys.p256dh!=="string"||typeof keys.auth!=="string"||keys.p256dh.length>300||keys.auth.length>300)return reply(res,400,{error:"Invalid subscription keys."});
+        const saved=await supa(config,"/rest/v1/chat_owner_push?on_conflict=endpoint",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:{owner_id:OWNER_PUSH_ID,endpoint,p256dh:keys.p256dh,auth:keys.auth,enabled:true,last_active_at:new Date().toISOString()}},true);
+        return saved.ok?reply(res,200,{enabled:true}):reply(res,503,{error:"Push database not ready."});
+      }
+      if(action==="owner_push_presence"){
+        const updated=await supa(config,"/rest/v1/chat_owner_push?owner_id=eq."+OWNER_PUSH_ID+"&endpoint=eq."+encodeURIComponent(endpoint),{method:"PATCH",headers:{Prefer:"return=minimal"},body:{last_active_at:body.active===true?new Date().toISOString():null}},true);
+        return updated.ok?reply(res,200,{ok:true}):reply(res,503,{error:"Push database not ready."});
+      }
+      return reply(res,400,{error:"Unknown push action."});
+    }
     if (action === "whoami") return reply(res, 200, { admin:adminReady });
 
     // A heartbeat is only sent while the tab is visible. Online means seen within 75 seconds.
@@ -653,7 +693,9 @@ module.exports = async function handler(req, res) {
         body: { room_id: ROOM_ID, user_id: user.id, content: finalText, created_at: new Date().toISOString() }
       }, true);
       if (!inserted.ok) return reply(res, 502, { error: "Your message couldn't be sent. Please try again." });
-      return reply(res, 201, { message: Array.isArray(inserted.data) ? inserted.data[0] : null });
+      const newMessage=Array.isArray(inserted.data)?inserted.data[0]:null;
+      await pushOwnerOnMessage(config,newMessage,user.id);
+      return reply(res, 201, { message: newMessage });
     }
 
     if (action === "delete_own_message") {
