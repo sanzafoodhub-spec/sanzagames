@@ -214,6 +214,15 @@ body:not(.chat-immersive) .join-panel p{font-size:11px!important}
 body:not(.chat-immersive) .join-panel label{margin:6px 0!important}
 @media(max-width:680px){body:not(.chat-immersive) .top{padding:10px 4px!important}body:not(.chat-immersive) .room-head{padding:10px 13px!important}body:not(.chat-immersive) .join-panel [role="note"]{font-size:10px!important}}
 
+/* Join must remain usable before the user enters the room. */
+body.chat-immersive:not(.chat-joined) .identity,body.chat-immersive:not(.chat-joined) .join-panel{display:block!important;background:#fff!important;color:#17263a!important;padding:14px 16px!important}
+body.chat-immersive:not(.chat-joined) .join-panel select,body.chat-immersive:not(.chat-joined) .identity input{background:#f8fafc!important;color:#17263a!important;border:1px solid #cbd5e1!important}
+body.chat-immersive:not(.chat-joined) .join-panel label,body.chat-immersive:not(.chat-joined) .identity label{color:#17263a!important}
+body.chat-immersive:not(.chat-joined) .join-panel [role="note"]{background:#f8fafc!important;color:#304158!important}
+body.chat-immersive:not(.chat-joined) .messages,body.chat-immersive:not(.chat-joined) .composer{display:none!important}
+body.chat-immersive.chat-joined .messages,body.chat-immersive.chat-joined .composer{display:flex!important}
+body.chat-immersive .chat-tools,body.chat-immersive .fun-tray,body.chat-immersive #adminPanel,body.chat-immersive #ownerMfaPanel,body.chat-immersive .status,body.chat-immersive .owner-bottom{display:revert!important}
+body.chat-immersive .chat-tools:not([open])>.controls,body.chat-immersive .fun-tray:not([open])>.sticker-tray{display:none!important}
 /* Always-on immersive chat layout, including nickname and 16+ join gate. */
 html,body{min-height:100%;margin:0}
 body.chat-immersive .chat-shell{width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important}
