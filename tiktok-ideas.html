@@ -17,35 +17,35 @@ header{border-bottom:1px solid #ffffff14;background:#0b0c10eF;position:sticky;to
 .brand{font-weight:1000;letter-spacing:.08em;text-decoration:none;color:#fff}
 .brand span{color:var(--gold)}
 .home{padding:9px 13px;border:1px solid #51462a;border-radius:12px;text-decoration:none;font-weight:800;font-size:13px}
-main{padding:clamp(28px,7vw,64px) 0}
+main{padding:clamp(16px,4vw,36px) 0}
 .kicker{display:inline-flex;gap:8px;align-items:center;color:var(--gold);font-size:11px;letter-spacing:.15em;font-weight:900;border:1px solid #ffd34d44;background:#ffd34d0c;padding:8px 12px;border-radius:99px}
-h1{font-size:clamp(36px,8vw,62px);line-height:1.02;letter-spacing:-.045em;margin:18px 0 14px}
+h1{font-size:clamp(36px,8vw,62px);line-height:1.02;letter-spacing:-.045em;margin:12px 0 9px}
 .gold{color:var(--gold)}
 .lead{font-size:17px;color:#d2d2d8;max-width:650px}
-.perks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:25px 0 28px}
+.perks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 18px}
 .perk{background:#15161d;border:1px solid #ffffff12;border-radius:16px;padding:15px;font-size:13px;color:#dedee4}
 .perk b{display:block;color:var(--gold);font-size:15px;margin-bottom:4px}
 form{background:linear-gradient(145deg,#191a22,#101116);border:1px solid #ffd34d40;border-radius:24px;padding:clamp(18px,4vw,30px);box-shadow:0 20px 55px #0005}
-form h2{margin:0 0 5px;font-size:25px}
-.hint{color:var(--muted);font-size:13px;margin:0 0 22px}
-.field{margin:19px 0}
+form h2{margin:0 0 5px;font-size:23px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+.field{margin:14px 0}
 label,.legend{display:block;font-size:14px;font-weight:800;margin-bottom:8px}
 input,select,textarea{width:100%;background:#0d0e13;border:1px solid #454550;border-radius:12px;color:#fff;padding:13px 14px;font:inherit;font-size:16px}
-textarea{min-height:135px;resize:vertical}
+textarea{min-height:110px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:2px}
 .optional{font-weight:500;color:var(--muted);font-size:12px}
 .choice-row{display:flex;gap:10px;flex-wrap:wrap}
 .choice{flex:1;min-width:135px;border:1px solid #454550;border-radius:13px;padding:12px;background:#0d0e13;display:flex;align-items:center;gap:9px}
 .choice input{width:18px;height:18px;accent-color:var(--gold);flex-shrink:0}
 .choice label{margin:0;font-weight:700}
-.submit{width:100%;border:0;border-radius:13px;background:linear-gradient(110deg,#ffd34d,#ff9e39);color:#15120a;padding:15px;font-size:16px;font-weight:1000;cursor:pointer;min-height:52px}
+.submit{width:100%;border:0;border-radius:13px;background:linear-gradient(110deg,#ffe17b,#ffb347);color:#15120a;padding:15px;font-size:16px;font-weight:1000;cursor:pointer;min-height:52px}
 .submit:hover{filter:brightness(1.06)}
 .note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:14px}
 .honey{position:absolute;left:-5000px}
 footer{text-align:center;color:#858997;border-top:1px solid #ffffff14;padding:23px 0 35px;font-size:12px}
-@media(max-width:560px){.perks{grid-template-columns:1fr}.perk{padding:12px}.nav{min-height:60px}main{padding-top:28px}.choice-row{flex-direction:column}}
+@media(max-width:560px){.perks{grid-template-columns:1fr;gap:0;margin:10px 0 14px}.perk{padding:5px 0;background:none;border:0;border-radius:0;font-size:12px}.perk b{display:inline;font-size:12px;margin:0 7px 0 0}.nav{min-height:54px}main{padding-top:14px}h1{font-size:clamp(30px,8vw,40px);margin:10px 0 7px}.lead{font-size:14px;line-height:1.45;margin:0}.choice-row{flex-direction:column;gap:6px}.choice{padding:10px}form{padding:16px;border-radius:18px}.field{margin:12px 0}}
 </style>
-<link rel="stylesheet" href="/sanza-magic.css">
+
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="index.html">SANZA <span>GAMES</span></a><a class="home" href="index.html">← Back to SanZa Games</a></div></header>
@@ -94,7 +94,7 @@ footer{text-align:center;color:#858997;border-top:1px solid #ffffff14;padding:23
 <input id="link" name="Reference link" type="url" placeholder="https://www.tiktok.com/..." maxlength="500">
 </div>
 <div class="field">
-<div class="choice"><input type="checkbox" id="permission" name="Permission note acknowledged" value="Yes" required><label for="permission">I understand SanZa may review my idea, but submitting it doesn't guarantee it will be used. My idea won't be publicly credited without permission.</label></div>
+<div class="choice"><input type="checkbox" id="permission" name="Permission note acknowledged" value="Yes" required><label for="permission">I understand SanZa may review my idea. Use isn't guaranteed, and public credit requires my permission.</label></div>
 </div>
 <button class="submit" type="submit">SEND MY IDEA TO SANZA 🚀</button>
 <p class="note">Please don't include private information about yourself or anyone else. By submitting, you're sharing your suggestion for SanZa to review; it may be similar to ideas already being developed. We only ask for a TikTok username if you choose to provide one. See the <a href="privacy.html">Privacy Policy</a>.</p>
@@ -113,7 +113,7 @@ footer{text-align:center;color:#858997;border-top:1px solid #ffffff14;padding:23
  update();
 })();
 </script>
-<script src="/sanza-magic.js" defer></script>
+<!-- SanZa Magic intentionally disabled on the focused Idea Zone submission page. -->
 <script src="/sanza-quicknav.js" defer></script>
 </body>
 </html>
