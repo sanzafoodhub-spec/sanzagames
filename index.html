@@ -354,6 +354,9 @@ header{background:rgba(9,10,13,.92);border-bottom-color:#343747}
 footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
 @media(max-width:720px){.wrap{width:min(calc(100% - 28px),560px)}.nav{gap:8px}.brand{gap:7px;letter-spacing:.6px}.navlinks{gap:6px}.navlinks a{padding:9px 10px;min-height:40px}.hero{padding-top:28px}.hero .kicker{font-size:10px;padding:8px 11px}.hero .hero-actions .btn{flex:1 1 150px}.section-head{margin-bottom:16px}.mascot-stage{padding:17px;border-radius:22px}.game{box-shadow:0 10px 26px #0003}.hub-card{border-radius:18px}.social{padding-top:32px}}
 @media(prefers-reduced-motion:reduce){.game-icon,.game-icon:after{animation:none!important}.game:hover,.btn:hover,.social-links a:hover{transform:none!important}}
+
+.weather-widget{flex-wrap:wrap}.weather-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.weather-controls button{border:1px solid #51442c;border-radius:7px;background:#1b180f;color:#f5d77c;font:700 10px system-ui;padding:5px 7px;cursor:pointer}.weather-controls form{display:flex;gap:5px;align-items:center}.weather-controls form[hidden]{display:none}.weather-controls input{width:130px;min-width:0;padding:5px 7px;border:1px solid #51442c;border-radius:7px;background:#101018;color:#fff;font-size:12px}.weather-controls input:focus{outline:2px solid #f5d77c}
+@media(max-width:600px){.weather-widget{gap:5px}.weather-controls{width:100%}.weather-main{gap:5px}.weather-status{font-size:9px}.weather-controls button{font-size:9px;padding:4px 6px}.weather-controls input{width:110px}.topbar{align-items:flex-start}}
 </style>
 <style>@media(max-width:720px){.navlinks a[href="tiktok-ideas.html"]{display:inline-flex!important}}</style>
 
@@ -598,9 +601,10 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
   <div class="weather-widget" id="weather-widget" aria-live="polite">
     <span class="weather-symbol" id="weather-symbol" aria-hidden="true">🌦️</span>
     <div>
-      <div class="weather-main"><span class="weather-location">Lucan, Dublin</span><span class="weather-temp" id="weather-temp">--°C</span><span class="weather-condition" id="weather-condition">Checking weather…</span></div>
+      <div class="weather-main"><span class="weather-location" id="weather-location">Lucan, Dublin</span><span class="weather-temp" id="weather-temp">--°C</span><span class="weather-condition" id="weather-condition">Checking weather…</span></div>
       <div class="weather-status" id="weather-status">Live local weather</div>
     </div>
+    <div class="weather-controls"><button type="button" id="weather-local" title="Show weather near me">📍 My location</button><button type="button" id="weather-city-toggle" aria-expanded="false" aria-controls="weather-city-form">Change city</button><form id="weather-city-form" hidden><input id="weather-city-input" type="search" placeholder="City, country" aria-label="City and country" maxlength="90" required><button type="submit">Go</button></form></div>
   </div>
   <a class="scores-link" href="https://www.premierleague.com/en/matches" target="_blank" rel="noopener noreferrer">⚽ PREMIER LEAGUE SCORES ↗</a>
 </div>
@@ -746,36 +750,59 @@ document.querySelectorAll('a[href^="#"]').forEach(function(link){link.addEventLi
   items.forEach(function(item){observer.observe(item);});
 })();
 
-// Lightweight live weather for Lucan, using Open-Meteo (no API key required).
+// Free Open-Meteo weather with optional device location and manual city search.
 (function(){
-  var url='https://api.open-meteo.com/v1/forecast?latitude=53.357&longitude=-6.448&current=temperature_2m,weather_code,is_day&timezone=Europe%2FDublin';
-  var temp=document.getElementById('weather-temp'),condition=document.getElementById('weather-condition'),symbol=document.getElementById('weather-symbol'),status=document.getElementById('weather-status');
+  var fallback={name:'Lucan, Dublin',lat:53.357,lon:-6.448};
+  var selected=fallback;
+  var temp=document.getElementById('weather-temp'),condition=document.getElementById('weather-condition'),symbol=document.getElementById('weather-symbol'),status=document.getElementById('weather-status'),label=document.getElementById('weather-location');
+  var cityForm=document.getElementById('weather-city-form'),cityInput=document.getElementById('weather-city-input'),toggle=document.getElementById('weather-city-toggle'),locate=document.getElementById('weather-local');
+  try{var saved=JSON.parse(localStorage.getItem('sanza-weather-city')||'null');if(saved&&typeof saved.name==='string'&&Number.isFinite(saved.lat)&&Number.isFinite(saved.lon))selected=saved;}catch(e){}
   function describe(code,day){
     if(code===0)return [day?'☀️':'🌙','Clear'];
     if(code===1)return [day?'🌤️':'🌙','Mostly clear'];
     if(code===2)return ['⛅','Partly cloudy'];
     if(code===3)return ['☁️','Cloudy'];
     if(code===45||code===48)return ['🌫️','Fog'];
-    if(code===51||code===53||code===55)return ['🌦️','Drizzle'];
-    if(code===56||code===57)return ['🌧️','Freezing drizzle'];
-    if(code===61||code===63||code===65)return ['🌧️','Rain'];
-    if(code===66||code===67)return ['🌧️','Freezing rain'];
-    if(code===71||code===73||code===75||code===77)return ['🌨️','Snow'];
-    if(code===80||code===81||code===82)return ['🌧️','Rain showers'];
-    if(code===85||code===86)return ['🌨️','Snow showers'];
-    if(code===95||code===96||code===99)return ['⛈️','Thunderstorm'];
+    if([51,53,55].includes(code))return ['🌦️','Drizzle'];
+    if([56,57,61,63,65,66,67,80,81,82].includes(code))return ['🌧️','Rain'];
+    if([71,73,75,77,85,86].includes(code))return ['🌨️','Snow'];
+    if([95,96,99].includes(code))return ['⛈️','Thunderstorm'];
     return ['🌦️','Local weather'];
   }
+  var sequence=0;
   function load(){
-    fetch(url,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('Weather unavailable');return r.json()}).then(function(data){
-      var current=data.current;if(!current)throw new Error('No current weather');
-      var d=describe(current.weather_code,current.is_day===1);
-      temp.textContent=Math.round(current.temperature_2m)+'°C';condition.textContent=d[1];symbol.textContent=d[0];
-      status.textContent='Lucan local weather · Updated '+new Date().toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Dublin'});
-    }).catch(function(){condition.textContent='Weather unavailable';status.textContent='Tap to try again';});
+    var request=++sequence,city=selected;
+    label.textContent=city.name;condition.textContent='Checking weather…';
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(city.lat)+'&longitude='+encodeURIComponent(city.lon)+'&current=temperature_2m,weather_code,is_day&timezone=auto';
+    fetch(url,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('Weather unavailable');return r.json()}).then(function(data){
+      if(request!==sequence)return;
+      if(!data.current)throw Error('No current weather');
+      var d=describe(data.current.weather_code,data.current.is_day===1);
+      temp.textContent=Math.round(data.current.temperature_2m)+'°C';condition.textContent=d[1];symbol.textContent=d[0];
+      status.textContent='Updated '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    }).catch(function(){if(request!==sequence)return;condition.textContent='Weather unavailable';status.textContent='Try again shortly';});
   }
+  function choose(city){selected=city;try{localStorage.setItem('sanza-weather-city',JSON.stringify(city));}catch(e){}load();}
+  toggle.addEventListener('click',function(){cityForm.hidden=!cityForm.hidden;toggle.setAttribute('aria-expanded',String(!cityForm.hidden));if(!cityForm.hidden)cityInput.focus();});
+  cityForm.addEventListener('submit',function(e){
+    e.preventDefault();var q=cityInput.value.trim();if(!q)return;
+    status.textContent='Finding city…';
+    fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=5&language=en&format=json').then(function(r){if(!r.ok)throw Error('Search unavailable');return r.json()}).then(function(data){
+      var results=data.results||[];if(!results.length){status.textContent='City not found. Try city name only.';return;}
+      var parts=q.split(',').map(function(x){return x.trim().toLowerCase()});
+      var match=results.find(function(x){return parts.length>1&&x.country&&x.country.toLowerCase().includes(parts[1]);})||results[0];
+      choose({name:match.name+', '+match.country,lat:match.latitude,lon:match.longitude});cityForm.hidden=true;toggle.setAttribute('aria-expanded','false');
+    }).catch(function(){status.textContent='City search unavailable. Try again.';});
+  });
+  locate.addEventListener('click',function(){
+    if(!navigator.geolocation){status.textContent='Location not supported. Choose a city.';return;}
+    status.textContent='Waiting for location permission…';
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat=pos.coords.latitude,lon=pos.coords.longitude;
+      choose({name:'My location',lat:lat,lon:lon});
+    },function(){status.textContent='Location unavailable. Choose a city instead.';},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
+  });
   load();window.setInterval(load,15*60*1000);
-  document.getElementById('weather-widget').addEventListener('click',load);
 })();
 </script>
 
