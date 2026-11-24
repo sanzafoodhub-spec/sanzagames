@@ -84,3 +84,7 @@ html:not(.sanza-magic-on) .sanza-halloween-corner,html:not(.sanza-magic-on) .san
 .yupbro-dance-shades .shade-bridge{width:10px;height:4px;border-radius:4px;background:#08090d;flex:0 0 10px}
 @keyframes yupbroShadesDrop{0%{opacity:0;transform:translate(-50%,-50%) translateY(-18px) rotate(-5deg) scale(.35)}75%{opacity:1;transform:translate(-50%,-50%) translateY(2px) rotate(-5deg) scale(1.08)}100%{opacity:1;transform:translate(-50%,-50%) translateY(0) rotate(-5deg) scale(1)}}
 @media(prefers-reduced-motion:reduce){.yupbro-wearing-shades .yupbro-dance-shades{animation:none;opacity:1;transform:translate(-50%,-50%) rotate(-5deg)}}
+
+/* YupBro Christmas countdown, shown only December 1–24 */
+.sanza-xmas-countdown{display:flex;flex-direction:column;align-items:center;gap:5px;width:min(100%,520px);margin:12px auto;padding:11px 15px;border:1px solid #d6aa48;border-radius:16px;background:linear-gradient(135deg,#1b3c32,#3b1b25);color:#fff5d5;text-align:center;box-shadow:0 5px 20px #0002;font:700 14px/1.5 system-ui,sans-serif}
+.sanza-xmas-countdown strong{font-size:clamp(14px,3.4vw,18px)}.sanza-xmas-countdown span{font-size:clamp(12px,3vw,15px);font-variant-numeric:tabular-nums}
