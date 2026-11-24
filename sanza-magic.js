@@ -29,8 +29,8 @@ if(y===2026&&m===12&&d>=1&&d<=24&&(location.pathname==='/'||location.pathname===
  const update=()=>{const now=new Date();const remaining=Math.max(0,Date.UTC(2026,11,25)-now.getTime());const days=Math.floor(remaining/86400000),hours=Math.floor(remaining%86400000/3600000),mins=Math.floor(remaining%3600000/60000);clock.textContent=days+' days · '+hours+' hours · '+mins+' mins until Christmas!';};update();setInterval(update,60000);
  }
 }
-// Christmas greeting replaces the countdown from Christmas Day through December 27 (Ireland).
-if(y===2026&&m===12&&d>=25&&d<=27&&(location.pathname==='/'||location.pathname==='/index.html')){
+// Christmas greeting displays from Christmas Eve through December 27 (Ireland).
+if(y===2026&&m===12&&d>=24&&d<=27&&(location.pathname==='/'||location.pathname==='/index.html')){
  const host=document.querySelector('.welcome-inner')||document.querySelector('main,.hero,.wrap');
  if(host){const banner=document.createElement('div');banner.className='sanza-xmas-greeting';banner.setAttribute('role','status');banner.textContent='🎄 Happy Christmas From SanZa Food Hub 🎅';host.appendChild(banner)}
 }
