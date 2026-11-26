@@ -961,6 +961,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   scene.fog=null;
   renderer.toneMappingExposure=.94;
   key.color.set(0xffe5cc);key.intensity=2.5;fill.intensity=.65;rim.intensity=7;pink.intensity=3;
+  // Reference-inspired facial styling; no source photograph stored or transmitted.
+  hairmat.color.set('#252326');orange.color.set('#454247');
+  for(let i=0;i<22;i++){const x=-.32+i*.029;const y=.36+.075*Math.sin(i*.83);rod(hairGroup,mat(i%3===0?'#99989a':'#353438',.9),[x,y,.19],[x+.045,y+.065,.16],.007);}
+  const stubble=mat('#514747',.95);
+  for(let i=0;i<180;i++){const u=((i*73)%181)/180,v=((i*47)%179)/178;const x=(u-.5)*.53,y=-.14-v*.20;const z=.34*Math.sqrt(Math.max(.01,1-(x/.39)**2-(y/.43)**2));sphere(head,stubble,[x,y,z+.002],[.003,.004,.002]);}
+  skin.color.set('#b78c72');
   // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
   const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
   const stageShadow=new THREE.Mesh(new THREE.CircleGeometry(.83,40),shadowMat);stageShadow.rotation.x=-Math.PI/2;stageShadow.position.set(0,-.43,-.04);scene.add(stageShadow);
