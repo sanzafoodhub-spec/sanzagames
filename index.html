@@ -957,8 +957,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   for(const m of [hoodie,hoodieShade,pants]){m.bumpMap=weave;m.bumpScale=.012;m.roughness=.86;m.clearcoat=0;m.needsUpdate=true;}
   skin.roughness=.66;skin.clearcoat=.02;
   for(const leg of [leg1,leg2])leg.scale.set(.83,1.27,.83);
-  scene.background=new THREE.Color(0x18202b);
-  scene.fog=new THREE.Fog(0x18202b,8,18);
+  scene.background=null;
+  scene.fog=null;
   renderer.toneMappingExposure=.94;
   key.color.set(0xffe5cc);key.intensity=2.5;fill.intensity=.65;rim.intensity=7;pink.intensity=3;
   // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
