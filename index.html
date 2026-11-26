@@ -841,7 +841,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const rim=new THREE.PointLight(0x42dfff,18,12);rim.position.set(-4,3,2);scene.add(rim);
   const pink=new THREE.PointLight(0xff5ab8,10,10);pink.position.set(4,1,-2);scene.add(pink);
   // Premium mobile-friendly materials and stage graphics; no paid assets or heavy post-processing.
-  const mat=(color,rough=.55,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+  const mat=(color,rough=.55,metal=0)=>new THREE.MeshPhysicalMaterial({color,roughness:rough,metalness:metal,clearcoat:metal>.15?.45:.08,clearcoatRoughness:.35});
+  const studioFill=new THREE.DirectionalLight(0x99bbff,.75);studioFill.position.set(-2,2,-4);scene.add(studioFill);
   const accentLight=new THREE.PointLight(0xffd66e,5,7);accentLight.position.set(0,4,3);scene.add(accentLight);
   const floorMaterial=new THREE.MeshStandardMaterial({color:0x172333,roughness:.38,metalness:.28});
   const premiumFloor=new THREE.Mesh(new THREE.CircleGeometry(2.25,64),floorMaterial);premiumFloor.rotation.x=-Math.PI/2;premiumFloor.position.y=-.465;scene.add(premiumFloor);
@@ -879,6 +880,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   sphere(body,gold,[0,1.13,.32],[.105,.105,.025]);
   // Small embossed S mark built from a curved gold stroke.
   const badgeS=new THREE.Mesh(new THREE.TorusGeometry(.045,.012,8,18,Math.PI*1.55),goldTrim);badgeS.position.set(0,1.13,.35);badgeS.rotation.z=.3;body.add(badgeS);
+  // Premium streetwear detailing: layered shoulder seams, zipper teeth and embroidered piping.
+  for(const side of [-1,1]){
+   rod(body,hoodieShade,[side*.16,1.39,.20],[side*.35,1.23,.18],.024);
+   rod(body,goldTrim,[side*.21,1.36,.22],[side*.35,1.25,.21],.009);
+   rod(body,hoodieShade,[side*.32,1.13,.21],[side*.25,.77,.24],.019);
+  }
+  for(let j=0;j<17;j++)box(body,goldTrim,[0,.78+j*.033,.334],[.025,.009,.012]);
   // Long legs, jogger cuffs and chunky white/gold trainers.
   const leg1=new THREE.Group(),leg2=new THREE.Group();body.add(leg1,leg2);
   leg1.position.set(-.2,.66,0);leg2.position.set(.2,.66,0);
@@ -896,6 +904,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   sphere(leg2,sole,[.09,-.73,.12],[.22,.105,.32]);
   sphere(leg2,white,[.09,-.68,.17],[.20,.075,.23]);
   box(leg2,goldTrim,[.09,-.65,.28],[.13,.025,.025]);
+  for(const [leg,x] of [[leg1,-.01],[leg2,.09]]){
+   const sneakerTrim=mat('#152a43',.42,.08);
+   for(let j=0;j<4;j++)rod(leg,sneakerTrim,[x-.065,-.615-j*.007,.12+j*.035],[x+.065,-.615-j*.007,.12+j*.035],.009);
+   rod(leg,goldTrim,[x-.16,-.71,.06],[x-.13,-.70,.23],.014);
+   rod(leg,goldTrim,[x+.16,-.71,.06],[x+.13,-.70,.23],.014);
+  }
   // Head and ears: intentionally stylised, friendly, expressive and not a copy of any existing mascot.
   head=new THREE.Group();head.position.set(0,1.77,.015);body.add(head);
   sphere(head,skin,[0,0,0],[.39,.43,.34]);
@@ -941,6 +955,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const pupils=[sphere(head,dark,[-.12,.025,.353],[.049,.068,.026]),sphere(head,dark,[.16,.025,.353],[.049,.068,.026])];
   const eyeGlints=[sphere(head,white,[-.135,.055,.376],[.019,.023,.012]),sphere(head,white,[.145,.055,.376],[.019,.023,.012])];
   const brows=[rod(head,hairmat,[-.26,.195,.31],[-.065,.215,.325],.03),rod(head,hairmat,[.065,.215,.325],[.26,.195,.31],.03)];
+  const irisMat=mat('#79522e',.25,.05);
+  const irisRings=[sphere(head,irisMat,[-.12,.025,.372],[.033,.045,.013]),sphere(head,irisMat,[.16,.025,.372],[.033,.045,.013])];
+  const pupilCores=[sphere(head,dark,[-.12,.025,.384],[.019,.029,.008]),sphere(head,dark,[.16,.025,.384],[.019,.029,.008])];
+  const catchlights=[sphere(head,white,[-.13,.045,.394],[.010,.012,.005]),sphere(head,white,[.15,.045,.394],[.010,.012,.005])];
   // Nose and layered mouth that animates with the supplied voice clips.
   sphere(head,skin,[0,-.075,.335],[.065,.055,.055]);
   const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),dark);smile.position.set(.02,-.16,.315);smile.rotation.z=Math.PI;head.add(smile);
@@ -969,6 +987,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   sphere(arms[1],skin,[.08,-.57,.1],[.105,.11,.11]);
   const christmasMic=new THREE.Group();head.add(christmasMic);christmasMic.position.set(.10,-.48,.49);christmasMic.rotation.z=.24;christmasMic.visible=false;
   cylinder(christmasMic,black,[0,.12,0],.055,.055,.24);sphere(christmasMic,mat('#dce4ed',.35,.7),[0,.27,0],[.095,.10,.095]);
+  for(let j=0;j<7;j++){const band=new THREE.Mesh(new THREE.TorusGeometry(.086*Math.sqrt(Math.max(.2,1-Math.pow((j-3)/4,2))),.004,6,32),black);band.rotation.x=Math.PI/2;band.position.y=.22+j*.016;christmasMic.add(band);}
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
   const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
@@ -1277,7 +1296,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(!dancing&&danceBtn.classList.contains('dancing'))stopDance();
    const scale=1+Math.max(0,(boostUntil-now)/2600)*.1;mascot.scale.lerp(new THREE.Vector3(scale,scale,scale),.12);
    if(now>nextBlink){blinkUntil=now+145;nextBlink=now+2200+Math.random()*2600;}
-   const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);
+   const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);[...irisRings,...pupilCores,...catchlights].forEach(e=>e.visible=blink>.5);
    brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
    smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
    const personalityActive=now<personalityUntil;
