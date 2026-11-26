@@ -947,6 +947,20 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    sphere(santaHat,santaRed,[-.22,.885,.075],[.17,.13,.17]);
    sphere(santaHat,santaWhite,[-.35,.94,.125],[.14,.14,.14]);
   }
+  // Experimental realism proportions, preserving all existing animation handles.
+  head.scale.set(.64,.73,.68);head.position.y=1.69;
+  const weaveCanvas=document.createElement('canvas');weaveCanvas.width=128;weaveCanvas.height=128;
+  const wc=weaveCanvas.getContext('2d');wc.fillStyle='#888';wc.fillRect(0,0,128,128);
+  for(let y=0;y<128;y+=4){wc.fillStyle=y%8?'#777':'#999';wc.fillRect(0,y,128,1);}
+  for(let x=0;x<128;x+=4){wc.fillStyle='#929292';wc.fillRect(x,0,1,128);}
+  const weave=new THREE.CanvasTexture(weaveCanvas);weave.wrapS=weave.wrapT=THREE.RepeatWrapping;weave.repeat.set(5,5);
+  for(const m of [hoodie,hoodieShade,pants]){m.bumpMap=weave;m.bumpScale=.012;m.roughness=.86;m.clearcoat=0;m.needsUpdate=true;}
+  skin.roughness=.66;skin.clearcoat=.02;
+  for(const leg of [leg1,leg2])leg.scale.set(.83,1.27,.83);
+  scene.background=new THREE.Color(0x18202b);
+  scene.fog=new THREE.Fog(0x18202b,8,18);
+  renderer.toneMappingExposure=.94;
+  key.color.set(0xffe5cc);key.intensity=2.5;fill.intensity=.65;rim.intensity=7;pink.intensity=3;
   // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
   const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
   const stageShadow=new THREE.Mesh(new THREE.CircleGeometry(.83,40),shadowMat);stageShadow.rotation.x=-Math.PI/2;stageShadow.position.set(0,-.43,-.04);scene.add(stageShadow);
