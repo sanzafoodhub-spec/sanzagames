@@ -826,7 +826,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
  let renderer,scene,camera,mascot,fallPivot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
  try{
   renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2.75,Math.sqrt(3500000/Math.max(1,wrap.clientWidth*wrap.clientHeight))));
   renderer.setSize(wrap.clientWidth,wrap.clientHeight,false);
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -853,9 +853,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const sparkles=new THREE.Group();scene.add(sparkles);
   for(let i=0;i<24;i++){const p=new THREE.Mesh(sparkleGeo,sparkleMat);const angle=i*2.399963;const radius=1.1+(i%7)*.19;p.position.set(Math.cos(angle)*radius,.25+(i%9)*.32,-1.1-(i%4)*.25);p.userData.phase=i*.8;sparkles.add(p);}
   const gold=mat('#ffd34d',.35,.3),black=mat('#171923',.6),shirt=mat('#11131a',.65),red=mat('#c52c31',.4),hairmat=mat('#e34c29',.7),skin=mat('#bd815d',.75),white=mat('#f6f3e9',.3),rubber=mat('#17191d',.8),cyan=mat('#57e9ff',.3,.25);
-  const sphere=(parent,m,pos,scale)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),m);o.position.set(...pos);o.scale.set(...scale);parent.add(o);return o};
+  const sphere=(parent,m,pos,scale)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(1,48,32),m);o.position.set(...pos);o.scale.set(...scale);parent.add(o);return o};
   const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
-  const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,28),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
+  const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,40),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
   const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
   mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.25;
   // Dedicated full-body pivot lets Yup Bro fall and recover without breaking the model.
@@ -1285,7 +1285,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
   canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
   // Privacy: never activate the microphone automatically on page load.
-  function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
+  function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2.75,Math.sqrt(3500000/(w*h))));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
   requestAnimationFrame(resize);window.addEventListener('load',resize,{once:true});
