@@ -967,6 +967,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const stubble=mat('#514747',.95);
   for(let i=0;i<180;i++){const u=((i*73)%181)/180,v=((i*47)%179)/178;const x=(u-.5)*.53,y=-.14-v*.20;const z=.34*Math.sqrt(Math.max(.01,1-(x/.39)**2-(y/.43)**2));sphere(head,stubble,[x,y,z+.002],[.003,.004,.002]);}
   skin.color.set('#b78c72');
+  // Concept-inspired streetwear accessories.
+  const chainMat=mat('#c6c9cf',.27,.8);
+  for(let i=0;i<23;i++){const t=Math.PI*i/22;const link=new THREE.Mesh(new THREE.TorusGeometry(.022,.005,6,12),chainMat);link.position.set(.15*Math.cos(t),1.39-.16*Math.sin(t),.29+.035*Math.sin(t));link.rotation.y=i%2?.8:-.8;body.add(link);}
+  const lens=mat('#10151b',.19,.45);
+  for(const x of [-.145,.145]){sphere(head,lens,[x,.035,.402],[.137,.086,.035]);rod(head,black,[x-.12,.11,.41],[x+.12,.11,.41],.014);}
+  rod(head,black,[-.035,.07,.42],[.035,.07,.42],.014);
+  rod(head,black,[-.26,.08,.40],[-.37,.07,.02],.012);rod(head,black,[.26,.08,.40],[.37,.07,.02],.012);
   // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
   const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
   const stageShadow=new THREE.Mesh(new THREE.CircleGeometry(.83,40),shadowMat);stageShadow.rotation.x=-Math.PI/2;stageShadow.position.set(0,-.43,-.04);scene.add(stageShadow);
