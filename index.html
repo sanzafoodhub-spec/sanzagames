@@ -1015,6 +1015,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const christmasMic=new THREE.Group();head.add(christmasMic);christmasMic.position.set(.10,-.48,.49);christmasMic.rotation.z=.24;christmasMic.visible=false;
   cylinder(christmasMic,black,[0,.12,0],.055,.055,.24);sphere(christmasMic,mat('#dce4ed',.35,.7),[0,.27,0],[.095,.10,.095]);
   for(let j=0;j<7;j++){const band=new THREE.Mesh(new THREE.TorusGeometry(.086*Math.sqrt(Math.max(.2,1-Math.pow((j-3)/4,2))),.004,6,32),black);band.rotation.x=Math.PI/2;band.position.y=.22+j*.016;christmasMic.add(band);}
+  // Concept-inspired embroidered branding and double sleeve stripes.
+  const logoCanvas=document.createElement('canvas');logoCanvas.width=512;logoCanvas.height=256;
+  const lc=logoCanvas.getContext('2d');lc.fillStyle='#eec35a';lc.font='italic bold 105px sans-serif';lc.textAlign='center';lc.fillText('SanZa',256,185);lc.font='bold 68px sans-serif';lc.fillText('♛',256,80);
+  const logoTexture=new THREE.CanvasTexture(logoCanvas);logoTexture.colorSpace=THREE.SRGBColorSpace;
+  const logoMaterial=new THREE.MeshBasicMaterial({map:logoTexture,transparent:true,depthWrite:false});
+  const chestLogo=new THREE.Mesh(new THREE.PlaneGeometry(.27,.135),logoMaterial);chestLogo.position.set(.19,1.16,.33);body.add(chestLogo);
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){rod(arm,goldTrim,[side*.085,-.055,.115],[side*.165,-.39,.14],.012);rod(arm,goldTrim,[side*.15,-.055,.075],[side*.22,-.39,.08],.012);}
+  const micFlag=box(christmasMic,black,[0,.15,.015],[.14,.085,.12]);const micLogo=new THREE.Mesh(new THREE.PlaneGeometry(.13,.065),logoMaterial);micLogo.position.set(0,.15,.077);christmasMic.add(micLogo);
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
   const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
