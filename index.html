@@ -974,6 +974,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   for(const x of [-.145,.145]){sphere(head,lens,[x,.035,.402],[.137,.086,.035]);rod(head,black,[x-.12,.11,.41],[x+.12,.11,.41],.014);}
   rod(head,black,[-.035,.07,.42],[.035,.07,.42],.014);
   rod(head,black,[-.26,.08,.40],[-.37,.07,.02],.012);rod(head,black,[.26,.08,.40],[.37,.07,.02],.012);
+  // Cleaner athletic silhouette: taper torso, remove toy-like cheek patches and oversized medallion.
+  for(const o of body.children){
+    if(o.material===hoodie && o.geometry?.type==='SphereGeometry' && Math.abs(o.position.y-1.02)<.01){o.scale.set(.37,.49,.235);o.position.y=1.04;}
+    if(o.material===gold && o.geometry?.type==='SphereGeometry' && Math.abs(o.position.y-1.13)<.01)o.visible=false;
+  }
+  badgeS.visible=false;
+  for(const o of head.children){
+    if(o.material===blush || (o.geometry?.type==='SphereGeometry' && Math.abs(Math.abs(o.position.x)-.235)<.005 && o.position.y<0))o.visible=false;
+    if(o.material===skin && Math.abs(o.position.x)>.35 && o.geometry?.type==='SphereGeometry')o.scale.multiplyScalar(.72);
+  }
   // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
   const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
   const stageShadow=new THREE.Mesh(new THREE.CircleGeometry(.83,40),shadowMat);stageShadow.rotation.x=-Math.PI/2;stageShadow.position.set(0,-.43,-.04);scene.add(stageShadow);
@@ -1042,7 +1052,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){rod(arm,goldTrim,[side*.085,-.055,.115],[side*.165,-.39,.14],.012);rod(arm,goldTrim,[side*.15,-.055,.075],[side*.22,-.39,.08],.012);}
   const micFlag=box(christmasMic,black,[0,.15,.015],[.14,.085,.12]);const micLogo=new THREE.Mesh(new THREE.PlaneGeometry(.13,.065),logoMaterial);micLogo.position.set(0,.15,.077);christmasMic.add(micLogo);
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
-  const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
+  const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.006,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Visible 3D scooter prop for Yup Bro's SCOOTY reaction.
   const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(0,0,.02);scootyRig.scale.setScalar(1.12);scootyRig.visible=false;
