@@ -1,5 +1,5 @@
 /* SanZa PWA service worker — deliberately caches only the app shell and offline fallback. */
-const CACHE_NAME = 'sanza-app-shell-v4';
+const CACHE_NAME = 'sanza-app-shell-v5';
 const CORE_FILES = ['/', '/index.html', '/app.webmanifest', '/offline.html', '/sanza-logo.png', '/sanza-magic.css', '/sanza-magic.js', '/app-icon.svg'];
 
 self.addEventListener('install', event => {
@@ -26,7 +26,7 @@ self.addEventListener('fetch', event => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).then(response => {
+      fetch(request, {cache: 'no-store'}).then(response => {
         if (response && response.ok) {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
@@ -39,6 +39,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  if (!CORE_FILES.includes(url.pathname)) return;
   event.respondWith(
     caches.match(request).then(cached => cached || fetch(request).then(response => {
       if (response && response.ok && response.type === 'basic') {
