@@ -1085,6 +1085,26 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   for(const o of body.children)if(o.material===chainMat)o.scale.setScalar(.72);
   for(const o of hairGroup.children)if(o.geometry?.type==='SphereGeometry'&&o.position.y>.34)o.scale.y*=.72;
+  // Adult silhouette: broader shoulders, fitted waist, longer neck and grounded footwear.
+  head.scale.set(.59,.69,.65);head.position.y=1.76;
+  for(const o of body.children){if(o.material===hoodie&&o.geometry?.type==='SphereGeometry'&&Math.abs(o.position.y-1.04)<.02){o.scale.set(.405,.49,.255);const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i);p.setX(i,p.getX(i)*(1+.19*y));}p.needsUpdate=true;o.geometry.computeVertexNormals();}}
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
+    arm.position.set(side*.39,1.32,0);arm.scale.set(.94,1.13,.94);
+    sphere(arm,hoodie,[0,-.015,0],[.135,.13,.132]);
+    for(let j=0;j<3;j++){const y=-.29-j*.044;rod(arm,hoodieShade,[side*.10-.06,y,.096],[side*.10+.055,y-.018,.102],.006);}
+  }
+  for(const [leg,side] of [[leg1,-1],[leg2,1]]){
+    for(let j=0;j<4;j++){const y=-.40-j*.045;rod(leg,hoodieShade,[side*.035-.065,y,.105],[side*.035+.065,y-.025,.105],.007);}
+  }
+  // Sculpted collar, understated jacket folds and realistic matte lenses.
+  for(const side of [-1,1]){
+    rod(body,hoodieShade,[side*.075,1.43,.15],[side*.18,1.34,.23],.035);
+    for(let j=0;j<4;j++){const y=.78+j*.055;rod(body,hoodieShade,[side*.12,y,.25],[side*.25,y+.045,.20],.008);}
+    sphere(head,skin,[side*.047,-.09,.347],[.032,.025,.025]);
+  }
+  lens.roughness=.24;lens.metalness=.15;
+  for(const x of [-.145,.145]){const glint=mat('#52616e',.35,.2);rod(head,glint,[x-.085,.075,.434],[x+.025,.085,.434],.004);}
+  key.intensity=2.2;fill.intensity=1.15;rim.intensity=3.2;pink.intensity=1.1;renderer.toneMappingExposure=1.08;
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Visible 3D scooter prop for Yup Bro's SCOOTY reaction.
   const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(0,0,.02);scootyRig.scale.setScalar(1.12);scootyRig.visible=false;
@@ -1449,6 +1469,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    mascot.position.x=blend('x');mascot.rotation.y=blend('turn');mascot.rotation.z=blend('lean');arms[0].rotation.z=-blend('arm');arms[0].rotation.x=blend('reach');body.position.y=-.72+blend('hip');leg1.rotation.x=blend('l');leg2.rotation.x=blend('r');leg1.position.z=.10*Math.sin(beat)*(1-mix)*(index===0?1:0);leg2.position.z=-leg1.position.z;setMouthTalking(true);smile.visible=true;christmasMic.visible=true;}
    if(christmasPlaying===-1){leg1.position.z=0;leg2.position.z=0;}
    if(christmasPlaying!==-1){scene.updateMatrixWorld(true);const grip=arms[1].localToWorld(new THREE.Vector3(.08,-.57,.10));head.worldToLocal(grip);christmasMic.position.copy(grip);christmasMic.position.y-=.12;christmasMic.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(.02,-.15,.36).sub(christmasMic.position).normalize());}
+   // Ease abrupt pose changes across frames while preserving reaction choreography.
+   const poseEase=1-Math.exp(-12/60);
+   for(const joint of [...arms,leg1,leg2,head]){const prev=joint.userData.smoothPose;if(prev){joint.rotation.x=THREE.MathUtils.lerp(prev.x,joint.rotation.x,poseEase);joint.rotation.y=THREE.MathUtils.lerp(prev.y,joint.rotation.y,poseEase);joint.rotation.z=THREE.MathUtils.lerp(prev.z,joint.rotation.z,poseEase);}joint.userData.smoothPose={x:joint.rotation.x,y:joint.rotation.y,z:joint.rotation.z};}
    camera.position.x=Math.sin(t*.32)*.13;camera.position.z=showSantaHat?5.9:5.55;camera.lookAt(0,showSantaHat?1.39:1.25,0);
    floorRing.material.opacity=.45+.18*Math.sin(t*1.4);
    sparkles.children.forEach(p=>{p.position.y+=Math.sin(t*.9+p.userData.phase)*.0003;});
