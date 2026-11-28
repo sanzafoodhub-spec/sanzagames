@@ -586,7 +586,9 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 #welcome-gate.yupbro-b .welcome-character-slot .yupbro-speech{top:10px!important;bottom:auto!important;background:#101b29e8!important;border-color:#e9c76b!important}
 #welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button,#welcome-gate.yupbro-b .yupbro-b-actions button{background:linear-gradient(165deg,#ffe5a0,#d6a73f)!important;color:#211a10!important;border:1px solid #ffe3a0!important;box-shadow:0 3px 0 #8c6221!important;text-shadow:none!important;opacity:1!important}
 </style>
-</head>
+<style>
+#welcome-gate.yupbro-b .mascot-canvas-wrap{background-size:100% 100%!important;background-position:center!important}
+</style></head>
 <body class="welcome-active">
 
 <div class="welcome-gate yupbro-b" id="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
@@ -934,7 +936,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Hair stays full-size outside Christmas season; tuck the top under the hat when worn.
   const hairGroup=new THREE.Group();head.add(hairGroup);
   sphere(hairGroup,hairmat,[0,.285,-.025],[.405,.245,.36]);
-  sphere(hairGroup,orange,[-.13,.39,.11],[.23,.19,.22]);
+  sphere(hairGroup,hairmat,[-.13,.39,.11],[.23,.13,.22]);
   for(let i=0;i<7;i++)sphere(hairGroup,hairmat,[-.32+i*.105,.36+(i%3)*.055,.045],[.115,.095,.13]);
   sphere(hairGroup,hairmat,[.19,.47,-.01],[.18,.15,.18]);
   // Seasonal 3D Santa hat, displayed through 27 December 2026 (Ireland time).
@@ -946,7 +948,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const showSantaHat=irishDay>='2026-11-20'&&irishDay<='2026-12-27';
   if(showSantaHat){
    // Keep a narrow orange fringe at the sides, not a full hair cap above the band.
-   hairGroup.scale.set(.91,.46,.86);hairGroup.position.y=-.055;
+   hairGroup.scale.set(.96,.57,.94);hairGroup.position.y=-.035;
    const santaRed=new THREE.MeshStandardMaterial({color:0xf31931,roughness:.55,metalness:0,emissive:0x480009,emissiveIntensity:.12});
    const santaWhite=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.85,emissive:0x555555,emissiveIntensity:.12});
    const santaHat=new THREE.Group();head.add(santaHat);
