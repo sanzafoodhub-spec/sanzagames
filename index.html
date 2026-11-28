@@ -1012,6 +1012,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   rod(arms[1],goldTrim,[.12,-.055,.09],[.20,-.39,.12],.016);
   cylinder(arms[1],goldTrim,[.08,-.47,.08],.12,.12,.055);
   sphere(arms[1],skin,[.08,-.57,.1],[.105,.11,.11]);
+  // Refine hands and streetwear with articulated-looking finger shapes and cuff seams.
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
+    const palm=arm.children.find(o=>o.material===skin);if(palm)palm.scale.set(.078,.085,.064);
+    for(let f=0;f<4;f++){const x=side*.08+(f-1.5)*.033;const len=[.063,.083,.079,.058][f];sphere(arm,skin,[x,-.64-len*.32,.11],[.017,len,.022]);}
+    sphere(arm,skin,[side*.025,-.575,.148],[.024,.049,.027]);
+    for(let j=0;j<4;j++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.119,.004,6,32),hoodieShade);ring.rotation.x=Math.PI/2;ring.position.set(side*.08,-.44-j*.013,.08);arm.add(ring);}
+  }
+  const seamMat=mat('#263b51',.92);
+  for(const side of [-1,1]){for(let j=0;j<5;j++){const y=.81+j*.084;rod(body,seamMat,[side*.24,y,.245],[side*.31,y+.023,.20],.009);}}
   const christmasMic=new THREE.Group();head.add(christmasMic);christmasMic.position.set(.10,-.48,.49);christmasMic.rotation.z=.24;christmasMic.visible=false;
   cylinder(christmasMic,black,[0,.12,0],.055,.055,.24);sphere(christmasMic,mat('#dce4ed',.35,.7),[0,.27,0],[.095,.10,.095]);
   for(let j=0;j<7;j++){const band=new THREE.Mesh(new THREE.TorusGeometry(.086*Math.sqrt(Math.max(.2,1-Math.pow((j-3)/4,2))),.004,6,32),black);band.rotation.x=Math.PI/2;band.position.y=.22+j*.016;christmasMic.add(band);}
