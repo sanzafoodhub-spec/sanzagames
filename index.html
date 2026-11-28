@@ -1109,15 +1109,27 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Visible 3D scooter prop for Yup Bro's SCOOTY reaction.
   const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(0,0,.02);scootyRig.scale.setScalar(1.12);scootyRig.visible=false;
   const scooterMetal=mat('#c7d2dc',.28,.72),scooterRed=mat('#d52d36',.3,.35);
-  const scooterWheel=(x)=>{const w=new THREE.Mesh(new THREE.TorusGeometry(.17,.045,10,24),rubber);w.rotation.y=Math.PI/2;w.position.set(x,.19,0);scootyRig.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.08,16),scooterMetal);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);scootyRig.add(hub);};
-  scooterWheel(-.42);scooterWheel(.42);
-  box(scootyRig,scooterRed,[0,.24,0],[.92,.09,.2]);
-  box(scootyRig,black,[0,.295,0],[.62,.025,.205]);
-  rod(scootyRig,scooterMetal,[-.38,.22,0],[-.47,.82,0],.035);
-  rod(scootyRig,black,[-.62,.82,.18],[-.32,.82,.18],.045);
-  sphere(scootyRig,gold,[-.47,.82,.18],[.065,.065,.065]);
-  box(scootyRig,black,[0,.47,-.015],[.42,.12,.24]);
-  box(scootyRig,scooterRed,[.0,.39,-.02],[.34,.045,.22]);
+  // Full-size forward-facing motor scooter, wheels aligned with the direction of travel.
+  scootyRig.scale.setScalar(1);
+  const scooterWheels=[];
+  for(const z of [-.57,.63]){
+    const wheel=new THREE.Group();wheel.position.set(0,.03,z);scootyRig.add(wheel);scooterWheels.push(wheel);
+    const tyre=new THREE.Mesh(new THREE.TorusGeometry(.24,.073,16,40),rubber);tyre.rotation.y=Math.PI/2;wheel.add(tyre);
+    cylinder(wheel,scooterMetal,[0,0,0],.15,.15,.12,[0,0,Math.PI/2]);
+    for(let j=0;j<5;j++){const a=j*Math.PI*2/5;rod(wheel,black,[.07,0,0],[.07,.14*Math.cos(a),.14*Math.sin(a)],.014);}
+  }
+  sphere(scootyRig,scooterRed,[0,.28,-.34],[.34,.32,.55]);
+  box(scootyRig,black,[0,.20,.12],[.51,.10,.73]);
+  sphere(scootyRig,black,[0,.59,-.26],[.30,.085,.39]);
+  sphere(scootyRig,scooterRed,[0,.55,.55],[.29,.43,.19]);
+  rod(scootyRig,scooterMetal,[0,.05,.63],[0,.99,.49],.055);
+  rod(scootyRig,black,[-.36,.99,.49],[.36,.99,.49],.035);
+  sphere(scootyRig,white,[0,.77,.71],[.15,.09,.045]);
+  sphere(scootyRig,red,[0,.42,-.85],[.14,.055,.025]);
+  for(const side of [-1,1]){rod(scootyRig,scooterMetal,[side*.24,.99,.49],[side*.36,1.20,.49],.015);sphere(scootyRig,black,[side*.38,1.21,.49],[.085,.045,.028]);}
+  // Dark chocolate brownie with textured crumb and separate bite portions.
+  brownieTreat.clear();const crumb=mat('#422015',.93),crust=mat('#2c120c',.82);
+  const bites=[];for(let i=0;i<3;i++){const part=new THREE.Group();part.position.x=(i-1)*.072; brownieTreat.add(part);bites.push(part);box(part,crumb,[0,0,0],[.074,.12,.15]);box(part,crust,[0,.065,0],[.074,.023,.15]);for(let j=0;j<8;j++)sphere(part,j%2?crumb:crust,[(j%3-1)*.02,-.04+(j%4)*.025,.077],[.009,.008,.005]);}
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
   for(let i=0;i<24;i++){const p=sphere(particles,i%3===0?cyan:gold,[(Math.random()-.5)*4,Math.random()*3.1-.2,(Math.random()-.5)*1.2],[.018,.018,.018]);p.userData.phase=Math.random()*6.28;p.userData.baseY=p.position.y}
@@ -1472,6 +1484,21 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    // Ease abrupt pose changes across frames while preserving reaction choreography.
    const poseEase=1-Math.exp(-12/60);
    for(const joint of [...arms,leg1,leg2,head]){const prev=joint.userData.smoothPose;if(prev){joint.rotation.x=THREE.MathUtils.lerp(prev.x,joint.rotation.x,poseEase);joint.rotation.y=THREE.MathUtils.lerp(prev.y,joint.rotation.y,poseEase);joint.rotation.z=THREE.MathUtils.lerp(prev.z,joint.rotation.z,poseEase);}joint.userData.smoothPose={x:joint.rotation.x,y:joint.rotation.y,z:joint.rotation.z};}
+   if(reactionActive&&reactionMode==='snack'){
+    const elapsed=Math.max(0,3.6-(reactionUntil-now)/1000),cycle=elapsed%1.2,lift=Math.sin(Math.PI*Math.min(1,cycle/.85));
+    arms[1].rotation.set(-1.15-.65*lift,0,-.65-.30*lift);arms[0].rotation.set(-.12,0,.15);
+    head.rotation.x=.12*lift;scene.updateMatrixWorld(true);
+    const grip=arms[1].localToWorld(new THREE.Vector3(.08,-.61,.14));head.worldToLocal(grip);brownieTreat.position.copy(grip);brownieTreat.rotation.set(0,0,0);
+    bites.forEach((p,i)=>p.visible=i>=Math.min(2,Math.floor(elapsed/1.2)));
+    mouthInner.visible=true;mouthInner.scale.y=.015+.025*Math.abs(Math.sin(elapsed*20));smile.visible=false;
+   }else if(!isSpeaking){mouthInner.visible=false;smile.visible=true;}
+   if(reactionActive&&reactionMode==='scooty'){
+    mascot.rotation.y=.65;mascot.position.x=.25*Math.sin(t*2);mascot.rotation.z=.035*Math.sin(t*5);
+    body.position.y=-.32;body.rotation.x=.12;
+    arms[0].rotation.set(-1.1,0,.10);arms[1].rotation.set(-1.1,0,-.10);
+    leg1.rotation.set(-.70,0,-.18);leg2.rotation.set(-.70,0,.18);
+    scootyRig.rotation.y=0;scooterWheels.forEach(w=>w.rotation.x=t*9);
+   }else body.rotation.x=0;
    camera.position.x=Math.sin(t*.32)*.13;camera.position.z=showSantaHat?5.9:5.55;camera.lookAt(0,showSantaHat?1.39:1.25,0);
    floorRing.material.opacity=.45+.18*Math.sin(t*1.4);
    sparkles.children.forEach(p=>{p.position.y+=Math.sin(t*.9+p.userData.phase)*.0003;});
