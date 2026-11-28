@@ -1066,6 +1066,25 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const micFlag=box(christmasMic,black,[0,.15,.015],[.14,.085,.12]);const micLogo=new THREE.Mesh(new THREE.PlaneGeometry(.13,.065),logoMaterial);micLogo.position.set(0,.15,.077);christmasMic.add(micLogo);
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
   const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.006,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
+  // Continuous tailored sleeves and trousers, replacing visibly disconnected cylinder ends.
+  function tailoredTube(parent,material,points,radii){
+    const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+    const g=new THREE.TubeGeometry(curve,32,1,24,false),p=g.attributes.position;
+    for(let i=0;i<=32;i++){const t=i/32,c=curve.getPointAt(t),f=t*(radii.length-1),j=Math.min(radii.length-2,Math.floor(f)),r=THREE.MathUtils.lerp(radii[j],radii[j+1],f-j);for(let k=0;k<=24;k++){const n=i*25+k;p.setXYZ(n,c.x+(p.getX(n)-c.x)*r,c.y+(p.getY(n)-c.y)*r,c.z+(p.getZ(n)-c.z)*r);}}
+    p.needsUpdate=true;g.computeVertexNormals();parent.add(new THREE.Mesh(g,material));
+  }
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
+    for(const o of arm.children)if(o.material===hoodie)o.visible=false;
+    tailoredTube(arm,hoodie,[[0,.035,0],[side*.085,-.15,.01],[side*.12,-.26,.02],[side*.08,-.48,.08]],[.135,.126,.108,.105]);
+    for(const o of arm.children)if(o.material===goldTrim&&o.geometry?.type==='CylinderGeometry'&&o.position.y>-.42)o.visible=false;
+    for(const offset of [.025,.055])rod(arm,goldTrim,[side*.08+side*offset,-.10,.103],[side*.12+side*offset,-.26,.108],.006);
+  }
+  for(const [leg,side] of [[leg1,-1],[leg2,1]]){
+    for(const o of leg.children)if(o.material===pants)o.visible=false;
+    tailoredTube(leg,pants,[[0,.025,0],[side*.025,-.32,0],[side*.04,-.48,.01],[side*.055,-.66,.02]],[.151,.138,.116,.107]);
+  }
+  for(const o of body.children)if(o.material===chainMat)o.scale.setScalar(.72);
+  for(const o of hairGroup.children)if(o.geometry?.type==='SphereGeometry'&&o.position.y>.34)o.scale.y*=.72;
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Visible 3D scooter prop for Yup Bro's SCOOTY reaction.
   const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(0,0,.02);scootyRig.scale.setScalar(1.12);scootyRig.visible=false;
