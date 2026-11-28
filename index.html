@@ -219,7 +219,7 @@ footer a{color:var(--gold)}
 .yupbro-tap.yupbro-pop{animation:yupbroButtonPop .42s cubic-bezier(.2,.8,.2,1)}
 @keyframes yupbroBubble{0%,100%{rotate:0deg}25%{rotate:-2deg}75%{rotate:2deg}}
 @keyframes yupbroButtonPop{0%{scale:1}45%{scale:1.1}100%{scale:1}}
-.yupbro-status{position:absolute;z-index:3;left:13px;right:13px;bottom:13px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.yupbro-status span{font-size:9px;font-weight:1000;letter-spacing:.08em;color:#d8f9ff;background:#07121adf;border:1px solid #57e9ff44;border-radius:999px;padding:7px 9px;box-shadow:0 5px 18px #0004}.yupbro-status #yupbro-mood[data-mood="snack"]{color:#ffd34d;border-color:#ffd34d66}.yupbro-status #yupbro-mood[data-mood="hype"]{color:#ff68c7;border-color:#ff68c766}.yupbro-tap{position:absolute;z-index:4;left:50%;bottom:48px;transform:translateX(-50%);border:1px solid #57e9ff88;border-radius:999px;background:#09141df2;color:#fff;padding:10px 15px;font:900 11px system-ui,sans-serif;letter-spacing:.08em;box-shadow:0 6px 20px #0005;cursor:pointer;white-space:nowrap}
+.mascot-canvas-wrap .mascot-hint{display:none}.yupbro-status{position:absolute;z-index:3;left:13px;right:13px;bottom:13px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.yupbro-status span{font-size:9px;font-weight:1000;letter-spacing:.08em;color:#d8f9ff;background:#07121adf;border:1px solid #57e9ff44;border-radius:999px;padding:7px 9px;box-shadow:0 5px 18px #0004}.yupbro-status #yupbro-mood[data-mood="snack"]{color:#ffd34d;border-color:#ffd34d66}.yupbro-status #yupbro-mood[data-mood="hype"]{color:#ff68c7;border-color:#ff68c766}.yupbro-tap{position:absolute;z-index:4;left:50%;bottom:48px;transform:translateX(-50%);border:1px solid #57e9ff88;border-radius:999px;background:#09141df2;color:#fff;padding:10px 15px;font:900 11px system-ui,sans-serif;letter-spacing:.08em;box-shadow:0 6px 20px #0005;cursor:pointer;white-space:nowrap}
 .yupbro-tap:active{transform:translateX(-50%) scale(.96)}
 .yupbro-tap:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .yupbro-dance-btn{position:absolute;z-index:6;left:50%;bottom:43px;transform:translateX(-50%);border:1px solid #ffe99b;border-radius:999px;background:linear-gradient(110deg,#ffd34d,#fff0a8);color:#15110a;padding:12px 17px;font:1000 11px system-ui,sans-serif;letter-spacing:.07em;box-shadow:0 7px 25px #ffd34d40,0 0 0 3px #08090d88;white-space:nowrap;cursor:pointer;touch-action:manipulation}.yupbro-dance-btn:active{transform:translateX(-50%) scale(.96)}.yupbro-dance-btn:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}.yupbro-dance-btn.dancing{background:linear-gradient(110deg,#ff68c7,#ffd34d);box-shadow:0 0 30px #ff68c766}
@@ -1122,7 +1122,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
    try{
     yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0});
-    const clip=yupbroVoiceClips[nextVoiceClip%yupbroVoiceClips.length];nextVoiceClip++;
+    const available=yupbroVoiceClips.filter(a=>!a.error);if(!available.length){voiceClipUnavailable();return;}const clip=available[nextVoiceClip%available.length];nextVoiceClip++;
     setMouthTalking(true);
     const finish=()=>setMouthTalking(false);
     clip.onended=finish;clip.onerror=finish;
@@ -1448,6 +1448,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const pa=dancePose(index),pb=dancePose(index+1),blend=k=>THREE.MathUtils.lerp(pa[k],pb[k],mix);
    mascot.position.x=blend('x');mascot.rotation.y=blend('turn');mascot.rotation.z=blend('lean');arms[0].rotation.z=-blend('arm');arms[0].rotation.x=blend('reach');body.position.y=-.72+blend('hip');leg1.rotation.x=blend('l');leg2.rotation.x=blend('r');leg1.position.z=.10*Math.sin(beat)*(1-mix)*(index===0?1:0);leg2.position.z=-leg1.position.z;setMouthTalking(true);smile.visible=true;christmasMic.visible=true;}
    if(christmasPlaying===-1){leg1.position.z=0;leg2.position.z=0;}
+   if(christmasPlaying!==-1){scene.updateMatrixWorld(true);const grip=arms[1].localToWorld(new THREE.Vector3(.08,-.57,.10));head.worldToLocal(grip);christmasMic.position.copy(grip);christmasMic.position.y-=.12;christmasMic.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(.02,-.15,.36).sub(christmasMic.position).normalize());}
    camera.position.x=Math.sin(t*.32)*.13;camera.position.z=showSantaHat?5.9:5.55;camera.lookAt(0,showSantaHat?1.39:1.25,0);
    floorRing.material.opacity=.45+.18*Math.sin(t*1.4);
    sparkles.children.forEach(p=>{p.position.y+=Math.sin(t*.9+p.userData.phase)*.0003;});
