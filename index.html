@@ -898,15 +898,21 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   rod(leg1,pants,[-.025,-.39,0],[-.055,-.68,.02],.125);
   rod(leg1,goldTrim,[-.145,-.04,.07],[-.18,-.61,.07],.013);
   cylinder(leg1,hoodieShade,[-.055,-.63,.02],.13,.13,.075);
-  sphere(leg1,sole,[-.01,-.73,.12],[.22,.105,.32]);
-  sphere(leg1,white,[-.01,-.68,.17],[.20,.075,.23]);
+  box(leg1,sole,[-.01,-.745,.13],[.32,.065,.47]);
+  sphere(leg1,sole,[-.01,-.735,.32],[.16,.035,.105]);
+  sphere(leg1,white,[-.01,-.675,.13],[.16,.085,.235]);
+  sphere(leg1,white,[-.01,-.63,.025],[.135,.11,.12]);
+  box(leg1,hoodieShade,[-.01,-.615,.14],[.11,.018,.13]);
   box(leg1,goldTrim,[-.01,-.65,.28],[.13,.025,.025]);
   rod(leg2,pants,[0,0,0],[.025,-.39,0],.145);
   rod(leg2,pants,[.025,-.39,0],[.055,-.68,.02],.125);
   rod(leg2,goldTrim,[.145,-.04,.07],[.18,-.61,.07],.013);
   cylinder(leg2,hoodieShade,[.055,-.63,.02],.13,.13,.075);
-  sphere(leg2,sole,[.09,-.73,.12],[.22,.105,.32]);
-  sphere(leg2,white,[.09,-.68,.17],[.20,.075,.23]);
+  box(leg2,sole,[.09,-.745,.13],[.32,.065,.47]);
+  sphere(leg2,sole,[.09,-.735,.32],[.16,.035,.105]);
+  sphere(leg2,white,[.09,-.675,.13],[.16,.085,.235]);
+  sphere(leg2,white,[.09,-.63,.025],[.135,.11,.12]);
+  box(leg2,hoodieShade,[.09,-.615,.14],[.11,.018,.13]);
   box(leg2,goldTrim,[.09,-.65,.28],[.13,.025,.025]);
   for(const [leg,x] of [[leg1,-.01],[leg2,.09]]){
    const sneakerTrim=mat('#152a43',.42,.08);
@@ -1006,7 +1012,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const catchlights=[sphere(head,white,[-.13,.045,.394],[.010,.012,.005]),sphere(head,white,[.15,.045,.394],[.010,.012,.005])];
   // Nose and layered mouth that animates with the supplied voice clips.
   sphere(head,skin,[0,-.075,.335],[.065,.055,.055]);
-  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),dark);smile.position.set(.02,-.16,.315);smile.rotation.z=Math.PI;head.add(smile);
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(.085,.009,8,24,Math.PI),dark);smile.position.set(.02,-.16,.315);smile.rotation.z=Math.PI;head.add(smile);
   const mouthInner=sphere(head,mat('#321017',.72),[.02,-.155,.332],[.125,.012,.034]);
   const mouthTeeth=sphere(head,white,[.02,-.13,.36],[.078,.008,.009]);
   const tongue=sphere(head,mat('#f06b83',.5),[.02,-.192,.359],[.048,.008,.01]);
@@ -1050,7 +1056,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   for(const side of [-1,1]){for(let j=0;j<5;j++){const y=.81+j*.084;rod(body,seamMat,[side*.24,y,.245],[side*.31,y+.023,.20],.009);}}
   // Smooth sleeve silhouettes while retaining the existing dance pivots.
   for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
-    sphere(arm,hoodie,[0,-.035,0],[.132,.15,.133]);
+    sphere(arm,hoodie,[0,-.065,0],[.122,.115,.125]);
     sphere(arm,hoodie,[side*.12,-.26,.02],[.121,.13,.122]);
     for(const child of arm.children){
       if(child.material===hoodie && child.geometry.type==='CylinderGeometry'){child.scale.x*=.91;child.scale.z*=.91;}
@@ -1079,7 +1085,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
     for(const o of arm.children)if(o.material===hoodie)o.visible=false;
-    tailoredTube(arm,hoodie,[[0,.035,0],[side*.085,-.15,.01],[side*.12,-.26,.02],[side*.08,-.48,.08]],[.135,.126,.108,.105]);
+    tailoredTube(arm,hoodie,[[0,-.025,0],[side*.085,-.15,.01],[side*.12,-.26,.02],[side*.08,-.48,.08]],[.118,.126,.108,.105]);
     for(const o of arm.children)if(o.material===goldTrim&&o.geometry?.type==='CylinderGeometry'&&o.position.y>-.42)o.visible=false;
     for(const offset of [.025,.055])rod(arm,goldTrim,[side*.08+side*offset,-.10,.103],[side*.12+side*offset,-.26,.108],.006);
   }
@@ -1100,7 +1106,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   for(const [leg,side] of [[leg1,-1],[leg2,1]]){
     for(let j=0;j<4;j++){const y=-.40-j*.045;rod(leg,hoodieShade,[side*.035-.065,y,.105],[side*.035+.065,y-.025,.105],.007);}
   }
-  sphere(body,pants,[0,.62,0],[.32,.15,.22]);
+  sphere(body,pants,[0,.65,-.015],[.265,.105,.165]);
+  box(body,hoodie,[0,.70,.025],[.56,.105,.34]);
   // Sculpted collar, understated jacket folds and realistic matte lenses.
   for(const side of [-1,1]){
     rod(body,hoodieShade,[side*.075,1.43,.15],[side*.18,1.34,.23],.035);
@@ -1430,7 +1437,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(now>nextBlink){blinkUntil=now+145;nextBlink=now+2200+Math.random()*2600;}
    const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);[...irisRings,...pupilCores,...catchlights].forEach(e=>e.visible=blink>.5);
    brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
-   smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
+   smile.scale.set(reacting&&mood==='hype'?1.15:.95,reacting&&mood==='snack'?.65:.48,.75);
    const personalityActive=now<personalityUntil;
    const reactionActive=now<reactionUntil&&!dancing&&!fallen;
    const reactionTime=(1900-(reactionUntil-now))/1900;
