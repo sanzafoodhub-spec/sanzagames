@@ -582,6 +582,10 @@ body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-fl
 @media(prefers-reduced-motion:reduce){#sanza-explore .explore-fold,#sanza-explore .explore-fold>summary,#sanza-explore .explore-fold>summary:after{transition:none!important}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
+<style>
+#welcome-gate.yupbro-b .welcome-character-slot .yupbro-speech{top:10px!important;bottom:auto!important;background:#101b29e8!important;border-color:#e9c76b!important}
+#welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button,#welcome-gate.yupbro-b .yupbro-b-actions button{background:linear-gradient(165deg,#ffe5a0,#d6a73f)!important;color:#211a10!important;border:1px solid #ffe3a0!important;box-shadow:0 3px 0 #8c6221!important;text-shadow:none!important;opacity:1!important}
+</style>
 </head>
 <body class="welcome-active">
 
@@ -941,11 +945,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    const santaWhite=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.85,emissive:0x555555,emissiveIntensity:.12});
    const santaHat=new THREE.Group();head.add(santaHat);
    // White fluffy band above eyebrows; bright red tilted tall cone and oversized pompom.
-   sphere(santaHat,santaWhite,[0,.335,.12],[.455,.105,.38]);
-   const crown=new THREE.Mesh(new THREE.ConeGeometry(.39,.59,32),santaRed);
-   crown.position.set(-.055,.635,.045);crown.rotation.z=.28;santaHat.add(crown);
-   sphere(santaHat,santaRed,[-.22,.885,.075],[.17,.13,.17]);
-   sphere(santaHat,santaWhite,[-.35,.94,.125],[.14,.14,.14]);
+   sphere(santaHat,santaWhite,[0,.32,.04],[.42,.075,.37]);
+   const crown=new THREE.Mesh(new THREE.ConeGeometry(.36,.48,32),santaRed);
+   crown.position.set(-.055,.56,.04);crown.rotation.z=.28;santaHat.add(crown);
+   sphere(santaHat,santaRed,[-.13,.76,.04],[.085,.09,.085]);
+   sphere(santaHat,santaWhite,[-.17,.81,.04],[.105,.105,.105]);
   }
   // Experimental realism proportions, preserving all existing animation handles.
   head.scale.set(.64,.73,.68);head.position.y=1.69;
@@ -1038,7 +1042,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // Refine hands and streetwear with articulated-looking finger shapes and cuff seams.
   for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
     const palm=arm.children.find(o=>o.material===skin);if(palm)palm.scale.set(.078,.085,.064);
-    for(let f=0;f<4;f++){const x=side*.08+(f-1.5)*.033;const len=[.063,.083,.079,.058][f];sphere(arm,skin,[x,-.64-len*.32,.11],[.017,len,.022]);}
+    for(let f=0;f<4;f++){const x=side*.08+(f-1.5)*.033;const len=[.063,.083,.079,.058][f];sphere(arm,skin,[x,-.625-len*.30,.115],[.018,len*.77,.022]);}
     sphere(arm,skin,[side*.025,-.575,.148],[.024,.049,.027]);
     for(let j=0;j<4;j++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.119,.004,6,32),hoodieShade);ring.rotation.x=Math.PI/2;ring.position.set(side*.08,-.44-j*.013,.08);arm.add(ring);}
   }
@@ -1089,13 +1093,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   head.scale.set(.59,.69,.65);head.position.y=1.76;
   for(const o of body.children){if(o.material===hoodie&&o.geometry?.type==='SphereGeometry'&&Math.abs(o.position.y-1.04)<.02){o.scale.set(.405,.49,.255);const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i);p.setX(i,p.getX(i)*(1+.19*y));}p.needsUpdate=true;o.geometry.computeVertexNormals();}}
   for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
-    arm.position.set(side*.39,1.32,0);arm.scale.set(.94,1.13,.94);
-    sphere(arm,hoodie,[0,-.015,0],[.135,.13,.132]);
+    arm.position.set(side*.345,1.29,0);arm.scale.set(.79,1.13,.85);
+    sphere(arm,hoodie,[0,-.045,0],[.112,.12,.115]);
     for(let j=0;j<3;j++){const y=-.29-j*.044;rod(arm,hoodieShade,[side*.10-.06,y,.096],[side*.10+.055,y-.018,.102],.006);}
   }
   for(const [leg,side] of [[leg1,-1],[leg2,1]]){
     for(let j=0;j<4;j++){const y=-.40-j*.045;rod(leg,hoodieShade,[side*.035-.065,y,.105],[side*.035+.065,y-.025,.105],.007);}
   }
+  sphere(body,pants,[0,.62,0],[.32,.15,.22]);
   // Sculpted collar, understated jacket folds and realistic matte lenses.
   for(const side of [-1,1]){
     rod(body,hoodieShade,[side*.075,1.43,.15],[side*.18,1.34,.23],.035);
