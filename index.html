@@ -370,15 +370,231 @@ footer{padding-bottom:calc(30px + env(safe-area-inset-bottom))}
   @media(prefers-reduced-motion:reduce){.sanza-hungry-float.sanza-hungry-nudge{animation:none}}
 </style>
 <link rel="stylesheet" href="/sanza-magic.css">
-</head>
+<style>/* YupBro Design B — preview-only clean companion interface */
+.welcome-gate.yupbro-b{background:#f5f7fa;color:#192331;padding:12px}
+.yupbro-b .welcome-inner{width:min(750px,100%);background:#fff;color:#192331;border:1px solid #e5e9f0;border-radius:24px;box-shadow:0 12px 45px #26354b12;padding:clamp(14px,3vw,26px);overflow:visible}
+.yupbro-b .welcome-inner:before{display:none}
+.yupbro-b .welcome-kicker{color:#987100;font-weight:900}
+.yupbro-b .welcome-title{color:#172331;font-size:clamp(25px,5vw,39px);line-height:1.12;margin:8px 0}
+.yupbro-b .welcome-title span{color:#bd8400}
+.yupbro-b .welcome-subtitle{color:#536174;max-width:500px;margin:8px auto;font-size:13px;line-height:1.5}
+.yupbro-b .welcome-character-slot{width:min(610px,100%);margin:8px auto;position:relative}
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(370px,57vh,550px);min-height:370px;border:1px solid #e6ebf0;border-radius:20px;overflow:hidden}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls{background:#fffffff0!important;border:1px solid #e1e6ec!important;box-shadow:0 5px 20px #00000014;bottom:8px!important;border-radius:16px!important;padding:8px!important;max-width:96%!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls button{background:#fff!important;color:#202c39!important;border:1px solid #e1e6ec!important;font-size:12px!important;padding:9px 11px!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls button:nth-child(1),.yupbro-b .welcome-character-slot .yupbro-reaction-controls button:nth-child(4){display:none}
+.yupbro-b .welcome-character-slot .yupbro-dance-btn{display:none}
+.yupbro-b .welcome-foot{color:#667386;font-size:12px}
+.yupbro-b .welcome-enter{background:#ffd34d;color:#151515;box-shadow:none;margin-top:10px}
+.yupbro-b .yupbro-b-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px auto}
+.yupbro-b .yupbro-b-actions button{background:#fff;color:#253245;border:1px solid #dfe5ec;border-radius:13px;padding:10px 13px;font-weight:800;cursor:pointer}
+.yupbro-b .yupbro-b-actions button:focus-visible{outline:3px solid #d9a100}
+.yupbro-b.yupbro-b-full{padding:0}
+.yupbro-b.yupbro-b-full .welcome-inner{width:100%;min-height:100dvh;border:0;border-radius:0;box-shadow:none;display:flex;flex-direction:column;justify-content:center}
+.yupbro-b.yupbro-b-full .welcome-character-slot{width:min(760px,100%)}
+.yupbro-b.yupbro-b-full .welcome-character-slot .mascot-canvas-wrap{height:min(70dvh,720px)}
+.yupbro-b.yupbro-b-full .welcome-subtitle,.yupbro-b.yupbro-b-full .welcome-foot{display:none}
+@media(max-width:560px){.yupbro-b .welcome-inner{padding:12px}.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(390px,59dvh,570px)}.yupbro-b .welcome-subtitle{font-size:12px}.yupbro-b .welcome-character-slot .yupbro-reaction-controls button{padding:8px!important}}
+
+/* Design B polish: keep controls outside the 3D stage, prevent overlays */
+.yupbro-b .welcome-inner{background:#fff!important;color:#172331!important;border-color:#e4e8ef!important}
+.yupbro-b .welcome-title{font-size:clamp(24px,5vw,34px)!important}
+.yupbro-b .welcome-subtitle{font-size:14px!important;line-height:1.4!important;max-width:460px!important}
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(390px,58dvh,600px)!important;min-height:390px!important;border:1px solid #e4e8ef!important}
+.yupbro-b .welcome-character-slot .yupbro-fullscreen-btn{display:none!important}
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap.yupbro-faux-fullscreen .yupbro-fullscreen-btn,.yupbro-b .welcome-character-slot .mascot-canvas-wrap:fullscreen .yupbro-fullscreen-btn{display:flex!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls{bottom:12px!important;left:50%!important;width:max-content!important;max-width:calc(100% - 18px)!important;transform:translateX(-50%)!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls button{border-radius:12px!important;box-shadow:none!important}
+.yupbro-b .yupbro-b-actions{margin:12px auto 4px!important}
+.yupbro-b .yupbro-b-actions button{font-size:12px;min-height:43px}
+body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-hungry-float{display:none!important}
+body:has(.welcome-gate.yupbro-b:not([hidden])) .sanza-quicknav,body:has(.welcome-gate.yupbro-b:not([hidden])) [id*="quicknav"]{display:none!important}
+.yupbro-b .welcome-foot{margin:7px auto!important}
+.yupbro-b .welcome-character-slot .yupbro-speech{max-width:85%;font-size:12px}
+
+/* YupBro 3.0: mobile-first stage, real controls and clearer interaction */
+.yupbro-b .welcome-inner{background:#fff!important;border:1px solid #e7eaf0!important;box-shadow:0 14px 40px #192c4617!important}
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{border-radius:24px!important;border:2px solid #f0d47b!important;box-shadow:0 10px 24px #0d203320!important}
+.yupbro-b .welcome-character-slot .yupbro-reaction-controls{display:none!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls{position:static!important;display:flex!important;transform:none!important;width:100%!important;max-width:none!important;margin:10px auto 0!important;gap:8px!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{flex:1 1 95px!important;background:#fff8e5!important;color:#2b2730!important;border:1px solid #e9c968!important;border-radius:14px!important;min-height:45px!important;font-weight:900!important;box-shadow:0 2px 7px #26334a0c!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:active{background:#ffd34d!important;transform:scale(.97)}
+.yupbro-b .yupbro-b-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px!important;margin:10px auto!important}
+.yupbro-b .yupbro-b-actions button{background:#fff!important;border:1px solid #e6c56c!important;color:#302b20!important;border-radius:13px!important;font-size:12px!important;padding:9px 6px!important;min-width:0!important}
+.yupbro-b .yupbro-b-actions button[aria-pressed=true]{background:#e3f8e7!important;border-color:#8abf94!important}
+.yupbro-b .welcome-foot{font-size:11px!important}
+.yupbro-b .welcome-character-slot .yupbro-status{opacity:.65}
+.yupbro-b .welcome-character-slot .yupbro-speech{font-size:12px!important}
+@media(max-width:540px){.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(370px,56dvh,540px)!important;min-height:370px!important}.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{font-size:11px!important;padding:9px 5px!important}.yupbro-b .welcome-inner{padding:12px!important}}
+@media(prefers-reduced-motion:reduce){.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{transition:none!important}}
+
+/* YupBro 3.1 graphics polish: richer stage frame, readable character and clean controls */
+.yupbro-b .welcome-character-slot .mascot-canvas-wrap{background:radial-gradient(ellipse at 50% 42%,#263b54 0%,#111b2b 53%,#080d17 100%)!important;border:2px solid #e5bd52!important;box-shadow:0 12px 32px #16243b30,0 0 0 4px #fff6dc!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{box-shadow:0 3px 0 #e7ca7b!important;transition:transform .12s ease,background .12s ease!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:hover{background:#ffeab3!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:focus-visible{outline:3px solid #c89400!important;outline-offset:2px!important}
+@media(prefers-reduced-motion:reduce){.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{transition:none!important}}
+
+/* YupBro 3.2: unobstructed head, compact floating chrome and brighter mobile buttons */
+.yupbro-b .welcome-character-slot .yupbro-speech{top:auto!important;bottom:50px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;max-width:90%!important;width:max-content!important;text-align:center!important;font-size:11px!important;line-height:1.3!important;padding:8px 12px!important;pointer-events:none!important}
+.yupbro-b .welcome-character-slot .yupbro-status{bottom:10px!important;left:12px!important;font-size:10px!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button,.yupbro-b .yupbro-b-actions button{background:#fff6d9!important;color:#262018!important;border:2px solid #e7b63d!important;box-shadow:0 3px 0 #b58b31!important;text-shadow:none!important}
+.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:hover,.yupbro-b .yupbro-b-actions button:hover{background:#ffe6a1!important}
+.yupbro-b .yupbro-b-actions button:active,.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button:active{background:#ffd34d!important;transform:translateY(2px)!important;box-shadow:0 1px 0 #b58b31!important}
+body:has(#welcome-gate.yupbro-b:not([hidden])) .sanza-global-quicknav{display:none!important}
+body:has(#welcome-gate.yupbro-b:not([hidden])) :is(.sanza-floating-nav,.sanza-floating-menu,.floating-quicknav,.sanza-quicknav-fab){display:none!important}
+@media(max-width:540px){.yupbro-b .welcome-character-slot .yupbro-speech{bottom:45px!important;max-width:78%!important}.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:clamp(420px,60dvh,590px)!important;min-height:420px!important}}
+
+/* Hidden must override the mobile flex layout when Explore SanZa is pressed. */
+#welcome-gate[hidden]{display:none!important}
+/* Always hide the welcome gate after Explore is clicked, including in portrait mode. */
+#welcome-gate.yupbro-b[hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}
+/* YupBro 3.3: single-screen portrait mobile layout, no page scrolling.
+   The WebGL stage takes remaining viewport height instead of a fixed 440px. */
+@media (max-width:800px) and (orientation:portrait){
+ body:has(#welcome-gate:not([hidden])){overflow:hidden!important}
+ #welcome-gate.yupbro-b:not([hidden]){height:100dvh!important;max-height:100dvh!important;inset:0!important;overflow:hidden!important;display:flex!important;align-items:stretch!important;justify-content:center!important;padding:5px 7px calc(5px + env(safe-area-inset-bottom,0px))!important;box-sizing:border-box!important}
+ #welcome-gate.yupbro-b .welcome-inner{height:100%!important;max-height:100%!important;width:100%!important;min-height:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:4px!important;padding:7px 9px!important;overflow:hidden!important;border-radius:16px!important}
+ #welcome-gate.yupbro-b .welcome-kicker{font-size:10px!important;line-height:1.1!important;letter-spacing:.06em!important;padding:5px 10px!important;margin:0 auto!important;min-height:0!important}
+ #welcome-gate.yupbro-b .welcome-title{font-size:clamp(17px,4.4vw,25px)!important;line-height:1.08!important;margin:1px 0!important;flex-shrink:0!important}
+ #welcome-gate.yupbro-b .welcome-subtitle{font-size:11px!important;line-height:1.2!important;margin:0 auto 2px!important;flex-shrink:0!important}
+ #welcome-gate.yupbro-b .welcome-character-slot{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;width:100%!important;margin:0 auto!important;gap:3px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot .mascot-canvas-wrap{height:auto!important;min-height:0!important;flex:1 1 0!important;width:100%!important;border-radius:16px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls{flex:0 0 auto!important;margin:3px 0 0!important;gap:5px!important;min-height:0!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{min-height:32px!important;padding:5px 3px!important;font-size:10px!important;line-height:1.1!important;border-radius:10px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>div:not(.mascot-canvas-wrap):not(.yupbro-reaction-controls){margin:1px auto!important;font-size:10px!important;line-height:1.1!important;flex:0 0 auto!important}
+ #welcome-gate.yupbro-b .yupbro-b-actions{flex:0 0 auto!important;width:100%!important;margin:2px auto!important;gap:5px!important}
+ #welcome-gate.yupbro-b .yupbro-b-actions button{min-height:35px!important;padding:5px 3px!important;font-size:10px!important;line-height:1.15!important;border-radius:10px!important}
+ #welcome-gate.yupbro-b .welcome-enter{flex:0 0 auto!important;min-height:35px!important;padding:7px 12px!important;font-size:11px!important;margin:2px auto!important}
+ #welcome-gate.yupbro-b .welcome-foot{display:none!important}
+}
+@media (max-width:800px) and (orientation:portrait) and (max-height:740px){
+ #welcome-gate.yupbro-b .welcome-subtitle{display:none!important}
+ #welcome-gate.yupbro-b .welcome-kicker{font-size:9px!important;padding:3px 8px!important}
+ #welcome-gate.yupbro-b .welcome-title{font-size:17px!important}
+ #welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button{min-height:29px!important}
+ #welcome-gate.yupbro-b .yupbro-b-actions button{min-height:30px!important}
+ #welcome-gate.yupbro-b .welcome-enter{min-height:30px!important}
+}
+
+/* SanZa kiosk photo behind the LIVE interactive Three.js YupBro; preview only. */
+#welcome-gate.yupbro-b .mascot-canvas-wrap{background-image:linear-gradient(180deg,rgba(8,18,29,.02),rgba(8,18,29,.12)),url("data:image/webp;base64,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")!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important}
+#welcome-gate.yupbro-b .mascot-canvas-wrap canvas{background:transparent!important}
+
+/* Explore SanZa 4.0: compact, legible, responsive navigation and arcade. */
+#sanza-shortcuts{position:relative;scroll-margin-top:85px;margin-top:18px!important;margin-bottom:12px!important;gap:9px!important;grid-template-columns:repeat(5,minmax(0,1fr))!important}
+#sanza-shortcuts:before{content:"🧭 Explore SanZa · All under one roof";grid-column:1/-1;font-weight:900;color:#ffda68;font-size:clamp(17px,2.8vw,25px);letter-spacing:-.025em;margin:0 0 5px}
+#sanza-shortcuts .shortcut{min-height:84px;padding:11px 9px!important;gap:8px!important;flex-direction:column;align-items:center;text-align:center;justify-content:center;border-color:#6e5424!important;border-radius:16px!important}
+#sanza-shortcuts .shortcut>span:first-child{flex:0 0 auto!important;width:auto!important;height:auto!important;font-size:27px!important;background:none!important}
+#sanza-shortcuts .shortcut>span:nth-child(2){gap:2px!important;align-items:center}
+#sanza-shortcuts .shortcut strong{font-size:13px!important;line-height:1.15!important}
+#sanza-shortcuts .shortcut small{font-size:10px!important;line-height:1.15!important}
+#sanza-shortcuts .shortcut>b{display:none!important}
+.explore-compact-promo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px auto 14px;max-width:1200px}
+.explore-compact-promo>a{display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 10px;border:1px solid #a37c2d;border-radius:15px;background:linear-gradient(130deg,#29200e,#11151b);color:#fff;text-decoration:none;text-align:center;font-size:19px}
+.explore-compact-promo strong{font-size:14px;color:#ffd34d}.explore-compact-promo span{font-size:11px;color:#c8c6c0}
+#sanza-explore>.hero{padding:15px 12px!important;margin:0 auto 10px!important;min-height:0!important}
+#sanza-explore>.hero h1{font-size:clamp(22px,4vw,36px)!important;line-height:1.08!important;margin:8px 0!important}
+#sanza-explore>.hero h1 br{display:none}
+#sanza-explore>.hero .intro{max-width:750px;font-size:13px!important;line-height:1.4!important;margin:6px auto!important}
+#sanza-explore>.hero .hero-actions{margin-top:9px!important}
+#games .games{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px!important}
+#games .game{padding:16px!important;min-height:0!important;display:flex;flex-direction:column;gap:6px!important}
+#games .game h3{font-size:clamp(17px,2.2vw,23px)!important;margin:0!important}
+#games .game p{font-size:12px!important;line-height:1.4!important;margin:0 0 7px!important;flex:1}
+#games .game .btn{padding:10px 8px!important;font-size:11px!important;line-height:1.2!important;text-align:center}
+#games .section-head{margin-bottom:14px!important}
+#everything-sanza{padding:20px!important;margin:18px auto!important}
+#everything-sanza h2{font-size:clamp(22px,3vw,30px)!important}
+#everything-sanza .newsletter-embed{height:450px!important;margin-top:10px!important}
+@media(max-width:700px){
+ #sanza-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;margin-top:10px!important}
+ #sanza-shortcuts:before{font-size:18px!important}
+ #sanza-shortcuts .shortcut{min-height:79px!important;padding:9px 4px!important;gap:3px!important;border-radius:13px!important}
+ #sanza-shortcuts .shortcut>span:first-child{font-size:25px!important}
+ #sanza-shortcuts .shortcut strong{font-size:11px!important}
+ #sanza-shortcuts .shortcut small{font-size:9px!important;line-height:1.15!important}
+ .explore-compact-promo{gap:7px!important;margin:9px auto 10px!important}
+ .explore-compact-promo>a{padding:10px 4px!important;flex-wrap:wrap;gap:4px!important;font-size:17px!important}
+ .explore-compact-promo strong{font-size:11px!important}.explore-compact-promo span{font-size:9px!important}
+ #sanza-explore>.hero{padding:12px 8px!important}
+ #sanza-explore>.hero h1{font-size:22px!important}
+ #sanza-explore>.hero .intro{font-size:11px!important;line-height:1.35!important}
+ #games .games{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ #games .game{padding:11px!important;border-radius:15px!important}
+ #games .game h3{font-size:16px!important}
+ #games .game p{font-size:11px!important;line-height:1.35!important}
+ #games .game .btn{font-size:10px!important;padding:9px 4px!important}
+ #games .game .game-icon{font-size:25px!important}
+ #games .section-head p{font-size:12px!important}
+ #everything-sanza{padding:14px!important}
+ #everything-sanza .newsletter-embed{height:540px!important}
+}
+@media(max-width:360px){#sanza-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))!important}#games .games{grid-template-columns:1fr!important}}
+
+/* Explore 4.1: short expandable page; content stays in the DOM for accessibility and links. */
+#sanza-explore .explore-fold{margin:9px auto;border:1px solid #735823;border-radius:16px;background:#11141a;overflow:hidden;max-width:1200px}
+#sanza-explore .explore-fold>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:16px 17px;color:#ffdb75;font-size:clamp(15px,2.5vw,19px);font-weight:900;list-style:none;min-height:50px}
+#sanza-explore .explore-fold>summary::-webkit-details-marker{display:none}
+#sanza-explore .explore-fold>summary:focus-visible{outline:3px solid #38d8f5;outline-offset:-3px}
+#sanza-explore .explore-fold>summary:after{content:'＋';font-size:22px;margin-left:6px}
+#sanza-explore .explore-fold[open]>summary:after{content:'−'}
+#sanza-explore .explore-fold .fold-hint{margin-left:auto;font-size:10px;font-weight:500;color:#c5b98f}
+#sanza-explore .explore-fold>section{margin:0!important;border:0!important;box-shadow:none!important}
+#sanza-explore .explore-fold:not([open])>section{display:none!important}
+#sanza-explore .explore-fold>.mascot-canvas-wrap{display:none!important}
+@media(max-width:700px){#sanza-explore .explore-fold{margin:7px auto;border-radius:12px}#sanza-explore .explore-fold>summary{padding:12px;font-size:14px;min-height:44px}}
+
+/* Explore 4.2: shorten game cards and avoid floating food button covering controls. */
+#sanza-explore #games .game{gap:4px!important;padding:10px!important}
+#sanza-explore #games .game p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px!important;line-height:1.3!important;flex:0 0 auto!important}
+#sanza-explore #games .game .label{font-size:9px!important}
+#sanza-explore #games .game .game-top{margin-bottom:0!important}
+#sanza-explore #games .game .btn{margin-top:auto!important}
+@media(max-width:700px){#sanza-explore #games .game{min-height:0!important}body:not(.welcome-active) .sanza-hungry-float{bottom:calc(65px + env(safe-area-inset-bottom,0px))!important;right:8px!important;transform:scale(.82)!important;transform-origin:bottom right!important}}
+
+/* Explore final mobile polish: accordion clarity, compact arcade, unobstructed content */
+#sanza-explore .explore-fold{scroll-margin-top:85px;transition:border-color .18s ease,background-color .18s ease}
+#sanza-explore .explore-fold[open]{border-color:#cba448;background:#14171c}
+#sanza-explore .explore-fold>summary{user-select:none;touch-action:manipulation;transition:background-color .18s ease,color .18s ease}
+#sanza-explore .explore-fold>summary:hover{background:#272111}
+#sanza-explore .explore-fold>summary:after{content:'⌄';display:inline-block;font-size:23px;line-height:1;transition:transform .2s ease}
+#sanza-explore .explore-fold[open]>summary:after{content:'⌄';transform:rotate(180deg)}
+#sanza-explore .explore-fold .fold-hint{white-space:nowrap}
+#sanza-explore .explore-fold .section-head{gap:8px!important}
+#sanza-explore #games .game{min-width:0;transition:border-color .2s ease,transform .2s ease}
+#sanza-explore #games .game .btn{min-height:38px;display:flex;align-items:center;justify-content:center;white-space:normal}
+#sanza-explore #games .game:focus-within{outline:2px solid #fbd56b;outline-offset:2px}
+#sanza-explore .explore-fold .newsletter-embed{max-width:100%}
+@media(max-width:700px){
+ #sanza-explore .explore-fold .fold-hint{font-size:9px!important}
+ #sanza-explore #games .game .game-number{font-size:9px!important}
+ #sanza-explore #games .game .game-icon{font-size:23px!important}
+ #sanza-explore #games .game .game-top{min-height:27px!important}
+ #sanza-explore #games .game .btn{min-height:38px!important}
+ #sanza-explore #games .coming{padding:12px!important}
+ #sanza-explore #games .coming p{font-size:11px!important}
+ body:not(.welcome-active) .sanza-hungry-float{max-width:115px!important;right:6px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px))!important;opacity:.9!important}
+ #sanza-explore{padding-bottom:95px!important}
+}
+@media(prefers-reduced-motion:reduce){#sanza-explore .explore-fold,#sanza-explore .explore-fold>summary,#sanza-explore .explore-fold>summary:after{transition:none!important}}
+</style><style>
+#welcome-gate.yupbro-b .welcome-character-slot .yupbro-speech{top:10px!important;bottom:auto!important;background:#101b29e8!important;border-color:#e9c76b!important}
+#welcome-gate.yupbro-b .welcome-character-slot>.yupbro-reaction-controls button,#welcome-gate.yupbro-b .yupbro-b-actions button{background:linear-gradient(165deg,#ffe5a0,#d6a73f)!important;color:#211a10!important;border:1px solid #ffe3a0!important;box-shadow:0 3px 0 #8c6221!important;text-shadow:none!important;opacity:1!important}
+</style>
+<style>
+#welcome-gate.yupbro-b .mascot-canvas-wrap{background-size:100% 100%!important;background-position:center!important}
+</style>
+<style>.yupbro-b.yupbro-b-more .welcome-character-slot .yupbro-reaction-controls button:nth-child(1),.yupbro-b.yupbro-b-more .welcome-character-slot .yupbro-reaction-controls button:nth-child(4){display:inline-block}</style></head>
 <body class="welcome-active">
 
-<div class="welcome-gate" id="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+<div class="welcome-gate yupbro-b" id="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
   <div class="welcome-inner">
     <div class="welcome-kicker">✨ ONE SANZA · ONE FAMILY ✨</div>
     <h1 class="welcome-title" id="welcome-title">HOWAYA, YA<br><span>ABSOLUTE LEGEND?! 😂</span></h1>
-    <p class="welcome-subtitle">Yup Bro’s here, bro! 😎 SanZa is more than games — it’s our little corner of the world for family, laughter, learning and good food. Meet the characters, take on a challenge, discover SanZa Grinds and Food Hub, and join the family. Wherever you come from, there’s room for one more Sanzation. Tap Yup Bro to wake up the craic, then come explore!</p>
+    <p class="welcome-subtitle">Tap YupBro, make him dance, or send him flying on his scooty! 😂</p>
     <div class="welcome-character-slot" id="welcome-character-slot" aria-label="Interactive 3D Yup Bro character"></div>
+    <div class="yupbro-b-actions"><button type="button" id="yupbro-b-more" aria-expanded="false">✨ More reactions</button><button type="button" id="yupbro-b-mic">🎤 Mic on/off</button><button type="button" id="yupbro-b-full">⛶ Full screen</button></div>
     <button class="welcome-enter" id="welcome-enter" type="button">🚀 EXPLORE SANZA</button>
     <p class="welcome-foot">👆 Tap the 3D Yup Bro to hear him crack a joke · Games · Videos · Grinds · Food · Family ❤️</p>
   </div>
@@ -574,23 +790,36 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
  let renderer,scene,camera,mascot,fallPivot,wheelA,wheelB,handle,head,arms=[],raf=0,observer;
  try{
   renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2.75,Math.sqrt(3500000/Math.max(1,wrap.clientWidth*wrap.clientHeight))));
   renderer.setSize(wrap.clientWidth,wrap.clientHeight,false);
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.2;
+  renderer.toneMappingExposure=1.16;
+  renderer.setClearColor(0x090d19,0);
   scene=new THREE.Scene();
   camera=new THREE.PerspectiveCamera(34,wrap.clientWidth/wrap.clientHeight,.1,100);
   camera.position.set(0,2.2,5.85);
   scene.add(new THREE.HemisphereLight(0xbfeeff,0x261322,2.2));
+  const fill=new THREE.DirectionalLight(0xffffff,1.1);fill.position.set(-3,4,6);scene.add(fill);
   const key=new THREE.DirectionalLight(0xffd477,3.2);key.position.set(4,7,5);scene.add(key);
   const rim=new THREE.PointLight(0x42dfff,18,12);rim.position.set(-4,3,2);scene.add(rim);
   const pink=new THREE.PointLight(0xff5ab8,10,10);pink.position.set(4,1,-2);scene.add(pink);
-  const mat=(color,rough=.55,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+  // Premium mobile-friendly materials and stage graphics; no paid assets or heavy post-processing.
+  const mat=(color,rough=.55,metal=0)=>new THREE.MeshPhysicalMaterial({color,roughness:rough,metalness:metal,clearcoat:metal>.15?.45:.08,clearcoatRoughness:.35});
+  const studioFill=new THREE.DirectionalLight(0x99bbff,.75);studioFill.position.set(-2,2,-4);scene.add(studioFill);
+  const accentLight=new THREE.PointLight(0xffd66e,5,7);accentLight.position.set(0,4,3);scene.add(accentLight);
+  const floorMaterial=new THREE.MeshStandardMaterial({color:0x172333,roughness:.38,metalness:.28});
+  const premiumFloor=new THREE.Mesh(new THREE.CircleGeometry(2.25,64),floorMaterial);premiumFloor.rotation.x=-Math.PI/2;premiumFloor.position.y=-.465;scene.add(premiumFloor);
+  const floorRing=new THREE.Mesh(new THREE.TorusGeometry(1.75,.018,8,72),new THREE.MeshBasicMaterial({color:0xffd34d,transparent:true,opacity:.65}));floorRing.rotation.x=Math.PI/2;floorRing.position.y=-.455;scene.add(floorRing);
+  // Transparent 3D scene: the SanZa Food Hub kiosk photo is visible behind YupBro.
+  const sparkleMat=new THREE.MeshBasicMaterial({color:0xffe6a2,transparent:true,opacity:.55,depthWrite:false});
+  const sparkleGeo=new THREE.SphereGeometry(.018,6,6);
+  const sparkles=new THREE.Group();scene.add(sparkles);
+  for(let i=0;i<24;i++){const p=new THREE.Mesh(sparkleGeo,sparkleMat);const angle=i*2.399963;const radius=1.1+(i%7)*.19;p.position.set(Math.cos(angle)*radius,.25+(i%9)*.32,-1.1-(i%4)*.25);p.userData.phase=i*.8;sparkles.add(p);}
   const gold=mat('#ffd34d',.35,.3),black=mat('#171923',.6),shirt=mat('#11131a',.65),red=mat('#c52c31',.4),hairmat=mat('#e34c29',.7),skin=mat('#bd815d',.75),white=mat('#f6f3e9',.3),rubber=mat('#17191d',.8),cyan=mat('#57e9ff',.3,.25);
-  const sphere=(parent,m,pos,scale)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),m);o.position.set(...pos);o.scale.set(...scale);parent.add(o);return o};
+  const sphere=(parent,m,pos,scale)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(1,48,32),m);o.position.set(...pos);o.scale.set(...scale);parent.add(o);return o};
   const box=(parent,m,pos,size,round=false)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...size),m);o.position.set(...pos);parent.add(o);return o};
-  const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,18),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
+  const cylinder=(parent,m,pos,r1,r2,h,rot=[0,0,0])=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,40),m);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o};
   const rod=(parent,m,a,b,r)=>{const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,dir.length(),12),m);o.position.copy(start).add(end).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());parent.add(o);return o};
   mascot=new THREE.Group();scene.add(mascot);mascot.position.y=.25;
   // Dedicated full-body pivot lets Yup Bro fall and recover without breaking the model.
@@ -599,13 +828,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   // No scooter pose: standing mascot with layered streetwear, detailed face and sneakers.
   wheelA=new THREE.Group();wheelB=new THREE.Group(); // retained as harmless animation handles for compatibility
   const body=new THREE.Group();fallPivot.add(body);body.position.set(0,-.72,0);
-  const hoodie=mat('#171923',.62),hoodieShade=mat('#252936',.58),pants=mat('#20232d',.72),sole=mat('#d9dbe0',.48),orange=mat('#f15a2a',.66),goldTrim=mat('#ffd34d',.32,.18),blush=mat('#d99579',.7),dark=mat('#20161a',.62);
-  // Oversized hoodie and hood, with layered seams and a SanZa chest badge.
+  const hoodie=mat('#152a43',.48),hoodieShade=mat('#203b58',.53),pants=mat('#172b43',.57),sole=mat('#d9dbe0',.48),orange=mat('#f15a2a',.66),goldTrim=mat('#ffd34d',.32,.18),blush=mat('#d99579',.7),dark=mat('#20161a',.62);
+  // SanZa navy-and-gold tracksuit jacket, matching joggers and signature chest badge.
   sphere(body,hoodie,[0,1.02,0],[.43,.53,.31]);
   sphere(body,hoodieShade,[0,1.31,-.08],[.32,.29,.25]);
   cylinder(body,skin,[0,1.43,.01],.12,.13,.2);
-  // Hoodie's front pocket, drawstrings and signature badge.
-  box(body,hoodieShade,[0,.82,.285],[.39,.19,.055]);
+  // Tracksuit jacket zip, sporty chest piping and signature badge.
+  box(body,hoodieShade,[0,.82,.285],[.39,.16,.055]);
+  rod(body,goldTrim,[0,1.36,.305],[0,.74,.32],.009);
+  sphere(body,goldTrim,[0,1.02,.328],[.024,.038,.014]);
   // Fine gold piping on the hoodie pocket and cuffs catches the stage lighting.
   rod(body,goldTrim,[-.19,.91,.318],[-.19,.75,.318],.008);rod(body,goldTrim,[.19,.91,.318],[.19,.75,.318],.008);
   rod(body,goldTrim,[-.09,1.29,.29],[-.11,1.04,.30],.012);
@@ -613,44 +844,147 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   sphere(body,gold,[0,1.13,.32],[.105,.105,.025]);
   // Small embossed S mark built from a curved gold stroke.
   const badgeS=new THREE.Mesh(new THREE.TorusGeometry(.045,.012,8,18,Math.PI*1.55),goldTrim);badgeS.position.set(0,1.13,.35);badgeS.rotation.z=.3;body.add(badgeS);
+  // Premium streetwear detailing: layered shoulder seams, zipper teeth and embroidered piping.
+  for(const side of [-1,1]){
+   rod(body,hoodieShade,[side*.16,1.39,.20],[side*.35,1.23,.18],.024);
+   rod(body,goldTrim,[side*.21,1.36,.22],[side*.35,1.25,.21],.009);
+   rod(body,hoodieShade,[side*.32,1.13,.21],[side*.25,.77,.24],.019);
+  }
+  for(let j=0;j<17;j++)box(body,goldTrim,[0,.78+j*.033,.334],[.025,.009,.012]);
   // Long legs, jogger cuffs and chunky white/gold trainers.
   const leg1=new THREE.Group(),leg2=new THREE.Group();body.add(leg1,leg2);
   leg1.position.set(-.2,.66,0);leg2.position.set(.2,.66,0);
   rod(leg1,pants,[0,0,0],[-.025,-.39,0],.145);
   rod(leg1,pants,[-.025,-.39,0],[-.055,-.68,.02],.125);
+  rod(leg1,goldTrim,[-.145,-.04,.07],[-.18,-.61,.07],.013);
   cylinder(leg1,hoodieShade,[-.055,-.63,.02],.13,.13,.075);
-  sphere(leg1,sole,[-.01,-.73,.12],[.22,.105,.32]);
-  sphere(leg1,white,[-.01,-.68,.17],[.20,.075,.23]);
+  sphere(leg1,sole,[-.01,-.735,.13],[.17,.048,.255]);
+  
+  sphere(leg1,white,[-.01,-.675,.13],[.16,.085,.235]);
+  sphere(leg1,white,[-.01,-.655,.025],[.135,.075,.12]);
+  box(leg1,hoodieShade,[-.01,-.615,.14],[.11,.018,.13]);
   box(leg1,goldTrim,[-.01,-.65,.28],[.13,.025,.025]);
   rod(leg2,pants,[0,0,0],[.025,-.39,0],.145);
   rod(leg2,pants,[.025,-.39,0],[.055,-.68,.02],.125);
+  rod(leg2,goldTrim,[.145,-.04,.07],[.18,-.61,.07],.013);
   cylinder(leg2,hoodieShade,[.055,-.63,.02],.13,.13,.075);
-  sphere(leg2,sole,[.09,-.73,.12],[.22,.105,.32]);
-  sphere(leg2,white,[.09,-.68,.17],[.20,.075,.23]);
+  sphere(leg2,sole,[.09,-.735,.13],[.17,.048,.255]);
+  
+  sphere(leg2,white,[.09,-.675,.13],[.16,.085,.235]);
+  sphere(leg2,white,[.09,-.655,.025],[.135,.075,.12]);
+  box(leg2,hoodieShade,[.09,-.615,.14],[.11,.018,.13]);
   box(leg2,goldTrim,[.09,-.65,.28],[.13,.025,.025]);
+  for(const [leg,x] of [[leg1,-.01],[leg2,.09]]){
+   const sneakerTrim=mat('#152a43',.42,.08);
+   for(let j=0;j<4;j++)rod(leg,sneakerTrim,[x-.065,-.615-j*.007,.12+j*.035],[x+.065,-.615-j*.007,.12+j*.035],.009);
+   rod(leg,goldTrim,[x-.16,-.71,.06],[x-.13,-.70,.23],.014);
+   rod(leg,goldTrim,[x+.16,-.71,.06],[x+.13,-.70,.23],.014);
+  }
   // Head and ears: intentionally stylised, friendly, expressive and not a copy of any existing mascot.
   head=new THREE.Group();head.position.set(0,1.77,.015);body.add(head);
   sphere(head,skin,[0,0,0],[.39,.43,.34]);
+  // Subtle highlights to make the face read clearly at mobile size.
+  sphere(head,mat('#e9a886',.9),[-.235,-.09,.29],[.07,.027,.015]);
+  sphere(head,mat('#e9a886',.9),[.235,-.09,.29],[.07,.027,.015]);
   sphere(head,skin,[-.37,-.055,.015],[.095,.145,.10]);sphere(head,skin,[.37,-.055,.015],[.095,.145,.10]);
   // Small gold ear studs and refined hoodie stitching add a more finished, premium SanZa look.
   sphere(head,goldTrim,[-.405,-.085,.095],[.026,.026,.018]);sphere(head,goldTrim,[.405,-.085,.095],[.026,.026,.018]);
   sphere(head,blush,[-.235,-.12,.286],[.09,.045,.018]);sphere(head,blush,[.235,-.12,.286],[.09,.045,.018]);
   // Textured-looking layered copper-red swept hair and chunky curls.
-  sphere(head,hairmat,[0,.285,-.025],[.405,.245,.36]);
-  sphere(head,orange,[-.13,.39,.11],[.23,.19,.22]);
-  for(let i=0;i<7;i++)sphere(head,hairmat,[-.32+i*.105,.36+(i%3)*.055,.045],[.13,.145,.15]);
-  sphere(head,hairmat,[.19,.47,-.01],[.18,.15,.18]);
+  // Hair stays full-size outside Christmas season; tuck the top under the hat when worn.
+  const hairGroup=new THREE.Group();head.add(hairGroup);
+  sphere(hairGroup,hairmat,[0,.285,-.025],[.405,.245,.36]);
+  sphere(hairGroup,hairmat,[-.13,.39,.11],[.23,.13,.22]);
+  for(let i=0;i<7;i++)sphere(hairGroup,hairmat,[-.32+i*.105,.36+(i%3)*.055,.045],[.115,.095,.13]);
+  sphere(hairGroup,hairmat,[.19,.47,-.01],[.18,.15,.18]);
+  // Seasonal 3D Santa hat, displayed through 27 December 2026 (Ireland time).
+  // Oversized, forward-facing Christmas hat: clear on small mobile screens.
+  // Ireland local date; seasonal decoration automatically ends after Dec 27.
+  const irishDateParts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const irishPart=t=>irishDateParts.find(p=>p.type===t)?.value||'';
+  const irishDay=irishPart('year')+'-'+irishPart('month')+'-'+irishPart('day');
+  const showSantaHat=irishDay>='2026-11-20'&&irishDay<='2026-12-27';
+  if(showSantaHat){
+   // Keep a narrow orange fringe at the sides, not a full hair cap above the band.
+   hairGroup.scale.set(.96,.57,.94);hairGroup.position.y=-.035;
+   const santaRed=new THREE.MeshStandardMaterial({color:0xf31931,roughness:.55,metalness:0,emissive:0x480009,emissiveIntensity:.12});
+   const santaWhite=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.85,emissive:0x555555,emissiveIntensity:.12});
+   const santaHat=new THREE.Group();head.add(santaHat);
+   // White fluffy band above eyebrows; bright red tilted tall cone and oversized pompom.
+   sphere(santaHat,santaWhite,[0,.32,.04],[.42,.075,.37]);
+   const crown=new THREE.Mesh(new THREE.ConeGeometry(.36,.48,32),santaRed);
+   crown.position.set(-.055,.56,.04);crown.rotation.z=.28;santaHat.add(crown);
+   sphere(santaHat,santaRed,[-.13,.76,.04],[.085,.09,.085]);
+   sphere(santaHat,santaWhite,[-.17,.81,.04],[.105,.105,.105]);
+  }
+  // Experimental realism proportions, preserving all existing animation handles.
+  head.scale.set(.64,.73,.68);head.position.y=1.69;
+  const weaveCanvas=document.createElement('canvas');weaveCanvas.width=128;weaveCanvas.height=128;
+  const wc=weaveCanvas.getContext('2d');wc.fillStyle='#888';wc.fillRect(0,0,128,128);
+  for(let y=0;y<128;y+=4){wc.fillStyle=y%8?'#777':'#999';wc.fillRect(0,y,128,1);}
+  for(let x=0;x<128;x+=4){wc.fillStyle='#929292';wc.fillRect(x,0,1,128);}
+  const weave=new THREE.CanvasTexture(weaveCanvas);weave.wrapS=weave.wrapT=THREE.RepeatWrapping;weave.repeat.set(5,5);
+  for(const m of [hoodie,hoodieShade,pants]){m.bumpMap=weave;m.bumpScale=.012;m.roughness=.86;m.clearcoat=0;m.needsUpdate=true;}
+  skin.roughness=.66;skin.clearcoat=.02;
+  for(const leg of [leg1,leg2])leg.scale.set(.83,1.27,.83);
+  scene.background=null;
+  scene.fog=null;
+  renderer.toneMappingExposure=.94;
+  key.color.set(0xffe5cc);key.intensity=2.5;fill.intensity=.65;rim.intensity=7;pink.intensity=3;
+  // Reference-inspired facial styling; no source photograph stored or transmitted.
+  hairmat.color.set('#252326');orange.color.set('#454247');
+  for(let i=0;i<22;i++){const x=-.32+i*.029;const y=.36+.075*Math.sin(i*.83);rod(hairGroup,mat(i%3===0?'#99989a':'#353438',.9),[x,y,.19],[x+.045,y+.065,.16],.007);}
+  const stubble=mat('#514747',.95);
+  for(let i=0;i<180;i++){const u=((i*73)%181)/180,v=((i*47)%179)/178;const x=(u-.5)*.53,y=-.14-v*.20;const z=.34*Math.sqrt(Math.max(.01,1-(x/.39)**2-(y/.43)**2));sphere(head,stubble,[x,y,z+.002],[.003,.004,.002]);}
+  skin.color.set('#b78c72');
+  // Concept-inspired streetwear accessories.
+  const chainMat=mat('#c6c9cf',.27,.8);
+  for(let i=0;i<23;i++){const t=Math.PI*i/22;const link=new THREE.Mesh(new THREE.TorusGeometry(.022,.005,6,12),chainMat);link.position.set(.15*Math.cos(t),1.39-.16*Math.sin(t),.29+.035*Math.sin(t));link.rotation.y=i%2?.8:-.8;body.add(link);}
+  const lens=mat('#10151b',.19,.45);
+  for(const x of [-.145,.145]){sphere(head,lens,[x,.035,.402],[.137,.086,.035]);rod(head,black,[x-.12,.11,.41],[x+.12,.11,.41],.014);}
+  rod(head,black,[-.035,.07,.42],[.035,.07,.42],.014);
+  rod(head,black,[-.26,.08,.40],[-.37,.07,.02],.012);rod(head,black,[.26,.08,.40],[.37,.07,.02],.012);
+  // Cleaner athletic silhouette: taper torso, remove toy-like cheek patches and oversized medallion.
+  for(const o of body.children){
+    if(o.material===hoodie && o.geometry?.type==='SphereGeometry' && Math.abs(o.position.y-1.02)<.01){o.scale.set(.37,.49,.235);o.position.y=1.04;}
+    if(o.material===gold && o.geometry?.type==='SphereGeometry' && Math.abs(o.position.y-1.13)<.01)o.visible=false;
+  }
+  badgeS.visible=false;
+  for(const o of head.children){
+    if(o.material===blush || (o.geometry?.type==='SphereGeometry' && Math.abs(Math.abs(o.position.x)-.235)<.005 && o.position.y<0))o.visible=false;
+    if(o.material===skin && Math.abs(o.position.x)>.35 && o.geometry?.type==='SphereGeometry')o.scale.multiplyScalar(.72);
+  }
+  // More subdued studio light and natural material contrast.
+  scene.traverse(o=>{if(o.isMesh && o.material===goldTrim){o.material.roughness=.48;o.material.metalness=.28;}});
+  renderer.toneMappingExposure=1.03;key.intensity=2.8;fill.intensity=.85;studioFill.intensity=.45;
+  for(const o of body.children){if(o.material===hoodieShade&&o.geometry?.type==='BoxGeometry'&&Math.abs(o.position.y-.82)<.02){o.scale.set(.92,.68,.55);o.position.z=.23;}}
+  // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
+  const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
+  const stageShadow=new THREE.Mesh(new THREE.CircleGeometry(.83,40),shadowMat);stageShadow.rotation.x=-Math.PI/2;stageShadow.position.set(0,-.43,-.04);scene.add(stageShadow);
   // Eyes, pupils, highlights and expressive ginger brows.
   const eyeWhites=[sphere(head,white,[-.14,.035,.303],[.112,.125,.058]),sphere(head,white,[.14,.035,.303],[.112,.125,.058])];
   const pupils=[sphere(head,dark,[-.12,.025,.353],[.049,.068,.026]),sphere(head,dark,[.16,.025,.353],[.049,.068,.026])];
   const eyeGlints=[sphere(head,white,[-.135,.055,.376],[.019,.023,.012]),sphere(head,white,[.145,.055,.376],[.019,.023,.012])];
-  const brows=[rod(head,hairmat,[-.26,.195,.31],[-.065,.215,.325],.03),rod(head,hairmat,[.065,.215,.325],[.26,.195,.31],.03)];
+  const brows=[rod(head,hairmat,[-.26,.195,.31],[-.065,.215,.325],.016),rod(head,hairmat,[.065,.215,.325],[.26,.195,.31],.016)];
+  const irisMat=mat('#79522e',.25,.05);
+  const irisRings=[sphere(head,irisMat,[-.12,.025,.372],[.033,.045,.013]),sphere(head,irisMat,[.16,.025,.372],[.033,.045,.013])];
+  const pupilCores=[sphere(head,dark,[-.12,.025,.384],[.019,.029,.008]),sphere(head,dark,[.16,.025,.384],[.019,.029,.008])];
+  const catchlights=[sphere(head,white,[-.13,.045,.394],[.010,.012,.005]),sphere(head,white,[.15,.045,.394],[.010,.012,.005])];
   // Nose and layered mouth that animates with the supplied voice clips.
   sphere(head,skin,[0,-.075,.335],[.065,.055,.055]);
-  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),dark);smile.position.set(.02,-.16,.315);smile.rotation.z=Math.PI;head.add(smile);
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(.085,.009,8,24,Math.PI),dark);smile.position.set(.02,-.16,.315);smile.rotation.z=Math.PI;head.add(smile);
   const mouthInner=sphere(head,mat('#321017',.72),[.02,-.155,.332],[.125,.012,.034]);
   const mouthTeeth=sphere(head,white,[.02,-.13,.36],[.078,.008,.009]);
   const tongue=sphere(head,mat('#f06b83',.5),[.02,-.192,.359],[.048,.008,.01]);
+  // Sculpt the existing head geometry into a less spherical adult facial silhouette.
+  const faceMesh=head.children.find(o=>o.material===skin && o.geometry?.type==='SphereGeometry' && o.position.length()<.001);
+  if(faceMesh){const p=faceMesh.geometry.attributes.position;for(let i=0;i<p.count;i++){let x=p.getX(i),y=p.getY(i),z=p.getZ(i);const jaw=1-.18*Math.max(0,-y);x*=jaw;z*=1-.09*Math.max(0,-y);p.setXYZ(i,x,y,z);}p.needsUpdate=true;faceMesh.geometry.computeVertexNormals();}
+  for(const b of brows)b.scale.multiplyScalar(.65);
+  smile.scale.set(.82,.48,.75);
+  const noseMesh=head.children.find(o=>o.material===skin&&Math.abs(o.position.y+.075)<.001&&Math.abs(o.position.x)<.001);
+  if(noseMesh){noseMesh.scale.set(.047,.078,.057);noseMesh.position.y=-.055;}
+  sphere(head,skin,[0,.005,.32],[.032,.085,.034]);
+  const lipMat=mat('#926452',.82);sphere(head,lipMat,[.02,-.177,.332],[.079,.014,.014]);
   // A clearly visible chocolate brownie appears beside Yup Bro's mouth during MUNCH.
   const brownieTreat=new THREE.Group();head.add(brownieTreat);brownieTreat.position.set(.29,-.23,.43);brownieTreat.rotation.z=-.16;brownieTreat.visible=false;
   const brownieBase=mat('#6b321b',.78),icing=mat('#f3c45a',.36),sprinkle=mat('#ff5b8b',.4);
@@ -663,27 +997,111 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   arms[0].position.set(-.37,1.27,0);arms[1].position.set(.37,1.27,0);body.add(arms[0],arms[1]);
   rod(arms[0],hoodie, [0,0,0],[-.12,-.26,.02],.135);
   rod(arms[0],hoodie,[-.12,-.26,.02],[-.08,-.48,.08],.12);
+  rod(arms[0],goldTrim,[-.12,-.055,.09],[-.20,-.39,.12],.016);
   cylinder(arms[0],goldTrim,[-.08,-.47,.08],.12,.12,.055);
   sphere(arms[0],skin,[-.08,-.57,.1],[.105,.11,.11]);
   rod(arms[1],hoodie,[0,0,0],[.12,-.26,.02],.135);
   rod(arms[1],hoodie,[.12,-.26,.02],[.08,-.48,.08],.12);
+  rod(arms[1],goldTrim,[.12,-.055,.09],[.20,-.39,.12],.016);
   cylinder(arms[1],goldTrim,[.08,-.47,.08],.12,.12,.055);
   sphere(arms[1],skin,[.08,-.57,.1],[.105,.11,.11]);
+  // Refine hands and streetwear with articulated-looking finger shapes and cuff seams.
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
+    const palm=arm.children.find(o=>o.material===skin);if(palm)palm.scale.set(.078,.085,.064);
+    for(let f=0;f<4;f++){const x=side*.08+(f-1.5)*.033;const len=[.063,.083,.079,.058][f];sphere(arm,skin,[x,-.625-len*.30,.115],[.018,len*.77,.022]);}
+    sphere(arm,skin,[side*.025,-.575,.148],[.024,.049,.027]);
+    for(let j=0;j<4;j++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.119,.004,6,32),hoodieShade);ring.rotation.x=Math.PI/2;ring.position.set(side*.08,-.44-j*.013,.08);arm.add(ring);}
+  }
+  const seamMat=mat('#192e47',.92);
+  for(const side of [-1,1]){for(let j=0;j<3;j++){const y=.81+j*.11;rod(body,seamMat,[side*.24,y,.245],[side*.31,y+.023,.20],.004);}}
+  // Smooth sleeve silhouettes while retaining the existing dance pivots.
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
+    sphere(arm,hoodie,[0,-.065,0],[.122,.115,.125]);
+    sphere(arm,hoodie,[side*.12,-.26,.02],[.121,.13,.122]);
+    for(const child of arm.children){
+      if(child.material===hoodie && child.geometry.type==='CylinderGeometry'){child.scale.x*=.91;child.scale.z*=.91;}
+      if(child.material===skin && child.geometry.type==='SphereGeometry'){child.scale.multiplyScalar(.89);}
+    }
+  }
+  const christmasMic=new THREE.Group();head.add(christmasMic);christmasMic.position.set(.10,-.48,.49);christmasMic.rotation.z=.24;christmasMic.visible=false;
+  cylinder(christmasMic,black,[0,.12,0],.055,.055,.24);sphere(christmasMic,mat('#dce4ed',.35,.7),[0,.27,0],[.095,.10,.095]);
+  for(let j=0;j<7;j++){const band=new THREE.Mesh(new THREE.TorusGeometry(.086*Math.sqrt(Math.max(.2,1-Math.pow((j-3)/4,2))),.004,6,32),black);band.rotation.x=Math.PI/2;band.position.y=.22+j*.016;christmasMic.add(band);}
+  // Concept-inspired embroidered branding and double sleeve stripes.
+  const logoCanvas=document.createElement('canvas');logoCanvas.width=512;logoCanvas.height=256;
+  const lc=logoCanvas.getContext('2d');lc.fillStyle='#eec35a';lc.font='italic bold 105px sans-serif';lc.textAlign='center';lc.fillText('SanZa',256,185);lc.font='bold 68px sans-serif';lc.fillText('♛',256,80);
+  const logoTexture=new THREE.CanvasTexture(logoCanvas);logoTexture.colorSpace=THREE.SRGBColorSpace;
+  const logoMaterial=new THREE.MeshBasicMaterial({map:logoTexture,transparent:true,depthWrite:false});
+  const chestLogo=new THREE.Mesh(new THREE.PlaneGeometry(.27,.135),logoMaterial);chestLogo.position.set(.19,1.16,.33);body.add(chestLogo);
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){rod(arm,goldTrim,[side*.085,-.055,.115],[side*.165,-.39,.14],.012);rod(arm,goldTrim,[side*.15,-.055,.075],[side*.22,-.39,.08],.012);}
+  const micFlag=box(christmasMic,black,[0,.15,.015],[.14,.085,.12]);const micLogo=new THREE.Mesh(new THREE.PlaneGeometry(.13,.065),logoMaterial);micLogo.position.set(0,.15,.077);christmasMic.add(micLogo);
   // A subtle gold chain and wrist details give the outfit its own SanZa finish.
-  const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.012,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
+  const chain=new THREE.Mesh(new THREE.TorusGeometry(.18,.006,8,28,Math.PI),goldTrim);chain.position.set(0,1.38,.25);chain.rotation.z=Math.PI;body.add(chain);
+  // Continuous tailored sleeves and trousers, replacing visibly disconnected cylinder ends.
+  function tailoredTube(parent,material,points,radii){
+    const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+    const g=new THREE.TubeGeometry(curve,32,1,24,false),p=g.attributes.position;
+    for(let i=0;i<=32;i++){const t=i/32,c=curve.getPointAt(t),f=t*(radii.length-1),j=Math.min(radii.length-2,Math.floor(f)),r=THREE.MathUtils.lerp(radii[j],radii[j+1],f-j);for(let k=0;k<=24;k++){const n=i*25+k;p.setXYZ(n,c.x+(p.getX(n)-c.x)*r,c.y+(p.getY(n)-c.y)*r,c.z+(p.getZ(n)-c.z)*r);}}
+    p.needsUpdate=true;g.computeVertexNormals();parent.add(new THREE.Mesh(g,material));
+  }
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
+    for(const o of arm.children)if(o.material===hoodie)o.visible=false;
+    tailoredTube(arm,hoodie,[[0,-.025,0],[side*.085,-.15,.01],[side*.12,-.26,.02],[side*.08,-.48,.08]],[.118,.126,.108,.105]);
+    for(const o of arm.children)if(o.material===goldTrim&&o.geometry?.type==='CylinderGeometry'&&o.position.y>-.42)o.visible=false;
+    for(const offset of [.025,.055])rod(arm,goldTrim,[side*.08+side*offset,-.10,.103],[side*.12+side*offset,-.26,.108],.006);
+  }
+  for(const [leg,side] of [[leg1,-1],[leg2,1]]){
+    for(const o of leg.children)if(o.material===pants)o.visible=false;
+    tailoredTube(leg,pants,[[0,.025,0],[side*.025,-.32,0],[side*.04,-.48,.01],[side*.055,-.66,.02]],[.151,.138,.116,.107]);
+  }
+  for(const o of body.children)if(o.material===chainMat)o.scale.setScalar(.72);
+  for(const o of hairGroup.children)if(o.geometry?.type==='SphereGeometry'&&o.position.y>.34)o.scale.y*=.72;
+  // Adult silhouette: broader shoulders, fitted waist, longer neck and grounded footwear.
+  head.scale.set(.59,.69,.65);head.position.y=1.76;
+  for(const o of body.children){if(o.material===hoodie&&o.geometry?.type==='SphereGeometry'&&Math.abs(o.position.y-1.04)<.02){o.scale.set(.405,.49,.255);const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i);p.setX(i,p.getX(i)*(1+.19*y));}p.needsUpdate=true;o.geometry.computeVertexNormals();}}
+  for(const [arm,side] of [[arms[0],-1],[arms[1],1]]){
+    arm.position.set(side*.345,1.29,0);arm.scale.set(.79,1.13,.85);
+    sphere(arm,hoodie,[0,-.045,0],[.112,.12,.115]);
+    for(let j=0;j<3;j++){const y=-.29-j*.044;rod(arm,hoodieShade,[side*.10-.06,y,.096],[side*.10+.055,y-.018,.102],.006);}
+  }
+  for(const [leg,side] of [[leg1,-1],[leg2,1]]){
+    for(let j=0;j<4;j++){const y=-.40-j*.045;rod(leg,hoodieShade,[side*.035-.065,y,.105],[side*.035+.065,y-.025,.105],.007);}
+  }
+  sphere(body,pants,[0,.65,-.015],[.265,.105,.165]);
+  box(body,hoodie,[0,.70,.025],[.56,.105,.34]);
+  // Sculpted collar, understated jacket folds and realistic matte lenses.
+  for(const side of [-1,1]){
+    rod(body,hoodieShade,[side*.075,1.43,.15],[side*.18,1.34,.23],.035);
+    for(let j=0;j<2;j++){const y=.80+j*.10;rod(body,seamMat,[side*.12,y,.25],[side*.25,y+.035,.20],.004);}
+    sphere(head,skin,[side*.047,-.09,.347],[.032,.025,.025]);
+  }
+  lens.roughness=.24;lens.metalness=.15;
+  for(const x of [-.145,.145]){const glint=mat('#52616e',.35,.2);rod(head,glint,[x-.085,.075,.434],[x+.025,.085,.434],.004);}
+  key.intensity=2.2;fill.intensity=1.15;rim.intensity=3.2;pink.intensity=1.1;renderer.toneMappingExposure=1.08;
   const floor=new THREE.Mesh(new THREE.CircleGeometry(2.3,48),new THREE.MeshBasicMaterial({color:0x102b33,transparent:true,opacity:.48}));floor.rotation.x=-Math.PI/2;floor.position.set(0,.04,0);scene.add(floor);
   // Visible 3D scooter prop for Yup Bro's SCOOTY reaction.
   const scootyRig=new THREE.Group();mascot.add(scootyRig);scootyRig.position.set(0,0,.02);scootyRig.scale.setScalar(1.12);scootyRig.visible=false;
   const scooterMetal=mat('#c7d2dc',.28,.72),scooterRed=mat('#d52d36',.3,.35);
-  const scooterWheel=(x)=>{const w=new THREE.Mesh(new THREE.TorusGeometry(.17,.045,10,24),rubber);w.rotation.y=Math.PI/2;w.position.set(x,.19,0);scootyRig.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.065,.065,.08,16),scooterMetal);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);scootyRig.add(hub);};
-  scooterWheel(-.42);scooterWheel(.42);
-  box(scootyRig,scooterRed,[0,.24,0],[.92,.09,.2]);
-  box(scootyRig,black,[0,.295,0],[.62,.025,.205]);
-  rod(scootyRig,scooterMetal,[-.38,.22,0],[-.47,.82,0],.035);
-  rod(scootyRig,black,[-.62,.82,.18],[-.32,.82,.18],.045);
-  sphere(scootyRig,gold,[-.47,.82,.18],[.065,.065,.065]);
-  box(scootyRig,black,[0,.47,-.015],[.42,.12,.24]);
-  box(scootyRig,scooterRed,[.0,.39,-.02],[.34,.045,.22]);
+  // Full-size forward-facing motor scooter, wheels aligned with the direction of travel.
+  scootyRig.scale.setScalar(1);
+  const scooterWheels=[];
+  for(const z of [-.57,.63]){
+    const wheel=new THREE.Group();wheel.position.set(0,.03,z);scootyRig.add(wheel);scooterWheels.push(wheel);
+    const tyre=new THREE.Mesh(new THREE.TorusGeometry(.24,.073,16,40),rubber);tyre.rotation.y=Math.PI/2;wheel.add(tyre);
+    cylinder(wheel,scooterMetal,[0,0,0],.15,.15,.12,[0,0,Math.PI/2]);
+    for(let j=0;j<5;j++){const a=j*Math.PI*2/5;rod(wheel,black,[.07,0,0],[.07,.14*Math.cos(a),.14*Math.sin(a)],.014);}
+  }
+  sphere(scootyRig,scooterRed,[0,.28,-.34],[.34,.32,.55]);
+  box(scootyRig,black,[0,.20,.12],[.51,.10,.73]);
+  sphere(scootyRig,black,[0,.59,-.26],[.30,.085,.39]);
+  sphere(scootyRig,scooterRed,[0,.55,.55],[.29,.43,.19]);
+  rod(scootyRig,scooterMetal,[0,.05,.63],[0,.99,.49],.055);
+  rod(scootyRig,black,[-.36,.99,.49],[.36,.99,.49],.035);
+  sphere(scootyRig,white,[0,.77,.71],[.15,.09,.045]);
+  sphere(scootyRig,red,[0,.42,-.85],[.14,.055,.025]);
+  for(const side of [-1,1]){rod(scootyRig,scooterMetal,[side*.24,.99,.49],[side*.36,1.20,.49],.015);sphere(scootyRig,black,[side*.38,1.21,.49],[.085,.045,.028]);}
+  // Dark chocolate brownie with textured crumb and separate bite portions.
+  brownieTreat.clear();const crumb=mat('#422015',.93),crust=mat('#2c120c',.82);
+  const bites=[];for(let i=0;i<3;i++){const part=new THREE.Group();part.position.x=(i-1)*.072; brownieTreat.add(part);bites.push(part);box(part,crumb,[0,0,0],[.074,.12,.15]);box(part,crust,[0,.065,0],[.074,.023,.15]);for(let j=0;j<8;j++)sphere(part,j%2?crumb:crust,[(j%3-1)*.02,-.04+(j%4)*.025,.077],[.009,.008,.005]);}
   // Floating gold particles
   const particles=new THREE.Group();scene.add(particles);
   for(let i=0;i<24;i++){const p=sphere(particles,i%3===0?cyan:gold,[(Math.random()-.5)*4,Math.random()*3.1-.2,(Math.random()-.5)*1.2],[.018,.018,.018]);p.userData.phase=Math.random()*6.28;p.userData.baseY=p.position.y}
@@ -702,25 +1120,25 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const yupbroVoiceFiles=['7yup.m4a','Banging.m4a','Bestie.m4a','Charlie.m4a','Chicken curry.m4a','Colacoco.m4a','Fanta.m4a','Sanzalicious.m4a','Sanzations.m4a','Voice 261026_134443.m4a','What do u want.m4a','What isvwrong.m4a','Yup bro.m4a'];
   const yupbroVoiceClips=yupbroVoiceFiles.map(src=>{const audio=new Audio(encodeURI(src));audio.preload='auto';return audio});
   let nextVoiceClip=0;
-  function voiceClipUnavailable(){setMouthTalking(false);if(micHint)micHint.textContent='Bro, my voice clip did not load. Refresh and try again! 😂';}
+  function voiceClipUnavailable(){setMouthTalking(false);if(micHint)micHint.textContent='🔈 Sound could not play. Tap YupBro to try again.';}
   function talk(line,pitch=1.12,rate=1.02){
-   if(pageInactive)return;
+   if(pageInactive || document.getElementById('welcome-gate')?.hidden)return;
    if(speech){speech.textContent=line;speech.classList.remove('is-talking');void speech.offsetWidth;speech.classList.add('is-talking');window.setTimeout(()=>speech.classList.remove('is-talking'),2200)}
    try{
     yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0});
-    const clip=yupbroVoiceClips[nextVoiceClip%yupbroVoiceClips.length];nextVoiceClip++;
+    const available=yupbroVoiceClips.filter(a=>!a.error);if(!available.length){voiceClipUnavailable();return;}const clip=available[nextVoiceClip%available.length];nextVoiceClip++;
     setMouthTalking(true);
     const finish=()=>setMouthTalking(false);
     clip.onended=finish;clip.onerror=finish;
     const playback=clip.play();
-    if(playback&&typeof playback.catch==='function')playback.catch(()=>{finish();voiceClipUnavailable();});
+    if(playback&&typeof playback.catch==='function')playback.catch(err=>{finish();if(err&&err.name==='NotAllowedError'){if(micHint)micHint.textContent='🔈 Tap YupBro to enable sound.';}else voiceClipUnavailable();});
    }catch(e){setMouthTalking(false);console.info('SanZa voice clip unavailable',e)}
   }
   // Talking Tom-style Yup Bro: auto-request mic permission, listen continuously, repeat speech, and react to pokes.
   let spokenUrl=null,recording=null,recordedChunks=[],micStream=null,replayAudio=null,voiceBusy=false,pageInactive=false;
   const micHint=document.createElement('div');
-  micHint.textContent='Yup Bro is ready, bro! Allow the mic once, then just talk or poke him. 😂';
-  micHint.style.cssText='text-align:center;font-size:11px;color:#ddd;margin:6px auto 12px';
+  micHint.textContent='🔴 Mic off by default. Tap Mic off to enable it on the YupBro screen.';
+  micHint.style.cssText='text-align:center;font-size:12px;color:#5d6b7c;margin:8px auto';
   const mascotShell=wrap.parentElement;
   if(mascotShell)mascotShell.appendChild(micHint);
   const tapControl=document.getElementById('yupbro-tap');
@@ -730,11 +1148,24 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const danceMusic=new Audio('/Yupbro.mp3');danceMusic.preload='auto';danceMusic.loop=true;danceMusic.volume=0.7;
   function startDanceMusic(){try{danceMusic.currentTime=0;const p=danceMusic.play();if(p&&p.catch)p.catch(()=>{});}catch(_){}}
   function stopDanceMusic(){danceMusic.pause();try{danceMusic.currentTime=0;}catch(_){}}
-  function stopDance(){danceUntil=0;wrap.classList.remove('yupbro-music-dancing','yupbro-wearing-shades');stopDanceMusic();danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BOLLYWOOD MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
+  function stopDance(){danceUntil=0;wrap.classList.remove('yupbro-music-dancing','yupbro-wearing-shades');stopDanceMusic();danceBtn.classList.remove('dancing');danceBtn.textContent='🕺 BOLLYWOOD DANCE';if(moodLabel&&moodLabel.textContent==='BHANGRA MODE ✨'){moodLabel.textContent='CHILL MODE 😌';moodLabel.dataset.mood='chill';}}
+  const christmasSpot=new THREE.SpotLight(0xffe4b5,0,12,.48,.65,1.4);christmasSpot.position.set(1.8,5,4);christmasSpot.target.position.set(0,1.2,0);scene.add(christmasSpot,christmasSpot.target);
+  const christmasTracks=[["🎄 Sleigh Ride","Sleigh Ride (Indian Christmas Remix).mp3"],["🎅 Rockin’ Around","Rockin' Around The Christmas Tree ( Indian Version ) - Vindaloo Singh.mp3"],["🔔 Jingle Bell","Jingle Bell - Punjabi Tadka.mp3"]];
+  const christmasAudio=new Audio();christmasAudio.preload='none';let christmasPlaying=-1,christmasToken=0;
+  const christmasPanel=document.createElement('div');christmasPanel.style.cssText='display:none;gap:5px;flex-wrap:wrap;justify-content:center;margin:4px auto;flex-shrink:0';const christmasButtons=[];
+  function christmasInSeason(){const d=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const p=k=>d.find(x=>x.type===k)?.value;const day=p('year')+'-'+p('month')+'-'+p('day');return (location.hostname.endsWith('.vercel.app') && new URLSearchParams(location.search).get('christmasTest')==='1') || (day>='2026-11-28'&&day<='2026-12-27');}
+  function stopChristmas(){christmasToken++;christmasAudio.pause();christmasPlaying=-1;christmasMic.visible=false;christmasSpot.intensity=0;setMouthTalking(false);christmasButtons.forEach((b,i)=>{b.textContent=christmasTracks[i][0];b.setAttribute('aria-pressed','false');});}
+  christmasTracks.forEach(([label,file],i)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='background:#a71d31;color:white;border:1px solid #e5bd52;border-radius:10px;padding:8px;font-weight:800;font-size:11px;cursor:pointer';b.setAttribute('aria-pressed','false');b.addEventListener('click',async()=>{if(!christmasInSeason()||pageInactive)return;if(christmasPlaying===i){stopChristmas();return;}stopChristmas();stopMicForPageExit();pageInactive=false;reactionUntil=0;personalityUntil=0;const micButton=document.getElementById('yupbro-b-mic');if(micButton){micButton.textContent='🎤 Mic off';micButton.setAttribute('aria-pressed','false');}christmasPlaying=i;christmasMic.visible=true;setMouthTalking(true);smile.visible=true;const token=++christmasToken;christmasAudio.src='/'+encodeURIComponent(file);try{await christmasAudio.play();if(token!==christmasToken)return;christmasMic.visible=true;setMouthTalking(true);b.textContent='⏹ Stop';b.setAttribute('aria-pressed','true');if(speech)speech.textContent='MERRY CHRISTMAS, BRO! 🎄';}catch(e){if(token===christmasToken){stopChristmas();if(speech)speech.textContent='Song could not play. Try again, bro!';}}});christmasButtons.push(b);christmasPanel.appendChild(b);});
+  (mascotShell||wrap).appendChild(christmasPanel);
+  function refreshChristmas(){const active=christmasInSeason();christmasPanel.hidden=!active;christmasPanel.style.display=active?'flex':'none';if(!active&&christmasPlaying!==-1)stopChristmas();}
+  refreshChristmas();setInterval(refreshChristmas,15000);
+  christmasAudio.addEventListener('ended',stopChristmas);christmasAudio.addEventListener('error',()=>{if(christmasPlaying!==-1)stopChristmas();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&christmasPlaying!==-1)stopChristmas();});
+  document.addEventListener('pointerdown',e=>{if(christmasPlaying!==-1&&!christmasPanel.contains(e.target))stopChristmas();},true);
   // Any tap/click elsewhere on the page ends the dance immediately, including on mobile.
   document.addEventListener('pointerdown',e=>{if(danceUntil&&e.target!==danceBtn&&!danceBtn.contains(e.target))stopDance();},true);
   danceBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;wrap.classList.add('yupbro-music-dancing');startDanceMusic();danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}});
+  danceBtn.addEventListener('click',e=>{e.stopPropagation();if(danceUntil){stopDance();return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;wrap.classList.add('yupbro-music-dancing');startDanceMusic();danceBtn.classList.add('dancing');danceBtn.textContent='✨ DANCING — TAP TO STOP';if(speech)speech.textContent='BOLLYWOOD, BRO! WATCH THESE MOVES! 🕺';if(moodLabel){moodLabel.textContent='BHANGRA MODE ✨';moodLabel.dataset.mood='hype';}});
   // Secret dance helper: three quick pokes unlock a bonus filmi routine.
   function startSurpriseDance(style,line){
     if(danceUntil)stopDance();
@@ -764,8 +1195,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const reactionChoices=[['🤣 LAUGH','laugh'],['🕺 DANCE','dance'],['🛵 SCOOTY','scooty'],['😱 SHOCK','shock'],['🍫 MUNCH','snack']];
   let giggleContext=null;
   function playGiggle(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;giggleContext=giggleContext||new AC();if(giggleContext.state==='suspended')giggleContext.resume();const ctx=giggleContext,base=ctx.currentTime;[0,.19,.38,.62,.82].forEach((offset,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(430+(i%2)*110,base+offset);osc.frequency.exponentialRampToValueAtTime(760+(i%2)*90,base+offset+.075);osc.frequency.exponentialRampToValueAtTime(390,base+offset+.15);gain.gain.setValueAtTime(.0001,base+offset);gain.gain.exponentialRampToValueAtTime(.12,base+offset+.025);gain.gain.exponentialRampToValueAtTime(.0001,base+offset+.16);osc.connect(gain);gain.connect(ctx.destination);osc.start(base+offset);osc.stop(base+offset+.17);});}catch(e){}}
-  reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(mode==='dance'){if(danceUntil){stopDance();reactionMode='laugh';reactionUntil=0;return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;startDanceMusic();danceBtn.classList.add('dancing');wrap.classList.add('yupbro-music-dancing');reactionMode='dance';reactionUntil=0;if(speech)speech.textContent='BOLLYWOOD SUPERSTAR! WATCH ME GO, BRO! 🕺';if(moodLabel){moodLabel.textContent='BOLLYWOOD MODE ✨';moodLabel.dataset.mood='hype';}return;}if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+(mode==='scooty'?4600:3600);if(mode==='laugh')playGiggle();if(speech)speech.textContent=({laugh:'HAHAHAHA! AHAHA! MY BELLY HURTS! 🤣',scooty:'BRRRRR! WHEEEEE! YUP BROOOO! OUTTA MY WAYYYYY! 🛵💨',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH… SAVE ME A BROWNIE! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
-  wrap.appendChild(reactionPanel);
+  reactionChoices.forEach(([label,mode])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='border:1px solid #d6ad45;border-radius:22px;background:#171923;color:#ffd34d;padding:10px 13px;font-weight:800;font-size:12px;cursor:pointer';b.addEventListener('click',()=>{if(fallen)return;if(mode==='dance'){if(danceUntil){stopDance();reactionMode='laugh';reactionUntil=0;return;}danceStyle=(danceStyle+1)%4;danceUntil=performance.now()+60000;startDanceMusic();danceBtn.classList.add('dancing');wrap.classList.add('yupbro-music-dancing');reactionMode='dance';reactionUntil=0;if(speech)speech.textContent='BHANGRA TIME! BALLE BALLE, BRO! 🕺';if(moodLabel){moodLabel.textContent='BHANGRA MODE ✨';moodLabel.dataset.mood='hype';}return;}if(danceUntil)stopDance();reactionMode=mode;reactionUntil=performance.now()+(mode==='scooty'?4600:3600);if(mode==='laugh')playGiggle();if(speech)speech.textContent=({laugh:'HAHAHAHA! AHAHA! MY BELLY HURTS! 🤣',scooty:'BRRRRR! WHEEEEE! YUP BROOOO! OUTTA MY WAYYYYY! 🛵💨',shock:'OH MY GARLIC NAAN! 😱',snack:'MUNCH MUNCH… SAVE ME A BROWNIE! 🍫'})[mode];if(moodLabel){moodLabel.textContent=label;moodLabel.dataset.mood=mode==='snack'?'snack':'hype';}});reactionPanel.appendChild(b);});
+  (mascotShell||wrap).appendChild(reactionPanel);
   canvas.addEventListener('pointerdown',()=>{
     if(fallen)return;
     const now=performance.now();
@@ -785,6 +1216,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const SILENCE_MS=950, MIN_SEGMENT_MS=350, VOICE_THRESHOLD=.018;
   function stopMicTracks(){if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;}
   function stopMicForPageExit(){
+   if(christmasPlaying!==-1)stopChristmas();
    pageInactive=true;
    const wasListening=!!micStream;stopMicTracks();
    yupbroVoiceClips.forEach(a=>{a.pause();a.currentTime=0;a.onended=null;a.onerror=null;});
@@ -799,10 +1231,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   let resumeMicAfterBackForward=false;
   window.addEventListener('pagehide',()=>{resumeMicAfterBackForward=stopMicForPageExit();},{capture:true});
-  window.addEventListener('pageshow',e=>{if(e.persisted){pageInactive=false;if(resumeMicAfterBackForward){resumeMicAfterBackForward=false;startAlwaysListening();}}},{capture:true});
+  window.addEventListener('pageshow',e=>{if(e.persisted){pageInactive=false;resumeMicAfterBackForward=false;}},{capture:true});
   document.addEventListener('sanza:leave-yupbro',stopMicForPageExit);
-  document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;startAlwaysListening();});
+  document.addEventListener('sanza:return-yupbro',()=>{pageInactive=false;/* mic remains off until the user taps its button */});
+  let micManuallyOff=false;
+  document.addEventListener('sanza:yupbro-mic-toggle',()=>{if(document.getElementById('welcome-gate')?.hidden)return;const button=document.getElementById('yupbro-b-mic');if(micStream||voiceBusy){micManuallyOff=true;stopMicForPageExit();pageInactive=false;if(button){button.textContent='🎤 Mic off';button.setAttribute('aria-pressed','false');}micHint.textContent='🔴 Microphone off — tap Mic off to listen again.';}else{micManuallyOff=false;pageInactive=false;if(button){button.textContent='🎤 Listening…';button.setAttribute('aria-pressed','true');}startAlwaysListening();}});
   function playRecordedPhrase(){
+   if(pageInactive || document.getElementById('welcome-gate')?.hidden)return;
    if(!spokenUrl){talk('BROOO! POKE ME AGAIN! 😂',1.28,1.14);return;}
    try{
     if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
@@ -820,6 +1255,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    }catch(e){setMouthTalking(false);}
   }
   function playPokeClip(){
+   if(pageInactive || document.getElementById('welcome-gate')?.hidden)return;
    if(pageInactive)return;
    try{
     if(replayAudio){replayAudio.pause();replayAudio.currentTime=0;}
@@ -947,22 +1383,21 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   }
   // The character itself is the control surface: a poke reacts instantly; speech is detected in the background.
   canvas.addEventListener('pointerdown',function(){tapYupbro();},{passive:true});
-  // Request permission on page entry. Browsers may require one tap before granting it.
-  startAlwaysListening();
-  function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
+  // Privacy: never activate the microphone automatically on page load.
+  function resize(){if(!renderer)return;const rect=wrap.getBoundingClientRect();const w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2.75,Math.sqrt(3500000/(w*h))));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
   window.addEventListener('resize',resize,{passive:true});
   if('ResizeObserver' in window){const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(wrap)}
   requestAnimationFrame(resize);window.addEventListener('load',resize,{once:true});
   let visible=true;
   if('IntersectionObserver'in window){observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(animate);},{threshold:.05});observer.observe(wrap)}
-  function animate(now){raf=0;if(!visible)return;raf=requestAnimationFrame(animate);const t=(now-start)/1000;if(now-last<28)return;last=now;
+  function animate(now){raf=0;if(!visible)return;raf=requestAnimationFrame(animate);const t=(now-start)/1000;if(now-last<15)return;last=now;
    const rev=now<boostUntil?4.2:0,tricking=now<trickUntil,reacting=now<moodUntil,dancing=now<danceUntil,dancePhase=t*9.2,danceBeat=t*9.2,danceStyleNow=Math.max(0,danceStyle);
    if(!dancing&&danceBtn.classList.contains('dancing'))stopDance();
    const scale=1+Math.max(0,(boostUntil-now)/2600)*.1;mascot.scale.lerp(new THREE.Vector3(scale,scale,scale),.12);
    if(now>nextBlink){blinkUntil=now+145;nextBlink=now+2200+Math.random()*2600;}
-   const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);
+   const blink=now<blinkUntil?.12:1;eyeWhites.forEach(e=>e.scale.y=.12*blink);pupils.forEach(e=>e.scale.y=.065*blink);eyeGlints.forEach(e=>e.visible=blink>.5);[...irisRings,...pupilCores,...catchlights].forEach(e=>e.visible=blink>.5);
    brows[0].rotation.z+=(reacting&&mood==='cheeky'?.006:0);brows[1].rotation.z+=(reacting&&mood==='cheeky'?.006:0);
-   smile.scale.set(reacting&&mood==='hype'?1.3:1,reacting&&mood==='snack'?1.15:1,1);
+   smile.scale.set(reacting&&mood==='hype'?1.15:.95,reacting&&mood==='snack'?.65:.48,.75);
    const personalityActive=now<personalityUntil;
    const reactionActive=now<reactionUntil&&!dancing&&!fallen;
    const reactionTime=(1900-(reactionUntil-now))/1900;
@@ -1005,7 +1440,60 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
    if(fallen){const elapsed=now-fallPivot.userData.fallStart;const fallProgress=Math.min(1,elapsed/520);const ease=1-Math.pow(1-fallProgress,3);fallPivot.rotation.z=fallDirection*1.48*ease;fallPivot.position.x=fallDirection*.23*ease;mascot.position.y=.25-.08*ease+Math.sin(elapsed*.025)*.018;if(now>=recoverAt){const upProgress=Math.min(1,(now-recoverAt)/520);const upEase=1-Math.pow(1-upProgress,3);fallPivot.rotation.z=fallDirection*1.48*(1-upEase);fallPivot.position.x=fallDirection*.23*(1-upEase);mascot.position.y=.25-.08*(1-upEase);if(upProgress>=1){fallen=false;bonkCount=0;fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.position.y=.25;if(moodLabel)moodLabel.textContent='BACK ON HIS FEET 😎';if(speech)speech.textContent='I’M BACK, BRO! 😂';}}}else{fallPivot.rotation.z=0;fallPivot.position.x=0;mascot.rotation.z=tricking?Math.sin(t*8)*.09:mascot.rotation.z*.88;}
    head.rotation.x=Math.sin(t*.9)*.025+(reacting&&mood==='cool'?.06:0);
    if(!fallen)mascot.position.y=.25+Math.sin(t*2)*.025+(tricking?Math.max(0,trickPulse)*.12:0)+(dancing?Math.abs(Math.sin(dancePhase*2))*.04:0);
-   camera.position.x=Math.sin(t*.32)*.18;camera.lookAt(0,1.25,0);
+   if(christmasPlaying!==-1){const beat=christmasAudio.currentTime*2*Math.PI*[1.75,1.9,2][christmasPlaying];const sway=Math.sin(beat*.5),step=Math.sin(beat);christmasSpot.intensity=6+Math.sin(beat*.25)*1.2;arms[1].rotation.z=-1.05+.06*sway;arms[1].rotation.x=-1.65+.04*step;arms[0].rotation.z=.65+.38*Math.sin(beat*.5+.5)+.12*Math.sin(beat);arms[0].rotation.x=.24*Math.sin(beat*.5-.4);head.rotation.z=.075*sway;head.rotation.x=.045*Math.sin(beat-.4);head.rotation.y=.09*Math.sin(beat*.25);body.position.y+=.045*(1-Math.cos(beat));mascot.position.x=.075*sway;mascot.rotation.y=.15*sway;leg1.rotation.x=.20*Math.max(0,step);leg2.rotation.x=.20*Math.max(0,-step);leg1.rotation.z=.06*sway;leg2.rotation.z=.06*sway;
+   // Continuous choreography with eased transitions between four performance phrases.
+   const phrase=christmasAudio.currentTime/5.5+christmasPlaying, index=Math.floor(phrase)%4, mix=THREE.MathUtils.smoothstep(phrase%1,.72,1);
+   function dancePose(k){const p=beat*.5;switch(k%4){
+    case 0:return {x:.32*Math.sin(p*.25),turn:.32,arm:1.05+.24*Math.sin(p),reach:-.55,hip:.025*Math.sin(beat),l:.32*Math.sin(beat),r:-.32*Math.sin(beat),lean:-.09};
+    case 1:return {x:.12*Math.sin(p),turn:.12*Math.sin(p),arm:2.75+.18*Math.sin(beat),reach:-.25,hip:.075*(1-Math.cos(beat)),l:.22*Math.max(0,step),r:.22*Math.max(0,-step),lean:.06*sway};
+    case 2:return {x:.22*Math.sin(p),turn:.42*Math.sin(p),arm:1.65+.55*Math.sin(beat),reach:.35*Math.cos(beat),hip:.045*(1-Math.cos(beat)),l:.35*Math.max(0,step),r:.35*Math.max(0,-step),lean:.12*sway};
+    default:return {x:.18*Math.sin(p),turn:.65*Math.sin(p*.5),arm:.9+.65*Math.sin(p),reach:-.65+.35*Math.cos(p),hip:.035*(1-Math.cos(beat)),l:.16*Math.sin(beat),r:-.16*Math.sin(beat),lean:-.1*sway};
+   }}
+   const pa=dancePose(index),pb=dancePose(index+1),blend=k=>THREE.MathUtils.lerp(pa[k],pb[k],mix);
+   mascot.position.x=blend('x');mascot.rotation.y=blend('turn');mascot.rotation.z=blend('lean');arms[0].rotation.z=-blend('arm');arms[0].rotation.x=blend('reach');body.position.y=-.72+blend('hip');leg1.rotation.x=blend('l');leg2.rotation.x=blend('r');leg1.position.z=.10*Math.sin(beat)*(1-mix)*(index===0?1:0);leg2.position.z=-leg1.position.z;setMouthTalking(true);smile.visible=true;christmasMic.visible=true;}
+   if(christmasPlaying===-1){leg1.position.z=0;leg2.position.z=0;}
+   if(christmasPlaying!==-1){scene.updateMatrixWorld(true);const grip=arms[1].localToWorld(new THREE.Vector3(.08,-.57,.10));head.worldToLocal(grip);christmasMic.position.copy(grip);christmasMic.position.y-=.12;christmasMic.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(.02,-.15,.36).sub(christmasMic.position).normalize());}
+   // Ease abrupt pose changes across frames while preserving reaction choreography.
+   const poseEase=1-Math.exp(-12/60);
+   for(const joint of [...arms,leg1,leg2,head]){const prev=joint.userData.smoothPose;if(prev){joint.rotation.x=THREE.MathUtils.lerp(prev.x,joint.rotation.x,poseEase);joint.rotation.y=THREE.MathUtils.lerp(prev.y,joint.rotation.y,poseEase);joint.rotation.z=THREE.MathUtils.lerp(prev.z,joint.rotation.z,poseEase);}joint.userData.smoothPose={x:joint.rotation.x,y:joint.rotation.y,z:joint.rotation.z};}
+   if(reactionActive&&reactionMode==='snack'){
+    const elapsed=Math.max(0,3.6-(reactionUntil-now)/1000),cycle=elapsed%1.2,lift=Math.sin(Math.PI*Math.min(1,cycle/.85));
+    arms[1].rotation.set(-1.15-.65*lift,0,-.65-.30*lift);arms[0].rotation.set(-.12,0,.15);
+    head.rotation.x=.12*lift;scene.updateMatrixWorld(true);
+    const grip=arms[1].localToWorld(new THREE.Vector3(.08,-.61,.14));head.worldToLocal(grip);brownieTreat.position.copy(grip);brownieTreat.rotation.set(0,0,0);
+    bites.forEach((p,i)=>p.visible=i>=Math.min(2,Math.floor(elapsed/1.2)));
+    mouthInner.visible=true;mouthInner.scale.y=.015+.025*Math.abs(Math.sin(elapsed*20));smile.visible=false;
+   }else if(!isSpeaking){mouthInner.visible=false;smile.visible=true;}
+   if(reactionActive&&reactionMode==='scooty'){
+    mascot.rotation.y=.65;mascot.position.x=.25*Math.sin(t*2);mascot.rotation.z=.035*Math.sin(t*5);
+    body.position.y=-.32;body.rotation.x=.12;
+    arms[0].rotation.set(-1.1,0,.10);arms[1].rotation.set(-1.1,0,-.10);
+    leg1.rotation.set(-.70,0,-.18);leg2.rotation.set(-.70,0,.18);
+    scootyRig.rotation.y=0;scooterWheels.forEach(w=>w.rotation.x=t*9);
+   }else body.rotation.x=0;
+   // Dedicated Punjabi bhangra choreography, independent of Christmas singing.
+   if(dancing&&!fallen&&christmasPlaying===-1){
+     const p=danceBeat,beat=Math.sin(p),bounce=Math.pow(Math.abs(Math.sin(p)),1.5);
+     const section=Math.floor(Math.max(0,dancePhase)/8)%4;
+     const mix=.5-.5*Math.cos(Math.PI*Math.min(1,(Math.max(0,dancePhase)%8)/.7));
+     const pose=(n)=>{
+       if(n===0)return [2.15+.22*beat,-2.15+.22*beat,-.22+.25*beat,-.22-.25*beat,.22*Math.sin(p*.5)];
+       if(n===1)return [2.35+.25*beat,-1.35+.35*beat,-.35,-.55+.35*beat,.28*Math.sin(p*.5)];
+       if(n===2)return [1.55+.25*beat,-1.55+.25*beat,-.65+.35*beat,-.65-.35*beat,.32*Math.sin(p*.5)];
+       return [2.45+.15*beat,-2.45+.15*beat,-.32+.2*beat,-.32-.2*beat,.16*Math.sin(p*.5)];
+     };
+     const a=pose((section+3)%4),b=pose(section),v=i=>a[i]+(b[i]-a[i])*mix;
+     arms[0].rotation.set(v(2),.12*Math.sin(p*2),-v(0));
+     arms[1].rotation.set(v(3),-.12*Math.sin(p*2),-v(1));
+     leg1.rotation.set(-.48*Math.max(0,beat),0,-.13-.08*Math.max(0,-beat));
+     leg2.rotation.set(-.48*Math.max(0,-beat),0,.13+.08*Math.max(0,beat));
+     body.position.y=-.72+.065*bounce;mascot.position.y=.25+.07*bounce;
+     mascot.position.x=v(4);mascot.rotation.y=.22*Math.sin(p*.5);mascot.rotation.z=.075*beat;
+     head.rotation.z=-.045*beat;head.rotation.x=.035*Math.cos(p);
+   }
+   camera.position.x=Math.sin(t*.32)*.13;camera.position.z=showSantaHat?5.9:5.55;camera.lookAt(0,showSantaHat?1.39:1.25,0);
+   floorRing.material.opacity=.45+.18*Math.sin(t*1.4);
+   sparkles.children.forEach(p=>{p.position.y+=Math.sin(t*.9+p.userData.phase)*.0003;});
    particles.children.forEach(p=>{p.position.y=p.userData.baseY+Math.sin(t*1.5+p.userData.phase)*.12;p.rotation.y=t*.6});
    renderer.render(scene,camera);
   }
@@ -1168,6 +1656,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     window.dispatchEvent(new Event('resize'));
   }
   btn.addEventListener('click',toggle);
+  document.getElementById('yupbro-b-full')?.addEventListener('click',()=>{setTimeout(()=>{const active=isExpanded();const control=document.getElementById('yupbro-b-full');if(control)control.textContent=active?'↙ Small screen':'⛶ Full screen';},150);});
   document.addEventListener('fullscreenchange',function(){
     if(document.fullscreenElement===stage){btn.textContent='✕ EXIT FULL SCREEN';btn.setAttribute('aria-label','Exit Yup Bro full screen');}
     else if(!stage.classList.contains('yupbro-faux-fullscreen')){btn.textContent='⛶ FULL SCREEN YUP BRO';btn.setAttribute('aria-label','Open Yup Bro in full screen');window.dispatchEvent(new Event('resize'));}
@@ -1177,5 +1666,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
 </script>
 
 <script src="/sanza-magic.js" defer></script>
+<script>
+/* Design B controls are isolated to the welcome screen. */
+(()=>{const gate=document.getElementById('welcome-gate');const full=document.getElementById('yupbro-b-full');const more=document.getElementById('yupbro-b-more');if(!gate||!full||!more)return;
+full.addEventListener('click',()=>{const legacy=document.getElementById('yupbro-fullscreen-toggle');if(legacy)legacy.click();else {const active=gate.classList.toggle('yupbro-b-full');full.textContent=active?'↙ Small screen':'⛶ Full screen';}});
+document.getElementById('yupbro-b-mic')?.addEventListener('click',()=>document.dispatchEvent(new Event('sanza:yupbro-mic-toggle')));
+more.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-more');more.setAttribute('aria-expanded',String(active));more.textContent=active?'✕ Fewer reactions':'✨ More reactions';});
+})();
+</script>
+<script id="sanza-seasonal-countdown">
+(()=>{const gate=document.getElementById('welcome-gate');if(!gate)return;const panel=document.createElement('div');panel.id='sanza-seasonal-banner';panel.setAttribute('role','status');panel.style.cssText='box-sizing:border-box;width:100%;max-width:100%;text-align:center;color:#ffe9a3;font-weight:900;padding:10px 8px;font-size:clamp(14px,4vw,19px);line-height:1.25;background:linear-gradient(110deg,#790d20,#b51e35,#790d20);border:1px solid #e9bf58;border-radius:12px;margin:0 0 8px;box-shadow:0 3px 12px #0004;flex-shrink:0';const inner=gate.querySelector('.welcome-inner');if(!inner)return;inner.prepend(panel);function refresh(){const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=k=>parts.find(p=>p.type===k).value;const day=get('year')+'-'+get('month')+'-'+get('day');const days=Math.round((Date.UTC(2026,11,25)-Date.UTC(+get('year'),+get('month')-1,+get('day')))/86400000);panel.hidden=day<'2026-11-28'||day>'2026-12-27';panel.textContent=day>='2026-12-24'?'🎄 Happy Christmas From SanZa Food Hub! 🎄':'🎅 '+days+' days until Christmas!';if(day==='2026-12-24')panel.textContent+=' • 1 day to go!';}refresh();setInterval(refresh,60000);})();
+</script>
 </body>
 </html>
