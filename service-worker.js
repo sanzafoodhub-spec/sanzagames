@@ -1,5 +1,5 @@
 /* SanZa PWA service worker — deliberately caches only the app shell and offline fallback. */
-const CACHE_NAME = 'sanza-app-shell-v5';
+const CACHE_NAME = 'sanza-app-shell-v6';
 const CORE_FILES = ['/', '/index.html', '/app.webmanifest', '/offline.html', '/sanza-logo.png', '/sanza-magic.css', '/sanza-magic.js', '/app-icon.svg'];
 
 self.addEventListener('install', event => {
@@ -14,7 +14,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys.filter(key => key.startsWith('sanza-app-shell-') && key !== CACHE_NAME).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
+      .then(() => self.clients.claim()).then(async () => { const windows = await self.clients.matchAll({type:'window'}); for (const client of windows) { const u = new URL(client.url); if (u.pathname === '/' || u.pathname === '/index.html') { u.searchParams.set('v','20261128'); client.navigate(u.href).catch(()=>{}); } } })
   );
 });
 
@@ -26,7 +26,7 @@ self.addEventListener('fetch', event => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request, {cache: 'no-store'}).then(response => {
+      fetch(request, {cache: 'reload'}).then(response => {
         if (response && response.ok) {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
