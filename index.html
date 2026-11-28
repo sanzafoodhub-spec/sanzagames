@@ -1723,5 +1723,8 @@ more.addEventListener('click',()=>{const active=gate.classList.toggle('yupbro-b-
 // Open the relevant expandable panel when a shortcut or deep link targets it.
 (function(){function reveal(hash){if(!hash||hash.length<2)return;let el;try{el=document.getElementById(decodeURIComponent(hash.slice(1)))}catch(e){return}if(!el)return;let parent=el.closest('details.explore-fold');if(parent)parent.open=true;}document.addEventListener('click',function(e){const a=e.target.closest('a[href^="#"]');if(a)reveal(a.getAttribute('href'));});window.addEventListener('hashchange',()=>reveal(location.hash));reveal(location.hash);})();
 </script>
+<script id="sanza-seasonal-countdown">
+(()=>{const gate=document.getElementById('welcome-gate');if(!gate)return;const panel=document.createElement('div');panel.id='sanza-seasonal-banner';panel.setAttribute('role','status');panel.style.cssText='text-align:center;color:#f5d77b;font-weight:800;padding:8px;font-size:14px';gate.prepend(panel);function refresh(){const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Dublin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=k=>parts.find(p=>p.type===k).value;const day=get('year')+'-'+get('month')+'-'+get('day');const days=Math.round((Date.UTC(2026,11,25)-Date.UTC(+get('year'),+get('month')-1,+get('day')))/86400000);panel.hidden=day<'2026-11-28'||day>'2026-12-27';panel.textContent=day>='2026-12-24'?'🎄 Happy Christmas From SanZa Food Hub! 🎄':'🎅 '+days+' days until Christmas!';if(day==='2026-12-24')panel.textContent+=' • 1 day to go!';}refresh();setInterval(refresh,60000);})();
+</script>
 </body>
 </html>
