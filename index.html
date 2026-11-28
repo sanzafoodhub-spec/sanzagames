@@ -984,6 +984,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
     if(o.material===blush || (o.geometry?.type==='SphereGeometry' && Math.abs(Math.abs(o.position.x)-.235)<.005 && o.position.y<0))o.visible=false;
     if(o.material===skin && Math.abs(o.position.x)>.35 && o.geometry?.type==='SphereGeometry')o.scale.multiplyScalar(.72);
   }
+  // More subdued studio light and natural material contrast.
+  scene.traverse(o=>{if(o.isMesh && o.material===goldTrim){o.material.roughness=.48;o.material.metalness=.28;}});
+  renderer.toneMappingExposure=1.03;key.intensity=2.8;fill.intensity=.85;studioFill.intensity=.45;
+  for(const o of body.children){if(o.material===hoodieShade&&o.geometry?.type==='BoxGeometry'&&Math.abs(o.position.y-.82)<.02){o.scale.set(.92,.68,.55);o.position.z=.23;}}
   // Soft stage shadow, cheap transparent geometry instead of expensive real-time shadow maps.
   const shadowMat=new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false});
   const stageShadow=new THREE.Mesh(new THREE.CircleGeometry(.83,40),shadowMat);stageShadow.rotation.x=-Math.PI/2;stageShadow.position.set(0,-.43,-.04);scene.add(stageShadow);
@@ -1002,6 +1006,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.m
   const mouthInner=sphere(head,mat('#321017',.72),[.02,-.155,.332],[.125,.012,.034]);
   const mouthTeeth=sphere(head,white,[.02,-.13,.36],[.078,.008,.009]);
   const tongue=sphere(head,mat('#f06b83',.5),[.02,-.192,.359],[.048,.008,.01]);
+  // Sculpt the existing head geometry into a less spherical adult facial silhouette.
+  const faceMesh=head.children.find(o=>o.material===skin && o.geometry?.type==='SphereGeometry' && o.position.length()<.001);
+  if(faceMesh){const p=faceMesh.geometry.attributes.position;for(let i=0;i<p.count;i++){let x=p.getX(i),y=p.getY(i),z=p.getZ(i);const jaw=1-.18*Math.max(0,-y);x*=jaw;z*=1-.09*Math.max(0,-y);p.setXYZ(i,x,y,z);}p.needsUpdate=true;faceMesh.geometry.computeVertexNormals();}
+  for(const b of brows)b.scale.multiplyScalar(.65);
+  smile.scale.set(.82,.48,.75);
+  const noseMesh=head.children.find(o=>o.material===skin&&Math.abs(o.position.y+.075)<.001&&Math.abs(o.position.x)<.001);
+  if(noseMesh){noseMesh.scale.set(.047,.078,.057);noseMesh.position.y=-.055;}
+  sphere(head,skin,[0,.005,.32],[.032,.085,.034]);
+  const lipMat=mat('#926452',.82);sphere(head,lipMat,[.02,-.177,.332],[.079,.014,.014]);
   // A clearly visible chocolate brownie appears beside Yup Bro's mouth during MUNCH.
   const brownieTreat=new THREE.Group();head.add(brownieTreat);brownieTreat.position.set(.29,-.23,.43);brownieTreat.rotation.z=-.16;brownieTreat.visible=false;
   const brownieBase=mat('#6b321b',.78),icing=mat('#f3c45a',.36),sprinkle=mat('#ff5b8b',.4);
